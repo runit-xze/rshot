@@ -84,15 +84,15 @@ sub save_pdf_ps_svg {
 	my $pixbuf = shift;
 
 	my $surface = undef;
+
+	my $class = {
+		pdf => 'Cairo::PdfSurface',
+		ps => 'Cairo::PsSurface',
+		svg => 'Cairo::SvgSurface',
+	}->{$filetype};
 	
 	#0.8? => 72 / 90 dpi
-	if ($filetype eq 'pdf') {
-		$surface = Cairo::PdfSurface->create($filename, $pixbuf->get_width * 0.8, $pixbuf->get_height * 0.8);
-	} elsif ($filetype eq 'ps') {
-		$surface = Cairo::PsSurface->create($filename, $pixbuf->get_width * 0.8, $pixbuf->get_height * 0.8);
-	} elsif ($filetype eq 'svg') {
-		$surface = Cairo::SvgSurface->create($filename, $pixbuf->get_width * 0.8, $pixbuf->get_height * 0.8);
-	}
+	$surface = $class->create($filename, $pixbuf->get_width * 0.8, $pixbuf->get_height * 0.8);
 	my $cr      = Cairo::Context->create($surface);
 	$cr->scale(0.8, 0.8);
 	Gtk3::Gdk::cairo_set_source_pixbuf($cr, $pixbuf, 0, 0);
