@@ -80,10 +80,17 @@ sub set_quality_setting {
 sub save_pdf_ps_svg {
 	my $self = shift;
 	my $filename = shift;
+	my $filetype = shift;
 	my $pixbuf = shift;
+
+	my $class = {
+		pdf => 'Cairo::PdfSurface',
+		ps => 'Cairo::PsSurface',
+		svg => 'Cairo::SvgSurface',
+	}->{$filetype};
 	
 	#0.8? => 72 / 90 dpi
-	my $surface = Cairo::SvgSurface->create($filename, $pixbuf->get_width * 0.8, $pixbuf->get_height * 0.8);
+	my $surface = $class->create($filename, $pixbuf->get_width * 0.8, $pixbuf->get_height * 0.8);
 	my $cr      = Cairo::Context->create($surface);
 	$cr->scale(0.8, 0.8);
 	Gtk3::Gdk::cairo_set_source_pixbuf($cr, $pixbuf, 0, 0);
@@ -175,7 +182,7 @@ sub save_pixbuf_to_file {
 
 	} elsif ($filetype eq 'pdf' || $filetype eq 'ps' || $filetype eq 'svg') {
 
-		$self->save_pdf_ps_svg($filename, $pixbuf);
+		$self->save_pdf_ps_svg($filename, $filetype, $pixbuf);
 
 		print "Saving file $filename, $filetype\n" if $self->{_common}->get_debug;
 
