@@ -212,19 +212,6 @@ sub show {
 	#gettext
 	$self->{_d} = $self->{_sc}->get_gettext;
 
-	#define own icons
-	if ($self->{_light_icons}) {
-		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool_dark";
-	}
-        if ($self->{_dark_icons}) {
-		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
-	}
-        if ($self->{_auto_icons}) {
-                print "Auto mode for Drawing Tool icons not yet implemented, falling back to default icons\n";
-                $self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
-        }
-
-	$self->{_icons}  = $self->{_sc}->get_root . "/share/shutter/resources/icons";
 
 	#MAIN WINDOW
 	#-------------------------------------------------
@@ -253,6 +240,26 @@ sub show {
 	$self->{_dialogs} = Shutter::App::SimpleDialogs->new($self->{_drawing_window});
 	$self->{_lp}      = Shutter::Pixbuf::Load->new($self->{_sc}, $self->{_drawing_window});
 	$self->{_lp_ne}   = Shutter::Pixbuf::Load->new($self->{_sc}, $self->{_drawing_window}, TRUE);
+
+	#define own icons
+	if ($self->{_light_icons}) {
+		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool_dark";
+	}
+        if ($self->{_dark_icons}) {
+		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
+	}
+        if ($self->{_auto_icons}) {
+                my $context = $self->{_drawing_window}->get_style_context();
+                my $bg = $context->get_background_color('normal');
+                my $avg_color = ($bg->red + $bg->green + $bg->blue) / 3.0;
+                if ($avg_color > 0.5) {
+                        $self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
+                } else {
+                        $self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool_dark";
+                }
+        }
+
+	$self->{_icons}  = $self->{_sc}->get_root . "/share/shutter/resources/icons";
 
 	#setup cursor-hash
 	#
