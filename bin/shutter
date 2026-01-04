@@ -1492,12 +1492,12 @@ sub STARTUP {
 
 	#drawing tool custom icons
 	#--------------------------------------
-	$drawing_tool_light_icons_active = Gtk3::RadioButton->new_with_label(undef, $d->get("Use light icons in the Drawing Tool"));
+	$drawing_tool_light_icons_active = Gtk3::RadioButton->new_with_label(undef, $d->get("Use light icons in the Drawing Tool, for dark themes"));
 	$drawing_tool_light_icons_box->pack_start($drawing_tool_light_icons_active, FALSE, TRUE, 12);
 
 	$drawing_tool_light_icons_active->set_tooltip_text($d->get("Use light icons in the Drawing Tool (for dark backgrounds)"));
 
-	$drawing_tool_dark_icons_active = Gtk3::RadioButton->new_with_label($drawing_tool_light_icons_active, $d->get("Use dark icons in the Drawing Tool"));
+	$drawing_tool_dark_icons_active = Gtk3::RadioButton->new_with_label($drawing_tool_light_icons_active, $d->get("Use dark icons in the Drawing Tool, for light themes"));
 	$drawing_tool_dark_icons_box->pack_start($drawing_tool_dark_icons_active, FALSE, TRUE, 12);
 
 	$drawing_tool_dark_icons_active->set_tooltip_text($d->get("Use dark icons in the Drawing Tool (for light backgrounds)"));
@@ -6075,15 +6075,15 @@ sub STARTUP {
 
 		#open drawing tool
 
-                my $drawing_tool_icons;
+		my $drawing_tool_icons;
 
-                if ($drawing_tool_light_icons_active->get_active()) {
-                        $drawing_tool_icons = "light";
-                } elsif ($drawing_tool_dark_icons_active->get_active()) {
-                        $drawing_tool_icons = "dark";
-                } elsif ($drawing_tool_auto_icons_active->get_active()) {
-                        $drawing_tool_icons = "auto";
-                }
+		if ($drawing_tool_light_icons_active->get_active()) {
+				$drawing_tool_icons = "light";
+		} elsif ($drawing_tool_dark_icons_active->get_active()) {
+				$drawing_tool_icons = "dark";
+		} elsif ($drawing_tool_auto_icons_active->get_active()) {
+				$drawing_tool_icons = "auto";
+		}
 
 
 		foreach my $key (@draw_array) {

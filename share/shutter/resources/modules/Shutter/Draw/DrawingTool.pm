@@ -205,7 +205,7 @@ sub show {
 	$self->{_name}        = shift;
 	$self->{_is_unsaved}  = shift;
 	$self->{_import_hash} = shift;
-	$self->{_custom_icons} = shift;
+	my $icon_theme = shift;
 
 	#gettext
 	$self->{_d} = $self->{_sc}->get_gettext;
@@ -240,22 +240,22 @@ sub show {
 	$self->{_lp_ne}   = Shutter::Pixbuf::Load->new($self->{_sc}, $self->{_drawing_window}, TRUE);
 
 	#define own icons
-	if ($self->{_custom_icons} eq "light") {
+	if ($icon_theme eq 'auto') {
+		# Heuristic to detect whether GTK theme is light or dark
+		my $context = $self->{_drawing_window}->get_style_context();
+		my $bg = $context->get_background_color('normal');
+		my $avg_color = ($bg->red + $bg->green + $bg->blue) / 3.0;
+		if ($avg_color > 0.5) {
+			$icon_theme = 'dark';
+		} else {
+			$icon_theme = 'light';
+		}
+	}
+	if ($icon_theme eq 'dark') {
+		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
+	} else {
 		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool_dark";
 	}
-        if ($self->{_custom_icons} eq "dark") {
-		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
-	}
-        if ($self->{_custom_icons} eq "auto") {
-                my $context = $self->{_drawing_window}->get_style_context();
-                my $bg = $context->get_background_color('normal');
-                my $avg_color = ($bg->red + $bg->green + $bg->blue) / 3.0;
-                if ($avg_color > 0.5) {
-                        $self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
-                } else {
-                        $self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool_dark";
-                }
-        }
 
 	$self->{_icons}  = $self->{_sc}->get_root . "/share/shutter/resources/icons";
 
