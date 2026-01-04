@@ -6010,12 +6010,15 @@ sub STARTUP {
 			);
 		}
 
+		our $dark_icons = 1;
+
 		#open drawing tool
 		foreach my $key (@draw_array) {
 			my $drawing_tool = Shutter::Draw::DrawingTool->new($sc);
 			$drawing_tool->show(
 				$session_screens{$key}->{'long'}, $session_screens{$key}->{'filetype'},   $session_screens{$key}->{'mime_type'},
-				$session_screens{$key}->{'name'}, $session_screens{$key}->{'is_unsaved'}, \%session_screens
+				$session_screens{$key}->{'name'}, $session_screens{$key}->{'is_unsaved'}, \%session_screens,
+				$dark_icons
 			);
 		}
 

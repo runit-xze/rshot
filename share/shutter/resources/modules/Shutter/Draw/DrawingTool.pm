@@ -205,12 +205,17 @@ sub show {
 	$self->{_name}        = shift;
 	$self->{_is_unsaved}  = shift;
 	$self->{_import_hash} = shift;
+	$self->{_dark_icons}  = shift;
 
 	#gettext
 	$self->{_d} = $self->{_sc}->get_gettext;
 
 	#define own icons
-	$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
+	if ($self->{_dark_icons}) {
+		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool_dark";
+	} else {
+		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
+	}
 	$self->{_icons}  = $self->{_sc}->get_root . "/share/shutter/resources/icons";
 
 	#MAIN WINDOW
