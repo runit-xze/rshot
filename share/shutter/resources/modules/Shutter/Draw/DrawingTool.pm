@@ -205,9 +205,7 @@ sub show {
 	$self->{_name}        = shift;
 	$self->{_is_unsaved}  = shift;
 	$self->{_import_hash} = shift;
-	$self->{_light_icons} = shift;
-        $self->{_dark_icons}  = shift;
-        $self->{_auto_icons}  = shift;
+	$self->{_custom_icons} = shift;
 
 	#gettext
 	$self->{_d} = $self->{_sc}->get_gettext;
@@ -242,13 +240,13 @@ sub show {
 	$self->{_lp_ne}   = Shutter::Pixbuf::Load->new($self->{_sc}, $self->{_drawing_window}, TRUE);
 
 	#define own icons
-	if ($self->{_light_icons}) {
+	if ($self->{_custom_icons} eq "light") {
 		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool_dark";
 	}
-        if ($self->{_dark_icons}) {
+        if ($self->{_custom_icons} eq "dark") {
 		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
 	}
-        if ($self->{_auto_icons}) {
+        if ($self->{_custom_icons} eq "auto") {
                 my $context = $self->{_drawing_window}->get_style_context();
                 my $bg = $context->get_background_color('normal');
                 my $avg_color = ($bg->red + $bg->green + $bg->blue) / 3.0;

@@ -6074,12 +6074,24 @@ sub STARTUP {
 		}
 
 		#open drawing tool
+
+                my $drawing_tool_icons;
+
+                if ($drawing_tool_light_icons_active->get_active()) {
+                        $drawing_tool_icons = "light";
+                } elsif ($drawing_tool_dark_icons_active->get_active()) {
+                        $drawing_tool_icons = "dark";
+                } elsif ($drawing_tool_auto_icons_active->get_active()) {
+                        $drawing_tool_icons = "auto";
+                }
+
+
 		foreach my $key (@draw_array) {
 			my $drawing_tool = Shutter::Draw::DrawingTool->new($sc);
 			$drawing_tool->show(
 				$session_screens{$key}->{'long'}, $session_screens{$key}->{'filetype'},   $session_screens{$key}->{'mime_type'},
 				$session_screens{$key}->{'name'}, $session_screens{$key}->{'is_unsaved'}, \%session_screens,
-				$drawing_tool_light_icons_active->get_active(), $drawing_tool_dark_icons_active->get_active(), $drawing_tool_auto_icons_active->get_active()
+				$drawing_tool_icons
 			);
 		}
 
