@@ -314,6 +314,9 @@ my $delay_status;
 my $delay_vlabel;
 my $delay;
 my $delete_on_close_active;
+my $drawing_tool_auto_icons_active;
+my $drawing_tool_dark_icons_active;
+my $drawing_tool_light_icons_active;
 my $filename;
 my $fname_autocopy_active;
 my $fs_active;
@@ -811,19 +814,23 @@ sub STARTUP {
 	my $file_vbox    = Gtk3::VBox->new(FALSE, 0);
 	my $save_vbox    = Gtk3::VBox->new(FALSE, 0);
 	my $capture_vbox = Gtk3::VBox->new(FALSE, 0);
+	my $drawing_tool_icons_vbox    = Gtk3::VBox->new(FALSE, 0);
 
-	my $scale_box          = Gtk3::HBox->new(FALSE, 0);
-	my $filetype_box       = Gtk3::HBox->new(FALSE, 0);
-	my $filename_box       = Gtk3::HBox->new(FALSE, 0);
-	my $saveDir_box        = Gtk3::HBox->new(FALSE, 0);
-	my $save_ask_box       = Gtk3::HBox->new(FALSE, 0);
-	my $save_no_box        = Gtk3::HBox->new(FALSE, 0);
-	my $save_auto_box      = Gtk3::HBox->new(FALSE, 0);
-	my $no_autocopy_box    = Gtk3::HBox->new(FALSE, 0);
-	my $image_autocopy_box = Gtk3::HBox->new(FALSE, 0);
-	my $fname_autocopy_box = Gtk3::HBox->new(FALSE, 0);
-	my $delay_box          = Gtk3::HBox->new(FALSE, 0);
-	my $cursor_box         = Gtk3::HBox->new(FALSE, 0);
+	my $scale_box                           = Gtk3::HBox->new(FALSE, 0);
+	my $filetype_box                        = Gtk3::HBox->new(FALSE, 0);
+	my $filename_box                        = Gtk3::HBox->new(FALSE, 0);
+	my $saveDir_box                         = Gtk3::HBox->new(FALSE, 0);
+	my $save_ask_box                        = Gtk3::HBox->new(FALSE, 0);
+	my $save_no_box                         = Gtk3::HBox->new(FALSE, 0);
+	my $save_auto_box                       = Gtk3::HBox->new(FALSE, 0);
+	my $no_autocopy_box                     = Gtk3::HBox->new(FALSE, 0);
+	my $image_autocopy_box                  = Gtk3::HBox->new(FALSE, 0);
+	my $fname_autocopy_box                  = Gtk3::HBox->new(FALSE, 0);
+	my $delay_box                           = Gtk3::HBox->new(FALSE, 0);
+	my $cursor_box                          = Gtk3::HBox->new(FALSE, 0);
+	my $drawing_tool_light_icons_box        = Gtk3::HBox->new(FALSE, 0);
+	my $drawing_tool_dark_icons_box         = Gtk3::HBox->new(FALSE, 0);
+	my $drawing_tool_auto_icons_box         = Gtk3::HBox->new(FALSE, 0);
 
 	#actions
 	my $actions_vbox = Gtk3::VBox->new(FALSE, 0);
@@ -1129,6 +1136,13 @@ sub STARTUP {
 	my $capture_frame = Gtk3::Frame->new();
 	$capture_frame->set_label_widget($capture_frame_label);
 	$capture_frame->set_shadow_type('none');
+
+	my $drawing_tool_frame_label = Gtk3::Label->new;
+	$drawing_tool_frame_label->set_markup("<b>" . $d->get("Drawing Tool") . "</b>");
+
+	my $drawing_tool_frame = Gtk3::Frame->new();
+	$drawing_tool_frame->set_label_widget($drawing_tool_frame_label);
+	$drawing_tool_frame->set_shadow_type('none');
 
 	my $sel_capture_frame_label = Gtk3::Label->new;
 	$sel_capture_frame_label->set_markup("<b>" . $d->get("Selection Capture") . "</b>");
@@ -1476,6 +1490,43 @@ sub STARTUP {
 	#end - cursor
 	#--------------------------------------
 
+	#drawing tool custom icons
+	#--------------------------------------
+	$drawing_tool_light_icons_active = Gtk3::RadioButton->new_with_label(undef, $d->get("Use light icons in the Drawing Tool"));
+	$drawing_tool_light_icons_box->pack_start($drawing_tool_light_icons_active, FALSE, TRUE, 12);
+
+	$drawing_tool_light_icons_active->set_tooltip_text($d->get("Use light icons in the Drawing Tool (for dark backgrounds)"));
+
+	$drawing_tool_dark_icons_active = Gtk3::RadioButton->new_with_label($drawing_tool_light_icons_active, $d->get("Use dark icons in the Drawing Tool"));
+	$drawing_tool_dark_icons_box->pack_start($drawing_tool_dark_icons_active, FALSE, TRUE, 12);
+
+	$drawing_tool_dark_icons_active->set_tooltip_text($d->get("Use dark icons in the Drawing Tool (for light backgrounds)"));
+
+	$drawing_tool_auto_icons_active = Gtk3::RadioButton->new_with_label($drawing_tool_light_icons_active, $d->get("Automatically detect which icons to use in the Drawing Tool"));
+	$drawing_tool_auto_icons_box->pack_start($drawing_tool_auto_icons_active, FALSE, TRUE, 12);
+
+	$drawing_tool_auto_icons_active->set_tooltip_text($d->get("Automatically detect which icons to use in the Drawing Tool (guess the background color)"));
+
+	#default state
+	$drawing_tool_light_icons_active->set_active(FALSE);
+	$drawing_tool_dark_icons_active->set_active(FALSE);
+	$drawing_tool_auto_icons_active->set_active(TRUE);
+
+	if (defined $settings_xml->{'general'}->{'drawing_tool_light_icons'}) {
+		$drawing_tool_light_icons_active->set_active($settings_xml->{'general'}->{'drawing_tool_light_icons'});
+	}
+
+	if (defined $settings_xml->{'general'}->{'drawing_tool_dark_icons'}) {
+		$drawing_tool_dark_icons_active->set_active($settings_xml->{'general'}->{'drawing_tool_dark_icons'});
+	}
+
+	if (defined $settings_xml->{'general'}->{'drawing_tool_auto_icons'}) {
+		$drawing_tool_auto_icons_active->set_active($settings_xml->{'general'}->{'drawing_tool_auto_icons'});
+	}
+
+	#end - drawing tool custom icons
+	#--------------------------------------
+
 	#program
 	#--------------------------------------
 	my $model    = fct_get_program_model();
@@ -1527,7 +1578,7 @@ sub STARTUP {
 
 	#im_colors
 	#--------------------------------------
-  $combobox_im_colors = Gtk3::ComboBoxText->new;
+	$combobox_im_colors = Gtk3::ComboBoxText->new;
 	$combobox_im_colors->insert_text(0, $d->get("16 colors   - (4bit) "));
 	$combobox_im_colors->insert_text(1, $d->get("64 colors   - (6bit) "));
 	$combobox_im_colors->insert_text(2, $d->get("256 colors  - (8bit) "));
@@ -2415,6 +2466,11 @@ sub STARTUP {
 	$capture_vbox->pack_start($delay_box,  TRUE,  TRUE, 3);
 	$capture_frame->add($capture_vbox);
 
+        $drawing_tool_icons_vbox->pack_start($drawing_tool_light_icons_box,    TRUE,  TRUE, 3);
+        $drawing_tool_icons_vbox->pack_start($drawing_tool_dark_icons_box,     TRUE,  TRUE, 3);
+        $drawing_tool_icons_vbox->pack_start($drawing_tool_auto_icons_box,     TRUE,  TRUE, 3);
+        $drawing_tool_frame->add($drawing_tool_icons_vbox);
+
 	#all labels = one size
 	$scale_label->set_alignment(0, 0.5);
 	$filetype_label->set_alignment(0, 0.5);
@@ -2427,9 +2483,10 @@ sub STARTUP {
 	$sg_main->add_widget($filename_label);
 	$sg_main->add_widget($saveDir_label);
 
-	$vbox_basic->pack_start($file_frame,    FALSE, TRUE, 3);
-	$vbox_basic->pack_start($save_frame,    FALSE, TRUE, 3);
-	$vbox_basic->pack_start($capture_frame, FALSE, TRUE, 3);
+	$vbox_basic->pack_start($file_frame,            FALSE, TRUE, 3);
+	$vbox_basic->pack_start($save_frame,            FALSE, TRUE, 3);
+	$vbox_basic->pack_start($capture_frame,         FALSE, TRUE, 3);
+        $vbox_basic->pack_start($drawing_tool_frame,    FALSE, TRUE, 3);
 	$vbox_basic->set_border_width(5);
 
 	#settings actions tab
@@ -4643,15 +4700,17 @@ sub STARTUP {
 
 		#~ print "Pfad ".$saveDir_button->get_filename()."\n";
 		#~ print "Pfad ".$saveDir_button->get_uri()."\n";
-		$settings{'general'}->{'save_auto'}      = $save_auto_active->get_active();
-		$settings{'general'}->{'save_ask'}       = $save_ask_active->get_active();
-		$settings{'general'}->{'save_no'}        = $save_no_active->get_active();
-		$settings{'general'}->{'image_autocopy'} = $image_autocopy_active->get_active();
-		$settings{'general'}->{'fname_autocopy'} = $fname_autocopy_active->get_active();
-		$settings{'general'}->{'no_autocopy'}    = $no_autocopy_active->get_active();
-		$settings{'general'}->{'cursor'}         = $cursor_active->get_active();
-		$settings{'general'}->{'delay'}          = $delay->get_value();
-
+		$settings{'general'}->{'save_auto'}                     = $save_auto_active->get_active();
+		$settings{'general'}->{'save_ask'}                      = $save_ask_active->get_active();
+		$settings{'general'}->{'save_no'}                       = $save_no_active->get_active();
+		$settings{'general'}->{'image_autocopy'}                = $image_autocopy_active->get_active();
+		$settings{'general'}->{'fname_autocopy'}                = $fname_autocopy_active->get_active();
+		$settings{'general'}->{'no_autocopy'}                   = $no_autocopy_active->get_active();
+		$settings{'general'}->{'cursor'}                        = $cursor_active->get_active();
+		$settings{'general'}->{'delay'}                         = $delay->get_value();
+		$settings{'general'}->{'drawing_tool_light_icons'}      = $drawing_tool_light_icons_active->get_active();
+		$settings{'general'}->{'drawing_tool_dark_icons'}       = $drawing_tool_dark_icons_active->get_active();
+		$settings{'general'}->{'drawing_tool_auto_icons'}       = $drawing_tool_auto_icons_active->get_active();
 		#wrksp -> submenu
 		if ($x11_supported) {
 			$settings{'general'}->{'current_monitor_active'} = $current_monitor_active->get_active;
@@ -4866,6 +4925,10 @@ sub STARTUP {
 
 					$cursor_active->set_active($settings_xml->{'general'}->{'cursor'});
 					$delay->set_value($settings_xml->{'general'}->{'delay'});
+
+					$drawing_tool_light_icons_active->set_active($settings_xml->{'general'}->{'drawing_tool_light_icons'});
+					$drawing_tool_dark_icons_active->set_active($settings_xml->{'general'}->{'drawing_tool_dark_icons'});
+					$drawing_tool_auto_icons_active->set_active($settings_xml->{'general'}->{'drawing_tool_auto_icons'});
 
 					#FIXME
 					#this is a dirty hack to force the setting to be enabled in session tab
@@ -6010,15 +6073,13 @@ sub STARTUP {
 			);
 		}
 
-		our $dark_icons = 1;
-
 		#open drawing tool
 		foreach my $key (@draw_array) {
 			my $drawing_tool = Shutter::Draw::DrawingTool->new($sc);
 			$drawing_tool->show(
 				$session_screens{$key}->{'long'}, $session_screens{$key}->{'filetype'},   $session_screens{$key}->{'mime_type'},
 				$session_screens{$key}->{'name'}, $session_screens{$key}->{'is_unsaved'}, \%session_screens,
-				$dark_icons
+				$drawing_tool_light_icons_active->get_active(), $drawing_tool_dark_icons_active->get_active(), $drawing_tool_auto_icons_active->get_active()
 			);
 		}
 

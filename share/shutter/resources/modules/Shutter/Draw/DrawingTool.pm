@@ -205,17 +205,25 @@ sub show {
 	$self->{_name}        = shift;
 	$self->{_is_unsaved}  = shift;
 	$self->{_import_hash} = shift;
-	$self->{_dark_icons}  = shift;
+	$self->{_light_icons} = shift;
+        $self->{_dark_icons}  = shift;
+        $self->{_auto_icons}  = shift;
 
 	#gettext
 	$self->{_d} = $self->{_sc}->get_gettext;
 
 	#define own icons
-	if ($self->{_dark_icons}) {
+	if ($self->{_light_icons}) {
 		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool_dark";
-	} else {
+	}
+        if ($self->{_dark_icons}) {
 		$self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
 	}
+        if ($self->{_auto_icons}) {
+                print "Auto mode for Drawing Tool icons not yet implemented, falling back to default icons\n";
+                $self->{_dicons} = $self->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool";
+        }
+
 	$self->{_icons}  = $self->{_sc}->get_root . "/share/shutter/resources/icons";
 
 	#MAIN WINDOW
