@@ -9470,9 +9470,10 @@ sub STARTUP {
 		}
 
 		#issue
-		if (-f '/etc/issue') {
-			if (File::Which::which('cat')) {
-				print `cat /etc/issue`, "\n";
+		if (-f '/etc/os-release') {
+			if (File::Which::which('sed')) {
+				print `sed '1q;d' /etc/os-release`;
+				print `sed '5q;d' /etc/os-release`, "\n";
 			}
 		}
 
