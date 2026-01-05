@@ -16,7 +16,7 @@ assignees: ''
 2. 
 3. 
 
-#### Error output
+#### Error output (please run as `shutter --debug`)
 
 
 #### Extra information, such as Shutter version, display server in use (Xorg or Wayland), operating system and ideas for how to solve:
