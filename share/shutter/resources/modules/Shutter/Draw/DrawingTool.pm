@@ -550,7 +550,7 @@ sub setup_bottom_hbox {
 
 	#line_width
 	my $linew_label = Gtk3::Label->new($self->{_d}->get("Line width") . ":");
-	$self->{_line_spin_w} = Gtk3::SpinButton->new_with_range(0.5, 20, 0.1);
+	$self->{_line_spin_w} = Gtk3::SpinButton->new_with_range(0.5, 300, 0.1);
 	$self->{_line_spin_w}->set_value($self->{_line_width});
 
 	$linew_label->set_tooltip_text($self->{_d}->get("Adjust line width"));
