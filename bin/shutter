@@ -9469,13 +9469,17 @@ sub STARTUP {
 			print `uname -a`, "\n";
 		}
 
-		#issue
-		if (-f '/etc/os-release') {
-			if (File::Which::which('sed')) {
-				print `sed '1q;d' /etc/os-release`;
-				print `sed '5q;d' /etc/os-release`, "\n";
-			}
-		}
+		eval {
+			open my $fh, '<', '/etc/os-release' or die;
+			my %map = map {
+				chomp;
+				my ($key, $value) = split /=/, $_, 2;
+				$value =~ s/^(['"])(.*)\1$/$2/;
+				($key, $value)
+			} <$fh>;
+			say $map{NAME};
+		};
+		say "Cannot open /etc/os-release" if $@;
 
 		printf "Glib %s \n", $Glib::VERSION;
 		printf "Gtk3 %s \n", $Gtk3::VERSION;
