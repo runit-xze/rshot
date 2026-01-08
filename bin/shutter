@@ -9477,7 +9477,8 @@ sub STARTUP {
 				$value =~ s/^(['"])(.*)\1$/$2/;
 				($key, $value)
 			} <$fh>;
-			say "$map{NAME} $map{VERSION_ID}$map{BUILD_ID}";
+			local $, = ' ';
+			say grep { $_ } map { $map{$_} } qw/NAME VERSION_ID BUILD_ID/;
 		};
 		say "Cannot open /etc/os-release" if $@;
 
