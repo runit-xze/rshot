@@ -9469,12 +9469,18 @@ sub STARTUP {
 			print `uname -a`, "\n";
 		}
 
-		#issue
-		if (-f '/etc/issue') {
-			if (File::Which::which('cat')) {
-				print `cat /etc/issue`, "\n";
-			}
-		}
+		eval {
+			open my $fh, '<', '/etc/os-release' or die;
+			my %map = map {
+				chomp;
+				my ($key, $value) = split /=/, $_, 2;
+				$value =~ s/^(['"])(.*)\1$/$2/;
+				($key, $value)
+			} <$fh>;
+			local $, = ' ';
+			say grep { $_ } map { $map{$_} } qw/NAME VERSION_ID BUILD_ID/;
+		};
+		say "Cannot open /etc/os-release" if $@;
 
 		printf "Glib %s \n", $Glib::VERSION;
 		printf "Gtk3 %s \n", $Gtk3::VERSION;
