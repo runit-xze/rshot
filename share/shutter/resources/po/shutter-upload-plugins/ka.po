@@ -1,0 +1,105 @@
+# Georgian translation for shutter-upload-plugins.
+# Copyright (C) 2026 shutter-upload-plugins's authors.
+# This file is distributed under the same license as the shutter-upload-plugins package.
+# Ekaterine Papava <papava.e@gtu.ge>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: shutter-upload-plugins\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-20 21:47+0100\n"
+"PO-Revision-Date: 2026-02-12 20:44+0100\n"
+"Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
+"Language-Team: Georgian <(nothing)>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2020-06-08 09:52+0000\n"
+"X-Generator: Poedit 3.8\n"
+
+#: translate_tmp:45
+msgid "Upload screenshots into your Dropbox"
+msgstr "ატვირთეთ ეკრანის ანაბეჭდები თქვენს Dropbox-ზე"
+
+#: translate_tmp:123
+msgid "There was an error receiving the authentication URL."
+msgstr "ავთენტიკაციის ბმულის მიღების შეცდომა."
+
+#: translate_tmp:128
+msgid ""
+"Please click on the button below to authorize with Dropbox. Press 'Apply' "
+"when you are done."
+msgstr ""
+"დააწკაპუნეთ ღილაკზე ქვემოთ, რომ გაიაროთ ავტორიზაცია თქვენს Dropbox-ზე. "
+"დააწკაპუნეთ ღილაკზე 'გადატარება', როცა დაასრულებთ."
+
+#: translate_tmp:129
+msgid "Authorize with Dropbox"
+msgstr "ავტორიზაცია Dropbox-ზე"
+
+#: translate_tmp:132
+msgid "Authorize"
+msgstr "ავტორიზაცია"
+
+#: translate_tmp:142
+msgid "There was an error authenticating with Dropbox."
+msgstr "Dropbox-ზე ავთენტიკაციის შეცდომა."
+
+#: translate_tmp:212
+msgid ""
+"Maybe you or Dropbox revoked or expired an access token. Please close this "
+"dialog and try again. Your account will be re-authenticated the next time "
+"you upload a file."
+msgstr ""
+"შეიძლება, Dropbox-მა გააუქმა წვდომის ტოკენი. დახურეთ ეს დიალოგი და თავიდან "
+"სცადეთ. შემდეგ ჯერზე, როცა ფაილის ატვირთვას სცდით, ავთენტიკაციას თავიდან "
+"გაივლით."
+
+#: translate_tmp:44
+msgid "Upload screenshots to imagebanana.com"
+msgstr "ატვირთეთ ეკრანის ანაბეჭდები imagebanana.com-ზე"
+
+#: translate_tmp:44
+msgid "ImageShack is providing free image hosting"
+msgstr "ImageShack მოგაწვდით უფასო სურათების ჰოსტინგს"
+
+#: translate_tmp:44
+msgid ""
+"Imgur is used to share photos with social networks and online communities, "
+"and has the funniest pictures from all over the Internet"
+msgstr ""
+"Imgur გამოიყენება სურათების გასაზიარებლად სოციალურ ქსელებში და ონლაინ-"
+"საზოგადოებებში და აქვს ყველაზე სასაცილო სურათები მთელ ინტერნეტში"
+
+#: translate_tmp:44
+msgid ""
+"imm.io is a one-click easy image sharer, perfect if you want to upload an "
+"image to show your friends or link from other sites"
+msgstr ""
+"imm.io ერთწკაპიანი, იოლი სურათების გამზიარებელია. საუკეთესია, თუ გნებავთ, "
+"ატვირთოთ სურათი, რომ გაუზიაროთ ის მეგობრებს, ან ჩასვათ ბმულად სხვა საიტებზე"
+
+#: translate_tmp:44
+msgid "Upload screenshots to itmages.com"
+msgstr "ატვირთეთ ეკრანის ანაბეჭდები თქვენს itmages.com-ზე"
+
+#: translate_tmp:45
+msgid "Minus is the simplest free file sharing platform online"
+msgstr "Minus უმარტივესი უფასო ფაილების გაზიარების პლატფორმაა ინტერნეტში"
+
+#: translate_tmp:44
+msgid "Upload screenshots to ompldr.org"
+msgstr "ატვირთეთ ეკრანის ანაბეჭდები თქვენს ompldr.org-ზე"
+
+#: translate_tmp:44
+msgid "Upload screenshots to pix.toile-libre.org"
+msgstr "ატვირთეთ ეკრანის ანაბეჭდები pix.oile-libre.org-ზე"
+
+#: translate_tmp:45
+msgid "TwitPic lets you share media on Twitter in real-time"
+msgstr "TwitPic საშუალებას გაძლევთ, მედია X-ზე რეალურ დროში გააზიაროთ"
+
+#: translate_tmp:44
+msgid "Upload screenshots to ubuntu-pics.de"
+msgstr "ატვირთეთ ეკრანის ანაბეჭდები ubuntu-pics.de-ზე"
