@@ -55,8 +55,6 @@ use File::Glob qw/ bsd_glob /;
 use File::Temp qw/ tempfile tempdir /;
 use Data::Dumper;
 
-#Sort::Naturally - sort lexically, but sort numeral parts numerically
-use Sort::Naturally;
 
 #load and save settings
 use XML::Simple;
@@ -6227,7 +6225,7 @@ sub import_from_session {
 
 	my %import_hash = %{$self->{_import_hash}};
 
-	foreach my $key (Sort::Naturally::nsort(keys %import_hash)) {
+	foreach my $key ($self->{_shf}->nsort(keys %import_hash)) {
 
 		next unless exists $import_hash{$key}->{'short'};
 		next unless defined $import_hash{$key}->{'short'};

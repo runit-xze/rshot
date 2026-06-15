@@ -168,4 +168,35 @@ sub accel ($self, $str) {
 	Glib::Object::Introspection->invoke('Gtk', undef, 'accelerator_parse', $str);
 }
 
+sub format_bytes ($self, $bytes) {
+	return "0 B" unless $bytes;
+	my @units = qw(B kB MB GB TB PB);
+	my $i = 0;
+	while ($bytes >= 1000 && $i < @units - 1) {
+		$bytes /= 1000;
+		$i++;
+	}
+	return sprintf($bytes == int($bytes) ? "%d %s" : "%.1f %s", $bytes, $units[$i]);
+}
+
+sub ncmp ($self, $a, $b) {
+	my @a_chunks = split /(\d+)/, $a;
+	my @b_chunks = split /(\d+)/, $b;
+	while (@a_chunks && @b_chunks) {
+		my $a_c = shift @a_chunks;
+		my $b_c = shift @b_chunks;
+		next if $a_c eq $b_c;
+		if ($a_c =~ /^\d+$/ && $b_c =~ /^\d+$/) {
+			return $a_c <=> $b_c;
+		} else {
+			return lc($a_c) cmp lc($b_c) || $a_c cmp $b_c;
+		}
+	}
+	return @a_chunks <=> @b_chunks;
+}
+
+sub nsort ($self, @list) {
+	return sort { $self->ncmp($a, $b) } @list;
+}
+
 1;

@@ -68,8 +68,7 @@ package Shutter::App;
 binmode(STDOUT, "encoding(UTF-8)");
 use Encode;
 
-use File::stat;
-use Number::Bytes::Human;
+use Time::HiRes qw(usleep);
 
 #Glib
 use Glib qw/TRUE FALSE/;
@@ -78,7 +77,7 @@ use Glib::Object::Subclass qw/Gtk3::Application/;
 use Gtk3::ImageView 10;
 
 #filename parsing
-use POSIX qw/ strftime /;
+use POSIX qw/ strftime WNOHANG /;
 
 #File operations
 use File::Copy qw/ cp mv /;
@@ -86,7 +85,7 @@ use File::Glob qw/ bsd_glob /;
 use File::Basename qw/ fileparse dirname basename /;
 use File::Temp qw/ tempfile tempdir /;
 use File::Spec;
-use File::Which;
+use IPC::Cmd qw(can_run);
 use File::Copy::Recursive;
 use IO::File();
 
@@ -114,11 +113,6 @@ use Data::Dumper;
 #md5 hash library
 use Digest::MD5 qw(md5_hex);
 
-#proc
-use Proc::Simple;
-
-#sort lexically, but sort numeral parts numerically
-use Sort::Naturally;
 
 use English;
 
@@ -330,7 +324,7 @@ my $ftp_wurl_entry;
 my $hide_active;
 my $hide_time_vlabel;
 my $hide_time;
-my $hu;
+
 my $im_colors_active;
 my $image_autocopy_active;
 my $int_jpeg;
@@ -418,7 +412,6 @@ sub STARTUP {
 	$sp    = Shutter::Pixbuf::Save->new($sc);
 	$lp    = Shutter::Pixbuf::Load->new($sc);
 	$lp_ne = Shutter::Pixbuf::Load->new($sc, undef, TRUE);
-	$hu    = Number::Bytes::Human->new(si => 1);
 	#--------------------------------------
 
 	#Clipboard
@@ -2785,7 +2778,7 @@ sub STARTUP {
 						if (defined $ka && defined $kb) {
 
 							#negate result in this case
-							return Sort::Naturally::ncmp($ka, $kb) * -1;
+							return $shf->ncmp($ka, $kb) * -1;
 						}
 
 						return -1;
@@ -2812,7 +2805,7 @@ sub STARTUP {
 						my $kb = $liststore->get_value($b, $session_desc_combo->get_active + 1);
 
 						if (defined $ka && defined $kb) {
-							return Sort::Naturally::ncmp($ka, $kb);
+							return $shf->ncmp($ka, $kb);
 						}
 
 						return -1;
@@ -4844,7 +4837,7 @@ sub STARTUP {
 		#we need to clean the hashkeys, so they become parseable
 		my %clean_files;
 		my $counter = 0;
-		foreach my $key (Sort::Naturally::nsort(keys %session_screens)) {
+		foreach my $key ($shf->nsort(keys %session_screens)) {
 			next unless exists $session_screens{$key}->{'long'};
 
 			#8 leading zeros to counter
@@ -7133,16 +7126,13 @@ sub STARTUP {
 			}
 
 			#create a new process, so we are able to cancel the current operation
-			my $plugin_process = Proc::Simple->new;
-
-			#see Bug #661424
-			#my $qfilename = quotemeta $session_screens{$key}->{'long'};
-
-			$plugin_process->start(
-				sub {
-					system($plugin_value, $session_screens{$key}->{'long'}, $session_screens{$key}->{'width'}, $session_screens{$key}->{'height'}, $session_screens{$key}->{'filetype'});
-					POSIX::_exit(0);
-				});
+			my $pid = fork();
+			if (!defined $pid) {
+				die "Cannot fork: $!";
+			} elsif ($pid == 0) {
+				system($plugin_value, $session_screens{$key}->{'long'}, $session_screens{$key}->{'width'}, $session_screens{$key}->{'height'}, $session_screens{$key}->{'filetype'});
+				POSIX::_exit($? >> 8);
+			}
 
 			#ignore delete-event during execute
 			$plugin_dialog->signal_connect(
@@ -7152,17 +7142,19 @@ sub STARTUP {
 
 			#we are also able to show a little progress bar to give some feedback
 			#to the user. there is no real progress because we are just executing a shell script
-			while ($plugin_process->poll) {
+			my $exit_status = 0;
+			while (waitpid($pid, WNOHANG) == 0) {
 				$plugin_progress->set_text($plugin_name . " - " . $session_screens{$key}->{'short'});
 				$plugin_progress->pulse;
 				fct_update_gui();
 				usleep 100000;
 			}
+			$exit_status = $? >> 8;
 
 			fct_update_gui();
 
 			#finally show some status messages
-			if ($plugin_process->exit_status() == 0) {
+			if ($exit_status == 0) {
 				fct_show_status_message(1, sprintf($d->get("Successfully applied plugin %s"), "'" . $plugin_name . "'"));
 			} else {
 				$sd->dlg_error_message(sprintf($d->get("Error while executing plugin %s."), "'" . $plugin_name . "'"), $d->get("There was an error executing the plugin."),);
@@ -7237,7 +7229,7 @@ sub STARTUP {
 			}
 
 			$status->push(1,
-				$session_screens{$key}->{'width'} . " x " . $session_screens{$key}->{'height'} . " " . $d->get("pixels") . "  " . $shf->utf8_decode($hu->format($session_screens{$key}->{'size'})));
+				$session_screens{$key}->{'width'} . " x " . $session_screens{$key}->{'height'} . " " . $d->get("pixels") . "  " . $shf->utf8_decode($shf->format_bytes($session_screens{$key}->{'size'})));
 
 			#session tab
 		} else {
@@ -7247,7 +7239,7 @@ sub STARTUP {
 
 			$status->push(1,
 				sprintf($d->nget("%s screenshot", "%s screenshots", scalar(keys(%session_screens))), scalar(keys(%session_screens))) . "  "
-					. $shf->utf8_decode($hu->format(fct_get_total_size_of_session())));
+					. $shf->utf8_decode($shf->format_bytes(fct_get_total_size_of_session())));
 
 		}
 
@@ -9334,18 +9326,18 @@ sub STARTUP {
 	sub fct_init_depend {
 
 		#imagemagick/perlmagick
-		unless (File::Which::which('convert')) {
+		unless (can_run('convert')) {
 			die "ERROR: imagemagick is missing --> aborting!\n\n";
 		}
 
 		#gnome-web-photo
-		unless (File::Which::which('gnome-web-photo')) {
+		unless (can_run('gnome-web-photo')) {
 			warn "WARNING: gnome-web-photo is missing --> screenshots of websites will be disabled!\n\n";
 			$gnome_web_photo = FALSE;
 		}
 
 		#nautilus-sendto
-		unless (File::Which::which('nautilus-sendto')) {
+		unless (can_run('nautilus-sendto')) {
 			$nautilus_sendto = FALSE;
 		}
 
@@ -9473,7 +9465,7 @@ sub STARTUP {
 		print "\n";
 
 		#kernel info
-		if (File::Which::which('uname')) {
+		if (can_run('uname')) {
 			print `uname -a`, "\n";
 		}
 
