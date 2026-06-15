@@ -1,0 +1,13 @@
+{
+  "Name": "Litterbox",
+  "Version": "18.0.2",
+  "DestinationType": "ImageUploader",
+  "RequestMethod": "POST",
+  "RequestURL": "https://litterbox.catbox.moe/resources/internals/api.php",
+  "Body": "MultipartFormData",
+  "Arguments": {
+    "reqtype": "fileupload",
+    "time": "$PROMPT:Expiration Time (1h, 12h, 24h, 72h)$"
+  },
+  "FileFormName": "fileToUpload"
+}

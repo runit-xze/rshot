@@ -1,0 +1,13 @@
+{
+  "Name": "ImgBB",
+  "Version": "1.0",
+  "DestinationType": "ImageUploader",
+  "RequestMethod": "POST",
+  "RequestURL": "https://api.imgbb.com/1/upload",
+  "Body": "MultipartFormData",
+  "Arguments": {
+    "key": "$PROMPT:ImgBB API Key (get one at api.imgbb.com)$"
+  },
+  "FileFormName": "image",
+  "URL": "$json:data.url$"
+}

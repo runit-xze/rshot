@@ -1,0 +1,13 @@
+Document: goocanvas2
+Title: GooCanvas reference manual
+Author: GooCanvas development team
+Abstract: This manual contains the developer documentation of
+ GooCanvas, a canvas widget for GTK+ that uses the Cairo 2D library
+ for drawing. It has a model/view split, and uses interfaces for
+ canvas items and views, so you can easily turn any application object
+ into canvas items.
+Section: Programming/C
+
+Format: HTML
+Index: /usr/share/gtk-doc/html/goocanvas2/index.html
+Files: /usr/share/gtk-doc/html/goocanvas2/*.html

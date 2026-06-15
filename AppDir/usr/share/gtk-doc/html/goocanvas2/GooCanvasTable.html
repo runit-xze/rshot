@@ -1,0 +1,611 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GooCanvasTable: GooCanvas Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="GooCanvas Reference Manual">
+<link rel="up" href="ch03.html" title="Standard Canvas Items">
+<link rel="prev" href="GooCanvasWidget.html" title="GooCanvasWidget">
+<link rel="next" href="ch04.html" title="Standard Canvas Item Models">
+<meta name="generator" content="GTK-Doc V1.35.1 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GooCanvasTable.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GooCanvasTable.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#GooCanvasTable.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#GooCanvasTable.properties" class="shortcut">Properties</a></span><span id="nav_child_properties">  <span class="dim">|</span> 
+                  <a href="#GooCanvasTable.child-properties" class="shortcut">Child Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch03.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="GooCanvasWidget.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="ch04.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GooCanvasTable"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GooCanvasTable.top_of_page"></a>GooCanvasTable</span></h2>
+<p>GooCanvasTable — a table container to layout items.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GooCanvasTable.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_proto_type">
+<col class="functions_proto_name">
+</colgroup>
+<tbody><tr>
+<td class="function_type">
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvasTable.html#goo-canvas-table-new" title="goo_canvas_table_new ()">goo_canvas_table_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--column-spacing" title="The “column-spacing” property">column-spacing</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--homogeneous-columns" title="The “homogeneous-columns” property">homogeneous-columns</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--homogeneous-rows" title="The “homogeneous-rows” property">homogeneous-rows</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--horz-grid-line-width" title="The “horz-grid-line-width” property">horz-grid-line-width</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--row-spacing" title="The “row-spacing” property">row-spacing</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--vert-grid-line-width" title="The “vert-grid-line-width” property">vert-grid-line-width</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--x-border-spacing" title="The “x-border-spacing” property">x-border-spacing</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--y-border-spacing" title="The “y-border-spacing” property">y-border-spacing</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.child-properties"></a><h2>Child Properties</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="child_properties_type">
+<col width="300px" class="child_properties_name">
+<col width="200px" class="child_properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-bottom-padding" title="The “bottom-padding” child property">bottom-padding</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-column" title="The “column” child property">column</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-columns" title="The “columns” child property">columns</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-left-padding" title="The “left-padding” child property">left-padding</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-right-padding" title="The “right-padding” child property">right-padding</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-row" title="The “row” child property">row</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-rows" title="The “rows” child property">rows</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-top-padding" title="The “top-padding” child property">top-padding</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-x-align" title="The “x-align” child property">x-align</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-x-expand" title="The “x-expand” child property">x-expand</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-x-fill" title="The “x-fill” child property">x-fill</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-x-shrink" title="The “x-shrink” child property">x-shrink</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-y-align" title="The “y-align” child property">y-align</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-y-expand" title="The “y-expand” child property">y-expand</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-y-fill" title="The “y-fill” child property">y-fill</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable--c-y-shrink" title="The “y-shrink” child property">y-shrink</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="other_proto_type">
+<col class="other_proto_name">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="GooCanvasTable.html#GooCanvasTable-struct" title="struct GooCanvasTable">GooCanvasTable</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> <a class="link" href="GooCanvasItemSimple.html" title="GooCanvasItemSimple">GooCanvasItemSimple</a>
+        <span class="lineart">╰──</span> <a class="link" href="GooCanvasGroup.html" title="GooCanvasGroup">GooCanvasGroup</a>
+            <span class="lineart">╰──</span> GooCanvasTable
+</pre>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GooCanvasTable implements
+ <a class="link" href="GooCanvasItem.html" title="GooCanvasItem">GooCanvasItem</a>.</p>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.description"></a><h2>Description</h2>
+<p><a class="link" href="GooCanvasTable.html" title="GooCanvasTable"><span class="type">GooCanvasTable</span></a> is a table container used to lay out other canvas items.
+It is used in a similar way to how the GtkTable widget is used to lay out
+GTK+ widgets.</p>
+<p>Items are added to the table using the normal methods, then
+<a class="link" href="GooCanvasItem.html#goo-canvas-item-set-child-properties" title="goo_canvas_item_set_child_properties ()"><code class="function">goo_canvas_item_set_child_properties()</code></a> is used to specify how each child
+item is to be positioned within the table (i.e. which row and column it is
+in, how much padding it should have and whether it should expand or
+shrink).</p>
+<p><a class="link" href="GooCanvasTable.html" title="GooCanvasTable"><span class="type">GooCanvasTable</span></a> is a subclass of <a class="link" href="GooCanvasItemSimple.html" title="GooCanvasItemSimple"><span class="type">GooCanvasItemSimple</span></a> and so
+inherits all of the style properties such as "stroke-color", "fill-color"
+and "line-width". Setting a style property on a <a class="link" href="GooCanvasTable.html" title="GooCanvasTable"><span class="type">GooCanvasTable</span></a> will affect
+all children of the <a class="link" href="GooCanvasTable.html" title="GooCanvasTable"><span class="type">GooCanvasTable</span></a> (unless the children override the
+property setting).</p>
+<p><a class="link" href="GooCanvasTable.html" title="GooCanvasTable"><span class="type">GooCanvasTable</span></a> implements the <a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> interface, so you can use
+the <a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> functions such as <a class="link" href="GooCanvasItem.html#goo-canvas-item-raise" title="goo_canvas_item_raise ()"><code class="function">goo_canvas_item_raise()</code></a> and
+<a class="link" href="GooCanvasItem.html#goo-canvas-item-rotate" title="goo_canvas_item_rotate ()"><code class="function">goo_canvas_item_rotate()</code></a>, and the properties such as "visibility" and
+"pointer-events".</p>
+<p>To create a <a class="link" href="GooCanvasTable.html" title="GooCanvasTable"><span class="type">GooCanvasTable</span></a> use <a class="link" href="GooCanvasTable.html#goo-canvas-table-new" title="goo_canvas_table_new ()"><code class="function">goo_canvas_table_new()</code></a>.</p>
+<p>To get or set the properties of an existing <a class="link" href="GooCanvasTable.html" title="GooCanvasTable"><span class="type">GooCanvasTable</span></a>, use
+<code class="function">g_object_get()</code> and <code class="function">g_object_set()</code>.</p>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="goo-canvas-table-new"></a><h3>goo_canvas_table_new ()</h3>
+<pre class="programlisting"><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+goo_canvas_table_new (<em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *parent</code></em>,
+                      <em class="parameter"><code>...</code></em>);</pre>
+<p>Creates a new table item.</p>
+<p>Here's an example showing how to create a table with a square, a circle and
+a triangle in it:</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="n">GooCanvasItem</span><span class="w"> </span><span class="o">*</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">square</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">circle</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">triangle</span><span class="p">;</span>
+
+<span class="n">table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_table_new</span><span class="w"> </span><span class="p">(</span><span class="n">root</span><span class="p">,</span>
+<span class="w">                              </span><span class="s">&quot;row-spacing&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span>
+<span class="w">                              </span><span class="s">&quot;column-spacing&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span>
+<span class="w">                              </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="n">goo_canvas_item_translate</span><span class="w"> </span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">);</span>
+
+<span class="n">square</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_rect_new</span><span class="w"> </span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span>
+<span class="w">                              </span><span class="s">&quot;fill-color&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;red&quot;</span><span class="p">,</span>
+<span class="w">                              </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="n">goo_canvas_item_set_child_properties</span><span class="w"> </span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">square</span><span class="p">,</span>
+<span class="w">                                      </span><span class="s">&quot;row&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                                      </span><span class="s">&quot;column&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                                      </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="n">circle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_ellipse_new</span><span class="w"> </span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">25.0</span><span class="p">,</span><span class="w"> </span><span class="mf">25.0</span><span class="p">,</span>
+<span class="w">                                 </span><span class="s">&quot;fill-color&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;blue&quot;</span><span class="p">,</span>
+<span class="w">                                 </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="n">goo_canvas_item_set_child_properties</span><span class="w"> </span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">circle</span><span class="p">,</span>
+<span class="w">                                      </span><span class="s">&quot;row&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                                      </span><span class="s">&quot;column&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">                                      </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="n">triangle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_polyline_new</span><span class="w"> </span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">TRUE</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">                                    </span><span class="mf">25.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span>
+<span class="w">                                    </span><span class="s">&quot;fill-color&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;yellow&quot;</span><span class="p">,</span>
+<span class="w">                                    </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="n">goo_canvas_item_set_child_properties</span><span class="w"> </span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">triangle</span><span class="p">,</span>
+<span class="w">                                      </span><span class="s">&quot;row&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                                      </span><span class="s">&quot;column&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">                                      </span><span class="nb">NULL</span><span class="p">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="refsect3">
+<a name="goo-canvas-table-new.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>parent</p></td>
+<td class="parameter_description"><p>the parent item, or <code class="literal">NULL</code>. If a parent is specified, it will assume
+ownership of the item, and the item will automatically be freed when it is
+removed from the parent. Otherwise call <code class="function">g_object_unref()</code> to free it. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>...</p></td>
+<td class="parameter_description"><p>optional pairs of property names and values, and a terminating <code class="literal">NULL</code>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-table-new.returns"></a><h4>Returns</h4>
+<p>a new table item. </p>
+<p><span class="annotation">[<acronym title="The caller owns the data, and is responsible for free it."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GooCanvasTable-struct"></a><h3>struct GooCanvasTable</h3>
+<pre class="programlisting">struct GooCanvasTable;</pre>
+<p>The <a class="link" href="GooCanvasTable.html#GooCanvasTable-struct" title="struct GooCanvasTable"><span class="type">GooCanvasTable</span></a> struct contains private data only.</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GooCanvasTable--column-spacing"></a><h3>The <code class="literal">“column-spacing”</code> property</h3>
+<pre class="programlisting">  “column-spacing”           <span class="type">double</span></pre>
+<p>The default space between columns.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--homogeneous-columns"></a><h3>The <code class="literal">“homogeneous-columns”</code> property</h3>
+<pre class="programlisting">  “homogeneous-columns”      <span class="type">gboolean</span></pre>
+<p>If all columns are the same width.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--homogeneous-rows"></a><h3>The <code class="literal">“homogeneous-rows”</code> property</h3>
+<pre class="programlisting">  “homogeneous-rows”         <span class="type">gboolean</span></pre>
+<p>If all rows are the same height.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--horz-grid-line-width"></a><h3>The <code class="literal">“horz-grid-line-width”</code> property</h3>
+<pre class="programlisting">  “horz-grid-line-width”     <span class="type">double</span></pre>
+<p>The width of the grid line to draw between rows.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--row-spacing"></a><h3>The <code class="literal">“row-spacing”</code> property</h3>
+<pre class="programlisting">  “row-spacing”              <span class="type">double</span></pre>
+<p>The default space between rows.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--vert-grid-line-width"></a><h3>The <code class="literal">“vert-grid-line-width”</code> property</h3>
+<pre class="programlisting">  “vert-grid-line-width”     <span class="type">double</span></pre>
+<p>The width of the grid line to draw between columns.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--x-border-spacing"></a><h3>The <code class="literal">“x-border-spacing”</code> property</h3>
+<pre class="programlisting">  “x-border-spacing”         <span class="type">double</span></pre>
+<p>The amount of spacing between the lefmost and rightmost cells and the border grid line.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--y-border-spacing"></a><h3>The <code class="literal">“y-border-spacing”</code> property</h3>
+<pre class="programlisting">  “y-border-spacing”         <span class="type">double</span></pre>
+<p>The amount of spacing between the topmost and bottommost cells and the border grid line.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTable.child-property-details"></a><h2>Child Property Details</h2>
+<div class="refsect2">
+<a name="GooCanvasTable--c-bottom-padding"></a><h3>The <code class="literal">“bottom-padding”</code> child property</h3>
+<pre class="programlisting">  “bottom-padding”           <span class="type">double</span></pre>
+<p>Extra space to add below the item.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-column"></a><h3>The <code class="literal">“column”</code> child property</h3>
+<pre class="programlisting">  “column”                   <span class="type">guint</span></pre>
+<p>The column to place the item in.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &lt;= 65535</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-columns"></a><h3>The <code class="literal">“columns”</code> child property</h3>
+<pre class="programlisting">  “columns”                  <span class="type">guint</span></pre>
+<p>The number of columns that the item spans.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &lt;= 65535</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-left-padding"></a><h3>The <code class="literal">“left-padding”</code> child property</h3>
+<pre class="programlisting">  “left-padding”             <span class="type">double</span></pre>
+<p>Extra space to add to the left of the item.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-right-padding"></a><h3>The <code class="literal">“right-padding”</code> child property</h3>
+<pre class="programlisting">  “right-padding”            <span class="type">double</span></pre>
+<p>Extra space to add to the right of the item.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-row"></a><h3>The <code class="literal">“row”</code> child property</h3>
+<pre class="programlisting">  “row”                      <span class="type">guint</span></pre>
+<p>The row to place the item in.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &lt;= 65535</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-rows"></a><h3>The <code class="literal">“rows”</code> child property</h3>
+<pre class="programlisting">  “rows”                     <span class="type">guint</span></pre>
+<p>The number of rows that the item spans.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &lt;= 65535</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-top-padding"></a><h3>The <code class="literal">“top-padding”</code> child property</h3>
+<pre class="programlisting">  “top-padding”              <span class="type">double</span></pre>
+<p>Extra space to add above the item.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-x-align"></a><h3>The <code class="literal">“x-align”</code> child property</h3>
+<pre class="programlisting">  “x-align”                  <span class="type">double</span></pre>
+<p>The horizontal position of the item within its allocated space. 0.0 is left-aligned, 1.0 is right-aligned.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,1]</p>
+<p>Default value: 0.5</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-x-expand"></a><h3>The <code class="literal">“x-expand”</code> child property</h3>
+<pre class="programlisting">  “x-expand”                 <span class="type">gboolean</span></pre>
+<p>If the item expands horizontally as the table expands.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-x-fill"></a><h3>The <code class="literal">“x-fill”</code> child property</h3>
+<pre class="programlisting">  “x-fill”                   <span class="type">gboolean</span></pre>
+<p>If the item fills all horizontal allocated space.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-x-shrink"></a><h3>The <code class="literal">“x-shrink”</code> child property</h3>
+<pre class="programlisting">  “x-shrink”                 <span class="type">gboolean</span></pre>
+<p>If the item can shrink smaller than its requested size horizontally.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-y-align"></a><h3>The <code class="literal">“y-align”</code> child property</h3>
+<pre class="programlisting">  “y-align”                  <span class="type">double</span></pre>
+<p>The vertical position of the item within its allocated space. 0.0 is top-aligned, 1.0 is bottom-aligned.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,1]</p>
+<p>Default value: 0.5</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-y-expand"></a><h3>The <code class="literal">“y-expand”</code> child property</h3>
+<pre class="programlisting">  “y-expand”                 <span class="type">gboolean</span></pre>
+<p>If the item expands vertically as the table expands.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-y-fill"></a><h3>The <code class="literal">“y-fill”</code> child property</h3>
+<pre class="programlisting">  “y-fill”                   <span class="type">gboolean</span></pre>
+<p>If the item fills all vertical allocated space.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTable--c-y-shrink"></a><h3>The <code class="literal">“y-shrink”</code> child property</h3>
+<pre class="programlisting">  “y-shrink”                 <span class="type">gboolean</span></pre>
+<p>If the item can shrink smaller than its requested size vertically.</p>
+<p>Owner: GooCanvasTable</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.35.1</div>
+</body>
+</html>

@@ -320,7 +320,7 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 
 			my @fregion;
 
-			my $fh = new IO::File;
+			my $fh = IO::File->new;
 			if ($fh->open("< $shape_path")) {
 				while (my $line = <$fh>) {
 
@@ -912,7 +912,7 @@ sub window ($self) {
 					Gtk3->main();
 
 					my ($output_new, $l_cropped, $r_cropped, $t_cropped, $b_cropped) =
-						$self->get_pixbuf_from_drawable($self->{_root}, $self->{_c}{'cw'}{'x'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'y'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'width'}/$self->{_dpi_scale}, $self->{_c}{'cw'}{'height'}/$self->{_dpi_scale});
+						$self->get_pixbuf_from_drawable($self->{_root}, $self->{_c}{'cw'}{'x'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'y'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'width'}/$self->{_dpi_scale}, $self->{_c}{'cw'}{'height'}/$self->{_dpi_scale}, undef);
 
 					#save return value to current $output variable
 					#-> ugly but fastest and safest solution now

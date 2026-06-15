@@ -1,0 +1,2579 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GooCanvas: GooCanvas Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="GooCanvas Reference Manual">
+<link rel="up" href="ch02.html" title="Core Objects">
+<link rel="prev" href="ch02.html" title="Core Objects">
+<link rel="next" href="GooCanvasItem.html" title="GooCanvasItem">
+<meta name="generator" content="GTK-Doc V1.35.1 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GooCanvas.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GooCanvas.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#GooCanvas.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#GooCanvas.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#GooCanvas.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch02.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="ch02.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="GooCanvasItem.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GooCanvas"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GooCanvas.top_of_page"></a>GooCanvas</span></h2>
+<p>GooCanvas — the main canvas widget.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GooCanvas.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_proto_type">
+<col class="functions_proto_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">GtkWidget</span> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-new" title="goo_canvas_new ()">goo_canvas_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-root-item" title="goo_canvas_get_root_item ()">goo_canvas_get_root_item</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-set-root-item" title="goo_canvas_set_root_item ()">goo_canvas_set_root_item</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="returnvalue">GooCanvasItemModel</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-root-item-model" title="goo_canvas_get_root_item_model ()">goo_canvas_get_root_item_model</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-set-root-item-model" title="goo_canvas_set_root_item_model ()">goo_canvas_set_root_item_model</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-static-root-item" title="goo_canvas_get_static_root_item ()">goo_canvas_get_static_root_item</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-set-static-root-item" title="goo_canvas_set_static_root_item ()">goo_canvas_set_static_root_item</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="returnvalue">GooCanvasItemModel</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-static-root-item-model" title="goo_canvas_get_static_root_item_model ()">goo_canvas_get_static_root_item_model</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-set-static-root-item-model" title="goo_canvas_set_static_root_item_model ()">goo_canvas_set_static_root_item_model</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-bounds" title="goo_canvas_get_bounds ()">goo_canvas_get_bounds</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-set-bounds" title="goo_canvas_set_bounds ()">goo_canvas_set_bounds</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gdouble</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-scale" title="goo_canvas_get_scale ()">goo_canvas_get_scale</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-set-scale" title="goo_canvas_set_scale ()">goo_canvas_set_scale</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-item" title="goo_canvas_get_item ()">goo_canvas_get_item</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-item-at" title="goo_canvas_get_item_at ()">goo_canvas_get_item_at</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">GList</span> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-items-at" title="goo_canvas_get_items_at ()">goo_canvas_get_items_at</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">GList</span> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-items-in-area" title="goo_canvas_get_items_in_area ()">goo_canvas_get_items_in_area</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-scroll-to" title="goo_canvas_scroll_to ()">goo_canvas_scroll_to</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-render" title="goo_canvas_render ()">goo_canvas_render</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-convert-to-pixels" title="goo_canvas_convert_to_pixels ()">goo_canvas_convert_to_pixels</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-convert-from-pixels" title="goo_canvas_convert_from_pixels ()">goo_canvas_convert_from_pixels</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-convert-to-item-space" title="goo_canvas_convert_to_item_space ()">goo_canvas_convert_to_item_space</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-convert-from-item-space" title="goo_canvas_convert_from_item_space ()">goo_canvas_convert_from_item_space</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-convert-bounds-to-item-space" title="goo_canvas_convert_bounds_to_item_space ()">goo_canvas_convert_bounds_to_item_space</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-convert-units-to-pixels" title="goo_canvas_convert_units_to_pixels ()">goo_canvas_convert_units_to_pixels</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-convert-units-from-pixels" title="goo_canvas_convert_units_from_pixels ()">goo_canvas_convert_units_from_pixels</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">GdkGrabStatus</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-pointer-grab" title="goo_canvas_pointer_grab ()">goo_canvas_pointer_grab</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-pointer-ungrab" title="goo_canvas_pointer_ungrab ()">goo_canvas_pointer_ungrab</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-grab-focus" title="goo_canvas_grab_focus ()">goo_canvas_grab_focus</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">GdkGrabStatus</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-keyboard-grab" title="goo_canvas_keyboard_grab ()">goo_canvas_keyboard_grab</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-keyboard-ungrab" title="goo_canvas_keyboard_ungrab ()">goo_canvas_keyboard_ungrab</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">cairo_t</span> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-create-cairo-context" title="goo_canvas_create_cairo_context ()">goo_canvas_create_cairo_context</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-create-item" title="goo_canvas_create_item ()">goo_canvas_create_item</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-unregister-item" title="goo_canvas_unregister_item ()">goo_canvas_unregister_item</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-register-widget-item" title="goo_canvas_register_widget_item ()">goo_canvas_register_widget_item</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-unregister-widget-item" title="goo_canvas_unregister_widget_item ()">goo_canvas_unregister_widget_item</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-update" title="goo_canvas_update ()">goo_canvas_update</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-request-update" title="goo_canvas_request_update ()">goo_canvas_request_update</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-request-redraw" title="goo_canvas_request_redraw ()">goo_canvas_request_redraw</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-request-item-redraw" title="goo_canvas_request_item_redraw ()">goo_canvas_request_item_redraw</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gdouble</span>
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvas.html#goo-canvas-get-default-line-width" title="goo_canvas_get_default_line_width ()">goo_canvas_get_default_line_width</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvas.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasAnchorType" title="enum GooCanvasAnchorType"><span class="type">GooCanvasAnchorType</span></a></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--anchor" title="The “anchor” property">anchor</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--automatic-bounds" title="The “automatic-bounds” property">automatic-bounds</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<span class="type">char</span> *</td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--background-color" title="The “background-color” property">background-color</a></td>
+<td class="property_flags">Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<span class="type">GdkRGBA</span> *</td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--background-color-gdk-rgba" title="The “background-color-gdk-rgba” property">background-color-gdk-rgba</a></td>
+<td class="property_flags">Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--background-color-rgb" title="The “background-color-rgb” property">background-color-rgb</a></td>
+<td class="property_flags">Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--bounds-from-origin" title="The “bounds-from-origin” property">bounds-from-origin</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--bounds-padding" title="The “bounds-padding” property">bounds-padding</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--clear-background" title="The “clear-background” property">clear-background</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--integer-layout" title="The “integer-layout” property">integer-layout</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--redraw-when-scrolled" title="The “redraw-when-scrolled” property">redraw-when-scrolled</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--resolution-x" title="The “resolution-x” property">resolution-x</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--resolution-y" title="The “resolution-y” property">resolution-y</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--scale" title="The “scale” property">scale</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--scale-x" title="The “scale-x” property">scale-x</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--scale-y" title="The “scale-y” property">scale-y</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GtkUnit</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--units" title="The “units” property">units</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--x1" title="The “x1” property">x1</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--x2" title="The “x2” property">x2</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--y1" title="The “y1” property">y1</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvas.html#GooCanvas--y2" title="The “y2” property">y2</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvas.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="signal_proto_type">
+<col width="300px" class="signal_proto_name">
+<col width="200px" class="signal_proto_flags">
+</colgroup>
+<tbody><tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="GooCanvas.html#GooCanvas-item-created" title="The “item-created” signal">item-created</a></td>
+<td class="signal_flags">Run Last</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvas.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="other_proto_type">
+<col class="other_proto_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="GooCanvas.html#GooCanvas-struct" title="GooCanvas">GooCanvas</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="GooCanvas.html#GooCanvasClass" title="struct GooCanvasClass">GooCanvasClass</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvas.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> GtkWidget
+            <span class="lineart">╰──</span> GtkContainer
+                <span class="lineart">╰──</span> GooCanvas
+</pre>
+</div>
+<div class="refsect1">
+<a name="GooCanvas.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GooCanvas implements
+ AtkImplementorIface,  GtkBuildable and  GtkScrollable.</p>
+</div>
+<div class="refsect1">
+<a name="GooCanvas.description"></a><h2>Description</h2>
+<p><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> is the main widget containing a number of canvas items.</p>
+<p>Here is a simple example:</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;goocanvas.h&gt;</span>
+
+<span class="k">static</span><span class="w"> </span><span class="n">gboolean</span><span class="w"> </span><span class="nf">on_rect_button_press</span><span class="w"> </span><span class="p">(</span><span class="n">GooCanvasItem</span><span class="w">  </span><span class="o">*</span><span class="n">view</span><span class="p">,</span>
+<span class="w">                                      </span><span class="n">GooCanvasItem</span><span class="w">  </span><span class="o">*</span><span class="n">target</span><span class="p">,</span>
+<span class="w">                                      </span><span class="n">GdkEventButton</span><span class="w"> </span><span class="o">*</span><span class="n">event</span><span class="p">,</span>
+<span class="w">                                      </span><span class="n">gpointer</span><span class="w">        </span><span class="n">data</span><span class="p">);</span>
+
+<span class="kt">int</span>
+<span class="nf">main</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">GtkWidget</span><span class="w"> </span><span class="o">*</span><span class="n">window</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">scrolled_win</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">canvas</span><span class="p">;</span>
+<span class="w">  </span><span class="n">GooCanvasItem</span><span class="w"> </span><span class="o">*</span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">rect_item</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">text_item</span><span class="p">;</span>
+
+<span class="w">  </span><span class="cm">/* Initialize GTK+. */</span>
+<span class="w">  </span><span class="n">gtk_init</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">argv</span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/* Create the window and widgets. */</span>
+<span class="w">  </span><span class="n">window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gtk_window_new</span><span class="w"> </span><span class="p">(</span><span class="n">GTK_WINDOW_TOPLEVEL</span><span class="p">);</span>
+<span class="w">  </span><span class="n">gtk_window_set_default_size</span><span class="w"> </span><span class="p">(</span><span class="n">GTK_WINDOW</span><span class="w"> </span><span class="p">(</span><span class="n">window</span><span class="p">),</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w"> </span><span class="mi">600</span><span class="p">);</span>
+<span class="w">  </span><span class="n">gtk_widget_show</span><span class="w"> </span><span class="p">(</span><span class="n">window</span><span class="p">);</span>
+<span class="w">  </span><span class="n">g_signal_connect</span><span class="w"> </span><span class="p">(</span><span class="n">window</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;delete_event&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">G_CALLBACK</span><span class="w"> </span><span class="p">(</span><span class="n">on_delete_event</span><span class="p">),</span>
+<span class="w">                    </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">scrolled_win</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gtk_scrolled_window_new</span><span class="w"> </span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">  </span><span class="n">gtk_scrolled_window_set_shadow_type</span><span class="w"> </span><span class="p">(</span><span class="n">GTK_SCROLLED_WINDOW</span><span class="w"> </span><span class="p">(</span><span class="n">scrolled_win</span><span class="p">),</span>
+<span class="w">                                       </span><span class="n">GTK_SHADOW_IN</span><span class="p">);</span>
+<span class="w">  </span><span class="n">gtk_widget_show</span><span class="w"> </span><span class="p">(</span><span class="n">scrolled_win</span><span class="p">);</span>
+<span class="w">  </span><span class="n">gtk_container_add</span><span class="w"> </span><span class="p">(</span><span class="n">GTK_CONTAINER</span><span class="w"> </span><span class="p">(</span><span class="n">window</span><span class="p">),</span><span class="w"> </span><span class="n">scrolled_win</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">canvas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_new</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">gtk_widget_set_size_request</span><span class="w"> </span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span><span class="w"> </span><span class="mi">600</span><span class="p">,</span><span class="w"> </span><span class="mi">450</span><span class="p">);</span>
+<span class="w">  </span><span class="n">goo_canvas_set_bounds</span><span class="w"> </span><span class="p">(</span><span class="n">GOO_CANVAS</span><span class="w"> </span><span class="p">(</span><span class="n">canvas</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">  </span><span class="n">gtk_widget_show</span><span class="w"> </span><span class="p">(</span><span class="n">canvas</span><span class="p">);</span>
+<span class="w">  </span><span class="n">gtk_container_add</span><span class="w"> </span><span class="p">(</span><span class="n">GTK_CONTAINER</span><span class="w"> </span><span class="p">(</span><span class="n">scrolled_win</span><span class="p">),</span><span class="w"> </span><span class="n">canvas</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_get_root_item</span><span class="w"> </span><span class="p">(</span><span class="n">GOO_CANVAS</span><span class="w"> </span><span class="p">(</span><span class="n">canvas</span><span class="p">));</span>
+
+<span class="w">  </span><span class="cm">/* Add a few simple items. */</span>
+<span class="w">  </span><span class="n">rect_item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_rect_new</span><span class="w"> </span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span>
+<span class="w">                                   </span><span class="s">&quot;line-width&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
+<span class="w">                                   </span><span class="s">&quot;radius-x&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span>
+<span class="w">                                   </span><span class="s">&quot;radius-y&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
+<span class="w">                                   </span><span class="s">&quot;stroke-color&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;yellow&quot;</span><span class="p">,</span>
+<span class="w">                                   </span><span class="s">&quot;fill-color&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;red&quot;</span><span class="p">,</span>
+<span class="w">                                   </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">text_item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_text_new</span><span class="w"> </span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Hello World&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">GOO_CANVAS_ANCHOR_CENTER</span><span class="p">,</span>
+<span class="w">                                   </span><span class="s">&quot;font&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Sans 24&quot;</span><span class="p">,</span>
+<span class="w">                                   </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">  </span><span class="n">goo_canvas_item_rotate</span><span class="w"> </span><span class="p">(</span><span class="n">text_item</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/* Connect a signal handler for the rectangle item. */</span>
+<span class="w">  </span><span class="n">g_signal_connect</span><span class="w"> </span><span class="p">(</span><span class="n">rect_item</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;button_press_event&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">G_CALLBACK</span><span class="w"> </span><span class="p">(</span><span class="n">on_rect_button_press</span><span class="p">),</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/* Pass control to the GTK+ main event loop. */</span>
+<span class="w">  </span><span class="n">gtk_main</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/* This handles button presses in item views. We simply output a message to</span>
+<span class="cm">   the console. */</span>
+<span class="k">static</span><span class="w"> </span><span class="n">gboolean</span>
+<span class="nf">on_rect_button_press</span><span class="w"> </span><span class="p">(</span><span class="n">GooCanvasItem</span><span class="w">  </span><span class="o">*</span><span class="n">item</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">GooCanvasItem</span><span class="w">  </span><span class="o">*</span><span class="n">target</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">GdkEventButton</span><span class="w"> </span><span class="o">*</span><span class="n">event</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">gpointer</span><span class="w">        </span><span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">g_print</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;rect item received button press event</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">TRUE</span><span class="p">;</span>
+<span class="p">}</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>A <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> widget is usually placed inside a <span class="type">GtkScrolledWindow</span> widget
+and can be scrolled with the scrollbar or with the scroll wheel on a mouse.
+To disable mouse wheel scrolling, do this:</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="n">g_signal_connect</span><span class="w"> </span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;scroll-event&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">G_CALLBACK</span><span class="w"> </span><span class="p">(</span><span class="n">gtk_true</span><span class="p">),</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+<div class="refsect1">
+<a name="GooCanvas.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="goo-canvas-new"></a><h3>goo_canvas_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">GtkWidget</span> *
+goo_canvas_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Creates a new <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> widget.</p>
+<p>A <a class="link" href="GooCanvasGroup.html" title="GooCanvasGroup"><span class="type">GooCanvasGroup</span></a> is created automatically as the root item of the canvas,
+though this can be overriden with <a class="link" href="GooCanvas.html#goo-canvas-set-root-item" title="goo_canvas_set_root_item ()"><code class="function">goo_canvas_set_root_item()</code></a> or
+<a class="link" href="GooCanvas.html#goo-canvas-set-root-item-model" title="goo_canvas_set_root_item_model ()"><code class="function">goo_canvas_set_root_item_model()</code></a>.</p>
+<div class="refsect3">
+<a name="goo-canvas-new.returns"></a><h4>Returns</h4>
+<p> a new <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> widget.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-root-item"></a><h3>goo_canvas_get_root_item ()</h3>
+<pre class="programlisting"><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+goo_canvas_get_root_item (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>);</pre>
+<p>Gets the root item of the canvas, usually a <a class="link" href="GooCanvasGroup.html" title="GooCanvasGroup"><span class="type">GooCanvasGroup</span></a>.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-root-item.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-root-item.returns"></a><h4>Returns</h4>
+<p>the root item, or <code class="literal">NULL</code> if there is no root item. </p>
+<p><span class="annotation">[<acronym title="The data is owned by the callee, which is responsible of freeing it."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-set-root-item"></a><h3>goo_canvas_set_root_item ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_set_root_item (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                          <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>);</pre>
+<p>Sets the root item of the canvas. Any existing canvas items are removed.</p>
+<div class="refsect3">
+<a name="goo-canvas-set-root-item.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>the root canvas item.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-root-item-model"></a><h3>goo_canvas_get_root_item_model ()</h3>
+<pre class="programlisting"><a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="returnvalue">GooCanvasItemModel</span></a> *
+goo_canvas_get_root_item_model (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>);</pre>
+<p>Gets the root item model of the canvas.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-root-item-model.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-root-item-model.returns"></a><h4>Returns</h4>
+<p>the root item model, or <code class="literal">NULL</code> if there is no root
+item model. </p>
+<p><span class="annotation">[<acronym title="The data is owned by the callee, which is responsible of freeing it."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-set-root-item-model"></a><h3>goo_canvas_set_root_item_model ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_set_root_item_model (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                <em class="parameter"><code><a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a> *model</code></em>);</pre>
+<p>Sets the root item model of the canvas.</p>
+<p>A hierarchy of canvas items will be created, corresponding to the hierarchy
+of items in the model. Any current canvas items will be removed.</p>
+<div class="refsect3">
+<a name="goo-canvas-set-root-item-model.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>model</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-static-root-item"></a><h3>goo_canvas_get_static_root_item ()</h3>
+<pre class="programlisting"><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+goo_canvas_get_static_root_item (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>);</pre>
+<p>Gets the static root item of the canvas.</p>
+<p>Static items are exactly the same as ordinary canvas items, except that
+they do not move or change size when the canvas is scrolled or the scale
+changes.</p>
+<p>Static items are added to the static root item in exactly the same way that
+ordinary items are added to the root item.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-static-root-item.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-static-root-item.returns"></a><h4>Returns</h4>
+<p>the static root item, or <code class="literal">NULL</code>. </p>
+<p><span class="annotation">[<acronym title="The data is owned by the callee, which is responsible of freeing it."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-set-static-root-item"></a><h3>goo_canvas_set_static_root_item ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_set_static_root_item (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                 <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>);</pre>
+<p>Sets the static root item. Any existing static items are removed.</p>
+<p>Static items are exactly the same as ordinary canvas items, except that
+they do not move or change size when the canvas is scrolled or the scale
+changes.</p>
+<p>Static items are added to the static root item in exactly the same way that
+ordinary items are added to the root item.</p>
+<div class="refsect3">
+<a name="goo-canvas-set-static-root-item.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>the static root item.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-static-root-item-model"></a><h3>goo_canvas_get_static_root_item_model ()</h3>
+<pre class="programlisting"><a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="returnvalue">GooCanvasItemModel</span></a> *
+goo_canvas_get_static_root_item_model (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>);</pre>
+<p>Gets the static root item model of the canvas.</p>
+<p>Static item models are exactly the same as ordinary item models, except that
+the corresponding items do not move or change size when the canvas is
+scrolled or the scale changes.</p>
+<p>Static items models are added to the static root item model in exactly the
+same way that ordinary item models are added to the root item model.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-static-root-item-model.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-static-root-item-model.returns"></a><h4>Returns</h4>
+<p>the static root item model, or <code class="literal">NULL</code>. </p>
+<p><span class="annotation">[<acronym title="The data is owned by the callee, which is responsible of freeing it."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-set-static-root-item-model"></a><h3>goo_canvas_set_static_root_item_model ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_set_static_root_item_model (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                       <em class="parameter"><code><a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a> *model</code></em>);</pre>
+<p>Sets the static root item model. Any existing static item models are
+removed.</p>
+<p>Static item models are exactly the same as ordinary item models, except that
+the corresponding items do not move or change size when the canvas is
+scrolled or the scale changes.</p>
+<p>Static items models are added to the static root item model in exactly the
+ same way that ordinary item models are added to the root item model.</p>
+<div class="refsect3">
+<a name="goo-canvas-set-static-root-item-model.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>model</p></td>
+<td class="parameter_description"><p>the static root item model.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-bounds"></a><h3>goo_canvas_get_bounds ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_get_bounds (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                       <em class="parameter"><code><span class="type">gdouble</span> *left</code></em>,
+                       <em class="parameter"><code><span class="type">gdouble</span> *top</code></em>,
+                       <em class="parameter"><code><span class="type">gdouble</span> *right</code></em>,
+                       <em class="parameter"><code><span class="type">gdouble</span> *bottom</code></em>);</pre>
+<p>Gets the bounds of the canvas, in canvas units.</p>
+<p>By default, canvas units are pixels, though the <a class="link" href="GooCanvas.html#GooCanvas--units" title="The “units” property"><span class="type">“units”</span></a> property
+can be used to change the units to points, inches or millimeters.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-bounds.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>left</p></td>
+<td class="parameter_description"><p>a pointer to a <span class="type">gdouble</span> to return the left edge, or <code class="literal">NULL</code>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>top</p></td>
+<td class="parameter_description"><p>a pointer to a <span class="type">gdouble</span> to return the top edge, or <code class="literal">NULL</code>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>right</p></td>
+<td class="parameter_description"><p>a pointer to a <span class="type">gdouble</span> to return the right edge, or <code class="literal">NULL</code>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bottom</p></td>
+<td class="parameter_description"><p>a pointer to a <span class="type">gdouble</span> to return the bottom edge, or <code class="literal">NULL</code>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-set-bounds"></a><h3>goo_canvas_set_bounds ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_set_bounds (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                       <em class="parameter"><code><span class="type">gdouble</span> left</code></em>,
+                       <em class="parameter"><code><span class="type">gdouble</span> top</code></em>,
+                       <em class="parameter"><code><span class="type">gdouble</span> right</code></em>,
+                       <em class="parameter"><code><span class="type">gdouble</span> bottom</code></em>);</pre>
+<p>Sets the bounds of the <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>, in canvas units.</p>
+<p>By default, canvas units are pixels, though the <a class="link" href="GooCanvas.html#GooCanvas--units" title="The “units” property"><span class="type">“units”</span></a> property
+can be used to change the units to points, inches or millimeters.</p>
+<div class="refsect3">
+<a name="goo-canvas-set-bounds.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>left</p></td>
+<td class="parameter_description"><p>the left edge.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>top</p></td>
+<td class="parameter_description"><p>the top edge.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>right</p></td>
+<td class="parameter_description"><p>the right edge.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bottom</p></td>
+<td class="parameter_description"><p>the bottom edge.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-scale"></a><h3>goo_canvas_get_scale ()</h3>
+<pre class="programlisting"><span class="returnvalue">gdouble</span>
+goo_canvas_get_scale (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>);</pre>
+<p>Gets the current scale of the canvas.</p>
+<p>The scale specifies the magnification factor of the canvas, e.g. if an item
+has a width of 2 pixels and the scale is set to 3, it will be displayed with
+a width of 2 x 3 = 6 pixels.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-scale.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-scale.returns"></a><h4>Returns</h4>
+<p> the current scale setting.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-set-scale"></a><h3>goo_canvas_set_scale ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_set_scale (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                      <em class="parameter"><code><span class="type">gdouble</span> scale</code></em>);</pre>
+<p>Sets the scale of the canvas.</p>
+<p>The scale specifies the magnification factor of the canvas, e.g. if an item
+has a width of 2 pixels and the scale is set to 3, it will be displayed with
+a width of 2 x 3 = 6 pixels.</p>
+<div class="refsect3">
+<a name="goo-canvas-set-scale.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>scale</p></td>
+<td class="parameter_description"><p>the new scale setting.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-item"></a><h3>goo_canvas_get_item ()</h3>
+<pre class="programlisting"><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+goo_canvas_get_item (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                     <em class="parameter"><code><a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a> *model</code></em>);</pre>
+<p>Gets the canvas item associated with the given <a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a>.
+This is only useful when <a class="link" href="GooCanvas.html#goo-canvas-set-root-item-model" title="goo_canvas_set_root_item_model ()"><code class="function">goo_canvas_set_root_item_model()</code></a> has been used to
+set a model for the canvas.</p>
+<p>For simple applications you can use <a class="link" href="GooCanvas.html#goo-canvas-get-item" title="goo_canvas_get_item ()"><code class="function">goo_canvas_get_item()</code></a> to set up
+signal handlers for your items, e.g.</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="n">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_get_item</span><span class="w"> </span><span class="p">(</span><span class="n">GOO_CANVAS</span><span class="w"> </span><span class="p">(</span><span class="n">canvas</span><span class="p">),</span><span class="w"> </span><span class="n">my_item</span><span class="p">);</span>
+<span class="n">g_signal_connect</span><span class="w"> </span><span class="p">(</span><span class="n">item</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;button_press_event&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="p">(</span><span class="n">GtkSignalFunc</span><span class="p">)</span><span class="w"> </span><span class="n">on_my_item_button_press</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>More complex applications may want to use the <a class="link" href="GooCanvas.html#GooCanvas-item-created" title="The “item-created” signal"><span class="type">“item-created”</span></a>
+signal to hook up their signal handlers.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-item.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>model</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-item.returns"></a><h4>Returns</h4>
+<p>the canvas item corresponding to the given
+<a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a>, or <code class="literal">NULL</code> if no canvas item has been created for it yet. </p>
+<p><span class="annotation">[<acronym title="The data is owned by the callee, which is responsible of freeing it."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-item-at"></a><h3>goo_canvas_get_item_at ()</h3>
+<pre class="programlisting"><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+goo_canvas_get_item_at (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                        <em class="parameter"><code><span class="type">gdouble</span> x</code></em>,
+                        <em class="parameter"><code><span class="type">gdouble</span> y</code></em>,
+                        <em class="parameter"><code><span class="type">gboolean</span> is_pointer_event</code></em>);</pre>
+<p>Gets the item at the given point.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-item-at.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>the x coordinate of the point.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>the y coordinate of the point</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>is_pointer_event</p></td>
+<td class="parameter_description"><p><code class="literal">TRUE</code> if the "pointer-events" property of
+items should be used to determine which parts of the item are tested.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-item-at.returns"></a><h4>Returns</h4>
+<p>the item found at the given point, or <code class="literal">NULL</code> if no
+item was found. </p>
+<p><span class="annotation">[<acronym title="The data is owned by the callee, which is responsible of freeing it."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-items-at"></a><h3>goo_canvas_get_items_at ()</h3>
+<pre class="programlisting"><span class="returnvalue">GList</span> *
+goo_canvas_get_items_at (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                         <em class="parameter"><code><span class="type">gdouble</span> x</code></em>,
+                         <em class="parameter"><code><span class="type">gdouble</span> y</code></em>,
+                         <em class="parameter"><code><span class="type">gboolean</span> is_pointer_event</code></em>);</pre>
+<p>Gets all items at the given point.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-items-at.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>the x coordinate of the point.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>the y coordinate of the point</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>is_pointer_event</p></td>
+<td class="parameter_description"><p><code class="literal">TRUE</code> if the "pointer-events" property of
+items should be used to determine which parts of the item are tested.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-items-at.returns"></a><h4>Returns</h4>
+<p>a list of
+items found at the given point, with the top item at the start of the list,
+or <code class="literal">NULL</code> if no items were found. The list must be freed with <code class="function">g_list_free()</code>. </p>
+<p><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GooCanvas.CanvasItem][<acronym title="The caller owns the data container, but not the data inside it."><span class="acronym">transfer container</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-items-in-area"></a><h3>goo_canvas_get_items_in_area ()</h3>
+<pre class="programlisting"><span class="returnvalue">GList</span> *
+goo_canvas_get_items_in_area (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                              <em class="parameter"><code>const <a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasBounds" title="struct GooCanvasBounds"><span class="type">GooCanvasBounds</span></a> *area</code></em>,
+                              <em class="parameter"><code><span class="type">gboolean</span> inside_area</code></em>,
+                              <em class="parameter"><code><span class="type">gboolean</span> allow_overlaps</code></em>,
+                              <em class="parameter"><code><span class="type">gboolean</span> include_containers</code></em>);</pre>
+<p>Gets a list of items inside or outside a given area.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-items-in-area.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>area</p></td>
+<td class="parameter_description"><p>the area to compare with each item's bounds.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>inside_area</p></td>
+<td class="parameter_description"><p><code class="literal">TRUE</code> if items inside <em class="parameter"><code>area</code></em>
+should be returned, or <code class="literal">FALSE</code> if
+items outside <em class="parameter"><code>area</code></em>
+should be returned.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>allow_overlaps</p></td>
+<td class="parameter_description"><p><code class="literal">TRUE</code> if items which are partly inside and partly outside
+should be returned.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>include_containers</p></td>
+<td class="parameter_description"><p><code class="literal">TRUE</code> if containers should be checked as well as
+normal items.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-items-in-area.returns"></a><h4>Returns</h4>
+<p>a list of
+items in the given area, or <code class="literal">NULL</code> if no items are found.
+The list should be freed with <code class="function">g_list_free()</code>. </p>
+<p><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GooCanvas.CanvasItem][<acronym title="The caller owns the data container, but not the data inside it."><span class="acronym">transfer container</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-scroll-to"></a><h3>goo_canvas_scroll_to ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_scroll_to (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                      <em class="parameter"><code><span class="type">gdouble</span> left</code></em>,
+                      <em class="parameter"><code><span class="type">gdouble</span> top</code></em>);</pre>
+<p>Scrolls the canvas, placing the given point as close to the top-left of
+the view as possible.</p>
+<div class="refsect3">
+<a name="goo-canvas-scroll-to.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>left</p></td>
+<td class="parameter_description"><p>the x coordinate to scroll to.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>top</p></td>
+<td class="parameter_description"><p>the y coordinate to scroll to.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-render"></a><h3>goo_canvas_render ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_render (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                   <em class="parameter"><code><span class="type">cairo_t</span> *cr</code></em>,
+                   <em class="parameter"><code>const <a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasBounds" title="struct GooCanvasBounds"><span class="type">GooCanvasBounds</span></a> *bounds</code></em>,
+                   <em class="parameter"><code><span class="type">gdouble</span> scale</code></em>);</pre>
+<p>Renders all or part of a canvas to the given cairo context.</p>
+<p>This example code could be used in a <span class="type">GtkPrintOperation</span>
+<span class="type">“draw-page”</span> callback to print each page in a multi-page
+document (assuming the pages appear one after the other vertically in the
+canvas). Note the call to <code class="function">cairo_translate()</code> to translate the output to
+the correct position on the printed page.</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="n">GooCanvasBounds</span><span class="w"> </span><span class="n">bounds</span><span class="p">;</span>
+<span class="n">bounds</span><span class="p">.</span><span class="n">x1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">bounds</span><span class="p">.</span><span class="n">x2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A4_PAGE_WIDTH</span><span class="p">;</span>
+<span class="n">bounds</span><span class="p">.</span><span class="n">y1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A4_PAGE_HEIGHT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">page_num</span><span class="p">;</span>
+<span class="n">bounds</span><span class="p">.</span><span class="n">y2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A4_PAGE_HEIGHT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">page_num</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="n">cr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gtk_print_context_get_cairo_context</span><span class="w"> </span><span class="p">(</span><span class="n">print_context</span><span class="p">);</span>
+<span class="n">cairo_translate</span><span class="w"> </span><span class="p">(</span><span class="n">cr</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">A4_PAGE_HEIGHT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">page_num</span><span class="p">);</span>
+<span class="n">goo_canvas_render</span><span class="w"> </span><span class="p">(</span><span class="n">GOO_CANVAS</span><span class="w"> </span><span class="p">(</span><span class="n">canvas</span><span class="p">),</span><span class="w"> </span><span class="n">cr</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bounds</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="refsect3">
+<a name="goo-canvas-render.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>cr</p></td>
+<td class="parameter_description"><p>a cairo context.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bounds</p></td>
+<td class="parameter_description"><p>the area to render, or <code class="literal">NULL</code> to render the entire canvas. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>scale</p></td>
+<td class="parameter_description"><p>the scale to compare with each item's visibility
+threshold to see if they should be rendered. This only affects items that
+have their visibility set to <a class="link" href="goocanvas2-GooCanvas-Types.html#GOO-CANVAS-ITEM-VISIBLE-ABOVE-THRESHOLD:CAPS"><code class="literal">GOO_CANVAS_ITEM_VISIBLE_ABOVE_THRESHOLD</code></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-convert-to-pixels"></a><h3>goo_canvas_convert_to_pixels ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_convert_to_pixels (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                              <em class="parameter"><code><span class="type">gdouble</span> *x</code></em>,
+                              <em class="parameter"><code><span class="type">gdouble</span> *y</code></em>);</pre>
+<p>Converts a coordinate from the canvas coordinate space to pixels.</p>
+<p>The canvas coordinate space is specified in the call to
+<a class="link" href="GooCanvas.html#goo-canvas-set-bounds" title="goo_canvas_set_bounds ()"><code class="function">goo_canvas_set_bounds()</code></a>.</p>
+<p>The pixel coordinate space specifies pixels from the top-left of the entire
+canvas window, according to the current scale setting.
+See <a class="link" href="GooCanvas.html#goo-canvas-set-scale" title="goo_canvas_set_scale ()"><code class="function">goo_canvas_set_scale()</code></a>.</p>
+<div class="refsect3">
+<a name="goo-canvas-convert-to-pixels.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>a pointer to the x coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>a pointer to the y coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-convert-from-pixels"></a><h3>goo_canvas_convert_from_pixels ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_convert_from_pixels (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                <em class="parameter"><code><span class="type">gdouble</span> *x</code></em>,
+                                <em class="parameter"><code><span class="type">gdouble</span> *y</code></em>);</pre>
+<p>Converts a coordinate from pixels to the canvas coordinate space.</p>
+<p>The pixel coordinate space specifies pixels from the top-left of the entire
+canvas window, according to the current scale setting.
+See <a class="link" href="GooCanvas.html#goo-canvas-set-scale" title="goo_canvas_set_scale ()"><code class="function">goo_canvas_set_scale()</code></a>.</p>
+<p>The canvas coordinate space is specified in the call to
+<a class="link" href="GooCanvas.html#goo-canvas-set-bounds" title="goo_canvas_set_bounds ()"><code class="function">goo_canvas_set_bounds()</code></a>.</p>
+<div class="refsect3">
+<a name="goo-canvas-convert-from-pixels.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>a pointer to the x coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>a pointer to the y coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-convert-to-item-space"></a><h3>goo_canvas_convert_to_item_space ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_convert_to_item_space (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                  <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>,
+                                  <em class="parameter"><code><span class="type">gdouble</span> *x</code></em>,
+                                  <em class="parameter"><code><span class="type">gdouble</span> *y</code></em>);</pre>
+<p>Converts a coordinate from the canvas coordinate space to the given
+item's coordinate space, applying all transformation matrices including the
+item's own transformation matrix, if it has one.</p>
+<div class="refsect3">
+<a name="goo-canvas-convert-to-item-space.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>a pointer to the x coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>a pointer to the y coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-convert-from-item-space"></a><h3>goo_canvas_convert_from_item_space ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_convert_from_item_space (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                    <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>,
+                                    <em class="parameter"><code><span class="type">gdouble</span> *x</code></em>,
+                                    <em class="parameter"><code><span class="type">gdouble</span> *y</code></em>);</pre>
+<p>Converts a coordinate from the given item's coordinate space to the canvas
+coordinate space, applying all transformation matrices including the
+item's own transformation matrix, if it has one.</p>
+<div class="refsect3">
+<a name="goo-canvas-convert-from-item-space.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>a pointer to the x coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>a pointer to the y coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-convert-bounds-to-item-space"></a><h3>goo_canvas_convert_bounds_to_item_space ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_convert_bounds_to_item_space
+                               (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>,
+                                <em class="parameter"><code><a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasBounds" title="struct GooCanvasBounds"><span class="type">GooCanvasBounds</span></a> *bounds</code></em>);</pre>
+<p>Converts the given bounds in the canvas coordinate space to a bounding box
+in item space. This is useful in the item <code class="function">paint()</code> methods to convert the
+bounds to be painted to the item's coordinate space.</p>
+<div class="refsect3">
+<a name="goo-canvas-convert-bounds-to-item-space.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bounds</p></td>
+<td class="parameter_description"><p>the bounds in canvas coordinate space, to be converted.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-convert-units-to-pixels"></a><h3>goo_canvas_convert_units_to_pixels ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_convert_units_to_pixels (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                    <em class="parameter"><code><span class="type">gdouble</span> *x</code></em>,
+                                    <em class="parameter"><code><span class="type">gdouble</span> *y</code></em>);</pre>
+<p>Converts a coordinate from the canvas's units to pixels,
+ignoring scaling and ignoring the coordinate space specified
+in the call to <a class="link" href="GooCanvas.html#goo-canvas-set-bounds" title="goo_canvas_set_bounds ()"><code class="function">goo_canvas_set_bounds()</code></a>.</p>
+<div class="refsect3">
+<a name="goo-canvas-convert-units-to-pixels.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>a pointer to the x coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>a pointer to the y coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="api-index-2.0.1.html" title="API Index v2.0.1">2.0.1</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-convert-units-from-pixels"></a><h3>goo_canvas_convert_units_from_pixels ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_convert_units_from_pixels (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                      <em class="parameter"><code><span class="type">gdouble</span> *x</code></em>,
+                                      <em class="parameter"><code><span class="type">gdouble</span> *y</code></em>);</pre>
+<p>Converts a coordinate from pixels to the canvas's units,
+ignoring scaling and ignoring the coordinate space specified
+in the call to <a class="link" href="GooCanvas.html#goo-canvas-set-bounds" title="goo_canvas_set_bounds ()"><code class="function">goo_canvas_set_bounds()</code></a>.</p>
+<div class="refsect3">
+<a name="goo-canvas-convert-units-from-pixels.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>a pointer to the x coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>a pointer to the y coordinate to convert. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="api-index-2.0.1.html" title="API Index v2.0.1">2.0.1</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-pointer-grab"></a><h3>goo_canvas_pointer_grab ()</h3>
+<pre class="programlisting"><span class="returnvalue">GdkGrabStatus</span>
+goo_canvas_pointer_grab (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                         <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>,
+                         <em class="parameter"><code><span class="type">GdkEventMask</span> event_mask</code></em>,
+                         <em class="parameter"><code><span class="type">GdkCursor</span> *cursor</code></em>,
+                         <em class="parameter"><code><span class="type">guint32</span> time</code></em>);</pre>
+<p>Attempts to grab the pointer for the given item.</p>
+<div class="refsect3">
+<a name="goo-canvas-pointer-grab.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>the item to grab the pointer for.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>event_mask</p></td>
+<td class="parameter_description"><p>the events to receive during the grab.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>cursor</p></td>
+<td class="parameter_description"><p>the cursor to display during the grab, or NULL.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>time</p></td>
+<td class="parameter_description"><p>the time of the event that lead to the pointer grab. This should
+come from the relevant <span class="type">GdkEvent</span>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-pointer-grab.returns"></a><h4>Returns</h4>
+<p> <code class="literal">GDK_GRAB_SUCCESS</code> if the grab succeeded.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-pointer-ungrab"></a><h3>goo_canvas_pointer_ungrab ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_pointer_ungrab (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                           <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>,
+                           <em class="parameter"><code><span class="type">guint32</span> time</code></em>);</pre>
+<p>Ungrabs the pointer, if the given item has the pointer grab.</p>
+<div class="refsect3">
+<a name="goo-canvas-pointer-ungrab.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>the item that has the grab.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>time</p></td>
+<td class="parameter_description"><p>the time of the event that lead to the pointer ungrab. This should
+come from the relevant <span class="type">GdkEvent</span>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-grab-focus"></a><h3>goo_canvas_grab_focus ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_grab_focus (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                       <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>);</pre>
+<p>Grabs the keyboard focus for the given item.</p>
+<div class="refsect3">
+<a name="goo-canvas-grab-focus.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>the item to grab the focus.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-keyboard-grab"></a><h3>goo_canvas_keyboard_grab ()</h3>
+<pre class="programlisting"><span class="returnvalue">GdkGrabStatus</span>
+goo_canvas_keyboard_grab (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                          <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>,
+                          <em class="parameter"><code><span class="type">gboolean</span> owner_events</code></em>,
+                          <em class="parameter"><code><span class="type">guint32</span> time</code></em>);</pre>
+<p>Attempts to grab the keyboard for the given item.</p>
+<div class="refsect3">
+<a name="goo-canvas-keyboard-grab.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>the item to grab the keyboard for.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>owner_events</p></td>
+<td class="parameter_description"><p><code class="literal">TRUE</code> if keyboard events for this application will be
+reported normally, or <code class="literal">FALSE</code> if all keyboard events will be reported with
+respect to the grab item.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>time</p></td>
+<td class="parameter_description"><p>the time of the event that lead to the keyboard grab. This should
+come from the relevant <span class="type">GdkEvent</span>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-keyboard-grab.returns"></a><h4>Returns</h4>
+<p> <code class="literal">GDK_GRAB_SUCCESS</code> if the grab succeeded.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-keyboard-ungrab"></a><h3>goo_canvas_keyboard_ungrab ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_keyboard_ungrab (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                            <em class="parameter"><code><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> *item</code></em>,
+                            <em class="parameter"><code><span class="type">guint32</span> time</code></em>);</pre>
+<p>Ungrabs the keyboard, if the given item has the keyboard grab.</p>
+<div class="refsect3">
+<a name="goo-canvas-keyboard-ungrab.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>the item that has the keyboard grab.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>time</p></td>
+<td class="parameter_description"><p>the time of the event that lead to the keyboard ungrab. This should
+come from the relevant <span class="type">GdkEvent</span>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-create-cairo-context"></a><h3>goo_canvas_create_cairo_context ()</h3>
+<pre class="programlisting"><span class="returnvalue">cairo_t</span> *
+goo_canvas_create_cairo_context (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>);</pre>
+<p>Creates a cairo context, initialized with the default canvas settings.
+Note that this context should not be used for drawing. It should only be
+used for calculating bounds of items.</p>
+<div class="refsect3">
+<a name="goo-canvas-create-cairo-context.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-create-cairo-context.returns"></a><h4>Returns</h4>
+<p> a new cairo context. It should be freed with <code class="function">cairo_destroy()</code>.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-create-item"></a><h3>goo_canvas_create_item ()</h3>
+<pre class="programlisting"><a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="returnvalue">GooCanvasItem</span></a> *
+goo_canvas_create_item (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                        <em class="parameter"><code><a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a> *model</code></em>);</pre>
+<p>This function is only intended to be used when implementing new canvas
+items, typically container items such as <a class="link" href="GooCanvasGroup.html" title="GooCanvasGroup"><span class="type">GooCanvasGroup</span></a>.</p>
+<p>It creates a new canvas item for the given item model, and recursively
+creates items for any children.</p>
+<p>It uses the <code class="function">create_item()</code> virtual method if it has been set.
+Subclasses of <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> can define this method if they want to use
+custom views for items.</p>
+<p>It emits the <a class="link" href="GooCanvas.html#GooCanvas-item-created" title="The “item-created” signal"><span class="type">“item-created”</span></a> signal after creating the view, so
+application code can connect signal handlers to the new view if desired.</p>
+<div class="refsect3">
+<a name="goo-canvas-create-item.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>model</p></td>
+<td class="parameter_description"><p>the item model to create a canvas item for.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-create-item.returns"></a><h4>Returns</h4>
+<p>a new canvas item. </p>
+<p><span class="annotation">[<acronym title="The caller owns the data, and is responsible for free it."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-unregister-item"></a><h3>goo_canvas_unregister_item ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_unregister_item (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                            <em class="parameter"><code><a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a> *model</code></em>);</pre>
+<p>This function is only intended to be used when implementing new canvas
+items.</p>
+<p>It should be called in the finalize method of <a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a>
+objects, to remove the canvas item from the <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>'s hash table.</p>
+<div class="refsect3">
+<a name="goo-canvas-unregister-item.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>model</p></td>
+<td class="parameter_description"><p>the item model whose canvas item is being finalized.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-register-widget-item"></a><h3>goo_canvas_register_widget_item ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_register_widget_item (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                 <em class="parameter"><code><a class="link" href="GooCanvasWidget.html" title="GooCanvasWidget"><span class="type">GooCanvasWidget</span></a> *witem</code></em>);</pre>
+<p>This function should only be used by <a class="link" href="GooCanvasWidget.html" title="GooCanvasWidget"><span class="type">GooCanvasWidget</span></a> and subclass
+implementations.</p>
+<p>It registers a widget item with the canvas, so that the canvas can do the
+necessary actions to move and resize the widget as needed.</p>
+<div class="refsect3">
+<a name="goo-canvas-register-widget-item.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>witem</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvasWidget.html" title="GooCanvasWidget"><span class="type">GooCanvasWidget</span></a> item.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-unregister-widget-item"></a><h3>goo_canvas_unregister_widget_item ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_unregister_widget_item (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                   <em class="parameter"><code><a class="link" href="GooCanvasWidget.html" title="GooCanvasWidget"><span class="type">GooCanvasWidget</span></a> *witem</code></em>);</pre>
+<p>This function should only be used by <a class="link" href="GooCanvasWidget.html" title="GooCanvasWidget"><span class="type">GooCanvasWidget</span></a> and subclass
+implementations.</p>
+<p>It unregisters a widget item from the canvas, when the item is no longer in
+the canvas.</p>
+<div class="refsect3">
+<a name="goo-canvas-unregister-widget-item.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>witem</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvasWidget.html" title="GooCanvasWidget"><span class="type">GooCanvasWidget</span></a> item.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-update"></a><h3>goo_canvas_update ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_update (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>);</pre>
+<p>This function is only intended to be used by subclasses of <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> or
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> implementations.</p>
+<p>It updates any items that need updating.</p>
+<p>If the bounds of items change, they will request a redraw of the old and
+new bounds so the display is updated correctly.</p>
+<div class="refsect3">
+<a name="goo-canvas-update.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-request-update"></a><h3>goo_canvas_request_update ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_request_update (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>);</pre>
+<p>This function is only intended to be used by subclasses of <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> or
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> implementations.</p>
+<p>It schedules an update of the <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>. This will be performed in
+the idle loop, after all pending events have been handled, but before
+the canvas has been repainted.</p>
+<div class="refsect3">
+<a name="goo-canvas-request-update.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-request-redraw"></a><h3>goo_canvas_request_redraw ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_request_redraw (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                           <em class="parameter"><code>const <a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasBounds" title="struct GooCanvasBounds"><span class="type">GooCanvasBounds</span></a> *bounds</code></em>);</pre>
+<p>This function is only intended to be used by subclasses of <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> or
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> implementations.</p>
+<p>Requests that the given bounds be redrawn. The bounds must be in the canvas
+coordinate space.</p>
+<div class="refsect3">
+<a name="goo-canvas-request-redraw.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bounds</p></td>
+<td class="parameter_description"><p>the bounds to redraw, in device space.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-request-item-redraw"></a><h3>goo_canvas_request_item_redraw ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+goo_canvas_request_item_redraw (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>,
+                                <em class="parameter"><code>const <a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasBounds" title="struct GooCanvasBounds"><span class="type">GooCanvasBounds</span></a> *bounds</code></em>,
+                                <em class="parameter"><code><span class="type">gboolean</span> is_static</code></em>);</pre>
+<p>This function is only intended to be used by subclasses of <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> or
+<a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a> implementations.</p>
+<p>Requests that the given bounds be redrawn. If <em class="parameter"><code>is_static</code></em>
+ is <code class="literal">TRUE</code> the bounds
+are assumed to be in the static item coordinate space, otherwise they are
+assumed to be in the canvas coordinate space.</p>
+<p>If <em class="parameter"><code>is_static</code></em>
+ is <code class="literal">FALSE</code> this function behaves the same as
+<a class="link" href="GooCanvas.html#goo-canvas-request-redraw" title="goo_canvas_request_redraw ()"><code class="function">goo_canvas_request_redraw()</code></a>.</p>
+<div class="refsect3">
+<a name="goo-canvas-request-item-redraw.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bounds</p></td>
+<td class="parameter_description"><p>the bounds of the item to redraw.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>is_static</p></td>
+<td class="parameter_description"><p>if the item is static.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="goo-canvas-get-default-line-width"></a><h3>goo_canvas_get_default_line_width ()</h3>
+<pre class="programlisting"><span class="returnvalue">gdouble</span>
+goo_canvas_get_default_line_width (<em class="parameter"><code><a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a> *canvas</code></em>);</pre>
+<p>Gets the default line width, which depends on the current units setting.</p>
+<div class="refsect3">
+<a name="goo-canvas-get-default-line-width.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-get-default-line-width.returns"></a><h4>Returns</h4>
+<p> the default line width of the canvas.</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GooCanvas.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GooCanvas-struct"></a><h3>GooCanvas</h3>
+<pre class="programlisting">typedef struct _GooCanvas GooCanvas;</pre>
+<p>The <a class="link" href="GooCanvas.html#GooCanvas-struct" title="GooCanvas"><span class="type">GooCanvas</span></a> struct contains private data only.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasClass"></a><h3>struct GooCanvasClass</h3>
+<pre class="programlisting">struct GooCanvasClass {
+  GooCanvasItem* (* create_item)	    (GooCanvas          *canvas,
+					     GooCanvasItemModel *model);
+
+  /* Signals. */
+  void           (* item_created)	    (GooCanvas          *canvas,
+					     GooCanvasItem      *item,
+					     GooCanvasItemModel *model);
+};
+</pre>
+<p>The <span class="type">GooCanvasClass</span> struct contains one virtual method that
+subclasses may override.</p>
+<div class="refsect3">
+<a name="GooCanvasClass.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GooCanvasClass.create-item"></a>create_item</code></em> ()</p></td>
+<td class="struct_member_description"><p>a virtual method that subclasses may override to create custom
+canvas items for item models.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GooCanvasClass.item-created"></a>item_created</code></em> ()</p></td>
+<td class="struct_member_description"><p>signal emitted when a new canvas item has been created.
+Applications can connect to this to setup signal handlers for the new item.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GooCanvas.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GooCanvas--anchor"></a><h3>The <code class="literal">“anchor”</code> property</h3>
+<pre class="programlisting">  “anchor”                   <a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasAnchorType" title="enum GooCanvasAnchorType"><span class="type">GooCanvasAnchorType</span></a></pre>
+<p>Where to place the canvas when it is smaller than the widget's allocated area.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: GOO_CANVAS_ANCHOR_NORTH_WEST</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--automatic-bounds"></a><h3>The <code class="literal">“automatic-bounds”</code> property</h3>
+<pre class="programlisting">  “automatic-bounds”         <span class="type">gboolean</span></pre>
+<p>If the bounds are automatically calculated based on the bounds of all the items in the canvas.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--background-color"></a><h3>The <code class="literal">“background-color”</code> property</h3>
+<pre class="programlisting">  “background-color”         <span class="type">char</span> *</pre>
+<p>The color to use for the canvas background.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--background-color-gdk-rgba"></a><h3>The <code class="literal">“background-color-gdk-rgba”</code> property</h3>
+<pre class="programlisting">  “background-color-gdk-rgba” <span class="type">GdkRGBA</span> *</pre>
+<p>The color to use for the canvas background, specified as a GdkRGBA.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Write</p>
+<p class="since">Since: <a class="link" href="api-index-2.0.1.html" title="API Index v2.0.1">2.0.1</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--background-color-rgb"></a><h3>The <code class="literal">“background-color-rgb”</code> property</h3>
+<pre class="programlisting">  “background-color-rgb”     <span class="type">guint</span></pre>
+<p>The color to use for the canvas background, specified as a 24-bit integer value, 0xRRGGBB.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--bounds-from-origin"></a><h3>The <code class="literal">“bounds-from-origin”</code> property</h3>
+<pre class="programlisting">  “bounds-from-origin”       <span class="type">gboolean</span></pre>
+<p>If the automatic bounds are calculated from the origin.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--bounds-padding"></a><h3>The <code class="literal">“bounds-padding”</code> property</h3>
+<pre class="programlisting">  “bounds-padding”           <span class="type">double</span></pre>
+<p>The padding added to the automatic bounds.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--clear-background"></a><h3>The <code class="literal">“clear-background”</code> property</h3>
+<pre class="programlisting">  “clear-background”         <span class="type">gboolean</span></pre>
+<p>If the background is cleared before the canvas is painted.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--integer-layout"></a><h3>The <code class="literal">“integer-layout”</code> property</h3>
+<pre class="programlisting">  “integer-layout”           <span class="type">gboolean</span></pre>
+<p>If all item layout is done to the nearest integer.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--redraw-when-scrolled"></a><h3>The <code class="literal">“redraw-when-scrolled”</code> property</h3>
+<pre class="programlisting">  “redraw-when-scrolled”     <span class="type">gboolean</span></pre>
+<p>If the canvas is completely redrawn when scrolled, to reduce the flicker of static items. Note that since GTK+ 3.0 the canvas is always redrawn when scrolled, so this option has no effect.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--resolution-x"></a><h3>The <code class="literal">“resolution-x”</code> property</h3>
+<pre class="programlisting">  “resolution-x”             <span class="type">double</span></pre>
+<p>The horizontal resolution of the display, in dots per inch.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 96</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--resolution-y"></a><h3>The <code class="literal">“resolution-y”</code> property</h3>
+<pre class="programlisting">  “resolution-y”             <span class="type">double</span></pre>
+<p>The vertical resolution of the display, in dots per inch.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 96</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--scale"></a><h3>The <code class="literal">“scale”</code> property</h3>
+<pre class="programlisting">  “scale”                    <span class="type">double</span></pre>
+<p>The magnification factor of the canvas.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--scale-x"></a><h3>The <code class="literal">“scale-x”</code> property</h3>
+<pre class="programlisting">  “scale-x”                  <span class="type">double</span></pre>
+<p>The horizontal magnification factor of the canvas.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--scale-y"></a><h3>The <code class="literal">“scale-y”</code> property</h3>
+<pre class="programlisting">  “scale-y”                  <span class="type">double</span></pre>
+<p>The vertical magnification factor of the canvas.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--units"></a><h3>The <code class="literal">“units”</code> property</h3>
+<pre class="programlisting">  “units”                    <span class="type">GtkUnit</span></pre>
+<p>The units to use for the canvas.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: GTK_UNIT_NONE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--x1"></a><h3>The <code class="literal">“x1”</code> property</h3>
+<pre class="programlisting">  “x1”                       <span class="type">double</span></pre>
+<p>The x coordinate of the left edge of the canvas bounds, in canvas units.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--x2"></a><h3>The <code class="literal">“x2”</code> property</h3>
+<pre class="programlisting">  “x2”                       <span class="type">double</span></pre>
+<p>The x coordinate of the right edge of the canvas bounds, in canvas units.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 1000</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--y1"></a><h3>The <code class="literal">“y1”</code> property</h3>
+<pre class="programlisting">  “y1”                       <span class="type">double</span></pre>
+<p>The y coordinate of the top edge of the canvas bounds, in canvas units.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvas--y2"></a><h3>The <code class="literal">“y2”</code> property</h3>
+<pre class="programlisting">  “y2”                       <span class="type">double</span></pre>
+<p>The y coordinate of the bottom edge of the canvas bounds, in canvas units.</p>
+<p>Owner: GooCanvas</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 1000</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GooCanvas.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="GooCanvas-item-created"></a><h3>The <code class="literal">“item-created”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="GooCanvas.html" title="GooCanvas"><span class="type">GooCanvas</span></a>          *canvas,
+               <a class="link" href="GooCanvasItem.html" title="GooCanvasItem"><span class="type">GooCanvasItem</span></a>      *item,
+               <a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a> *model,
+               <span class="type">gpointer</span>            user_data)</pre>
+<p>This is emitted when a new canvas item is created, in model/view mode.</p>
+<p>Applications can set up signal handlers for the new items here.</p>
+<div class="refsect3">
+<a name="GooCanvas-item-created.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>canvas</p></td>
+<td class="parameter_description"><p>the canvas.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>item</p></td>
+<td class="parameter_description"><p>the new item.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>model</p></td>
+<td class="parameter_description"><p>the item's model.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: Run Last</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.35.1</div>
+</body>
+</html>
