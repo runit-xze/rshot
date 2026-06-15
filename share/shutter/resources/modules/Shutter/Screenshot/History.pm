@@ -25,35 +25,33 @@ package Shutter::Screenshot::History;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc, $drawable, $x, $y, $w, $h, $region = undef, $wxid = undef, $gxid = undef) {
 
-	my $self = {_sc => shift};
+	my $self = {_sc => $sc};
 
 	#last capture
-	$self->{_drawable} = shift;
-	$self->{_x}        = shift;
-	$self->{_y}        = shift;
-	$self->{_w}        = shift;
-	$self->{_h}        = shift;
-	$self->{_region}   = shift;
-	$self->{_wxid}     = shift;
-	$self->{_gxid}     = shift;
+	$self->{_drawable} = $drawable;
+	$self->{_x}        = $x;
+	$self->{_y}        = $y;
+	$self->{_w}        = $w;
+	$self->{_h}        = $h;
+	$self->{_region}   = $region;
+	$self->{_wxid}     = $wxid;
+	$self->{_gxid}     = $gxid;
 
 	bless $self, $class;
 	return $self;
 }
 
-sub get_last_capture {
-	my $self = shift;
+sub get_last_capture ($self) {
 	return ($self->{_drawable}, $self->{_x}, $self->{_y}, $self->{_w}, $self->{_h}, $self->{_region}, $self->{_wxid}, $self->{_gxid});
 }
 

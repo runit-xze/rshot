@@ -24,6 +24,9 @@
 package Shutter::App::Common;
 
 use utf8;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
 use Moo;
 use Gtk3;
 
@@ -98,8 +101,7 @@ has rusf => ( is => "rw", lazy => 1 );
 #recently used open folder
 has ruof => ( is => "rw", lazy => 1 );
 
-sub BUILD {
-    my ( $self, $args ) = @_;
+sub BUILD ($self, $args) {
 
     setlocale( LC_NUMERIC,  "C" );
     setlocale( LC_MESSAGES, "" );
@@ -107,8 +109,7 @@ sub BUILD {
     $ENV{'SHUTTER_INTL'} = $args->{shutter_root} . "/share/locale";
 }
 
-sub _setup_icontheme {
-    my $self = shift;
+sub _setup_icontheme ($self) {
 
     my $theme = Gtk3::IconTheme::get_default();
     $theme->append_search_path( $self->shutter_root . "/share/icons" );
@@ -116,8 +117,7 @@ sub _setup_icontheme {
     return $theme;
 }
 
-sub get_current_monitor {
-    my $self = shift;
+sub get_current_monitor ($self) {
 
     my ( $window_at_pointer, $x, $y, $mask ) = Gtk3::Gdk::get_default_root_window->get_pointer;
     my $mon = Gtk3::Gdk::Screen::get_default->get_monitor_geometry(
@@ -163,8 +163,7 @@ sub set_exit_after_capture    { shift->exit_after_capture(shift) if @_ }
 sub get_no_session            { shift->no_session }
 sub set_no_session            { shift->no_session(shift) if @_ }
 
-sub get_start_with {
-    my $self = shift;
+sub get_start_with ($self) {
     return ( $self->_start_with, $self->_start_with_extra );
 }
 

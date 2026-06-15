@@ -24,23 +24,22 @@
 package Shutter::Upload::Shared;
 
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 use POSIX qw/setlocale/;
 use Locale::gettext;
 use Glib qw/TRUE FALSE/;
 use Data::Dumper;
 
-sub new {
-	my $class = shift;
+sub new ($class, $host, $debug_cparam, $shutter_root, $gettext_object, $main_gtk_window, $ua) {
 
 	my $self = {
-		_host            => shift,
-		_debug_cparam    => shift,
-		_shutter_root    => shift,
-		_gettext_object  => shift,
-		_main_gtk_window => shift,
-		_ua              => shift
+		_host            => $host,
+		_debug_cparam    => $debug_cparam,
+		_shutter_root    => $shutter_root,
+		_gettext_object  => $gettext_object,
+		_main_gtk_window => $main_gtk_window,
+		_ua              => $ua
 	};
 
 	#received links are stored here
@@ -58,8 +57,7 @@ sub new {
 	return $self;
 }
 
-sub create_tab {
-	my $self = shift;
+sub create_tab ($self) {
 
 	my $upload_vbox = Gtk3::VBox->new(FALSE, 0);
 
@@ -76,8 +74,7 @@ sub create_tab {
 	return $upload_vbox;
 }
 
-sub create_entry_for_notebook {
-	my ($self, $field, $value, $sg) = @_;
+sub create_entry_for_notebook ($self, $field, $value, $sg) {
 
 	#Clipboard
 	my $clipboard = Gtk3::Clipboard::get($Gtk3::Gdk::SELECTION_CLIPBOARD);
@@ -121,8 +118,7 @@ sub create_entry_for_notebook {
 	return $upload_hbox2;
 }
 
-sub show_all {
-	my $self = shift;
+sub show_all ($self) {
 
 	#are there any uploaded files?
 	return FALSE if $self->{_notebook}->get_n_pages < 1;
@@ -144,8 +140,7 @@ sub show_all {
 	}
 }
 
-sub show {
-	my $self = shift;
+sub show ($self) {
 
 	#Create label for each notebook page
 	my $fnlabel = Gtk3::Label->new($self->{_filename});

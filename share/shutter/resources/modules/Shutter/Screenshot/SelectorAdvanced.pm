@@ -27,8 +27,9 @@ package Shutter::Screenshot::SelectorAdvanced;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
 
 use Gtk3::ImageView;
 use GooCanvas2;
@@ -37,29 +38,28 @@ use Shutter::Screenshot::Main;
 use Shutter::Screenshot::History;
 
 use Data::Dumper;
-our @ISA = qw(Shutter::Screenshot::Main);
+use parent 'Shutter::Screenshot::Main';
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $zoom_active, $hide_time, $show_help, $init_x, $init_y, $init_w, $init_h, $confirmation_necessary) {
 
 	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout)
-	my $self = $class->SUPER::new(shift, shift, shift, shift);
+	my $self = $class->SUPER::new($sc, $include_cursor, $delay, $notify_timeout);
 
-	$self->{_zoom_active} = shift;
-	$self->{_hide_time}   = shift;    #a short timeout to give the server a chance to redraw the area that was obscured
-	$self->{_show_help}   = shift;    #hide help text?
+	$self->{_zoom_active} = $zoom_active;
+	$self->{_hide_time}   = $hide_time;    #a short timeout to give the server a chance to redraw the area that was obscured
+	$self->{_show_help}   = $show_help;    #hide help text?
 
 	#initial selection size
-	$self->{_init_x} = shift;
-	$self->{_init_y} = shift;
-	$self->{_init_w} = shift;
-	$self->{_init_h} = shift;
-	$self->{_confirmation_necessary} = shift;
+	$self->{_init_x} = $init_x;
+	$self->{_init_y} = $init_y;
+	$self->{_init_w} = $init_w;
+	$self->{_init_h} = $init_h;
+	$self->{_confirmation_necessary} = $confirmation_necessary;
 
 	$self->{_dpi_scale} = Gtk3::Window->new('toplevel')->get('scale-factor');
 
@@ -97,8 +97,7 @@ sub new {
 #~ print "$self dying at\n";
 #~ }
 
-sub select_advanced {
-	my $self = shift;
+sub select_advanced ($self) {
 
 	#return value
 	my $output = 5;
@@ -739,8 +738,7 @@ sub select_advanced {
 	return $output;
 }
 
-sub zoom_check_pos {
-	my $self = shift;
+sub zoom_check_pos ($self) {
 
 	my $s = $self->{_selector}->get_selection;
 	my $v = $self->{_view}->get_viewport;
@@ -800,8 +798,7 @@ sub zoom_check_pos {
 
 }
 
-sub adjust_prop_values {
-	my $self = shift;
+sub adjust_prop_values ($self) {
 
 	#block 'value-change' handlers for widgets
 	#so we do not apply the changes twice
@@ -836,8 +833,7 @@ sub adjust_prop_values {
 
 }
 
-sub select_dialog {
-	my $self = shift;
+sub select_dialog ($self) {
 
 	my $d = $self->{_sc}->get_gettext;
 
@@ -1007,10 +1003,7 @@ sub select_dialog {
 	return $prop_dialog;
 }
 
-sub take_screenshot {
-	my $self         = shift;
-	my $s            = shift;
-	my $clean_pixbuf = shift;
+sub take_screenshot ($self, $s, $clean_pixbuf) {
 
 	my $d = $self->{_sc}->get_gettext;
 
@@ -1047,8 +1040,7 @@ sub take_screenshot {
 	return $output;
 }
 
-sub redo_capture {
-	my $self   = shift;
+sub redo_capture ($self) {
 	my $output = 3;
 	if (defined $self->{_history}) {
 		($output) = $self->get_pixbuf_from_drawable($self->{_history}->get_last_capture);
@@ -1056,30 +1048,25 @@ sub redo_capture {
 	return $output;
 }
 
-sub get_history {
-	my $self = shift;
+sub get_history ($self) {
 	return $self->{_history};
 }
 
-sub get_error_text {
-	my $self = shift;
+sub get_error_text ($self) {
 	return $self->{_error_text};
 }
 
-sub get_action_name {
-	my $self = shift;
+sub get_action_name ($self) {
 	return $self->{_action_name};
 }
 
-sub quit {
-	my $self = shift;
+sub quit ($self) {
 
 	$self->ungrab_pointer_and_keyboard(FALSE, FALSE, TRUE);
 	$self->clean;
 }
 
-sub clean {
-	my $self = shift;
+sub clean ($self) {
 
 	$self->{_selector}->signal_handler_disconnect($self->{_selector_handler});
 	$self->{_view}->signal_handler_disconnect($self->{_view_zoom_handler});

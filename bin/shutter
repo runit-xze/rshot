@@ -31,10 +31,10 @@
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
 use diagnostics;
-use 5.10.1;
+use feature 'try';
+no warnings 'experimental::try';
 
 #use Carp::Always;
 

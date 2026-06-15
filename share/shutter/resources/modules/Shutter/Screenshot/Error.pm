@@ -25,18 +25,17 @@ package Shutter::Screenshot::Error;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc, $code, $data, $extra) {
 
-	my $self = {_sc => shift, _code => shift, _data => shift, _extra => shift};
+	my $self = {_sc => $sc, _code => $code, _data => $data, _extra => $extra};
 
 	#############
 	# code = 0 - pointer could not be grabbed - or invalid region
@@ -55,13 +54,11 @@ sub new {
 	return $self;
 }
 
-sub get_error {
-	my $self = shift;
+sub get_error ($self) {
 	return ($self->{_code}, $self->{_data}, $self->{_extra});
 }
 
-sub is_aborted_by_user {
-	my $self = shift;
+sub is_aborted_by_user ($self) {
 	if (defined $self->{_code} && $self->{_code} == 5) {
 		return TRUE;
 	} else {
@@ -69,8 +66,7 @@ sub is_aborted_by_user {
 	}
 }
 
-sub is_error {
-	my $self = shift;
+sub is_error ($self) {
 	if (defined $self->{_code} && $self->{_code} =~ /^\d+$/) {
 		return TRUE;
 	} else {
@@ -88,9 +84,7 @@ sub set_error {
 	return ($self->{_code}, $self->{_data}, $self->{_extra});
 }
 
-sub show_dialog {
-	my $self                = shift;
-	my $detailed_error_text = shift || '';
+sub show_dialog ($self, $detailed_error_text = '') {
 
 	#load modules at custom path
 	#--------------------------------------

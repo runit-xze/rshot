@@ -23,8 +23,8 @@
 package Shutter::App::Options;
 
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 use Encode::Locale;
 use Encode;
 
@@ -37,17 +37,15 @@ use Getopt::Long qw(:config no_ignore_case pass_through);
 #print a usage message from embedded pod documentation
 use Pod::Usage;
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc, $shf) {
 
-	my $self = {_sc => shift, _shf => shift};
+	my $self = {_sc => $sc, _shf => $shf};
 
 	bless $self, $class;
 	return $self;
 }
 
-sub get_options {
-	my $self = shift;
+sub get_options ($self) {
 
 	GetOptions(
 		's|select:s@' => sub { my ($select, $sel_ref) = @_;          $self->{_sc}->set_start_with("select", $sel_ref); $self->{_sc}->set_min(TRUE); },

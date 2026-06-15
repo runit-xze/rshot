@@ -25,8 +25,9 @@ package Shutter::App::ShutterNotification;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
 
 #Glib
 use Glib qw/TRUE FALSE/;
@@ -36,13 +37,12 @@ use Gtk3;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc) {
 
-	my $self = {_sc => shift};
+	my $self = {_sc => $sc};
 
 	#Use notifications object
-	eval {
+	try {
 
 		#notification window (borderless gtk window)
 		$self->{_notifications_window} = Gtk3::Window->new('popup');
@@ -171,9 +171,9 @@ sub new {
 				return FALSE;
 			});
 
-	};
-	if ($@) {
-		print "Warning: $@", "\n";
+	}
+	catch ($e) {
+		print "Warning: $e", "\n";
 	}
 
 	#last nid
@@ -183,8 +183,7 @@ sub new {
 	return $self;
 }
 
-sub show {
-	my $self = shift;
+sub show ($self, $summary, $body) {
 
 	#remove old handler
 	if ($self->{_notifications_timeout}) {
@@ -192,8 +191,8 @@ sub show {
 	}
 
 	#set body and summary
-	$self->{_summary} = shift;
-	$self->{_body}    = shift;
+	$self->{_summary} = $summary;
+	$self->{_body}    = $body;
 
 	$self->{_notifications_window}->show_all;
 
@@ -210,9 +209,7 @@ sub show {
 	return 0;
 }
 
-sub close {
-	my $self     = shift;
-	my $no_clear = shift;
+sub close ($self, $no_clear = undef) {
 
 	#clear body and summary
 	unless ($no_clear) {

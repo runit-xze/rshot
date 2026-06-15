@@ -25,29 +25,29 @@ package Shutter::Screenshot::Workspace;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
 
 use Shutter::Screenshot::Main;
 use Shutter::Screenshot::History;
 use Data::Dumper;
-our @ISA = qw(Shutter::Screenshot::Main);
+use parent 'Shutter::Screenshot::Main';
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $selected_workspace, $vpx, $vpy, $current_monitor_only) {
 
 	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout)
-	my $self = $class->SUPER::new(shift, shift, shift, shift);
+	my $self = $class->SUPER::new($sc, $include_cursor, $delay, $notify_timeout);
 
-	$self->{_selected_workspace}   = shift;
-	$self->{_vpx}                  = shift;
-	$self->{_vpy}                  = shift;
-	$self->{_current_monitor_only} = shift;
+	$self->{_selected_workspace}   = $selected_workspace;
+	$self->{_vpx}                  = $vpx;
+	$self->{_vpy}                  = $vpy;
+	$self->{_current_monitor_only} = $current_monitor_only;
 
 	bless $self, $class;
 	return $self;
@@ -58,8 +58,7 @@ sub new {
 #~ print "$self dying at\n";
 #~ }
 
-sub workspaces {
-	my $self = shift;
+sub workspaces ($self) {
 
 	my $d = $self->{_sc}->get_gettext;
 
@@ -197,10 +196,7 @@ sub workspaces {
 	return $output;
 }
 
-sub workspace {
-	my $self            = shift;
-	my $no_active_check = shift || FALSE;
-	my $no_finishing    = shift || FALSE;
+sub workspace ($self, $no_active_check = undef, $no_finishing = undef) {
 
 	my $wrksp_changed = FALSE;
 
@@ -280,8 +276,7 @@ sub workspace {
 	return $output;
 }
 
-sub redo_capture {
-	my $self   = shift;
+sub redo_capture ($self) {
 	my $output = 3;
 	if (defined $self->{_history} && $self->{_selected_workspace} eq 'all') {
 		$output = $self->workspaces();
@@ -291,18 +286,15 @@ sub redo_capture {
 	return $output;
 }
 
-sub get_history {
-	my $self = shift;
+sub get_history ($self) {
 	return $self->{_history};
 }
 
-sub get_error_text {
-	my $self = shift;
+sub get_error_text ($self) {
 	return $self->{_error_text};
 }
 
-sub get_action_name {
-	my $self = shift;
+sub get_action_name ($self) {
 	return $self->{_action_name};
 }
 

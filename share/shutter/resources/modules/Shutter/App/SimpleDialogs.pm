@@ -25,8 +25,8 @@ package Shutter::App::SimpleDialogs;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 use Gtk3;
 
@@ -36,30 +36,30 @@ use Glib qw/TRUE FALSE/;
 #--------------------------------------
 
 ##################public subs##################
-sub new {
-	my $class = shift;
+sub new ($class, $window, $gdk_window = undef) {
 
 	#constructor
-	my $self = {_window => shift, _gdk_window => shift};
+	my $self = {_window => $window, _gdk_window => $gdk_window};
 
 	bless $self, $class;
 	return $self;
 }
 
-sub dlg_info_message {
-	my $self                 = shift;
-	my $dlg_info_message     = shift;
-	my $dlg_info_header      = shift;
-	my $button_text_extra1   = shift;
-	my $button_text_extra2   = shift;
-	my $button_text_extra3   = shift;
-	my $button_widget_extra1 = shift;
-	my $button_widget_extra2 = shift;
-	my $button_widget_extra3 = shift;
-	my $detail_message       = shift;
-	my $detail_checkbox      = shift;
-	my $content_widget       = shift;
-	my $content_widget2      = shift;
+sub dlg_info_message (
+	$self,
+	$dlg_info_message,
+	$dlg_info_header,
+	$button_text_extra1   = undef,
+	$button_text_extra2   = undef,
+	$button_text_extra3   = undef,
+	$button_widget_extra1 = undef,
+	$button_widget_extra2 = undef,
+	$button_widget_extra3 = undef,
+	$detail_message       = undef,
+	$detail_checkbox      = undef,
+	$content_widget       = undef,
+	$content_widget2      = undef,
+) {
 
 	my $info_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'info', 'none', undef);
 
@@ -125,18 +125,19 @@ sub dlg_info_message {
 	return $info_response;
 }
 
-sub dlg_question_message {
-	my $self                 = shift;
-	my $dlg_question_message = shift;
-	my $dlg_question_header  = shift;
-	my $button_text_extra1   = shift;
-	my $button_text_extra2   = shift;
-	my $button_text_extra3   = shift;
-	my $button_widget_extra1 = shift;
-	my $button_widget_extra2 = shift;
-	my $button_widget_extra3 = shift;
-	my $detail_message       = shift;
-	my $detail_checkbox      = shift;
+sub dlg_question_message (
+	$self,
+	$dlg_question_message,
+	$dlg_question_header,
+	$button_text_extra1   = undef,
+	$button_text_extra2   = undef,
+	$button_text_extra3   = undef,
+	$button_widget_extra1 = undef,
+	$button_widget_extra2 = undef,
+	$button_widget_extra3 = undef,
+	$detail_message       = undef,
+	$detail_checkbox      = undef,
+) {
 
 	my $question_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
 
@@ -202,17 +203,18 @@ sub dlg_question_message {
 	}
 }
 
-sub dlg_error_message {
-	my $self                 = shift;
-	my $dlg_error_message    = shift;
-	my $dlg_error_header     = shift;
-	my $button_text_extra1   = shift;
-	my $button_text_extra2   = shift;
-	my $button_text_extra3   = shift;
-	my $button_widget_extra1 = shift;
-	my $button_widget_extra2 = shift;
-	my $button_widget_extra3 = shift;
-	my $detail_message       = shift;
+sub dlg_error_message (
+	$self,
+	$dlg_error_message,
+	$dlg_error_header,
+	$button_text_extra1   = undef,
+	$button_text_extra2   = undef,
+	$button_text_extra3   = undef,
+	$button_widget_extra1 = undef,
+	$button_widget_extra2 = undef,
+	$button_widget_extra3 = undef,
+	$detail_message       = undef,
+) {
 
 	my $error_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
 
@@ -264,17 +266,18 @@ sub dlg_error_message {
 	return $error_response;
 }
 
-sub dlg_warning_message {
-	my $self                 = shift;
-	my $dlg_warning_message  = shift;
-	my $dlg_warning_header   = shift;
-	my $button_text_extra1   = shift;
-	my $button_text_extra2   = shift;
-	my $button_text_extra3   = shift;
-	my $button_widget_extra1 = shift;
-	my $button_widget_extra2 = shift;
-	my $button_widget_extra3 = shift;
-	my $detail_message       = shift;
+sub dlg_warning_message (
+	$self,
+	$dlg_warning_message,
+	$dlg_warning_header,
+	$button_text_extra1   = undef,
+	$button_text_extra2   = undef,
+	$button_text_extra3   = undef,
+	$button_widget_extra1 = undef,
+	$button_widget_extra2 = undef,
+	$button_widget_extra3 = undef,
+	$detail_message       = undef,
+) {
 
 	my $warning_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
 

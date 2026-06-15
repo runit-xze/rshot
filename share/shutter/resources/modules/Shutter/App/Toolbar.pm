@@ -25,8 +25,9 @@ package Shutter::App::Toolbar;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
 use Gtk3;
 
 #Glib
@@ -34,22 +35,19 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
-	my $sc = shift;
+sub new ($class, $sc) {
 
 	#constructor
 	my $self = {
 		_common => $sc,
-		_shf => Shutter::App::HelperFunctions->new($sc),
+		_shf    => Shutter::App::HelperFunctions->new($sc),
 	};
 
 	bless $self, $class;
 	return $self;
 }
 
-sub create_toolbar {
-	my $self = shift;
+sub create_toolbar ($self) {
 
 	my $d            = $self->{_common}->get_gettext;
 	my $window       = $self->{_common}->get_mainwindow;
@@ -72,11 +70,11 @@ sub create_toolbar {
 	#button selection
 	#--------------------------------------
 	my $image_select;
-	eval {
+	try {
 		my $ccursor_pb = Gtk3::Gdk::Cursor->new('left_ptr')->get_image->scale_simple($self->{_shf}->icon_size('large-toolbar'), 'bilinear');
 		$image_select = Gtk3::Image->new_from_pixbuf($ccursor_pb);
-	};
-	if ($@) {
+	}
+	catch ($e) {
 		if ($icontheme->has_icon('applications-accessories')) {
 			$image_select = Gtk3::Image->new_from_icon_name('applications-accessories', 'large-toolbar');
 		} else {
@@ -269,8 +267,7 @@ sub create_toolbar {
 	return $self->{_toolbar};
 }
 
-sub create_btoolbar {
-	my $self = shift;
+sub create_btoolbar ($self) {
 
 	my $d            = $self->{_common}->get_gettext;
 	my $window       = $self->{_common}->get_mainwindow;

@@ -25,24 +25,24 @@ package Shutter::App::Optional::Exif;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class) {
 
 	my $self = {};
 
 	#libimage-exiftool-perl
-	eval { require Image::ExifTool };
-	if ($@) {
+	try {
+		require Image::ExifTool;
+		$self->{_exiftool} = Image::ExifTool->new;
+	}
+	catch ($e) {
 		$self->{_exiftool} = FALSE;
-	} else {
-		$self->{_exiftool} = new Image::ExifTool;
 	}
 
 	bless $self, $class;
@@ -50,8 +50,7 @@ sub new {
 }
 
 #getter / setter
-sub get_exiftool {
-	my $self = shift;
+sub get_exiftool ($self) {
 	return $self->{_exiftool};
 }
 

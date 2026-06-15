@@ -25,8 +25,9 @@ package Shutter::Screenshot::Window;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
 
 #File operations
 use IO::File();
@@ -34,7 +35,7 @@ use IO::File();
 use Shutter::Screenshot::Main;
 use Shutter::Screenshot::History;
 use Data::Dumper;
-our @ISA = qw(Shutter::Screenshot::Main);
+use parent 'Shutter::Screenshot::Main';
 
 #Glib
 use Gtk3;
@@ -42,23 +43,22 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize, $windowresize_w, $windowresize_h, $hide_time, $mode, $auto_shape, $is_hidden, $show_visible, $ignore_type) {
 
 	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout)
-	my $self = $class->SUPER::new(shift, shift, shift, shift);
+	my $self = $class->SUPER::new($sc, $include_cursor, $delay, $notify_timeout);
 
 	#get params
-	$self->{_include_border} = shift;
-	$self->{_windowresize}   = shift;
-	$self->{_windowresize_w} = shift;
-	$self->{_windowresize_h} = shift;
-	$self->{_hide_time}      = shift;    #a short timeout to give the server a chance to redraw the area that was obscured
-	$self->{_mode}           = shift;
-	$self->{_auto_shape}     = shift;    #shape the window without XShape support
-	$self->{_is_hidden}      = shift;
-	$self->{_show_visible}   = shift;    #show user-visible windows only when selecting a window
-	$self->{_ignore_type}    = shift;    #Ignore possibly wrong type hints
+	$self->{_include_border} = $include_border;
+	$self->{_windowresize}   = $windowresize;
+	$self->{_windowresize_w} = $windowresize_w;
+	$self->{_windowresize_h} = $windowresize_h;
+	$self->{_hide_time}      = $hide_time;    #a short timeout to give the server a chance to redraw the area that was obscured
+	$self->{_mode}           = $mode;
+	$self->{_auto_shape}     = $auto_shape;    #shape the window without XShape support
+	$self->{_is_hidden}      = $is_hidden;
+	$self->{_show_visible}   = $show_visible;    #show user-visible windows only when selecting a window
+	$self->{_ignore_type}    = $ignore_type;    #Ignore possibly wrong type hints
 
 	#X11 protocol and XSHAPE ext
 	require X11::Protocol;
@@ -283,9 +283,7 @@ sub new {
 #~ }
 #~
 
-sub find_wm_window {
-	my $self = shift;
-	my $xid  = shift;
+sub find_wm_window ($self, $xid) {
 
 	do {
 		my ($qroot, $qparent, @qkids) = $self->{_x11}->QueryTree($xid);
@@ -295,14 +293,7 @@ sub find_wm_window {
 	} while (TRUE);
 }
 
-sub get_shape {
-	my $self      = shift;
-	my $xid       = shift;
-	my $orig      = shift;
-	my $l_cropped = shift;
-	my $r_cropped = shift;
-	my $t_cropped = shift;
-	my $b_cropped = shift;
+sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_cropped) {
 
 	print "$l_cropped, $r_cropped, $t_cropped, $b_cropped cropped\n" if $self->{_sc}->get_debug;
 
@@ -436,8 +427,7 @@ sub get_shape {
 
 }
 
-sub get_window_size {
-	my ($self, $wnck_window, $gdk_window, $border, $no_resize) = @_;
+sub get_window_size ($self, $wnck_window, $gdk_window, $border, $no_resize = undef) {
 
 	#windowresize is active
 	if ($self->{_mode} eq "window" || $self->{_mode} eq "tray_window" || $self->{_mode} eq "awindow" || $self->{_mode} eq "tray_awindow") {
@@ -498,8 +488,7 @@ sub get_window_size {
 	return ($xp, $yp, $wp, $hp);
 }
 
-sub update_highlighter {
-	my $self = shift;
+sub update_highlighter ($self) {
 
 	if (defined $self->{_c}{'cw'}{'gdk_window'} && defined $self->{_c}{'cw'}{'window'}) {
 
@@ -517,10 +506,7 @@ sub update_highlighter {
 
 }
 
-sub find_current_parent_window {
-	my $self             = shift;
-	my $event            = shift;
-	my $active_workspace = shift;
+sub find_current_parent_window ($self, $event, $active_workspace) {
 
 	#get all toplevel windows
 	my @wnck_windows = @{$self->{_wnck_screen}->get_windows_stacked};
@@ -574,8 +560,7 @@ sub find_current_parent_window {
 	return TRUE;
 }
 
-sub find_current_child_window {
-	my ($self, $event, $xwindow, $xparent, $depth, $limit, $type_hint) = @_;
+sub find_current_child_window ($self, $event, $xwindow, $xparent, $depth = undef, $limit = undef, $type_hint = undef) {
 
 	#reparenting depth and recursion limit
 	$depth = 0 unless defined $depth;
@@ -655,8 +640,7 @@ sub find_current_child_window {
 	return TRUE;
 }
 
-sub find_active_window {
-	my $self = shift;
+sub find_active_window ($self) {
 
 	my $gdk_window = $self->{_gdk_screen}->get_active_window;
 
@@ -670,8 +654,7 @@ sub find_active_window {
 	return FALSE;
 }
 
-sub find_region_for_window_type {
-	my ($self, $xwindow, $type_hint) = @_;
+sub find_region_for_window_type ($self, $xwindow, $type_hint = undef) {
 
 	#XQueryTree - query window tree information
 	my ($qroot, $qparent, @qkids) = $self->{_x11}->QueryTree($xwindow);
@@ -732,15 +715,7 @@ sub find_region_for_window_type {
 	return TRUE;
 }
 
-sub select_window {
-	my $self             = shift;
-	my $event            = shift;
-	my $active_workspace = shift;
-
-	#select child window
-	my $depth     = shift;
-	my $limit     = shift;
-	my $type_hint = shift;
+sub select_window ($self, $event, $active_workspace, $depth = undef, $limit = undef, $type_hint = undef) {
 
 	#root window size is minimum at startup
 	$self->{_min_size} = $self->{_root}->{w} * $self->{_root}->{h} * $self->{_dpi_scale} * $self->{_dpi_scale};
@@ -769,8 +744,7 @@ sub select_window {
 	return TRUE;
 }
 
-sub window {
-	my $self = shift;
+sub window ($self) {
 
 	#return value
 
@@ -1165,13 +1139,11 @@ sub window {
 	return $output;
 }
 
-sub get_mode {
-	my $self = shift;
+sub get_mode ($self) {
 	return $self->{_mode};
 }
 
-sub redo_capture {
-	my $self   = shift;
+sub redo_capture ($self) {
 	my $output = 3;
 
 	if (defined $self->{_history}) {
@@ -1267,31 +1239,26 @@ sub redo_capture {
 	return $output;
 }
 
-sub get_history {
-	my $self = shift;
+sub get_history ($self) {
 	return $self->{_history};
 }
 
-sub get_error_text {
-	my $self = shift;
+sub get_error_text ($self) {
 	return $self->{_error_text};
 }
 
-sub get_action_name {
-	my $self = shift;
+sub get_action_name ($self) {
 	return $self->{_action_name};
 }
 
-sub quit {
-	my $self = shift;
+sub quit ($self) {
 
 	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, TRUE);
 	Gtk3::Gdk::flush();
 
 }
 
-sub quit_eventh_only {
-	my $self = shift;
+sub quit_eventh_only ($self) {
 
 	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, FALSE);
 	Gtk3::Gdk::flush();

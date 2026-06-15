@@ -25,12 +25,13 @@ package Shutter::Screenshot::WindowName;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
 
 use Shutter::Screenshot::WindowXid;
 use Data::Dumper;
-our @ISA = qw(Shutter::Screenshot::WindowXid);
+use parent 'Shutter::Screenshot::WindowXid';
 
 #Glib and Gtk3
 use Gtk3;
@@ -38,11 +39,10 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize_active, $windowresize_w, $windowresize_h, $hide_time, $mode, $autoshape) {
 
 	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout, include_border, windowresize_active, windowresize_w, windowresize_h, hide_time, mode, autoshape)
-	my $self = $class->SUPER::new(shift, shift, shift, shift, shift, shift, shift, shift, shift, shift, shift);
+	my $self = $class->SUPER::new($sc, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize_active, $windowresize_w, $windowresize_h, $hide_time, $mode, $autoshape);
 
 	bless $self, $class;
 	return $self;
@@ -54,9 +54,7 @@ sub new {
 #~ }
 #~
 
-sub window_find_by_name {
-	my $self         = shift;
-	my $name_pattern = shift;
+sub window_find_by_name ($self, $name_pattern) {
 
 	my $active_workspace = $self->{_wnck_screen}->get_active_workspace;
 
@@ -71,15 +69,15 @@ sub window_find_by_name {
 
 		#check if window is on active workspace
 		if ($active_workspace && $win->is_on_workspace($active_workspace)) {
-			eval {
+			try {
 				if ($win->get_name =~ m/$name_pattern/i) {
 					$output = $self->window_by_xid($win->get_xid);
 					last;
 				}
-			};
-			if ($@) {
+			}
+			catch ($e) {
 				$output = 8;
-				$self->{_error_text} = $@;
+				$self->{_error_text} = $e;
 			}
 		}
 	}

@@ -23,14 +23,13 @@
 package Shutter::App::Autostart;
 
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
-sub new {
-	my $class = shift;
+sub new ($class) {
 
 	my $self = {};
 
@@ -44,12 +43,7 @@ sub new {
 	return $self;
 }
 
-sub create_autostart_file {
-	my $self           = shift;
-	my $dir            = shift;    # ~/.config/autostart in most cases
-	my $enabled        = shift;
-	my $min            = shift;
-	my $nonotification = shift;
+sub create_autostart_file ($self, $dir, $enabled, $min, $nonotification) {
 
 	#copy in order keep original data
 	my @data = @{$self->{_data}};

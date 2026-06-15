@@ -25,29 +25,28 @@ package Shutter::App::GlobalSettings;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class) {
 
 	my $self = {};
 
 	$self->{_image_quality} = {
-		"png" => undef,
-		"jpg" => undef,
+		"png"  => undef,
+		"jpg"  => undef,
 		"webp" => undef,
 		"avif" => undef
 	};
 
 	$self->{_default_image_quality} = {
-		"png" => 9,
-		"jpg" => 90,
+		"png"  => 9,
+		"jpg"  => 90,
 		"webp" => 98,
 		"avif" => 68
 	};
@@ -58,9 +57,7 @@ sub new {
 
 #getter / setter
 
-sub get_image_quality {
-	my $self = shift;
-	my $format = shift;
+sub get_image_quality ($self, $format) {
 	if (defined $self->{_image_quality}{$format}) {
 		return $self->{_image_quality}{$format};
 	} else {
@@ -68,8 +65,9 @@ sub get_image_quality {
 	}
 }
 
+# SKIP signatures: uses if (@_) getter/setter pattern
 sub set_image_quality {
-	my $self = shift;
+	my $self   = shift;
 	my $format = shift;
 	if (@_) {
 		$self->{_image_quality}{$format} = shift;
@@ -77,11 +75,10 @@ sub set_image_quality {
 	return $self->{_image_quality}{$format};
 }
 
-sub clear_quality_settings {
-	my $self = shift;
+sub clear_quality_settings ($self) {
 	$self->{_image_quality} = {
-		"png" => undef,
-		"jpg" => undef,
+		"png"  => undef,
+		"jpg"  => undef,
 		"webp" => undef,
 		"avif" => undef
 	};

@@ -25,8 +25,8 @@ package Shutter::App::AboutDialog;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 use Gtk3;
 
 #Glib
@@ -34,18 +34,16 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc) {
 
 	#constructor
-	my $self = {_sc => shift};
+	my $self = {_sc => $sc};
 
 	bless $self, $class;
 	return $self;
 }
 
-sub show {
-	my $self = shift;
+sub show ($self) {
 
 	my $shf          = Shutter::App::HelperFunctions->new($self->{_sc});
 	my $shutter_root = $self->{_sc}->get_root;

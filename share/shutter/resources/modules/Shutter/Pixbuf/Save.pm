@@ -25,8 +25,8 @@ package Shutter::Pixbuf::Save;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 use Gtk3;
 
@@ -39,11 +39,9 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
-
+sub new ($class, $common, $window) {
 	#constructor
-	my $self = {_common => shift, _window => shift};
+	my $self = {_common => $common, _window => $window};
 
 	#import shutter dialogs
 	my $current_window = $self->{_window} || $self->{_common}->get_mainwindow;
@@ -55,9 +53,7 @@ sub new {
 	return $self;
 }
 
-sub set_quality_setting {
-		my $self = shift;
-		my $filetype = shift;
+sub set_quality_setting ($self, $filetype) {
 		my $default_image_quality = {
 			"png" => 9,
 			"jpg" => 90,
@@ -77,11 +73,7 @@ sub set_quality_setting {
 		}
 }
 
-sub save_pdf_ps_svg {
-	my $self = shift;
-	my $filename = shift;
-	my $filetype = shift;
-	my $pixbuf = shift;
+sub save_pdf_ps_svg ($self, $filename, $filetype, $pixbuf) {
 
 	my $class = {
 		pdf => 'Cairo::PdfSurface',
@@ -101,12 +93,7 @@ sub save_pdf_ps_svg {
 	undef $cr;
 }
 
-sub save_pixbuf_to_file {
-	my $self     = shift;
-	my $pixbuf   = shift;
-	my $filename = shift;
-	my $filetype = shift;
-	my $quality  = shift;
+sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 	
 	$self->{_quality} = $quality;
 
@@ -234,10 +221,7 @@ sub save_pixbuf_to_file {
 #use imagemagick for all filetypes that are not
 #supported by the gdk-pixbuf libs
 #e.g. gif
-sub use_imagemagick_to_save {
-	my $self     = shift;
-	my $file     = shift;
-	my $new_file = shift;
+sub use_imagemagick_to_save ($self, $file, $new_file) {
 
 	#escape filename first
 	$file     = quotemeta $file;

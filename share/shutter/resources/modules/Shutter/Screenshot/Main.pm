@@ -25,8 +25,9 @@ package Shutter::Screenshot::Main;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
 
 use File::Temp qw/ tempfile tempdir /;
 
@@ -38,14 +39,13 @@ use Data::Dumper;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $sc, $include_cursor, $delay, $notify_timeout) {
 
 	my $self = {
-		_sc             => shift,
-		_include_cursor => shift,
-		_delay          => shift,
-		_notify_timeout => shift,
+		_sc             => $sc,
+		_include_cursor => $include_cursor,
+		_delay          => $delay,
+		_notify_timeout => $notify_timeout,
 	};
 
 	#gdk screen
@@ -56,7 +56,7 @@ sub new {
 
 	my $window = Gtk3::Window->new('toplevel');
 	#root window
-	eval {
+	try {
 		$self->{_root} = Gtk3::GdkX11::X11Window::lookup_for_display(
 			$window->get_display,
 			Gtk3::GdkX11::x11_get_default_root_xwindow());
@@ -84,8 +84,8 @@ sub new {
 		for (my $wcount = 0 ; $wcount < $self->{_wnck_screen}->get_workspace_count ; $wcount++) {
 			push(@{$self->{_workspaces}}, $self->{_wnck_screen}->get_workspace($wcount));
 		}
-	};
-	if ($@) {
+	}
+	catch ($e) {
 		# it's wayland
 	}
 
@@ -93,9 +93,7 @@ sub new {
 	return $self;
 }
 
-sub get_clipbox {
-	my $self   = shift;
-	my $region = shift;
+sub get_clipbox ($self, $region) {
 
 	#create shutter region object
 	my $sr = Shutter::Geometry::Region->new();
@@ -103,35 +101,30 @@ sub get_clipbox {
 	return $sr->get_clipbox($region);
 }
 
-sub update_workspaces {
-	my $self = shift;
+sub update_workspaces ($self) {
 	for (my $wcount = 0 ; $wcount < $self->{_wnck_screen}->get_workspace_count ; $wcount++) {
 		push(@{$self->{_workspaces}}, $self->{_wnck_screen}->get_workspace($wcount));
 	}
 	return $self->{_wnck_screen}->get_workspace_count;
 }
 
-sub get_root_and_geometry {
-	my $self = shift;
+sub get_root_and_geometry ($self) {
 	return ($self->{_root}, $self->{_root}->{x}, $self->{_root}->{y}, $self->{_root}->{w}, $self->{_root}->{h});
 }
 
-sub get_root_and_current_monitor_geometry {
-	my $self       = shift;
+sub get_root_and_current_monitor_geometry ($self) {
 	my $mainwindow = $self->{_root};
 	my $mon1       = $self->{_gdk_screen}->get_monitor_geometry($self->{_gdk_screen}->get_monitor_at_window($mainwindow));
 	return ($self->{_root}, $mon1->{x}, $mon1->{y}, $mon1->{width}, $mon1->{height});
 }
 
-sub get_current_monitor {
-	my $self = shift;
+sub get_current_monitor ($self) {
 	my ($window_at_pointer, $x, $y, $mask) = $self->{_root}->get_pointer;
 	my $mon = $self->{_gdk_screen}->get_monitor_geometry($self->{_gdk_screen}->get_monitor_at_point($x, $y));
 	return ($mon);
 }
 
-sub get_monitor_region {
-	my $self   = shift;
+sub get_monitor_region ($self) {
 	my $region = Cairo::Region->create;
 	for (my $i = 0 ; $i < $self->{_gdk_screen}->get_n_monitors ; $i++) {
 		$region->union_rectangle($self->{_gdk_screen}->get_monitor_geometry($i));
@@ -139,8 +132,7 @@ sub get_monitor_region {
 	return $region;
 }
 
-sub ungrab_pointer_and_keyboard {
-	my ($self, $ungrab_server, $quit_event_handler, $quit_main) = @_;
+sub ungrab_pointer_and_keyboard ($self, $ungrab_server, $quit_event_handler, $quit_main) {
 
 	#ungrab pointer and keyboard
 	Gtk3::Gdk::X11->ungrab_server if $ungrab_server;
@@ -214,8 +206,7 @@ sub ungrab_pointer_and_keyboard {
 #~
 #~ }
 
-sub get_pixbuf_from_drawable {
-	my ($self, $drawable, $x, $y, $width, $height, $region) = @_;
+sub get_pixbuf_from_drawable ($self, $drawable, $x, $y, $width, $height, $region) {
 
 	my ($pixbuf, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = (0, 0, 0, 0, 0);
 
@@ -308,12 +299,12 @@ sub get_pixbuf_from_drawable {
 			}
 
 			#get the pixbuf from drawable and save the file
-			eval {
+			try {
 				if ($width > 0 && $height > 0) {
 					$pixbuf = Gtk3::Gdk::pixbuf_get_from_window($drawable, $x, $y, $width, $height);
 				}
-			};
-			if ($@) {
+			}
+			catch ($e) {
 				$pixbuf = 5;
 				Gtk3->main_quit;
 				return FALSE;
@@ -371,9 +362,7 @@ sub get_pixbuf_from_drawable {
 }
 
 #code ported and partially borrowed from gnome-screenshot and Gimp
-sub include_cursor {
-
-	my ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) = @_;
+sub include_cursor ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) {
 
 	require lib;
 	import lib $self->{_sc}->get_root . "/share/shutter/resources/modules";
@@ -446,9 +435,9 @@ sub include_cursor {
 		unless ($cursor_pixbuf) {
 			warn "WARNING: There was an error while getting the default cursor image - using one of our image files\n";
 			my $icons_path = $self->{_sc}->get_root . "/share/shutter/resources/icons";
-			eval { $cursor_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($icons_path . "/Normal.cur"); };
-			if ($@) {
-				warn "ERROR: There was an error while loading the image file: $@\n";
+			try { $cursor_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($icons_path . "/Normal.cur"); }
+			catch ($e) {
+				warn "ERROR: There was an error while loading the image file: $e\n";
 			}
 		}
 

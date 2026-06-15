@@ -25,17 +25,15 @@ package Shutter::Geometry::Region;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 use Gtk3;
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
-sub new {
-	my $class = shift;
-
+sub new ($class) {
 	#constructor
 	my $self = {};
 
@@ -43,9 +41,7 @@ sub new {
 	return $self;
 }
 
-sub get_clipbox {
-	my $self   = shift;
-	my $region = shift;
+sub get_clipbox ($self, $region) {
 
 	#store clipbox here
 	my $clip = undef;

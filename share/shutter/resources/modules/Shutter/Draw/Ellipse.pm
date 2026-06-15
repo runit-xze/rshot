@@ -22,7 +22,8 @@
 
 package Shutter::Draw::Ellipse;
 
-use 5.010;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 use Moo;
 
 use GooCanvas2;
@@ -43,8 +44,7 @@ has stroke_color => ( is => "rw", lazy => 1, default => sub { shift->app->stroke
 has fill_color   => ( is => "rw", lazy => 1, default => sub { shift->app->fill_color } );
 has line_width   => ( is => "rw", lazy => 1, default => sub { shift->app->line_width } );
 
-sub setup {
-    my ( $self, $event, $copy_item, $numbered ) = @_;
+sub setup ($self, $event, $copy_item, $numbered) {
 
     $self->event($event);
     $self->copy_item($copy_item);
@@ -94,8 +94,7 @@ sub setup {
     return $item;
 }
 
-sub _setup_item_ellipse {
-    my ( $self, $item ) = @_;
+sub _setup_item_ellipse ($self, $item) {
 
     $item->{ellipse} = GooCanvas2::CanvasEllipse->new(
         'parent'                => $self->app->canvas->get_root_item,
@@ -109,8 +108,7 @@ sub _setup_item_ellipse {
     );
 }
 
-sub _setup_ellipse_numbered {
-    my ( $self, $item ) = @_;
+sub _setup_ellipse_numbered ($self, $item) {
 
     my $number = $self->app->get_highest_auto_digit + 1;
 
@@ -155,8 +153,7 @@ sub _setup_ellipse_numbered {
     $self->app->handle_embedded( 'hide', $item );
 }
 
-sub _check_event_and_copy_item {
-    my $self = shift;
+sub _check_event_and_copy_item ($self) {
 
     if ( $self->event ) {
         $self->X( $self->event->x );
@@ -176,8 +173,7 @@ sub _check_event_and_copy_item {
     }
 }
 
-sub _create_item {
-    my $self = shift;
+sub _create_item ($self) {
 
     my $item = GooCanvas2::CanvasRect->new(
         'parent'          => $self->app->canvas->get_root_item,

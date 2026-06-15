@@ -25,12 +25,12 @@ package Shutter::Screenshot::WindowXid;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 use Shutter::Screenshot::Window;
 use Data::Dumper;
-our @ISA = qw(Shutter::Screenshot::Window);
+use parent 'Shutter::Screenshot::Window';
 
 #Glib and Gtk3
 use Gtk3;
@@ -38,11 +38,10 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $shutter_common, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize_active, $windowresize_w, $windowresize_h, $hide_time, $mode, $autoshape) {
 
 	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout, include_border, windowresize_active, windowresize_w, windowresize_h, hide_time, mode, autoshape)
-	my $self = $class->SUPER::new(shift, shift, shift, shift, shift, shift, shift, shift, shift, shift, shift);
+	my $self = $class->SUPER::new($shutter_common, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize_active, $windowresize_w, $windowresize_h, $hide_time, $mode, $autoshape);
 
 	bless $self, $class;
 	return $self;
@@ -54,9 +53,7 @@ sub new {
 #~ }
 #~
 
-sub window_by_xid {
-	my $self = shift;
-	my $xid  = shift;
+sub window_by_xid ($self, $xid) {
 
 	my $dummy_window = Gtk3::Window->new('toplevel');
 	my $gdk_window = Gtk3::GdkX11::X11Window->foreign_new_for_display(
@@ -128,8 +125,7 @@ sub window_by_xid {
 	return $output;
 }
 
-sub redo_capture {
-	my $self   = shift;
+sub redo_capture ($self) {
 	my $output = 3;
 	if (defined $self->{_history}) {
 		my ($last_drawable, $lxp, $lyp, $lwp, $lhp, $lregion, $wxid, $gxid) = $self->{_history}->get_last_capture;
@@ -138,23 +134,19 @@ sub redo_capture {
 	return $output;
 }
 
-sub get_history {
-	my $self = shift;
+sub get_history ($self) {
 	return $self->{_history};
 }
 
-sub get_error_text {
-	my $self = shift;
+sub get_error_text ($self) {
 	return $self->{_error_text};
 }
 
-sub get_action_name {
-	my $self = shift;
+sub get_action_name ($self) {
 	return $self->{_action_name};
 }
 
-sub quit {
-	my $self = shift;
+sub quit ($self) {
 
 	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, FALSE);
 	Gtk3::Gdk::flush();

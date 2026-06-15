@@ -25,8 +25,8 @@ package Shutter::Pixbuf::Load;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 use Gtk3;
 
@@ -40,26 +40,17 @@ use Glib qw/TRUE FALSE/;
 #--------------------------------------
 
 ##################public subs##################
-sub new {
-	my $class = shift;
-
+sub new ($class, $common, $window, $no_error_dialog) {
 	#constructor
-	my $self = {_common => shift, _window => shift, _no_error_dialog => shift};
+	my $self = {_common => $common, _window => $window, _no_error_dialog => $no_error_dialog};
 
 	bless $self, $class;
 	return $self;
 }
 
-sub load {
-	my $self     = shift;
-	my $filename = shift;
-	my $width    = shift;
-	my $height   = shift;
-	my $sratio   = shift;
-	my $rotate   = shift;
-
+sub load ($self, $filename, $width, $height, $sratio, $rotate) {
 	my $pixbuf = undef;
-	eval {
+	try {
 		if (defined $width && defined $height && defined $sratio) {
 			$pixbuf = Gtk3::Gdk::Pixbuf->new_from_file_at_scale($filename, $width, $height, $sratio);
 		} elsif (defined $width && defined $height) {
@@ -67,11 +58,8 @@ sub load {
 		} else {
 			$pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($filename);
 		}
-	};
-
-	#handle possible error messages
-	if ($@) {
-
+	}
+	catch ($e) {
 		unless (defined $self->{_no_error_dialog} && $self->{_no_error_dialog}) {
 
 			#import shutter dialogs
@@ -88,11 +76,9 @@ sub load {
 			my $response = $sd->dlg_error_message(
 				sprintf($d->get("Error while opening image %s."), "'" . $name . $type . "'"),
 				$d->get("There was an error opening the image."),
-				undef, undef, undef, undef, undef, undef, $@->message
+				undef, undef, undef, undef, undef, undef, $e->message
 			);
-
 		}
-
 	}
 
 	#read exif and rotate accordingly
@@ -103,20 +89,13 @@ sub load {
 	return $pixbuf;
 }
 
-sub get_option {
-	my $self   = shift;
-	my $pixbuf = shift;
-	my $option = shift;
-
+sub get_option ($self, $pixbuf, $option) {
 	return FALSE unless (defined $pixbuf && defined $option);
 
 	return $pixbuf->get_option($option);
 }
 
-sub auto_rotate {
-	my $self   = shift;
-	my $pixbuf = shift;
-
+sub auto_rotate ($self, $pixbuf) {
 	my %orientation_flags = (
 		1 => 'none,-1',
 		2 => 'none,1',

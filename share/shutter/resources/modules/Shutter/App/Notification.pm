@@ -25,8 +25,8 @@ package Shutter::App::Notification;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 use Net::DBus;
 
@@ -35,18 +35,17 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class) {
 
 	my $self = {};
 
 	#Use notifications object
-	eval {
+	try {
 		$self->{_notifications_service} = Net::DBus->session->get_service('org.freedesktop.Notifications');
 		$self->{_notifications_object}  = $self->{_notifications_service}->get_object('/org/freedesktop/Notifications', 'org.freedesktop.Notifications');
-	};
-	if ($@) {
-		print "Warning: $@", "\n";
+	}
+	catch ($e) {
+		print "Warning: $e", "\n";
 	}
 
 	#last nid
@@ -56,38 +55,34 @@ sub new {
 	return $self;
 }
 
-sub show {
-	my $self    = shift;
-	my $summary = shift;
-	my $body    = shift;
-	my $nid     = shift || $self->{_nid};
+sub show ($self, $summary, $body, $nid = undef) {
+	$nid //= $self->{_nid};
 
 	#notification
-	eval {
+	try {
 		if (defined $self->{_notifications_object}) {
 			$self->{_nid} = $self->{_notifications_object}->Notify('Shutter', $nid, "gtk-dialog-info", $summary, $body, [], {}, -1);
 		}
-	};
-	if ($@) {
-		print "NotifyWarning: $@", "\n";
+	}
+	catch ($e) {
+		print "NotifyWarning: $e", "\n";
 	}
 
 	return $self->{_nid};
 }
 
-sub close {
-	my $self = shift;
-	my $nid  = shift || $self->{_nid};
+sub close ($self, $nid = undef) {
+	$nid //= $self->{_nid};
 
 	#close notification
 	if ($nid) {
-		eval {
+		try {
 			if (defined $self->{_notifications_object}) {
 				$self->{_notifications_object}->CloseNotification($nid);
 			}
-		};
-		if ($@) {
-			print "CloseNotificationWarning: $@", "\n";
+		}
+		catch ($e) {
+			print "CloseNotificationWarning: $e", "\n";
 		}
 		return TRUE;
 	}

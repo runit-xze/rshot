@@ -25,8 +25,8 @@ package Shutter::Pixbuf::Border;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 use Gtk3;
 
@@ -35,11 +35,9 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
-
+sub new ($class, $common) {
 	#constructor
-	my $self = {_common => shift};
+	my $self = {_common => $common};
 
 	bless $self, $class;
 	return $self;
@@ -50,12 +48,7 @@ sub new {
 #~ print "$self dying at\n";
 #~ }
 
-sub create_border {
-	my $self   = shift;
-	my $pixbuf = shift;
-	my $width  = shift;
-	my $color  = shift;
-
+sub create_border ($self, $pixbuf, $width, $color) {
 	#create new pixbuf
 	my $tmp_pbuf = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, $pixbuf->get_width + 2 * $width, $pixbuf->get_height + 2 * $width);
 
@@ -70,9 +63,9 @@ sub create_border {
 	$tmp_pbuf->fill($pixel);
 
 	#copy source pixbuf to new pixbuf
-	eval { $pixbuf->copy_area(0, 0, $pixbuf->get_width, $pixbuf->get_height, $tmp_pbuf, $width, $width); };
-	if ($@) {
-		print "create border failed: $@\n" if $self->{_common}->get_debug;
+	try { $pixbuf->copy_area(0, 0, $pixbuf->get_width, $pixbuf->get_height, $tmp_pbuf, $width, $width); }
+	catch ($e) {
+		print "create border failed: $e\n" if $self->{_common}->get_debug;
 		return $pixbuf;
 	}
 

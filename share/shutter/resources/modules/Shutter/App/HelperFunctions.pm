@@ -25,8 +25,8 @@ package Shutter::App::HelperFunctions;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 use Gtk3;
 
 #Glib
@@ -35,11 +35,10 @@ use Glib qw/TRUE FALSE/;
 #--------------------------------------
 
 ##################public subs##################
-sub new {
-	my $class = shift;
+sub new ($class, $common) {
 
 	#constructor
-	my $self = {_common => shift};
+	my $self = {_common => $common};
 
 	#import shutter dialogs
 	my $current_window = $self->{_common}->get_mainwindow;
@@ -52,8 +51,7 @@ sub new {
 	return $self;
 }
 
-sub xdg_open {
-	my ($self, $dialog, $link, $user_data) = @_;
+sub xdg_open ($self, $dialog, $link, $user_data) {
 	my @args = ("xdg-open", "$link");
 	system(@args);
 	if ($?) {
@@ -64,8 +62,7 @@ sub xdg_open {
 	}
 }
 
-sub xdg_open_mail {
-	my ($self, $dialog, $mail, @user_data) = @_;
+sub xdg_open_mail ($self, $dialog, $mail, @user_data) {
 
 	my @cmd = 'xdg-email';
 	push @cmd, $mail if $mail;
@@ -79,8 +76,7 @@ sub xdg_open_mail {
 	}
 }
 
-sub nautilus_sendto {
-	my ($self, $user_data) = @_;
+sub nautilus_sendto ($self, $user_data) {
 	system('nautilus-sendto', $user_data);
 	if ($?) {
 		my $response = $self->{_dialogs}->dlg_error_message(
@@ -90,24 +86,21 @@ sub nautilus_sendto {
 	}
 }
 
-sub file_exists {
-	my ($self, $filename) = @_;
+sub file_exists ($self, $filename) {
 	return FALSE unless $filename;
 	$filename = $self->switch_home_in_file($filename);
 	return TRUE if (-f $filename && -r $filename);
 	return FALSE;
 }
 
-sub folder_exists {
-	my ($self, $folder) = @_;
+sub folder_exists ($self, $folder) {
 	return FALSE unless $folder;
 	$folder = $self->switch_home_in_file($folder);
 	return TRUE if (-d $folder && -r $folder);
 	return FALSE;
 }
 
-sub uri_exists {
-	my ($self, $filename) = @_;
+sub uri_exists ($self, $filename) {
 	return FALSE unless $filename;
 	$filename = $self->switch_home_in_file($filename);
 	my $new_giofile = Glib::IO::File::new_for_uri($filename);
@@ -115,23 +108,19 @@ sub uri_exists {
 	return FALSE;
 }
 
-sub file_executable {
-	my ($self, $filename) = @_;
+sub file_executable ($self, $filename) {
 	return FALSE unless $filename;
 	$filename = $self->switch_home_in_file($filename);
 	return TRUE if (-x $filename);
 	return FALSE;
 }
 
-sub switch_home_in_file {
-	my ($self, $filename) = @_;
+sub switch_home_in_file ($self, $filename) {
 	$filename =~ s/^~/$ENV{ HOME }/;    #switch ~ in path to /home/username
 	return $filename;
 }
 
-sub utf8_decode {
-	my $self   = shift;
-	my $string = shift;
+sub utf8_decode ($self, $string) {
 
 	#see https://bugs.launchpad.net/shutter/+bug/347821
 	utf8::decode $string;
@@ -139,8 +128,7 @@ sub utf8_decode {
 	return $string;
 }
 
-sub usage {
-	my $self = shift;
+sub usage ($self) {
 
 	print "shutter [options]\n";
 	print "Available options:\n\n"
@@ -168,9 +156,7 @@ sub usage {
 
 # to help migration from Gtk2 to Gtk3
 # Native Gtk3::IconSize doesn't work for some reason
-sub icon_size {
-	my $self = shift;
-	my $size = shift;
+sub icon_size ($self, $size) {
 	my @result = Glib::Object::Introspection->invoke('Gtk', undef, 'icon_size_lookup', Glib::Object::Introspection->convert_sv_to_enum('Gtk3::IconSize', $size));
 	my $one = shift @result;
 	die "icon_size($size)=$one, @result" if $one != 1;
@@ -178,9 +164,7 @@ sub icon_size {
 }
 
 # to help migration from Gtk2 to Gtk3
-sub accel {
-	my $self = shift;
-	my $str = shift;
+sub accel ($self, $str) {
 	Glib::Object::Introspection->invoke('Gtk', undef, 'accelerator_parse', $str);
 }
 

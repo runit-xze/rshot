@@ -23,8 +23,8 @@
 package Shutter::Upload::FTP;
 
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 use Net::FTP;
 use URI;
 use URI::Split qw(uri_split);
@@ -34,15 +34,14 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
+sub new ($class, $debug_cparam, $shutter_root, $gettext_object, $main_gtk_window, $mode) {
 
 	my $self = {
-		_debug_cparam    => shift,
-		_shutter_root    => shift,
-		_gettext_object  => shift,
-		_main_gtk_window => shift,
-		_mode            => shift    #active or passive
+		_debug_cparam    => $debug_cparam,
+		_shutter_root    => $shutter_root,
+		_gettext_object  => $gettext_object,
+		_main_gtk_window => $main_gtk_window,
+		_mode            => $mode    #active or passive
 	};
 
 	#connection settings
@@ -63,8 +62,7 @@ sub new {
 	return $self;
 }
 
-sub login {
-	my ($self, $uri, $username, $password) = @_;
+sub login ($self, $uri, $username, $password) {
 
 	#uri should start with ftp:// to parse it correctly
 	$uri = "ftp://" . $uri unless ($uri =~ /^ftp:\/\//);
@@ -111,8 +109,7 @@ sub login {
 	return (FALSE);
 }
 
-sub upload {
-	my ($self, $upload_filename) = @_;
+sub upload ($self, $upload_filename) {
 
 	#store parms as object vars
 	$self->{_filename} = $upload_filename;
@@ -133,8 +130,7 @@ sub upload {
 	return (FALSE);
 }
 
-sub quit {
-	my $self = shift;
+sub quit ($self) {
 
 	#QUIT CONNECTION
 	$self->{_ftp}->quit;

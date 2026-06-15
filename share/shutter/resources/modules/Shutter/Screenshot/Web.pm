@@ -25,8 +25,8 @@ package Shutter::Screenshot::Web;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 
 use File::Temp qw/ tempfile tempdir /;
 
@@ -41,14 +41,11 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
-	my $sc = shift;
-
+sub new ($class, $sc, $timeout, $width) {
 	my $self = {
 		_sc      => $sc,
-		_timeout => shift,
-		_width   => shift,
+		_timeout => $timeout,
+		_width   => $width,
 		_shf => Shutter::App::HelperFunctions->new($sc),
 	};
 
@@ -56,14 +53,11 @@ sub new {
 	return $self;
 }
 
-sub web {
-	my $self = shift;
+sub web ($self) {
 	return FALSE;
 }
 
-sub dlg_website {
-	my $self = shift;
-	my $url  = shift;
+sub dlg_website ($self, $url) {
 
 	#gettext
 	my $d = $self->{_sc}->get_gettext;
@@ -76,8 +70,7 @@ sub dlg_website {
 	return 6;
 }
 
-sub update_gui {
-	my $self = shift;
+sub update_gui ($self) {
 
 	while (Gtk3::events_pending()) {
 		Gtk3::main_iteration();
@@ -87,8 +80,7 @@ sub update_gui {
 	return TRUE;
 }
 
-sub redo_capture {
-	my $self   = shift;
+sub redo_capture ($self) {
 	my $output = 3;
 	if (defined $self->{_history}) {
 		$output = $self->dlg_website($self->{_url});
@@ -96,18 +88,15 @@ sub redo_capture {
 	return $output;
 }
 
-sub get_history {
-	my $self = shift;
+sub get_history ($self) {
 	return $self->{_history};
 }
 
-sub get_error_text {
-	my $self = shift;
+sub get_error_text ($self) {
 	return $self->{_error_text};
 }
 
-sub get_action_name {
-	my $self = shift;
+sub get_action_name ($self) {
 	return $self->{_action_name};
 }
 

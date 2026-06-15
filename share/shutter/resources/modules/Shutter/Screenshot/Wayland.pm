@@ -1,13 +1,12 @@
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try'; no warnings 'experimental::try';
 use Net::DBus;
 use Net::DBus::Reactor;
 
 package Shutter::Screenshot::Wayland;
 
-sub xdg_portal {
-	my $screenshooter = shift;
+sub xdg_portal ($screenshooter) {
 	my $reactor = Net::DBus::Reactor->main;
 	my $bus = Net::DBus->find;
 	my $me = $bus->get_unique_name;
@@ -16,7 +15,7 @@ sub xdg_portal {
 
 	my $pixbuf;
 
-	eval {
+	try {
 		my $portal_service = $bus->get_service('org.freedesktop.portal.Desktop');
 		my $portal = $portal_service->get_object('/org/freedesktop/portal/desktop', 'org.freedesktop.portal.Screenshot');
 
@@ -47,9 +46,9 @@ sub xdg_portal {
 		print "xdg portal: got file ".$giofile->get_path."\n";
 		$pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($giofile->get_path);
 		$giofile->delete;
-	};
-	if ($@) {
-		$screenshooter->{_error_text} = $@;
+	}
+	catch ($e) {
+		$screenshooter->{_error_text} = $e;
 		return 9;
 	};
 

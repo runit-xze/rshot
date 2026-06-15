@@ -25,8 +25,9 @@ package Shutter::App::Menu;
 #modules
 #--------------------------------------
 use utf8;
-use strict;
-use warnings;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
 use Gtk3;
 
 #Glib
@@ -34,9 +35,7 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
-	my $sc = shift;
+sub new ($class, $sc) {
 
 	#constructor
 	my $self = {
@@ -48,8 +47,7 @@ sub new {
 	return $self;
 }
 
-sub create_menu {
-	my $self = shift;
+sub create_menu ($self) {
 
 	my $d            = $self->{_common}->get_gettext;
 	my $shutter_root = $self->{_common}->get_root;
@@ -97,11 +95,7 @@ sub create_menu {
 	return $self->{_menubar};
 }
 
-sub fct_ret_file_menu {
-	my $self         = shift;
-	my $accel_group  = shift;
-	my $d            = shift;
-	my $shutter_root = shift;
+sub fct_ret_file_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
 	my $icontheme = $self->{_common}->get_theme;
@@ -197,11 +191,7 @@ sub fct_ret_file_menu {
 	return $self->{_menu_file};
 }
 
-sub fct_ret_edit_menu {
-	my $self         = shift;
-	my $accel_group  = shift;
-	my $d            = shift;
-	my $shutter_root = shift;
+sub fct_ret_edit_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
 	my $icontheme = $self->{_common}->get_theme;
@@ -257,11 +247,7 @@ sub fct_ret_edit_menu {
 	return $self->{_menu_edit};
 }
 
-sub fct_ret_view_menu {
-	my $self         = shift;
-	my $accel_group  = shift;
-	my $d            = shift;
-	my $shutter_root = shift;
+sub fct_ret_view_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
 	my $icontheme = $self->{_common}->get_theme;
@@ -307,11 +293,7 @@ sub fct_ret_view_menu {
 	return $self->{_menu_view};
 }
 
-sub fct_ret_session_menu {
-	my $self         = shift;
-	my $accel_group  = shift;
-	my $d            = shift;
-	my $shutter_root = shift;
+sub fct_ret_session_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
 	my $icontheme = $self->{_common}->get_theme;
@@ -339,11 +321,7 @@ sub fct_ret_session_menu {
 	return $self->{_menu_session};
 }
 
-sub fct_ret_help_menu {
-	my $self         = shift;
-	my $accel_group  = shift;
-	my $d            = shift;
-	my $shutter_root = shift;
+sub fct_ret_help_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
 	my $icontheme = $self->{_common}->get_theme;
@@ -389,11 +367,7 @@ sub fct_ret_help_menu {
 	return $self->{_menu_help};
 }
 
-sub fct_ret_new_menu {
-	my $self         = shift;
-	my $accel_group  = shift;
-	my $d            = shift;
-	my $shutter_root = shift;
+sub fct_ret_new_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
 	my $icontheme = $self->{_common}->get_theme;
@@ -412,11 +386,11 @@ sub fct_ret_new_menu {
 	#selection
 	$self->{_menuitem_selection} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('_Selection'));
 
-	eval {
+	try {
 		my $ccursor_pb = Gtk3::Gdk::Cursor->new('left_ptr')->get_image->scale_simple($self->{_shf}->icon_size('menu'), 'bilinear');
 		$self->{_menuitem_selection}->set_image(Gtk3::Image->new_from_pixbuf($ccursor_pb));
-	};
-	if ($@) {
+	}
+	catch ($e) {
 		if ($icontheme->has_icon('applications-accessories')) {
 			$self->{_menuitem_selection}->set_image(Gtk3::Image->new_from_icon_name('applications-accessories', 'menu'));
 		} else {
@@ -518,11 +492,7 @@ sub fct_ret_new_menu {
 	return $self->{_menu_new};
 }
 
-sub fct_ret_actions_menu {
-	my $self         = shift;
-	my $accel_group  = shift;
-	my $d            = shift;
-	my $shutter_root = shift;
+sub fct_ret_actions_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
 	my $icontheme = $self->{_common}->get_theme;
@@ -608,11 +578,7 @@ sub fct_ret_actions_menu {
 
 }
 
-sub fct_ret_actions_menu_large {
-	my $self         = shift;
-	my $accel_group  = shift;
-	my $d            = shift;
-	my $shutter_root = shift;
+sub fct_ret_actions_menu_large ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
 	my $icontheme = $self->{_common}->get_theme;
