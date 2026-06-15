@@ -36,7 +36,7 @@ use warnings;
 use diagnostics;
 use 5.10.1;
 
-use Carp::Always;
+#use Carp::Always;
 
 BEGIN {
 	use Glib::Object::Introspection;
