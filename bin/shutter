@@ -217,6 +217,7 @@ require Shutter::App::Toolbar;
 require Shutter::App::Optional::Exif;
 require Shutter::App::AfterCapturePipeline;
 require Shutter::App::PinToScreen;
+require Shutter::App::UI;
 
 #region
 require Shutter::Geometry::Region;
@@ -405,16 +406,13 @@ sub STARTUP {
 
 	#main window
 	#--------------------------------------
-	$window = Gtk3::ApplicationWindow->new($app);
-	#--------------------------------------
+	my $ui = Shutter::App::UI->new(cli => $sc);
+	$window = $ui->create_main_window($app);
 
 	#create app objects
 	#--------------------------------------
-	$sc->set_mainwindow($window);
 	$sas  = Shutter::App::Autostart->new();
-	$sm   = Shutter::App::Menu->new($sc);
-	$st   = Shutter::App::Toolbar->new($sc);
-	$sd   = Shutter::App::SimpleDialogs->new($window);
+	my ($sm, $st, $sd) = ($ui->setup_app_objects())[1,2,3];
 
 	$sp    = Shutter::Pixbuf::Save->new($sc);
 	$lp    = Shutter::Pixbuf::Load->new($sc);
@@ -578,15 +576,6 @@ sub STARTUP {
 	$SIG{INT}  = sub { evt_delete_window('', 'quit') };
 	$SIG{TERM} = sub { evt_delete_window('', 'quit') };
 
-	#main window gui
-	#--------------------------------------
-	Gtk3::Window::set_default_icon_name("shutter");
-	$window->signal_connect('delete-event' => \&evt_delete_window);
-	$window->set_border_width(0);
-	$window->set_resizable(TRUE);
-	$window->set_focus_on_map(TRUE);
-	$window->set_default_size(-1, 500);
-
 	#UPDATE WINDOW LIST (signal is connected when GUI is loaded)
 	
 	$x11_supported = 1;
@@ -622,9 +611,6 @@ sub STARTUP {
 	$notebook_settings->set_tab_pos('left');
 
 	$settings_dialog = Gtk3::Dialog->new(SHUTTER_NAME . " - " . $d->get("Preferences"), $window, [qw/modal destroy-with-parent/], 'gtk-close' => 'close');
-
-	my $vbox = Gtk3::VBox->new(FALSE, 0);
-	$window->add($vbox);
 
 	#attach signal handlers to subroutines and pack menu
 	#--------------------------------------
