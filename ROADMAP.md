@@ -5,7 +5,8 @@ This document outlines the ongoing work to transition Shutter from a monolithic 
 ## Current Status
 
 ### Completed (Committed)
-- `Shutter::App::UI` module created for UI orchestration
+- `Shutter::App::UI` module created for UI orchestration (backward compatibility)
+- `Shutter::App::UI::Windows` for main window creation
 - ShareX `.sxcu` uploader support implemented with URL shortening via TinyURL
 - QR code display via `qrencode` integrated
 - AfterCapturePipeline module for configurable task workflows
@@ -60,9 +61,10 @@ Shutter::App::CLI (entry point)
 ## Phase 2: Handler Migration (In Progress)
 
 - [x] Create handler modules in `Shutter::App::Handlers/`
-- [ ] Migrate handler modules to use CLI object instead of globals
+- [x] `Shutter::App::Handlers::Core` - Core event handlers (screenshot, window, menu actions)
+- [ ] Migrate handler modules to use CLI/Common objects instead of globals
 - [ ] Register handlers in `Shutter::App::Handlers` registry
-- [ ] Update CLI.pm to instantiate and connect all handlers
+- [ ] Update Menus.pm to instantiate all handlers
 
 ## Phase 3: API Modernization (Next)
 
@@ -90,8 +92,8 @@ Shutter::App::CLI (entry point)
 
 - Handler modules still reference globals like `$sc`, `$d`, `$session_screens`
 - Some event modules call subroutines that haven't been migrated yet
-- Settings dialog integration needs completion
-- `ShareX.pm` package declaration incorrectly uses `package ShareX` instead of `package Shutter::Upload::ShareX`
+- Settings dialog integration needs completion (needs vbox_workflow widget)
+- `Menus.pm` currently calls package subroutines like `fct_undo()`, `fct_redo()` which need to be methods
 
 ## Dependencies
 
