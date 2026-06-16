@@ -1,0 +1,116 @@
+###################################################
+#
+#  Copyright (C) 2008-2013 Mario Kemper <mario.kemper@gmail.com>
+#  Copyright (C) 2020-2021 Google LLC, contributed by Alexey Sokolov <sokolov@google.com>
+#
+#  This file is part of Shutter.
+#
+#  Shutter is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Shutter is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Shutter; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###################################################
+
+package Shutter::App::Core::SettingsManager;
+
+use utf8;
+use v5.40;
+use feature 'try';
+no warnings 'experimental::try';
+
+use Moo;
+use Gtk3;
+use Glib qw/TRUE FALSE/;
+use File::Copy qw/cp mv/;
+use File::Temp qw/tempfile/;
+use File::Spec;
+use XML::Simple;
+use IO::File;
+
+has '_common' => (is => 'ro', required => 1);
+has '_settings' => (is => 'rw', default => sub { {} });
+
+sub save_settings {
+    my ($self, $profilename) = @_;
+    my $sc = $self->_common;
+    my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+    my $d = $sc->get_gettext;
+
+    my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
+    $settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml" if defined $profilename && $profilename ne "";
+
+    my %settings = %{$self->_settings};
+    $settings{'general'}->{'app_version'} = $sc->get_version . $sc->get_rev;
+
+    eval {
+        my ($tmpfh, $tmpfilename) = tempfile(UNLINK => 1);
+        XMLout(\%settings, OutputFile => $tmpfilename);
+        mv($tmpfilename, $settingsfile);
+    };
+    if ($@) {
+        $sd->dlg_error_message($@, $d->get("Settings could not be saved!"));
+    }
+    return TRUE;
+}
+
+sub load_settings {
+    my ($self, $data, $profilename) = @_;
+    my $sc = $self->_common;
+    my $shf = $sc->get_helper_functions;
+    my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+    my $d = $sc->get_gettext;
+
+    my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
+    $settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml" if defined $profilename;
+
+    my $settings_xml;
+    if ($shf->file_exists($settingsfile)) {
+        eval {
+            $settings_xml = XMLin(IO::File->new($settingsfile));
+        };
+        if ($@) {
+            $sd->dlg_error_message($@, $d->get("Settings could not be restored!"));
+            unlink $settingsfile;
+        }
+    }
+    return $settings_xml;
+}
+
+sub load_accounts {
+    my ($self, $profilename) = @_;
+    my $sc = $self->_common;
+    my $shf = $sc->get_helper_functions;
+    my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+
+    my $accountsfile = "$ENV{ HOME }/.shutter/accounts.xml";
+    $accountsfile = "$ENV{ HOME }/.shutter/profiles/$profilename\_accounts.xml" if defined $profilename;
+
+    my %accounts;
+    if ($shf->file_exists($accountsfile)) {
+        my $accounts_xml;
+        eval { $accounts_xml = XMLin(IO::File->new($accountsfile)) };
+        if ($@) {
+            $sd->dlg_error_message($@, $d->get("Account-settings could not be restored!"));
+            unlink $accountsfile;
+        } else {
+            foreach my $ac (keys %{$accounts_xml}) {
+                if ($shf->file_exists($accounts_xml->{$ac}->{path})) {
+                    $accounts{$ac} = $accounts_xml->{$ac};
+                }
+            }
+        }
+    }
+    return \%accounts;
+}
+
+1;
