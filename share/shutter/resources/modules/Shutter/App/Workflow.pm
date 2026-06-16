@@ -1,6 +1,6 @@
 ###################################################
 #
-#  Copyright (C) 2008-2013 Mario Kemper <mario.kemper@gmail.com}
+#  Copyright (C) 2008-2013 Mario Kemper <mario.kemper@gmail.com>
 #  Copyright (C) 2025 Shutter Team
 #
 #  This file is part of Shutter.

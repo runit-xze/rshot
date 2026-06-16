@@ -41,38 +41,79 @@ use Shutter::App::AfterCapturePipeline;
 use Shutter::App::PinToScreen;
 use Shutter::Geometry::Region;
 
+use Shutter::App::Handlers::Core;
+use Shutter::App::Handlers::Workflow;
+use Shutter::App::Handlers::Workflow_Init;
+use Shutter::App::Handlers::Workflow_Control;
+use Shutter::App::Handlers::Workflow_Save;
+use Shutter::App::Handlers::Workflow_Session;
+use Shutter::App::Handlers::Workflow_Integrate;
+use Shutter::App::Handlers::Workflow_Post;
+use Shutter::App::Handlers::Init_Handlers;
+use Shutter::App::Handlers::Init_Accounts;
+use Shutter::App::Handlers::Init_Model;
+
+use Shutter::App::Core::SessionManager;
+use Shutter::App::Core::SettingsManager;
+use Shutter::App::Core::ScreenshotHandler;
+use Shutter::App::Core::UploadManager;
+
+use Glib qw/TRUE FALSE/;
+
 sub initialize ($cli) {
     my $sc = $cli->sc;
     
+    # Initialize session state hash
+    $cli->{session_screens} = {};
+    $cli->{session_start_screen} = {};
+    
+    # Create core managers
+    my $session_manager = Shutter::App::Core::SessionManager->new(_common => $sc);
+    $cli->{session_manager} = $session_manager;
+    
+    my $settings_manager = Shutter::App::Core::SettingsManager->new(_common => $sc);
+    $cli->{settings_manager} = $settings_manager;
+    
+    my $screenshot_handler = Shutter::App::Core::ScreenshotHandler->new(_common => $sc);
+    $cli->{screenshot_handler} = $screenshot_handler;
+    
+    my $upload_manager = Shutter::App::Core::UploadManager->new(_common => $sc);
+    $cli->{upload_manager} = $upload_manager;
+    
+    # Create UI components
+    my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+    $cli->{sd} = $sd;
+    
+    my $sp = Shutter::Pixbuf::Save->new($sc);
+    $cli->{sp} = $sp;
+    
+    my $lp = Shutter::Pixbuf::Load->new($sc);
+    $cli->{lp} = $lp;
+    
+    my $lp_ne = Shutter::Pixbuf::Load->new($sc, undef, TRUE);
+    $cli->{lp_ne} = $lp_ne;
+    
+    # Create after-capture pipeline
+    my $d = $sc->get_gettext;
+    my $acp = Shutter::App::AfterCapturePipeline->new($sc, $d, $cli->window);
+    $cli->{acp} = $acp;
+    
+    my $pins = Shutter::App::PinToScreen->new();
+    $cli->{pins} = $pins;
+    
+    # Store for backward compatibility with bin/shutter subroutines
+    $cli->{sas} = Shutter::App::Autostart->new();
+    $cli->{sm} = Shutter::App::Menu->new($sc);
+    $cli->{st} = Shutter::App::Toolbar->new($sc);
+    
+    # Initialize global state
     my %globals = (
         plugins => {},
         accounts => {},
         settings => {},
         supported_formats => [],
     );
-    
-    my $sas  = Shutter::App::Autostart->new();
-    my $sm   = Shutter::App::Menu->new($sc);
-    my $st   = Shutter::App::Toolbar->new($sc);
-    my $sd   = Shutter::App::SimpleDialogs->new($cli->window);
-    
-    my $sp    = Shutter::Pixbuf::Save->new($sc);
-    my $lp    = Shutter::Pixbuf::Load->new($sc);
-    my $lp_ne = Shutter::Pixbuf::Load->new($sc, undef, TRUE);
-    
-    my $acp  = Shutter::App::AfterCapturePipeline->new($sc, $sc->get_gettext, $cli->window);
-    my $pins = Shutter::App::PinToScreen->new();
-    
-    $cli->{_globals} = \%globals;
-    $cli->{sas} = $sas;
-    $cli->{sm} = $sm;
-    $cli->{st} = $st;
-    $cli->{sd} = $sd;
-    $cli->{sp} = $sp;
-    $cli->{lp} = $lp;
-    $cli->{lp_ne} = $lp_ne;
-    $cli->{acp} = $acp;
-    $cli->{pins} = $pins;
+    $cli->{globals} = \%globals;
     
     return \%globals;
 }
@@ -91,7 +132,8 @@ Shutter::App::Init – Core object initialization
 
 =head1 DESCRIPTION
 
-Creates and initializes all core application objects. Returns a hashref
-containing global state used by other modules.
+Creates and initializes all core application objects including managers, UI components,
+and the after-capture pipeline. Returns a hashref containing global state used by
+other modules.
 
 =cut

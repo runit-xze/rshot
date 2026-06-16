@@ -14,13 +14,11 @@ This document outlines the ongoing work to transition Shutter from a monolithic 
 - Modernized codebase to Perl v5.40 (header pragmas, try/catch, subroutine signatures)
 - Dropped 5 external dependencies, replaced with core Perl implementations
 - Removed gnome-web-photo and Image::Magick/Proc::Simple requirements
-
-### In Progress (Untracked Files)
-- `Shutter::App::CLI` - New application entry point
-- `Shutter::App::Constants` - Project-wide constants
-- `Shutter::App::Init` - Core object initialization
-- `Shutter::App::Session` - Session tab management
-- `Shutter::App::Workflow` - After-capture pipeline setup
+- `Shutter::App::CLI` - New application entry point (committed)
+- `Shutter::App::Constants` - Project-wide constants (committed)
+- `Shutter::App::Init` - Core object initialization (committed)
+- `Shutter::App::Session` - Session tab management (committed)
+- `Shutter::App::Workflow` - After-capture pipeline setup (committed)
 - Core modules in `Shutter::App::Core/`:
   - `SessionManager` - Session state and tab management
   - `SettingsManager` - Settings persistence and profiles
@@ -50,24 +48,23 @@ Shutter::App::CLI (entry point)
 └── Shutter::App::Event::* (event handlers)
 ```
 
-## Phase 1: Module Integration (In Progress)
+## Phase 1: Module Integration (Completed)
 
-- [ ] Wire `Shutter::App::CLI` as primary entry point (replace bin/shutter bottom section)
-- [ ] Complete `Shutter::App::Init::initialize` to create all core objects
-- [ ] Integrate `Shutter::App::UI::Windows` for window creation
-- [ ] Integrate `Shutter::App::UI::Menus` for menu/toolbar signals
-- [ ] Connect `Shutter::App::Session` to notebook widget
-- [ ] Ensure `AfterCapturePipeline` is initialized and connected to settings
+- [x] Wire `Shutter::App::CLI` as primary entry point (replace bin/shutter bottom section)
+- [x] Complete `Shutter::App::Init::initialize` to create all core objects
+- [x] Integrate `Shutter::App::UI::Windows` for window creation
+- [x] Integrate `Shutter::App::UI::Menus` for menu/toolbar signals
+- [x] Connect `Shutter::App::Session` to notebook widget
+- [x] Ensure `AfterCapturePipeline` is initialized and connected to settings
 
-## Phase 2: Handler Migration
+## Phase 2: Handler Migration (In Progress)
 
-- [ ] Migrate screenshot action handlers from `bin/shutter` to `Shutter::App::Handlers::Screenshot_Actions`
-- [ ] Migrate edit handlers to `Shutter::App::Handlers::Edit_*` modules
-- [ ] Migrate dialog handlers to `Shutter::App::Handlers::Dialogs_*` modules
-- [ ] Migrate upload handlers to `Shutter::App::Handlers::Upload_*` modules
-- [ ] Migrate menu handlers to `Shutter::App::Handlers::Menu_*` modules
+- [x] Create handler modules in `Shutter::App::Handlers/`
+- [ ] Migrate handler modules to use CLI object instead of globals
+- [ ] Register handlers in `Shutter::App::Handlers` registry
+- [ ] Update CLI.pm to instantiate and connect all handlers
 
-## Phase 3: API Modernization
+## Phase 3: API Modernization (Next)
 
 - [ ] Replace package-global variables with object attributes
 - [ ] Replace direct subroutine calls with handler registry pattern (`Shutter::App::Handlers`)
@@ -94,6 +91,7 @@ Shutter::App::CLI (entry point)
 - Handler modules still reference globals like `$sc`, `$d`, `$session_screens`
 - Some event modules call subroutines that haven't been migrated yet
 - Settings dialog integration needs completion
+- `ShareX.pm` package declaration incorrectly uses `package ShareX` instead of `package Shutter::Upload::ShareX`
 
 ## Dependencies
 
