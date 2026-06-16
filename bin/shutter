@@ -215,6 +215,8 @@ require Shutter::App::Notification;
 require Shutter::App::ShutterNotification;
 require Shutter::App::Toolbar;
 require Shutter::App::Optional::Exif;
+require Shutter::App::AfterCapturePipeline;
+require Shutter::App::PinToScreen;
 
 #region
 require Shutter::Geometry::Region;
@@ -384,6 +386,10 @@ my $winresize_w;
 my $wnck_screen;
 my $x11_supported;
 my $zoom_active;
+my $acp;   # Shutter::App::AfterCapturePipeline
+my $pins;  # Shutter::App::PinToScreen
+my $vbox_workflow;  # Workflow config widget for pipeline saving
+my $new_key_screenshot;  # For pipeline upload callback
 #data structures
 	#-------------------------------------------------------
 	my %plugins;    	#hash to store plugin infos
@@ -413,6 +419,10 @@ sub STARTUP {
 	$sp    = Shutter::Pixbuf::Save->new($sc);
 	$lp    = Shutter::Pixbuf::Load->new($sc);
 	$lp_ne = Shutter::Pixbuf::Load->new($sc, undef, TRUE);
+
+	# ShareX feature modules
+	$acp  = Shutter::App::AfterCapturePipeline->new($sc, $sc->get_gettext, $window);
+	$pins = Shutter::App::PinToScreen->new();
 	#--------------------------------------
 
 	#Clipboard
@@ -2694,6 +2704,27 @@ sub STARTUP {
 		$notebook_settings->append_page($vbox_plugins, $label_plugins);
 	}
 
+	# --- After Capture Pipeline / Workflow tab (TODO-ShareX.md #1) ---
+	if ($acp) {
+		my $label_workflow = Gtk3::Label->new;
+		$label_workflow->set_markup($d->get("Workflow"));
+
+		my ($pipeline_widget, $get_pipeline_steps) = $acp->build_config_widget;
+
+		$vbox_workflow = Gtk3::VBox->new(FALSE, 6);
+		$vbox_workflow->set_border_width(8);
+		$vbox_workflow->pack_start($pipeline_widget, TRUE, TRUE, 0);
+
+		# Load saved pipeline from settings XML
+		if (defined $settings_xml->{'general'}->{'pipeline_steps'}) {
+			$acp->load_from_json($settings_xml->{'general'}->{'pipeline_steps'});
+		}
+
+		# Store the getter so fct_save_settings can read steps back
+		$vbox_workflow->{_get_pipeline_steps} = $get_pipeline_steps;
+		$notebook_settings->append_page($vbox_workflow, $label_workflow);
+	}
+
 	#profiles
 	$profiles_box->pack_start(Gtk3::Label->new($d->get("Profile") . ":"), FALSE, TRUE, 1);
 	$profiles_box->pack_start($combobox_settings_profiles,                TRUE,  TRUE, 6);
@@ -4804,6 +4835,12 @@ sub STARTUP {
 		$settings{'general'}->{'ftp_password'} = $ftp_password_entry->get_text();
 		$settings{'general'}->{'ftp_wurl'}     = $ftp_wurl_entry->get_text();
 
+		#pipeline steps (ShareX workflow)
+		if ($vbox_workflow && $vbox_workflow->{_get_pipeline_steps}) {
+			my @steps = $vbox_workflow->{_get_pipeline_steps}->();
+			$settings{'general'}->{'pipeline_steps'} = JSON::MaybeXS->new->encode(\@steps);
+		}
+
 		#plugins
 		foreach my $plugin_key (sort keys %plugins) {
 			$settings{'plugins'}->{$plugin_key}->{'name'}        = $plugin_key;
@@ -6729,9 +6766,6 @@ sub STARTUP {
 
 			}
 
-			my $new_key_screenshot           = undef;
-			my $new_key_screenshot_thumbnail = undef;
-
 			#Dont add it to session if no_session-parameter is set
 			unless ($sc->get_no_session) {
 
@@ -6819,6 +6853,39 @@ sub STARTUP {
 			fct_control_main_window('show');
 			return FALSE;
 
+		}
+
+		# --- After Capture Pipeline (TODO-ShareX.md #1 & #2) ---
+		# Run any configured pipeline steps after the screenshot is fully saved.
+		if ($acp && $acp->get_steps) {
+			my $upload_link_container = \ '';
+			$acp->execute({
+				filename    => $screenshot_name,
+				pixbuf      => $screenshot,
+				clipboard   => $clipboard,
+				upload_link => \$upload_link_container,
+				editor_cb   => sub {
+					my ($fn) = @_;
+					if ($progname_active->get_active) {
+						my $model         = $progname->get_model();
+						my $progname_iter = $progname->get_active_iter();
+						if ($progname_iter) {
+							my $progname_value = $model->get_value($progname_iter, 2);
+							my $appname_value  = $model->get_value($progname_iter, 1);
+							fct_open_with_program($progname_value, $appname_value);
+						}
+					}
+				},
+				upload_cb   => sub {
+					my ($fn, $sxcu_path) = @_;
+					# Trigger the upload dialog for the given file
+					dlg_upload($new_key_screenshot) if $new_key_screenshot;
+				},
+				pin_cb      => sub {
+					my ($pbuf) = @_;
+					$pins->pin($pbuf, $sc) if $pins;
+				},
+			});
 		}
 
 		fct_control_main_window('show', $present_after_active->get_active);
@@ -8021,7 +8088,7 @@ sub STARTUP {
 				$action_name     =~ s/(\/|\#|\>|\<|\%|\*)/-/g;
 				$screenshot_name =~ s/\$name/$action_name/g;
 
-				#no blanks (special wildcard)
+					#no blanks (special wildcard)
 				$action_name     =~ s/\ //g;
 				$screenshot_name =~ s/\$nb_name/$action_name/g;
 			} else {
@@ -8032,6 +8099,40 @@ sub STARTUP {
 		}
 
 		print "Parsed \$name: $screenshot_name\n"
+			if $sc->get_debug;
+
+		# --- ShareX-style macro templates (TODO-ShareX.md #3) ---
+		# Evaluate at capture time for consistency across all profiles.
+		my @lt = localtime(time);
+		my ($sec, $min, $hour, $mday, $mon, $year) = @lt;
+		$year += 1900; $mon += 1;
+
+		# Date/time macros: %y %mo %d %h %mi %s
+		$screenshot_name =~ s/%y/sprintf('%04d', $year)/ge;
+		$screenshot_name =~ s/%mo/sprintf('%02d', $mon)/ge;
+		$screenshot_name =~ s/%d/sprintf('%02d', $mday)/ge;
+		$screenshot_name =~ s/%h/sprintf('%02d', $hour)/ge;
+		$screenshot_name =~ s/%mi/sprintf('%02d', $min)/ge;
+		$screenshot_name =~ s/%s/sprintf('%02d', $sec)/ge;
+
+		# %pn = profile name (ShareX calls it "project name")
+		$screenshot_name =~ s/%pn/$current_pname/g;
+
+		# %wt = window title (same as $name but ShareX-style)
+		if ($x11_supported && $screenshooter) {
+			my $wt = $screenshooter->get_action_name // 'unknown';
+			utf8::decode $wt;
+			$wt =~ s/(\/|\#|\>|\<|\%|\*)/-/g;
+			$screenshot_name =~ s/%wt/$wt/g;
+		} else {
+			$screenshot_name =~ s/%wt/unknown/g;
+		}
+
+		# %wx %wy %ww %wh = screenshot width/height at capture (aliases)
+		$screenshot_name =~ s/%ww/$swidth/g;
+		$screenshot_name =~ s/%wh/$sheight/g;
+
+		print "Parsed ShareX macros: $screenshot_name\n"
 			if $sc->get_debug;
 
 		return $screenshot_name;

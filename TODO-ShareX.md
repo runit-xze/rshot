@@ -4,21 +4,21 @@ This document tracks upcoming features to bring ShareX-like capabilities to Shut
 
 ## 1. The "After Capture" Task Pipeline
 **Priority:** High | **Effort:** Medium | **Impact:** Massive
-- [ ] Build a configurable queue of actions that execute sequentially after a screenshot is taken.
-- [ ] Transition `CustomUploader.pm` from a singular "Upload" action to a step within a plugin-based task manager.
-- [ ] Support workflows like: `[Save to disk] -> [Open in Editor] -> [Upload to Catbox] -> [Copy Link to Clipboard]`.
-- [ ] Design choice needed: Keep UI in the Preferences dialog or add a dedicated "Workflow" configuration tab.
+- [x] Build a configurable queue of actions that execute sequentially after a screenshot is taken.
+- [x] Transition `CustomUploader.pm` from a singular "Upload" action to a step within a plugin-based task manager.
+- [x] Support workflows like: `[Save to disk] -> [Open in Editor] -> [Upload to Catbox] -> [Copy Link to Clipboard]`.
+- [x] Design choice needed: Keep UI in the Preferences dialog or add a dedicated "Workflow" configuration tab.
 
 ## 2. "Pin to Screen"
 **Priority:** Medium | **Effort:** Low | **Impact:** High
-- [ ] Create a simple overlay window that renders the image buffer, allowing a captured region to float on top of all other windows.
-- [ ] Add a quick toggle or keyboard shortcut to activate "Pin to Screen" for the most recent capture.
+- [x] Create a simple overlay window that renders the image buffer, allowing a captured region to float on top of all other windows.
+- [x] Add a quick toggle or keyboard shortcut to activate "Pin to Screen" for the most recent capture.
 
 ## 3. File Naming Templates
 **Priority:** Medium | **Effort:** Low | **Impact:** High
-- [ ] Implement string formatter macros for file naming (e.g., `%y-%mo-%d_%h-%mi-%s` for date/time or `%pn` for project name).
-- [ ] Apply formatting before saving the file to `~/Pictures/Shutter`.
-- [ ] Note: Shutter currently supports `%Y-%m-%d` via `strftime`. Evaluate extending this to full macro templates.
+- [x] Implement string formatter macros for file naming (e.g., `%y-%mo-%d_%h-%mi-%s` for date/time or `%pn` for project name).
+- [x] Apply formatting before saving the file to `~/Pictures/Shutter`.
+- [x] Note: Shutter currently supports `%Y-%m-%d` via `strftime`. Evaluate extending this to full macro templates.
 
 ## 4. Direct Clipboard/OCR Workflow
 **Priority:** Low | **Effort:** High | **Impact:** Medium
@@ -28,6 +28,6 @@ This document tracks upcoming features to bring ShareX-like capabilities to Shut
 
 ## 5. "After Upload" Actions
 **Priority:** Medium | **Effort:** Medium | **Impact:** Medium
-- [ ] Build a system for actions following a successful `.sxcu` upload.
-- [ ] Implement URL shortener integration (e.g., TinyURL or Bitly).
+- [x] Build a system for actions following a successful `.sxcu` upload.
+- [x] Implement URL shortener integration (e.g., TinyURL or Bitly).
 - [ ] Implement QR Code generation for the returned link to display on screen.

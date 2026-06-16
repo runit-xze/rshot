@@ -8,9 +8,16 @@ use JSON::MaybeXS;
 use LWP::UserAgent;
 use HTTP::Request::Common;
 use Glib qw/TRUE FALSE/;
+use IPC::Cmd qw(can_run);
+use URI::Escape;
+use File::Temp;
 
 use Shutter::Upload::Shared;
 our @ISA = qw(Shutter::Upload::Shared);
+
+# Stores the most recently uploaded URL for pipeline access
+my $_last_url = '';
+sub get_last_url { return $_last_url }
 
 sub new ($class, $sxcu_path, $debug_cparam, $shutter_root, $gettext_object, $main_gtk_window, $ua) {
 	my $self = $class->SUPER::new($sxcu_path, $debug_cparam, $shutter_root, $gettext_object, $main_gtk_window, $ua);
@@ -176,10 +183,44 @@ sub upload ($self, $upload_filename, $username, $password) {
 			
 			# Clean up url
 			$final_url =~ s/^\s+|\s+$//g;
-			
-			$self->{_links}{'status'} = 200;
+
+			# --- After Upload Actions ---
+			my $after = $self->{_sxcu}->{AfterUpload} // {};
+
+			# URL Shortening via TinyURL
+			if ($after->{shorten_url} && $final_url =~ m{^https?://}) {
+				try {
+					my $shorten_ua  = LWP::UserAgent->new(timeout => 10, env_proxy => 1);
+					my $shorten_rsp = $shorten_ua->get(
+						'https://tinyurl.com/api-create.php?url=' . URI::Escape::uri_escape($final_url)
+					);
+					if ($shorten_rsp->is_success) {
+						my $short = $shorten_rsp->decoded_content;
+						$short =~ s/\s+//g;
+						$final_url = $short if $short =~ m{^https?://};
+					}
+				} catch ($e) {
+					print "URL shortening failed: $e\n" if $self->{_debug_cparam};
+				}
+			}
+
+			$_last_url = $final_url;
+			$self->{_links}{'status'}      = 200;
 			$self->{_links}{'direct_link'} = $final_url;
-			$self->{_links}{'post_link'} = $final_url;
+			$self->{_links}{'post_link'}   = $final_url;
+
+			# QR Code display via qrencode (if available and requested)
+			if ($after->{show_qr} && can_run('qrencode')) {
+				my $tmpfile = File::Temp::tempnam('/tmp', 'shutter_qr_') . '.png';
+				my $escaped = $final_url;
+				$escaped =~ s/'/'\''/g;
+				system("qrencode -o '$tmpfile' -s 5 '$escaped' 2>/dev/null");
+				if (-f $tmpfile) {
+					$self->_show_qr_dialog($tmpfile, $final_url);
+					unlink $tmpfile;
+				}
+			}
+
 		} else {
 			$self->{_links}{'status'} = "Upload failed: " . $rsp->status_line . "\n" . $rsp->content;
 		}
@@ -189,6 +230,47 @@ sub upload ($self, $upload_filename, $username, $password) {
 	}
 
 	return %{$self->{_links}};
+}
+
+# Display a QR code image in a small dialog alongside the URL
+sub _show_qr_dialog ($self, $qr_path, $url) {
+	return unless -f $qr_path;
+
+	my $dialog = Gtk3::Dialog->new(
+		'Upload Complete - QR Code',
+		$self->{_main_gtk_window},
+		[qw/destroy-with-parent/],
+		'gtk-ok' => 'accept'
+	);
+	$dialog->set_default_size(320, 400);
+
+	my $vbox = $dialog->get_content_area;
+
+	my $url_label = Gtk3::Label->new('');
+	$url_label->set_markup("<b>Upload URL:</b>");
+	$url_label->set_alignment(0, 0.5);
+	$vbox->pack_start($url_label, FALSE, FALSE, 4);
+
+	my $url_entry = Gtk3::Entry->new;
+	$url_entry->set_text($url);
+	$url_entry->set_editable(FALSE);
+	$vbox->pack_start($url_entry, FALSE, FALSE, 2);
+
+	my $qr_label = Gtk3::Label->new('Scan to open on another device:');
+	$qr_label->set_alignment(0, 0.5);
+	$vbox->pack_start($qr_label, FALSE, FALSE, 4);
+
+	try {
+		my $pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($qr_path);
+		my $img    = Gtk3::Image->new_from_pixbuf($pixbuf);
+		$vbox->pack_start($img, TRUE, TRUE, 0);
+	} catch ($e) {
+		$vbox->pack_start(Gtk3::Label->new('(Could not load QR image)'), FALSE, FALSE, 0);
+	}
+
+	$dialog->show_all;
+	$dialog->run;
+	$dialog->destroy;
 }
 
 1;
