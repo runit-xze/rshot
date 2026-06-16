@@ -27,141 +27,148 @@ no warnings 'experimental::try';
 use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
+use URI::Escape qw(uri_unescape);
 
 has cli => (is => 'ro', required => 1);
 
-	sub fct_integrate_screenshot_in_notebook {
-		my ($giofile, $pixbuf, $history, $count) = @_;
+sub fct_integrate_screenshot_in_notebook {
+    my ($self, $giofile, $pixbuf, $history, $count) = @_;
+    my $cli = $self->cli;
+    my $d = $cli->sc->get_gettext;
+    my $session_screens = $cli->{_session_screens};
+    my $session_start_screen = $cli->{_session_start_screen};
+    my $notebook = $cli->{_notebook};
+    my $shf = $cli->shf;
 
-		#check parameters
-		return FALSE unless $giofile;
+    #check parameters
+    return FALSE unless $giofile;
 
-		unless ($giofile->query_exists) {
-			fct_show_status_message(1, $giofile->get_path . " " . $d->get("not found"));
-			return FALSE;
-		}
+    unless ($giofile->query_exists) {
+        $self->fct_show_status_message(1, $giofile->get_path . " " . $d->get("not found")) if defined &fct_show_status_message;
+        return FALSE;
+    }
 
-		#check mime type
-		my ($mime_type) = Glib::Object::Introspection->invoke('Gio', undef, 'content_type_guess', $giofile->get_path);
-		$mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;    #FIXME
-		if ($mime_type =~ m/(pdf|ps|svg)/ig) {
+    #check mime type
+    my ($mime_type) = Glib::Object::Introspection->invoke('Gio', undef, 'content_type_guess', $giofile->get_path);
+    $mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;    #FIXME
+    if ($mime_type =~ m/(pdf|ps|svg)/ig) {
+        return FALSE;
+    }
 
-			#not a supported mime type
-			#~ my $response = $sd->dlg_error_message(
-			#~ sprintf ( $d->get(  "Error while opening image %s." ), "'" . $giofile->get_path . "'" ) ,
-			#~ $d->get( "There was an error opening the image." ),
-			#~ undef, undef, undef,
-			#~ undef, undef, undef,
-			#~ $d->get( "MimeType not supported." )
-			#~ );
-			#~ fct_show_status_message( 1, $giofile->get_path . " " . $d->get("not supported") );
-			return FALSE;
-		}
+    #add to recentmanager
+    Gtk3::RecentManager::get_default->add_item($giofile->get_path);
 
-		#add to recentmanager
-		Gtk3::RecentManager::get_default->add_item($giofile->get_path);
+    my $num_files = $session_start_screen->{'first_page'}->{'num_session_files'};
 
-		#FIXME
-		my $num_files = $session_start_screen{'first_page'}->{'num_session_files'};
+    #append a page to notebook using with label == filename
+    my $fname = $shf->utf8_decode(uri_unescape($giofile->get_basename));
+    my $key   = 0;
+    my $indx  = 0;
+    if (defined $num_files && $num_files > 0) {
+        if (defined $history && $history->get_history) {
+            $indx = $num_files + 1;
 
-		#append a page to notebook using with label == filename
-		my $fname = $shf->utf8_decode(unescape_string_for_display($giofile->get_basename));
-		my $key   = 0;
-		my $indx  = 0;
-		if (defined $num_files && $num_files > 0) {
-			if (defined $history && $history->get_history) {
-				$indx = $num_files + 1;
+            #update it (e.g. when taking more than one screenshot when still loading session)
+            $session_start_screen->{'first_page'}->{'num_session_files'} = $indx;
+        } elsif (defined $count) {
+            $indx = $count;
+        } else {
+            $indx = $num_files + 1;
+            while ($indx < fct_get_latest_tab_key()) {
+                $indx++;
+            }
 
-				#update it (e.g. when taking more than one screenshot when still loading session)
-				$session_start_screen{'first_page'}->{'num_session_files'} = $indx;
-			} elsif (defined $count) {
-				$indx = $count;
-			} else {
-				$indx = $num_files + 1;
-				while ($indx < fct_get_latest_tab_key()) {
-					$indx++;
-				}
+            #update it (e.g. when taking more than one screenshot when still loading session)
+            $session_start_screen->{'first_page'}->{'num_session_files'} = $indx;
+        }
+    } else {
+        $indx = fct_get_latest_tab_key() if defined &fct_get_latest_tab_key;
+    }
 
-				#update it (e.g. when taking more than one screenshot when still loading session)
-				$session_start_screen{'first_page'}->{'num_session_files'} = $indx;
-			}
-		} else {
-			$indx = fct_get_latest_tab_key();
-		}
+    $key = "[" . $indx . "] - $fname";
 
-		$key = "[" . $indx . "] - $fname";
+    #store the history object
+    if (defined $history && $history->get_history) {
+        $session_screens->{$key}->{'history'}              = $history;
+        $session_start_screen->{'first_page'}->{'history'} = $history;
+        $session_screens->{$key}->{'history_timestamp'}    = time;
+    }
 
-		#~ print $key, "-", $giofile->to_string, "\n";
+    #setup tab label (thumb, preview etc.)
+    my $hbox_tab_label = Gtk3::HBox->new(FALSE, 0);
+    my $close_icon     = Gtk3::Image->new_from_icon_name('window-close', 'menu');
 
-		#store the history object
-		if (defined $history && $history->get_history) {
-			$session_screens{$key}->{'history'}              = $history;
-			$session_start_screen{'first_page'}->{'history'} = $history;
-			$session_screens{$key}->{'history_timestamp'}    = time;
-		}
+    $session_screens->{$key}->{'tab_icon'} = Gtk3::Image->new;
 
-		#setup tab label (thumb, preview etc.)
-		my $hbox_tab_label = Gtk3::HBox->new(FALSE, 0);
-		my $close_icon     = Gtk3::Image->new_from_icon_name('window-close', 'menu');
+    #setup tab label
+    my $tab_close_button = Gtk3::Button->new;
+    $tab_close_button->set_relief('none');
+    $tab_close_button->set_image($close_icon);
+    $tab_close_button->set_name('tab-close-button');
 
-		$session_screens{$key}->{'tab_icon'} = Gtk3::Image->new;
+    my $tab_label = Gtk3::Label->new($key);
+    $tab_label->set_ellipsize('middle');
+    $tab_label->set_width_chars(20);
+    $hbox_tab_label->pack_start($session_screens->{$key}->{'tab_icon'}, FALSE, FALSE, 1);
+    $hbox_tab_label->pack_start($tab_label,                           TRUE,  TRUE,  1);
+    $hbox_tab_label->pack_start(Gtk3::HBox->new,                      TRUE,  TRUE,  1);
+    $hbox_tab_label->pack_start($tab_close_button,                    FALSE, FALSE, 1);
+    $hbox_tab_label->show_all;
 
-		#setup tab label
-		my $tab_close_button = Gtk3::Button->new;
-		$tab_close_button->set_relief('none');
-		$tab_close_button->set_image($close_icon);
-		$tab_close_button->set_name('tab-close-button');
+    #and append page with label == key
+    my $new_index = 0;
+    if (defined $num_files && $num_files > 0) {
+        if (defined $history && $history->get_history) {
+            $new_index = $notebook->insert_page(fct_create_tab($key, FALSE), $hbox_tab_label, $indx) if defined &fct_create_tab;
+        } elsif (defined $count) {
+            $new_index = $notebook->insert_page(fct_create_tab($key, FALSE), $hbox_tab_label, $count) if defined &fct_create_tab;
+        } else {
+            $new_index = $notebook->insert_page(fct_create_tab($key, FALSE), $hbox_tab_label, $indx) if defined &fct_create_tab;
+        }
+    } else {
+        $new_index = $notebook->append_page(fct_create_tab($key, FALSE), $hbox_tab_label) if defined &fct_create_tab;
+    }
+    $session_screens->{$key}->{'tab_indx'}       = $indx;
+    $session_screens->{$key}->{'tab_label'}      = $tab_label;
+    $session_screens->{$key}->{'hbox_tab_label'} = $hbox_tab_label;
+    $session_screens->{$key}->{'tab_child'}      = $notebook->get_nth_page($new_index);
+    $tab_close_button->signal_connect(clicked => sub { fct_remove($key) if defined &fct_remove; });
 
-		my $tab_label = Gtk3::Label->new($key);
-		$tab_label->set_ellipsize('middle');
-		$tab_label->set_width_chars(20);
-		$hbox_tab_label->pack_start($session_screens{$key}->{'tab_icon'}, FALSE, FALSE, 1);
-		$hbox_tab_label->pack_start($tab_label,                           TRUE,  TRUE,  1);
-		$hbox_tab_label->pack_start(Gtk3::HBox->new,                      TRUE,  TRUE,  1);
-		$hbox_tab_label->pack_start($tab_close_button,                    FALSE, FALSE, 1);
-		$hbox_tab_label->show_all;
+    #this value is undefined when all files are loaded
+    #in this case we switch to any new image
+    unless (defined $session_start_screen->{'first_page'}->{'num_session_files'}) {
+        $notebook->set_current_page($new_index);
+    } else {
 
-		#and append page with label == key
-		my $new_index = 0;
-		if (defined $num_files && $num_files > 0) {
-			if (defined $history && $history->get_history) {
-				$new_index = $notebook->insert_page(fct_create_tab($key, FALSE), $hbox_tab_label, $indx);
-			} elsif (defined $count) {
-				$new_index = $notebook->insert_page(fct_create_tab($key, FALSE), $hbox_tab_label, $count);
-			} else {
-				$new_index = $notebook->insert_page(fct_create_tab($key, FALSE), $hbox_tab_label, $indx);
-			}
-		} else {
-			$new_index = $notebook->append_page(fct_create_tab($key, FALSE), $hbox_tab_label);
-		}
-		$session_screens{$key}->{'tab_indx'}       = $indx;
-		$session_screens{$key}->{'tab_label'}      = $tab_label;
-		$session_screens{$key}->{'hbox_tab_label'} = $hbox_tab_label;
-		$session_screens{$key}->{'tab_child'}      = $notebook->get_nth_page($new_index);
-		$tab_close_button->signal_connect(clicked => sub { fct_remove($key); });
+        #if there is a history we recently took a screenshot
+        #switch to that page
+        #(even though the session is still loading)
+        if (defined $history && $history->get_history) {
+            $notebook->set_current_page($new_index);
+        }
+    }
 
-		#this value is undefined when all files are loaded
-		#in this case we switch to any new image
-		unless (defined $session_start_screen{'first_page'}->{'num_session_files'}) {
-			$notebook->set_current_page($new_index);
-		} else {
+    if (defined &fct_update_tab) {
+        if ($self->fct_update_tab($key, $pixbuf, $giofile, undef, undef, TRUE)) {
+            #setup a filemonitor, so we get noticed if the file changed
+            fct_add_file_monitor($key) if defined &fct_add_file_monitor;
+        }
+    }
 
-			#if there is a history we recently took a screenshot
-			#switch to that page
-			#(even though the session is still loading)
-			if (defined $history && $history->get_history) {
-				$notebook->set_current_page($new_index);
-			}
-		}
-
-		if (fct_update_tab($key, $pixbuf, $giofile, undef, undef, TRUE)) {
-
-			#setup a filemonitor, so we get noticed if the file changed
-			fct_add_file_monitor($key);
-		}
-
-		return $key;
-	}
-
+    return $key;
+}
 
 1;
+
+__END__
+
+=head1 NAME
+
+Shutter::App::Handlers::Workflow_Integrate - Workflow integration handlers
+
+=head1 DESCRIPTION
+
+Extracted from bin/shutter.
+Migrated to use the CLI object for state access instead of package globals.
+
+=cut
