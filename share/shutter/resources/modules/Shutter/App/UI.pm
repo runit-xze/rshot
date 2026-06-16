@@ -15,6 +15,10 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  You should have received a copy of the GNU General Public License
+#  along with Shutter; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
 ###################################################
 
 package Shutter::App::UI;
@@ -28,12 +32,15 @@ use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
 
-has cli => (is => 'ro', required => 1);
+# This module provides backward compatibility - it wraps the Common object
+# and provides UI setup methods that were previously in bin/shutter
+has common => (is => 'ro', required => 1);
 
 sub create_main_window {
     my ($self, $app) = @_;
+    my $sc = $self->common;
     my $window = Gtk3::ApplicationWindow->new($app);
-    $self->cli->set_mainwindow($window);
+    $sc->set_mainwindow($window);
     $window->signal_connect('delete-event' => \&evt_delete_window);
     $window->set_border_width(0);
     $window->set_resizable(TRUE);
@@ -44,23 +51,15 @@ sub create_main_window {
 
 sub setup_app_objects {
     my ($self) = @_;
-    my $sc = $self->cli;
-    my $window = $sc->get_mainwindow;
+    my $sc = $self->common;
 
     my $sas = Shutter::App::Autostart->new();
     my $sm = Shutter::App::Menu->new($sc);
     my $st = Shutter::App::Toolbar->new($sc);
-    my $sd = Shutter::App::SimpleDialogs->new($window);
-
-    my $sp = Shutter::Pixbuf::Save->new($sc);
-    my $lp = Shutter::Pixbuf::Load->new($sc);
-    my $lp_ne = Shutter::Pixbuf::Load->new($sc, undef, TRUE);
-
-    my $acp = Shutter::App::AfterCapturePipeline->new($sc, $sc->get_gettext, $window);
-    my $pins = Shutter::App::PinToScreen->new();
+    my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
 
     my $vbox = Gtk3::VBox->new(FALSE, 0);
-    $window->add($vbox);
+    $sc->get_mainwindow->add($vbox);
     $vbox->pack_start($sm->create_menu, FALSE, TRUE, 0);
     $vbox->pack_start($st->create_toolbar, FALSE, TRUE, 0);
 
@@ -68,7 +67,32 @@ sub setup_app_objects {
     $status->set_name('main-window-statusbar');
     $vbox->pack_start($status, FALSE, TRUE, 0);
 
-    return ($sas, $sm, $st, $sd, $sp, $lp, $lp_ne, $acp, $pins, $vbox, $status);
+    # Store references for backward compatibility
+    $sc->{_sas} = $sas;
+    $sc->{_sm} = $sm;
+    $sc->{_st} = $st;
+    $sc->{_sd} = $sd;
+    $sc->{_vbox} = $vbox;
+    $sc->{_status} = $status;
+
+    return ($sas, $sm, $st, $sd, $vbox, $status);
 }
 
+# Accessor for backward compatibility
+sub get_common { $_[0]->common }
+
 1;
+
+__END__
+
+=head1 NAME
+
+Shutter::App::UI – UI orchestration module
+
+=head1 SYNOPSIS
+
+    my $ui = Shutter::App::UI->new(common => $sc);
+    $window = $ui->create_main_window($app);
+    my ($sm, $st, $sd) = $ui->setup_app_objects()[1,2,3];
+
+=cut
