@@ -35,47 +35,54 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 has sm => (is => 'rw');
 has st => (is => 'rw');
+has core_handlers => (is => 'rw');
+has workflow_handlers => (is => 'rw');
 
 sub BUILD ($self) {
     my $sc = $self->cli->sc;
     my $vbox = $self->cli->vbox;
-    
+
     $self->sm(Shutter::App::Menu->new($sc));
     $self->st(Shutter::App::Toolbar->new($sc));
-    
+
     $vbox->pack_start($self->sm->create_menu, FALSE, TRUE, 0);
-    
+
+    # Create handler objects
+    $self->core_handlers(Shutter::App::Handlers::Core->new(cli => $self->cli));
+    $self->workflow_handlers(Shutter::App::Handlers::Workflow->new(cli => $self->cli));
+
     $self->_connect_menu_items;
     $self->_connect_toolbar_items;
 }
 
 sub _connect_menu_items ($self) {
     my $sm = $self->sm;
-    my $d = $self->cli->sc->get_gettext;
-    
+    my $core = $self->core_handlers;
+
     $sm->{_menuitem_open}->signal_connect('activate' => sub {
         my @files = grep { $self->cli->shf->file_exists($_) } @ARGV;
         fct_open_files(@files);
         fct_control_main_window('show');
     });
-    
-    $sm->{_menuitem_quit}->signal_connect('activate' => sub { evt_delete_window('', 'quit') });
-    $sm->{_menuitem_undo}->signal_connect('activate' => \&fct_undo);
-    $sm->{_menuitem_redo}->signal_connect('activate' => \&fct_redo);
-    $sm->{_menuitem_zoom_in}->signal_connect('activate' => \&fct_zoom_in);
-    $sm->{_menuitem_zoom_out}->signal_connect('activate' => \&fct_zoom_out);
-    $sm->{_menuitem_fullscreen}->signal_connect('toggled' => \&fct_fullscreen);
+
+    $sm->{_menuitem_quit}->signal_connect('activate' => sub { $core->evt_delete_window(undef, 'quit') });
+    $sm->{_menuitem_undo}->signal_connect('activate' => sub { fct_undo() });
+    $sm->{_menuitem_redo}->signal_connect('activate' => sub { fct_redo() });
+    $sm->{_menuitem_zoom_in}->signal_connect('activate' => sub { fct_zoom_in() });
+    $sm->{_menuitem_zoom_out}->signal_connect('activate' => sub { fct_zoom_out() });
+    $sm->{_menuitem_fullscreen}->signal_connect('toggled' => sub { fct_fullscreen() });
 }
 
 sub _connect_toolbar_items ($self) {
     my $st = $self->st;
-    
-    $st->{_redoshot}->signal_connect('clicked' => sub { evt_take_screenshot('global_keybinding', 'redoshot') });
-    $st->{_select}->signal_connect('clicked' => sub { evt_take_screenshot('global_keybinding', 'select') });
-    $st->{_full}->signal_connect('clicked' => sub { evt_take_screenshot('global_keybinding', 'full') });
-    $st->{_window}->signal_connect('clicked' => sub { evt_take_screenshot('global_keybinding', 'window') });
-    $st->{_menu}->signal_connect('clicked' => sub { evt_take_screenshot('global_keybinding', 'menu') });
-    $st->{_tooltip}->signal_connect('clicked' => sub { evt_take_screenshot('global_keybinding', 'tooltip') });
+    my $core = $self->core_handlers;
+
+    $st->{_redoshot}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'redoshot', undef, undef) });
+    $st->{_select}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'select', undef, undef) });
+    $st->{_full}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'full', undef, undef) });
+    $st->{_window}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'window', undef, undef) });
+    $st->{_menu}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'menu', undef, undef) });
+    $st->{_tooltip}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'tooltip', undef, undef) });
 }
 
 1;
@@ -92,8 +99,7 @@ Shutter::App::UI::Menus – Menu and toolbar signal wiring
 
 =head1 DESCRIPTION
 
-Connects all menu items and toolbar buttons to their respective event
-handlers.  Delegates to Shutter::App::Events::* modules for the actual
-logic.
+Creates menu and toolbar, then connects all UI signals to handler methods.
+Uses handler objects for actual logic implementation.
 
 =cut
