@@ -30,164 +30,197 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-	sub fct_get_file_by_index {
-		my $index = shift;
+sub fct_get_file_by_index {
+    my ($self, $index) = @_;
+    my $cli = $self->cli;
+    my $notebook = $cli->{_notebook};
+    my $session_screens = $cli->{_session_screens};
 
-		return unless $index;
+    return unless $index && $notebook;
 
-		#get current page
-		my $curr_page = $notebook->get_nth_page($index);
+    #get current page
+    my $curr_page = $notebook->get_nth_page($index);
 
-		my $key = undef;
+    my $key = undef;
 
-		#and loop through hash to find the corresponding key
-		if ($curr_page) {
-			foreach my $ckey (keys %session_screens) {
-				next unless exists $session_screens{$ckey}->{'tab_child'};
-				if ($session_screens{$ckey}->{'tab_child'} == $curr_page) {
-					$key = $ckey;
-					last;
-				}
-			}
-		}
+    #and loop through hash to find the corresponding key
+    if ($curr_page) {
+        foreach my $ckey (keys %$session_screens) {
+            next unless exists $session_screens->{$ckey}->{'tab_child'};
+            if ($session_screens->{$ckey}->{'tab_child'} == $curr_page) {
+                $key = $ckey;
+                last;
+            }
+        }
+    }
 
-		return $key;
-	}
+    return $key;
+}
 
-	sub fct_get_key_by_filename {
-		my $filename = shift;
+sub fct_get_key_by_filename {
+    my ($self, $filename) = @_;
+    my $session_screens = $self->cli->{_session_screens};
 
-		return unless $filename;
+    return unless $filename;
 
-		my $key = undef;
+    my $key = undef;
 
-		#and loop through hash to find the corresponding key
-		foreach my $ckey (keys %session_screens) {
-			next unless exists $session_screens{$ckey}->{'long'};
+    #and loop through hash to find the corresponding key
+    foreach my $ckey (keys %$session_screens) {
+        next unless exists $session_screens->{$ckey}->{'long'};
 
-			#~ print "compare ".$session_screens{$ckey}->{'long'}." - $filename\n";
-			if ($session_screens{$ckey}->{'long'} eq $filename) {
-				$key = $ckey;
-				last;
-			}
-		}
+        if ($session_screens->{$ckey}->{'long'} eq $filename) {
+            $key = $ckey;
+            last;
+        }
+    }
 
-		return $key;
-	}
+    return $key;
+}
 
-	sub fct_get_key_by_pubfile {
-		my $filename = shift;
+sub fct_get_key_by_pubfile {
+    my ($self, $filename) = @_;
+    my $session_screens = $self->cli->{_session_screens};
 
-		return unless $filename;
+    return unless $filename;
 
-		my $key = undef;
+    my $key = undef;
 
-		#and loop through hash to find the corresponding key
-		foreach my $ckey (keys %session_screens) {
-			next unless exists $session_screens{$ckey}->{'links'};
-			next
-				unless exists $session_screens{$ckey}->{'links'}->{'ubuntu-one'};
-			next
-				unless exists $session_screens{$ckey}->{'links'}->{'ubuntu-one'}->{'pubfile'};
+    #and loop through hash to find the corresponding key
+    foreach my $ckey (keys %$session_screens) {
+        next unless exists $session_screens->{$ckey}->{'links'};
+        next
+            unless exists $session_screens->{$ckey}->{'links'}->{'ubuntu-one'};
+        next
+            unless exists $session_screens->{$ckey}->{'links'}->{'ubuntu-one'}->{'pubfile'};
 
-			#~ print "compare ".$session_screens{$ckey}->{'links'}->{'ubuntu-one'}->{'pubfile'}." - $filename\n";
-			if ($session_screens{$ckey}->{'links'}->{'ubuntu-one'}->{'pubfile'} eq $filename) {
-				$key = $ckey;
-				last;
-			}
-		}
+        if ($session_screens->{$ckey}->{'links'}->{'ubuntu-one'}->{'pubfile'} eq $filename) {
+            $key = $ckey;
+            last;
+        }
+    }
 
-		return $key;
-	}
+    return $key;
+}
 
-	sub fct_get_total_size_of_session {
-		my $total_size = 0;
-		foreach my $ckey (keys %session_screens) {
-			next unless $session_screens{$ckey}->{'size'};
-			$total_size += $session_screens{$ckey}->{'size'};
-		}
-		return $total_size;
-	}
+sub fct_get_total_size_of_session {
+    my ($self) = @_;
+    my $session_screens = $self->cli->{_session_screens};
+    
+    my $total_size = 0;
+    foreach my $ckey (keys %$session_screens) {
+        next unless $session_screens->{$ckey}->{'size'};
+        $total_size += $session_screens->{$ckey}->{'size'};
+    }
+    return $total_size;
+}
 
-	sub fct_update_profile_selectors {
-		my ($combobox_settings_profiles, $current_profiles_ref, $recur_widget) = @_;
+sub fct_update_profile_selectors {
+    my ($self, $combobox_settings_profiles, $current_profiles_ref, $recur_widget) = @_;
+    my $cli = $self->cli;
+    my $tray_menu = $cli->{_tray_menu};
+    my $sm = $cli->{_sm};
+    my $status = $cli->{_status};
+    my $d = $cli->sc->get_gettext;
 
-		#populate quick selector as well
-		if (scalar @{$current_profiles_ref} > 0) {
+    #populate quick selector as well
+    if (scalar @{$current_profiles_ref} > 0) {
 
-			#tray menu
-			foreach my $child ($tray_menu->get_children) {
-				if ($child->get_name eq 'quicks') {
-					$child->set_submenu(fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref));
-					$child->set_sensitive(TRUE);
-					last;
-				}
-			}
+        #tray menu
+        if ($tray_menu) {
+            foreach my $child ($tray_menu->get_children) {
+                if ($child->get_name eq 'quicks') {
+                    $child->set_submenu(fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref)) if defined &fct_ret_profile_menu;
+                    $child->set_sensitive(TRUE);
+                    last;
+                }
+            }
+        }
 
-			#main menu
-			$sm->{_menuitem_quicks}->set_submenu(fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref, $sm->{_menuitem_quicks}->get_submenu));
-			$sm->{_menuitem_quicks}->set_sensitive(TRUE);
+        #main menu
+        if ($sm->{_menuitem_quicks}) {
+            $sm->{_menuitem_quicks}->set_submenu(fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref, $sm->{_menuitem_quicks}->get_submenu)) if defined &fct_ret_profile_menu;
+            $sm->{_menuitem_quicks}->set_sensitive(TRUE);
+        }
 
-			#and statusbar
-			#FIXME - some explanation is missing here
-			unless ($recur_widget
-				&& $recur_widget eq $combobox_status_profiles)
-			{
-				if (   defined $combobox_status_profiles
-					&& defined $combobox_status_profiles_label)
-				{
-					$combobox_status_profiles_label->destroy;
-					$combobox_status_profiles->destroy;
-				}
+        #and statusbar
+        unless ($recur_widget
+            && $recur_widget eq $cli->{_combobox_status_profiles})
+        {
+            if (   defined $cli->{_combobox_status_profiles}
+                && defined $cli->{_combobox_status_profiles_label})
+            {
+                $cli->{_combobox_status_profiles_label}->destroy;
+                $cli->{_combobox_status_profiles}->destroy;
+            }
 
-				$combobox_status_profiles_label = Gtk3::Label->new($d->get("Profile") . ":");
-				$combobox_status_profiles       = Gtk3::ComboBoxText->new;
-				$status->pack_start($combobox_status_profiles_label, FALSE, FALSE, 0);
-				$status->pack_start($combobox_status_profiles,       FALSE, FALSE, 0);
+            $cli->{_combobox_status_profiles_label} = Gtk3::Label->new($d->get("Profile") . ":");
+            $cli->{_combobox_status_profiles}       = Gtk3::ComboBoxText->new;
+            $status->pack_start($cli->{_combobox_status_profiles_label}, FALSE, FALSE, 0) if $status;
+            $status->pack_start($cli->{_combobox_status_profiles},       FALSE, FALSE, 0) if $status;
 
-				foreach my $profile (@{$current_profiles_ref}) {
-					$combobox_status_profiles->append_text($profile);
-				}
+            foreach my $profile (@{$current_profiles_ref}) {
+                $cli->{_combobox_status_profiles}->append_text($profile);
+            }
 
-				$combobox_status_profiles->set_active($combobox_settings_profiles->get_active);
+            $cli->{_combobox_status_profiles}->set_active($combobox_settings_profiles->get_active);
 
-				$combobox_status_profiles->signal_connect(
-					'changed' => sub {
-						my $widget = shift;
+            $cli->{_combobox_status_profiles}->signal_connect(
+                'changed' => sub {
+                    my $widget = shift;
 
-						$combobox_settings_profiles->set_active($widget->get_active);
-						evt_apply_profile($widget, $combobox_settings_profiles, $current_profiles_ref);
+                    $combobox_settings_profiles->set_active($widget->get_active);
+                    evt_apply_profile($widget, $combobox_settings_profiles, $current_profiles_ref) if defined &evt_apply_profile;
 
-					});
+                });
 
-				$status->show_all;
-			}
+            $status->show_all if $status;
+        }
 
-		} else {
+    } else {
 
-			#tray menu
-			foreach my $child ($tray_menu->get_children) {
-				if ($child->get_name eq 'quicks') {
-					$child->set_submenu(undef);
-					$child->set_sensitive(FALSE);
-					last;
-				}
-			}
+        #tray menu
+        if ($tray_menu) {
+            foreach my $child ($tray_menu->get_children) {
+                if ($child->get_name eq 'quicks') {
+                    $child->set_submenu(undef);
+                    $child->set_sensitive(FALSE);
+                    last;
+                }
+            }
+        }
 
-			#main menu
-			$sm->{_menuitem_quicks}->set_submenu(undef);
-			$sm->{_menuitem_quicks}->set_sensitive(FALSE);
+        #main menu
+        if ($sm->{_menuitem_quicks}) {
+            $sm->{_menuitem_quicks}->set_submenu(undef);
+            $sm->{_menuitem_quicks}->set_sensitive(FALSE);
+        }
 
-			#and statusbar
-			if (   defined $combobox_status_profiles
-				&& defined $combobox_status_profiles_label)
-			{
-				$combobox_status_profiles_label->destroy;
-				$combobox_status_profiles->destroy;
-			}
-		}
-		return TRUE;
-	}
+        #and statusbar
+        if (   defined $cli->{_combobox_status_profiles}
+            && defined $cli->{_combobox_status_profiles_label})
+        {
+            $cli->{_combobox_status_profiles_label}->destroy;
+            $cli->{_combobox_status_profiles}->destroy;
+            $cli->{_combobox_status_profiles_label} = undef;
+            $cli->{_combobox_status_profiles} = undef;
+        }
+    }
+    return TRUE;
+}
 
 
 1;
+
+__END__
+
+=head1 NAME
+
+Shutter::App::Handlers::UI_Tabs - UI tabs handlers
+
+=head1 DESCRIPTION
+
+Extracted from bin/shutter.
+Migrated to use the CLI object for state access instead of package globals.
+
+=cut

@@ -62,9 +62,21 @@ Shutter::App::CLI (entry point)
 
 - [x] Create handler modules in `Shutter::App::Handlers/`
 - [x] `Shutter::App::Handlers::Core` - Core event handlers (screenshot, window, menu actions)
-- [ ] Migrate handler modules to use CLI/Common objects instead of globals
-- [ ] Register handlers in `Shutter::App::Handlers` registry
-- [ ] Update Menus.pm to instantiate all handlers
+- [x] `Shutter::App::Handlers::Menu` - Menu action handlers
+- [x] `Shutter::App::Handlers::Edit_Delete` - Delete, remove, trash actions
+- [x] `Shutter::App::Handlers::Edit_Nav` - Zoom, undo/redo, clipboard actions
+- [x] `Shutter::App::Handlers::Edit_Draw` - Drawing and plugin actions
+- [x] `Shutter::App::Handlers::Dialogs_Upload` - Upload dialogs and prompts
+- [x] `Shutter::App::Handlers::Util_File` - File system utilities
+- [x] `Shutter::App::Handlers::Util_Get` - Utility getters
+- [x] `Shutter::App::Handlers::Init_Accounts` - Initialization accounts handlers
+- [x] `Shutter::App::Handlers::Init_Handlers` - File/session initialization
+- [x] `Shutter::App::Handlers::Init_Model` - Initialization model handlers
+- [x] `Shutter::App::Handlers::UI_Status` - UI status handlers
+- [x] `Shutter::App::Handlers::UI_Tabs` - UI tabs handlers
+- [ ] Migrate the remaining ~30 handler modules (`Workflow_*`, `Menu_Ret_*`, `Screenshot_*`, etc.) to fully use `$self->cli` instead of implicit globals.
+- [ ] Register all handlers in the `Shutter::App::Handlers` central registry
+- [ ] Update `Menus.pm` and `Events::*` to instantiate and call handlers via the registry
 
 ## Phase 3: API Modernization (Next)
 

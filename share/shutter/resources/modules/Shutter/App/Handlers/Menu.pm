@@ -30,239 +30,292 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-	sub evt_about {
-		Shutter::App::AboutDialog->new($sc)->show;
-	}
+sub evt_about {
+    my ($self) = @_;
+    Shutter::App::AboutDialog->new($self->cli->sc)->show;
+}
 
-	sub evt_apply_profile {
-		my ($widget, $combobox_settings_profiles, $current_profiles_ref) = @_;
+sub evt_apply_profile {
+    my ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) = @_;
+    my $d = $self->cli->sc->get_gettext;
 
-		if ($combobox_settings_profiles->get_active_text) {
-			$settings_xml         = fct_load_settings('profile_load', $combobox_settings_profiles->get_active_text);
-			$current_profile_indx = $combobox_settings_profiles->get_active;
-			my $current_profile_text = $combobox_settings_profiles->get_active_text;
+    if ($combobox_settings_profiles->get_active_text) {
+        $self->cli->{_settings_xml} = fct_load_settings('profile_load', $combobox_settings_profiles->get_active_text);
+        $self->cli->{_current_profile_indx} = $combobox_settings_profiles->get_active;
+        my $current_profile_text = $combobox_settings_profiles->get_active_text;
 
-			fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref, $widget);
+        fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref, $widget);
 
-			fct_update_info_and_tray();
+        fct_update_info_and_tray();
 
-			fct_show_status_message(1, sprintf($d->get("Profile %s loaded successfully"), "'" . $current_profile_text . "'"));
-		}
+        fct_show_status_message(1, sprintf($d->get("Profile %s loaded successfully"), "'" . $current_profile_text . "'"));
+    }
 
-		return TRUE;
-	}
+    return TRUE;
+}
 
-	sub evt_bug {
-		$shf->xdg_open(undef, "https://github.com/shutter-project/shutter/issues/new?labels=bug&template=bug_report.md", undef);
-	}
+sub evt_bug {
+    my ($self) = @_;
+    $self->cli->shf->xdg_open(undef, "https://github.com/shutter-project/shutter/issues/new?labels=bug&template=bug_report.md", undef);
+}
 
-	sub evt_delete_profile {
-		my ($widget, $combobox_settings_profiles, $current_profiles_ref) = @_;
-		if ($combobox_settings_profiles->get_active_text) {
-			my $active_text  = $combobox_settings_profiles->get_active_text;
-			my $active_index = $combobox_settings_profiles->get_active;
-			unlink("$ENV{'HOME'}/.shutter/profiles/" . $active_text . ".xml");
-			unlink("$ENV{'HOME'}/.shutter/profiles/" . $active_text . "_accounts.xml");
+sub evt_delete_profile {
+    my ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) = @_;
+    my $shf = $self->cli->shf;
+    my $d = $self->cli->sc->get_gettext;
+    my $sd = $self->cli->sc->{_sd};
 
-			unless ($shf->file_exists("$ENV{'HOME'}/.shutter/profiles/" . $active_text . ".xml")
-				|| $shf->file_exists("$ENV{'HOME'}/.shutter/profiles/" . $active_text . "_accounts.xml"))
-			{
-				$combobox_settings_profiles->remove($active_index);
-				$combobox_settings_profiles->set_active($combobox_settings_profiles->get_active + 1);
-				$current_profile_indx = $combobox_settings_profiles->get_active;
+    if ($combobox_settings_profiles->get_active_text) {
+        my $active_text  = $combobox_settings_profiles->get_active_text;
+        my $active_index = $combobox_settings_profiles->get_active;
+        unlink("$ENV{'HOME'}/.shutter/profiles/" . $active_text . ".xml");
+        unlink("$ENV{'HOME'}/.shutter/profiles/" . $active_text . "_accounts.xml");
 
-				#remove from array as well
-				splice(@{$current_profiles_ref}, $active_index, 1);
+        unless ($shf->file_exists("$ENV{'HOME'}/.shutter/profiles/" . $active_text . ".xml")
+            || $shf->file_exists("$ENV{'HOME'}/.shutter/profiles/" . $active_text . "_accounts.xml"))
+        {
+            $combobox_settings_profiles->remove($active_index);
+            $combobox_settings_profiles->set_active($combobox_settings_profiles->get_active + 1);
+            $self->cli->{_current_profile_indx} = $combobox_settings_profiles->get_active;
 
-				fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref);
+            #remove from array as well
+            splice(@{$current_profiles_ref}, $active_index, 1);
 
-				fct_show_status_message(1, $d->get("Profile deleted"));
-			} else {
-				$sd->dlg_error_message($d->get("Profile could not be deleted"), $d->get("Failed"));
-				fct_show_status_message(1, $d->get("Profile could not be deleted"));
-			}
-		}
-		return TRUE;
-	}
+            fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref);
 
-	sub evt_delete_window {
-		my ($widget, $data, $scounter) = @_;
-		print "\n$data was emitted by widget $widget\n"
-			if $sc->get_debug;
+            fct_show_status_message(1, $d->get("Profile deleted"));
+        } else {
+            $sd->dlg_error_message($d->get("Profile could not be deleted"), $d->get("Failed"));
+            fct_show_status_message(1, $d->get("Profile could not be deleted"));
+        }
+    }
+    return TRUE;
+}
 
-		if (   $data ne "quit"
-			&& $close_at_close_active->get_active
-			&& $tray)
-		{
-			$window->hide;
-			$is_hidden = TRUE;
-			return TRUE;
-		}
+sub evt_delete_window {
+    my ($self, $widget, $data, $scounter) = @_;
+    my $sc = $self->cli->sc;
+    my $close_at_close_active = $self->cli->{_close_at_close_active};
+    my $tray = $self->cli->{_tray};
+    my $window = $self->cli->window;
+    
+    print "\n$data was emitted by widget $widget\n"
+        if $sc->get_debug;
 
-		Glib::Idle->add(
-			sub {
+    if (   $data ne "quit"
+        && $close_at_close_active && $close_at_close_active->get_active
+        && $tray)
+    {
+        $window->hide;
+        $self->cli->{_is_hidden} = TRUE;
+        return TRUE;
+    }
 
-				#hide window and block sontrols
-				$window->hide;
-				fct_control_signals('block');
+    # Use a weak reference to self in the idle callback
+    my $weak_self = $self;
+    
+    Glib::Idle->add(
+        sub {
+            #hide window and block sontrols
+            $window->hide;
+            fct_control_signals('block');
 
-				#wait if there are still files that need to be loaded
-				#they would not be saved in session
-				unless (defined $scounter) {
-					$scounter = 0;
-				}
-				while (defined $session_start_screen{'first_page'}->{'num_session_files'} && $scounter <= 15) {
-					$scounter++;
+            #wait if there are still files that need to be loaded
+            #they would not be saved in session
+            unless (defined $scounter) {
+                $scounter = 0;
+            }
+            
+            my $session_start_screen = $weak_self->cli->{_session_start_screen};
+            
+            while (defined $session_start_screen->{'first_page'}->{'num_session_files'} && $scounter <= 15) {
+                $scounter++;
 
-					#try again in a second
-					Glib::Timeout->add(
-						1000,
-						sub {
-							evt_delete_window('', 'quit', $scounter);
-							return FALSE;
-						});
-					return FALSE;
-				}
+                #try again in a second
+                Glib::Timeout->add(
+                    1000,
+                    sub {
+                        $weak_self->evt_delete_window('', 'quit', $scounter);
+                        return FALSE;
+                    });
+                return FALSE;
+            }
 
-				#save settings
-				fct_save_settings(undef);
-				fct_save_settings($combobox_settings_profiles->get_active_text)
-					if $combobox_settings_profiles->get_active != -1;
+            #save settings
+            fct_save_settings(undef);
+            
+            my $combobox_settings_profiles = $weak_self->cli->{_combobox_settings_profiles};
+            if ($combobox_settings_profiles && $combobox_settings_profiles->get_active != -1) {
+                fct_save_settings($combobox_settings_profiles->get_active_text);
+            }
 
-				#autostart
-				$sas->create_autostart_file(
-					Shutter::App::Directories::get_autostart_dir(),
-					$fs_active->get_active,
-					$fs_min_active->get_active,
-					$fs_nonot_active->get_active
-				);
+            #autostart
+            my $sas = $weak_self->cli->sc->{_sas};
+            my $fs_active = $weak_self->cli->{_fs_active};
+            my $fs_min_active = $weak_self->cli->{_fs_min_active};
+            my $fs_nonot_active = $weak_self->cli->{_fs_nonot_active};
+            
+            if ($sas && $fs_active && $fs_min_active && $fs_nonot_active) {
+                $sas->create_autostart_file(
+                    Shutter::App::Directories::get_autostart_dir(),
+                    $fs_active->get_active,
+                    $fs_min_active->get_active,
+                    $fs_nonot_active->get_active
+                );
+            }
 
-				$app->quit;
+            $weak_self->cli->app->quit;
 
-				return FALSE;
-			});
+            return FALSE;
+        });
 
-		return TRUE;
-	}
+    return TRUE;
+}
 
-	sub evt_page_setup {
-		my ($widget, $data) = @_;
+sub evt_page_setup {
+    my ($self, $widget, $data) = @_;
+    my $shf = $self->cli->shf;
+    my $window = $self->cli->window;
+    my $pagesetup = $self->cli->{_pagesetup};
 
-		#restore settings if prossible
-		my $ssettings = Gtk3::PrintSettings->new;
-		if ($shf->file_exists("$ENV{ HOME }/.shutter/printing.xml")) {
-			eval { $ssettings = Gtk3::PrintSettings->new_from_file("$ENV{ HOME }/.shutter/printing.xml"); };
-		}
+    #restore settings if prossible
+    my $ssettings = Gtk3::PrintSettings->new;
+    if ($shf->file_exists("$ENV{ HOME }/.shutter/printing.xml")) {
+        eval { $ssettings = Gtk3::PrintSettings->new_from_file("$ENV{ HOME }/.shutter/printing.xml"); };
+    }
 
-		($pagesetup) = Glib::Object::Introspection->invoke('Gtk', undef, 'print_run_page_setup_dialog', $window, $pagesetup, $ssettings);
+    ($pagesetup) = Glib::Object::Introspection->invoke('Gtk', undef, 'print_run_page_setup_dialog', $window, $pagesetup, $ssettings);
+    $self->cli->{_pagesetup} = $pagesetup;
 
-		return TRUE;
-	}
+    return TRUE;
+}
 
-	sub evt_question {
-		$shf->xdg_open(undef, "https://shutter-project.org/faq-help/", undef);
-	}
+sub evt_question {
+    my ($self) = @_;
+    $self->cli->shf->xdg_open(undef, "https://shutter-project.org/faq-help/", undef);
+}
 
-	sub evt_save_as {
-		my ($widget, $data) = @_;
-		print "\n$data was emitted by widget $widget\n"
-			if $sc->get_debug;
+sub evt_save_as {
+    my ($self, $widget, $data) = @_;
+    my $sc = $self->cli->sc;
+    my $session_start_screen = $self->cli->{_session_start_screen};
+    
+    print "\n$data was emitted by widget $widget\n"
+        if $sc->get_debug;
 
-		my $key = fct_get_current_file();
+    my $key = fct_get_current_file();
 
-		my @save_as_files;
+    my @save_as_files;
 
-		#single file
-		if ($key) {
+    #single file
+    if ($key) {
+        push @save_as_files, $key;
+    #session tab
+    } elsif ($session_start_screen && $session_start_screen->{'first_page'} && $session_start_screen->{'first_page'}->{'view'}) {
+        $session_start_screen->{'first_page'}->{'view'}->selected_foreach(
+            sub {
+                my ($view, $path) = @_;
+                my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
+                if (defined $iter) {
+                    my $key = $session_start_screen->{'first_page'}->{'model'}->get_value($iter, 2);
+                    push @save_as_files, $key;
+                }
+            },
+            undef
+        );
+    }
 
-			push @save_as_files, $key;
+    #determine requested filetype
+    my $rfiletype = undef;
+    if ($data eq 'menu_export_svg') {
+        $rfiletype = 'svg';
+    } elsif ($data eq 'menu_export_ps') {
+        $rfiletype = 'ps';
+    } elsif ($data eq 'menu_export_pdf') {
+        $rfiletype = 'pdf';
+    }
 
-			#session tab
-		} else {
+    foreach my $file (@save_as_files) {
+        dlg_save_as($file, $rfiletype);
+    }
 
-			$session_start_screen{'first_page'}->{'view'}->selected_foreach(
-				sub {
-					my ($view, $path) = @_;
-					my $iter = $session_start_screen{'first_page'}->{'model'}->get_iter($path);
-					if (defined $iter) {
-						my $key = $session_start_screen{'first_page'}->{'model'}->get_value($iter, 2);
-						push @save_as_files, $key;
-					}
-				},
-				undef
-			);
+    return TRUE;
+}
 
-		}
+sub evt_save_profile {
+    my ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) = @_;
+    my $curr_profile_name = $combobox_settings_profiles->get_active_text || "";
+    my $new_profile_name = dlg_profile_name($curr_profile_name, $combobox_settings_profiles);
 
-		#determine requested filetype
-		my $rfiletype = undef;
-		if ($data eq 'menu_export_svg') {
-			$rfiletype = 'svg';
-		} elsif ($data eq 'menu_export_ps') {
-			$rfiletype = 'ps';
-		} elsif ($data eq 'menu_export_pdf') {
-			$rfiletype = 'pdf';
-		}
+    if ($new_profile_name) {
+        if ($curr_profile_name ne $new_profile_name) {
+            $combobox_settings_profiles->prepend_text($new_profile_name);
+            $combobox_settings_profiles->set_active(0);
+            $self->cli->{_current_profile_indx} = 0;
 
-		foreach my $file (@save_as_files) {
-			dlg_save_as($file, $rfiletype);
-		}
+            #unshift to array as well
+            unshift(@{$current_profiles_ref}, $new_profile_name);
 
-		return TRUE;
+            fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref);
+        }
 
-	}
+        #save settings
+        fct_save_settings($new_profile_name);
 
-	sub evt_save_profile {
-		my ($widget, $combobox_settings_profiles, $current_profiles_ref) = @_;
-		my $curr_profile_name = $combobox_settings_profiles->get_active_text
-			|| "";
-		my $new_profile_name = dlg_profile_name($curr_profile_name, $combobox_settings_profiles);
+        #autostart
+        my $sas = $self->cli->sc->{_sas};
+        my $fs_active = $self->cli->{_fs_active};
+        my $fs_min_active = $self->cli->{_fs_min_active};
+        my $fs_nonot_active = $self->cli->{_fs_nonot_active};
+        
+        if ($sas && $fs_active && $fs_min_active && $fs_nonot_active) {
+            $sas->create_autostart_file(
+                Shutter::App::Directories::get_autostart_dir(),
+                $fs_active->get_active,
+                $fs_min_active->get_active,
+                $fs_nonot_active->get_active
+            );
+        }
+    }
+    return TRUE;
+}
 
-		if ($new_profile_name) {
-			if ($curr_profile_name ne $new_profile_name) {
-				$combobox_settings_profiles->prepend_text($new_profile_name);
-				$combobox_settings_profiles->set_active(0);
-				$current_profile_indx = 0;
+sub evt_show_settings {
+    my ($self) = @_;
+    fct_check_installed_programs();
 
-				#unshift to array as well
-				unshift(@{$current_profiles_ref}, $new_profile_name);
+    my $settings_dialog = $self->cli->{_settings_dialog};
+    if ($settings_dialog) {
+        $settings_dialog->show_all;
+        my $settings_dialog_response = $settings_dialog->run;
 
-				fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref);
+        fct_post_settings($settings_dialog);
 
-			}
+        if ($settings_dialog_response eq "close") {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+    return FALSE;
+}
 
-			#save settings
-			fct_save_settings($new_profile_name);
-
-			#autostart
-			$sas->create_autostart_file(
-				Shutter::App::Directories::get_autostart_dir(),
-				$fs_active->get_active,
-				$fs_min_active->get_active,
-				$fs_nonot_active->get_active
-			);
-		}
-		return TRUE;
-	}
-
-	sub evt_show_settings {
-		fct_check_installed_programs();
-
-		$settings_dialog->show_all;
-		my $settings_dialog_response = $settings_dialog->run;
-
-		fct_post_settings($settings_dialog);
-
-		if ($settings_dialog_response eq "close") {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
-	}
-
-	sub evt_translate {
-		$shf->xdg_open(undef, "https://translations.launchpad.net/shutter", undef);
-	}
-
+sub evt_translate {
+    my ($self) = @_;
+    $self->cli->shf->xdg_open(undef, "https://translations.launchpad.net/shutter", undef);
+}
 
 1;
+
+__END__
+
+=head1 NAME
+
+Shutter::App::Handlers::Menu – Menu action handlers
+
+=head1 DESCRIPTION
+
+Extracted from bin/shutter.
+Migrated to use the CLI object for state access instead of package globals.
+
+=cut

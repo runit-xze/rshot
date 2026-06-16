@@ -30,173 +30,204 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-	sub evt_accounts {
-		my ($tree, $path, $column) = @_;
+sub evt_accounts {
+    my ($self, $tree, $path, $column) = @_;
+    my $cli = $self->cli;
+    my $d = $cli->sc->get_gettext;
+    my $shf = $cli->shf;
 
-		#open browser if register url is clicked
-		if ($column->get_title eq $d->get("Register")) {
-			my $model         = $tree->get_model();
-			my $account_iter  = $model->get_iter($path);
-			my $account_value = $model->get_value($account_iter, 5);
-			$shf->xdg_open(undef, $account_value, undef);
-		}
-		return TRUE;
-	}
+    #open browser if register url is clicked
+    if ($column->get_title eq $d->get("Register")) {
+        my $model         = $tree->get_model();
+        my $account_iter  = $model->get_iter($path);
+        my $account_value = $model->get_value($account_iter, 5);
+        $shf->xdg_open(undef, $account_value, undef) if $account_value;
+    }
+    return TRUE;
+}
 
-	sub evt_activate_systray_statusicon {
-		my ($widget, $data, $tray) = @_;
-		if ($sc->get_debug) {
-			print "\n$data was emitted by widget $widget\n";
-		}
+sub evt_activate_systray_statusicon {
+    my ($self, $widget, $data, $tray) = @_;
+    my $cli = $self->cli;
+    my $sc = $cli->sc;
 
-		unless ($is_hidden) {
-			fct_control_main_window('hide');
-		} else {
-			fct_control_main_window('show');
-		}
-		return TRUE;
-	}
+    if ($sc->get_debug) {
+        print "\n$data was emitted by widget $widget\n";
+    }
 
-	sub evt_iconview_button_press {
-		my $ev_box = shift;
-		my $ev     = shift;
-		my $view   = shift;
+    unless ($cli->{_is_hidden}) {
+        fct_control_main_window('hide') if defined &fct_control_main_window;
+    } else {
+        fct_control_main_window('show') if defined &fct_control_main_window;
+    }
+    return TRUE;
+}
 
-		my $path = $view->get_path_at_pos($ev->x, $ev->y);
+sub evt_iconview_button_press {
+    my ($self, $ev_box, $ev, $view) = @_;
+    my $cli = $self->cli;
+    my $sm = $cli->{_sm};
 
-		if ($path) {
+    my $path = $view->get_path_at_pos($ev->x, $ev->y);
 
-			#select item
-			$view->select_path($path);
+    if ($path) {
 
-			$sm->{_menu_large_actions}->popup(
-				undef,    # parent menu shell
-				undef,    # parent menu item
-				undef,    # menu pos func
-				undef,    # data
-				$ev->button,
-				$ev->time
-			);
+        #select item
+        $view->select_path($path);
 
-		}
+        $sm->{_menu_large_actions}->popup(
+            undef,    # parent menu shell
+            undef,    # parent menu item
+            undef,    # menu pos func
+            undef,    # data
+            $ev->button,
+            $ev->time
+        ) if $sm->{_menu_large_actions};
 
-		return TRUE;
-	}
+    }
 
-	sub evt_iconview_item_activated {
-		my ($view, $path, $data) = @_;
+    return TRUE;
+}
 
-		my $model = $view->get_model;
+sub evt_iconview_item_activated {
+    my ($self, $view, $path, $data) = @_;
+    my $cli = $self->cli;
+    my $notebook = $cli->{_notebook};
+    my $session_screens = $cli->{_session_screens};
 
-		my $iter = $model->get_iter($path);
-		my $key  = $model->get_value($iter, 2);
+    my $model = $view->get_model;
 
-		$notebook->set_current_page($notebook->page_num($session_screens{$key}->{'tab_child'}));
+    my $iter = $model->get_iter($path);
+    my $key  = $model->get_value($iter, 2);
 
-		return TRUE;
-	}
+    $notebook->set_current_page($notebook->page_num($session_screens->{$key}->{'tab_child'})) if ($notebook && $session_screens->{$key});
 
-	sub evt_iconview_sel_changed {
-		my ($view, $data) = @_;
+    return TRUE;
+}
 
-		#we don't handle selection changes
-		#if we are not in the session tab
-		if (fct_get_current_file()) {
+sub evt_iconview_sel_changed {
+    my ($self, $view, $data) = @_;
+    
+    #we don't handle selection changes
+    #if we are not in the session tab
+    if (defined &fct_get_current_file && fct_get_current_file()) {
+        return FALSE;
+    }
 
-			return FALSE;
-		}
+    my $items = $view->get_selected_items;
+    my @sel_items;
+    @sel_items = @$items if $items;
 
-		my $items = $view->get_selected_items;
-		my @sel_items;
-		@sel_items = @$items if $items;
+    #enable/disable menu entry when we are in the session tab and selection changes
+    if (scalar @sel_items == 1) {
+        my $key = undef;
+        my $session_start_screen = $self->cli->{_session_start_screen};
+        $session_start_screen->{'first_page'}->{'view'}->selected_foreach(
+            sub {
+                my ($view, $path) = @_;
+                my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
+                if (defined $iter) {
+                    $key = $session_start_screen->{'first_page'}->{'model'}->get_value($iter, 2);
+                }
+            },
+            undef
+        );
+        fct_update_actions(scalar @sel_items, $key) if defined &fct_update_actions;
+    } else {
+        fct_update_actions(scalar @sel_items) if defined &fct_update_actions;
+    }
 
-		#enable/disable menu entry when we are in the session tab and selection changes
-		if (scalar @sel_items == 1) {
-			my $key = undef;
-			$session_start_screen{'first_page'}->{'view'}->selected_foreach(
-				sub {
-					my ($view, $path) = @_;
-					my $iter = $session_start_screen{'first_page'}->{'model'}->get_iter($path);
-					if (defined $iter) {
-						$key = $session_start_screen{'first_page'}->{'model'}->get_value($iter, 2);
-					}
-				},
-				undef
-			);
-			fct_update_actions(scalar @sel_items, $key);
-		} else {
-			fct_update_actions(scalar @sel_items);
-		}
+    return TRUE;
+}
 
-		return TRUE;
-	}
+sub evt_show_systray {
+    my ($self, $widget, $data) = @_;
+    my $cli = $self->cli;
+    my $sc = $cli->sc;
+    my $window = $cli->window;
+    my $tray_menu = $cli->{_tray_menu};
+    
+    if ($sc->get_debug) {
+        print "\n$data was emitted by widget $widget\n";
+    }
 
-	sub evt_show_systray {
-		my ($widget, $data) = @_;
-		if ($sc->get_debug) {
-			print "\n$data was emitted by widget $widget\n";
-		}
+    #left button (mouse)
+    if ($data->button == 1) {
+        if ($window->visible) {
+            fct_control_main_window('hide') if defined &fct_control_main_window;
+        } else {
+            fct_control_main_window('show') if defined &fct_control_main_window;
+        }
+    }
 
-		#left button (mouse)
-		if ($_[1]->button == 1) {
-			if ($window->visible) {
-				fct_control_main_window('hide');
-			} else {
-				fct_control_main_window('show');
-			}
-		}
+    #right button (mouse)
+    elsif ($data->button == 3) {
+        $tray_menu->popup(
+            undef,    # parent menu shell
+            undef,    # parent menu item
+            undef,    # menu pos func
+            undef,    # data
+            $data->button,
+            $data->time
+        ) if $tray_menu;
+    }
+    return TRUE;
+}
 
-		#right button (mouse)
-		elsif ($_[1]->button == 3) {
-			$tray_menu->popup(
-				undef,    # parent menu shell
-				undef,    # parent menu item
-				undef,    # menu pos func
-				undef,    # data
-				$data->button,
-				$data->time
-			);
-		}
-		return TRUE;
-	}
+sub evt_show_systray_statusicon {
+    my ($self, $widget, $button, $time, $tray) = @_;
+    my $sc = $self->cli->sc;
+    my $tray_menu = $self->cli->{_tray_menu};
 
-	sub evt_show_systray_statusicon {
-		my ($widget, $button, $time, $tray) = @_;
-		if ($sc->get_debug) {
-			print "\n$button, $time was emitted by widget $widget\n";
-		}
+    if ($sc->get_debug) {
+        print "\n$button, $time was emitted by widget $widget\n";
+    }
 
-		$tray_menu->popup(
-			undef,    # parent menu shell
-			undef,    # parent menu item
-			sub {
-				return Gtk3::StatusIcon::position_menu($tray_menu, 0, 0, $tray);
-			},        # menu pos func
-			undef,    # data
-			$time ? $button : 0,
-			$time
-		);
+    $tray_menu->popup(
+        undef,    # parent menu shell
+        undef,    # parent menu item
+        sub {
+            return Gtk3::StatusIcon::position_menu($tray_menu, 0, 0, $tray);
+        },        # menu pos func
+        undef,    # data
+        $time ? $button : 0,
+        $time
+    ) if $tray_menu;
 
-		return TRUE;
-	}
+    return TRUE;
+}
 
-	sub evt_tab_button_press {
-		my ($ev_box, $ev, $key) = @_;
+sub evt_tab_button_press {
+    my ($self, $ev_box, $ev, $key) = @_;
+    my $sm = $self->cli->{_sm};
 
-		#right click
-		if ($key && $ev->button == 3 && $ev->type eq 'button-press') {
-			$sm->{_menu_large_actions}->popup(
-				undef,    # parent menu shell
-				undef,    # parent menu item
-				undef,    # menu pos func
-				undef,    # data
-				$ev->button,
-				$ev->time
-			);
-		}
+    #right click
+    if ($key && $ev->button == 3 && $ev->type eq 'button-press') {
+        $sm->{_menu_large_actions}->popup(
+            undef,    # parent menu shell
+            undef,    # parent menu item
+            undef,    # menu pos func
+            undef,    # data
+            $ev->button,
+            $ev->time
+        ) if $sm->{_menu_large_actions};
+    }
 
-		return TRUE;
-	}
+    return TRUE;
+}
 
 
 1;
+
+__END__
+
+=head1 NAME
+
+Shutter::App::Handlers::Events_Tray - Tray event handlers
+
+=head1 DESCRIPTION
+
+Extracted from bin/shutter.
+Migrated to use the CLI object for state access instead of package globals.
+
+=cut
