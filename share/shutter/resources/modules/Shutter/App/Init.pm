@@ -15,10 +15,6 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Shutter; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-#
 ###################################################
 
 package Shutter::App::Init;
@@ -29,8 +25,11 @@ use feature 'try';
 no warnings 'experimental::try';
 
 use Moo;
+use Log::Any;
 
-use Shutter::App::Constants qw(:all);
+my $log = Log::Any->get_logger;
+
+use Shutter::App::Constants qw(MAX_ERROR SHUTTER_REV SHUTTER_NAME SHUTTER_VERSION);
 use Shutter::App::Autostart;
 use Shutter::App::Menu;
 use Shutter::App::Toolbar;
@@ -42,7 +41,6 @@ use Shutter::App::PinToScreen;
 use Shutter::Geometry::Region;
 
 use Shutter::App::Handlers::Core;
-use Shutter::App::Handlers::Workflow;
 use Shutter::App::Handlers::Workflow_Init;
 use Shutter::App::Handlers::Workflow_Control;
 use Shutter::App::Handlers::Workflow_Save;
@@ -57,15 +55,32 @@ use Shutter::App::Core::SessionManager;
 use Shutter::App::Core::SettingsManager;
 use Shutter::App::Core::ScreenshotHandler;
 use Shutter::App::Core::UploadManager;
+use Shutter::App::Notification;
 
 use Glib qw/TRUE FALSE/;
 
 sub initialize ($cli) {
     my $sc = $cli->sc;
+    $log->debug("Initializing modules in Init.pm");
     
     # Initialize session state hash
-    $cli->{session_screens} = {};
-    $cli->{session_start_screen} = {};
+    $cli->{_session_screens} = {};
+    $cli->{_session_start_screen} = {
+        'first_page' => {
+            'num_session_files' => 0,
+            'model' => Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::String'),
+        }
+    };
+    $cli->{_session_start_screen}->{'first_page'}->{'model'}->set_sort_column_id(2, 'descending');
+
+    # Mock widgets for state that used to be in the GUI
+    $cli->{_hide_active} = _mock_widget(TRUE);
+    $cli->{_hide_time}   = _mock_widget(250);
+    $cli->{_menu_delay}  = _mock_widget(0);
+    $cli->{_notify_ptimeout_active} = _mock_widget(FALSE);
+    $cli->{_is_hidden}   = FALSE;
+    
+    $cli->{_x11_supported} = ($ENV{XDG_SESSION_TYPE} // '') eq "wayland" ? FALSE : TRUE;
     
     # Create core managers
     my $session_manager = Shutter::App::Core::SessionManager->new(_common => $sc);
@@ -74,11 +89,18 @@ sub initialize ($cli) {
     my $settings_manager = Shutter::App::Core::SettingsManager->new(_common => $sc);
     $cli->{settings_manager} = $settings_manager;
     
+    # Load settings and accounts
+    my $settings_xml = $settings_manager->load_settings;
+    my $accounts = $settings_manager->load_accounts;
+    
     my $screenshot_handler = Shutter::App::Core::ScreenshotHandler->new(_common => $sc);
     $cli->{screenshot_handler} = $screenshot_handler;
     
     my $upload_manager = Shutter::App::Core::UploadManager->new(_common => $sc);
     $cli->{upload_manager} = $upload_manager;
+
+    # Initialize notifications
+    $sc->set_notification_object(Shutter::App::Notification->new);
     
     # Create UI components
     my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
@@ -109,13 +131,30 @@ sub initialize ($cli) {
     # Initialize global state
     my %globals = (
         plugins => {},
-        accounts => {},
-        settings => {},
+        accounts => $accounts,
+        settings => $settings_xml,
         supported_formats => [],
     );
+
+    # Initialize dependencies
+    Shutter::App::Handlers::Workflow_Init->new(cli => $cli)->fct_init_depend;
+
     $cli->{globals} = \%globals;
+
+    $cli->{settings_xml} = $settings_xml; # for backward compat
     
     return \%globals;
+}
+
+sub _mock_widget ($val) {
+    return bless { val => $val }, 'MockWidget';
+}
+
+package MockWidget {
+    sub get_active { shift->{val} }
+    sub get_value  { shift->{val} }
+    sub get_text   { shift->{val} }
+    sub get_active_text { shift->{val} }
 }
 
 1;

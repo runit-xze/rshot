@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GooCanvasTextModel: GooCanvas Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="GooCanvas Reference Manual">
+<link rel="up" href="ch04.html" title="Standard Canvas Item Models">
+<link rel="prev" href="GooCanvasRectModel.html" title="GooCanvasRectModel">
+<link rel="next" href="GooCanvasTableModel.html" title="GooCanvasTableModel">
+<meta name="generator" content="GTK-Doc V1.35.1 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GooCanvasTextModel.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GooCanvasTextModel.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#GooCanvasTextModel.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#GooCanvasTextModel.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch04.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="GooCanvasRectModel.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="GooCanvasTableModel.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GooCanvasTextModel"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GooCanvasTextModel.top_of_page"></a>GooCanvasTextModel</span></h2>
+<p>GooCanvasTextModel — a model for text items.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GooCanvasTextModel.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_proto_type">
+<col class="functions_proto_name">
+</colgroup>
+<tbody><tr>
+<td class="function_type">
+<a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="returnvalue">GooCanvasItemModel</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GooCanvasTextModel.html#goo-canvas-text-model-new" title="goo_canvas_text_model_new ()">goo_canvas_text_model_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTextModel.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><span class="type">PangoAlignment</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--alignment" title="The “alignment” property">alignment</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasAnchorType" title="enum GooCanvasAnchorType"><span class="type">GooCanvasAnchorType</span></a></td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--anchor" title="The “anchor” property">anchor</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">PangoEllipsizeMode</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--ellipsize" title="The “ellipsize” property">ellipsize</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--height" title="The “height” property">height</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<span class="type">char</span> *</td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--text" title="The “text” property">text</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--use-markup" title="The “use-markup” property">use-markup</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--width" title="The “width” property">width</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">PangoWrapMode</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--wrap" title="The “wrap” property">wrap</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--x" title="The “x” property">x</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">double</span></td>
+<td class="property_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel--y" title="The “y” property">y</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTextModel.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="other_proto_type">
+<col class="other_proto_name">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel-struct" title="struct GooCanvasTextModel">GooCanvasTextModel</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTextModel.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> <a class="link" href="GooCanvasItemModelSimple.html" title="GooCanvasItemModelSimple">GooCanvasItemModelSimple</a>
+        <span class="lineart">╰──</span> GooCanvasTextModel
+</pre>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTextModel.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GooCanvasTextModel implements
+ <a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel">GooCanvasItemModel</a>.</p>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTextModel.description"></a><h2>Description</h2>
+<p>GooCanvasTextModel represents a model for text items.</p>
+<p>It is a subclass of <a class="link" href="GooCanvasItemModelSimple.html" title="GooCanvasItemModelSimple"><span class="type">GooCanvasItemModelSimple</span></a> and so inherits all of the
+style properties such as "fill-color".</p>
+<p>It also implements the <a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a> interface, so you can use the
+<a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a> functions such as <a class="link" href="GooCanvasItemModel.html#goo-canvas-item-model-raise" title="goo_canvas_item_model_raise ()"><code class="function">goo_canvas_item_model_raise()</code></a> and
+<a class="link" href="GooCanvasItemModel.html#goo-canvas-item-model-rotate" title="goo_canvas_item_model_rotate ()"><code class="function">goo_canvas_item_model_rotate()</code></a>.</p>
+<p>To create a <a class="link" href="GooCanvasTextModel.html" title="GooCanvasTextModel"><span class="type">GooCanvasTextModel</span></a> use <a class="link" href="GooCanvasTextModel.html#goo-canvas-text-model-new" title="goo_canvas_text_model_new ()"><code class="function">goo_canvas_text_model_new()</code></a>.</p>
+<p>To get or set the properties of an existing <a class="link" href="GooCanvasTextModel.html" title="GooCanvasTextModel"><span class="type">GooCanvasTextModel</span></a>, use
+<code class="function">g_object_get()</code> and <code class="function">g_object_set()</code>.</p>
+<p>To respond to events such as mouse clicks on the text item you must connect
+to the signal handlers of the corresponding <a class="link" href="GooCanvasText.html" title="GooCanvasText"><span class="type">GooCanvasText</span></a> objects.
+(See <a class="link" href="GooCanvas.html#goo-canvas-get-item" title="goo_canvas_get_item ()"><code class="function">goo_canvas_get_item()</code></a> and <a class="link" href="GooCanvas.html#GooCanvas-item-created" title="The “item-created” signal"><span class="type">“item-created”</span></a>.)</p>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTextModel.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="goo-canvas-text-model-new"></a><h3>goo_canvas_text_model_new ()</h3>
+<pre class="programlisting"><a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="returnvalue">GooCanvasItemModel</span></a> *
+goo_canvas_text_model_new (<em class="parameter"><code><a class="link" href="GooCanvasItemModel.html" title="GooCanvasItemModel"><span class="type">GooCanvasItemModel</span></a> *parent</code></em>,
+                           <em class="parameter"><code>const <span class="type">char</span> *string</code></em>,
+                           <em class="parameter"><code><span class="type">gdouble</span> x</code></em>,
+                           <em class="parameter"><code><span class="type">gdouble</span> y</code></em>,
+                           <em class="parameter"><code><span class="type">gdouble</span> width</code></em>,
+                           <em class="parameter"><code><a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasAnchorType" title="enum GooCanvasAnchorType"><span class="type">GooCanvasAnchorType</span></a> anchor</code></em>,
+                           <em class="parameter"><code>...</code></em>);</pre>
+<p>Creates a new text model.</p>
+<p>Here's an example showing how to create a text item with the bottom right
+of the text box placed at (500,500):</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="n">GooCanvasItemModel</span><span class="w"> </span><span class="o">*</span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">goo_canvas_text_model_new</span><span class="w"> </span><span class="p">(</span><span class="n">mygroup</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Hello World&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">500.0</span><span class="p">,</span><span class="w"> </span><span class="mf">500.0</span><span class="p">,</span><span class="w"> </span><span class="mf">200.0</span><span class="p">,</span><span class="w"> </span><span class="n">GOO_CANVAS_ANCHOR_SE</span><span class="p">,</span>
+<span class="w">                                                      </span><span class="s">&quot;fill-color&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;blue&quot;</span><span class="p">,</span>
+<span class="w">                                                      </span><span class="nb">NULL</span><span class="p">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="refsect3">
+<a name="goo-canvas-text-model-new.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>parent</p></td>
+<td class="parameter_description"><p>the parent model, or <code class="literal">NULL</code>. If a parent is specified, it will
+assume ownership of the item, and the item will automatically be freed when
+it is removed from the parent. Otherwise call <code class="function">g_object_unref()</code> to free it. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>string</p></td>
+<td class="parameter_description"><p>the text to display.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>the x coordinate of the text.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>the y coordinate of the text.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>the width of the text item, or -1 for unlimited width.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>anchor</p></td>
+<td class="parameter_description"><p>the position of the text relative to the given <em class="parameter"><code>x</code></em>
+and <em class="parameter"><code>y</code></em>
+coordinates. For example an anchor of <code class="literal">GDK_ANCHOR_NW</code> will result in the
+top-left of the text being placed at the given <em class="parameter"><code>x</code></em>
+and <em class="parameter"><code>y</code></em>
+coordinates.
+An anchor of <code class="literal">GDK_ANCHOR_CENTER</code> will result in the center of the text being
+placed at the <em class="parameter"><code>x</code></em>
+and <em class="parameter"><code>y</code></em>
+coordinates.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>...</p></td>
+<td class="parameter_description"><p>optional pairs of property names and values, and a terminating <code class="literal">NULL</code>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="goo-canvas-text-model-new.returns"></a><h4>Returns</h4>
+<p>a new text model. </p>
+<p><span class="annotation">[<acronym title="The caller owns the data, and is responsible for free it."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTextModel.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GooCanvasTextModel-struct"></a><h3>struct GooCanvasTextModel</h3>
+<pre class="programlisting">struct GooCanvasTextModel;</pre>
+<p>The <a class="link" href="GooCanvasTextModel.html#GooCanvasTextModel-struct" title="struct GooCanvasTextModel"><span class="type">GooCanvasTextModel</span></a> struct contains private data only.</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GooCanvasTextModel.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GooCanvasTextModel--alignment"></a><h3>The <code class="literal">“alignment”</code> property</h3>
+<pre class="programlisting">  “alignment”                <span class="type">PangoAlignment</span></pre>
+<p>How to align the text.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: PANGO_ALIGN_LEFT</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTextModel--anchor"></a><h3>The <code class="literal">“anchor”</code> property</h3>
+<pre class="programlisting">  “anchor”                   <a class="link" href="goocanvas2-GooCanvas-Types.html#GooCanvasAnchorType" title="enum GooCanvasAnchorType"><span class="type">GooCanvasAnchorType</span></a></pre>
+<p>How to position the text relative to the given x and y coordinates.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: GOO_CANVAS_ANCHOR_NORTH_WEST</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTextModel--ellipsize"></a><h3>The <code class="literal">“ellipsize”</code> property</h3>
+<pre class="programlisting">  “ellipsize”                <span class="type">PangoEllipsizeMode</span></pre>
+<p>The preferred place to ellipsize the string, if the label does not have enough room to display the entire string.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: PANGO_ELLIPSIZE_NONE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTextModel--height"></a><h3>The <code class="literal">“height”</code> property</h3>
+<pre class="programlisting">  “height”                   <span class="type">double</span></pre>
+<p>The height to use to layout the text, or -1 to let the text use as much vertical space as needed.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTextModel--text"></a><h3>The <code class="literal">“text”</code> property</h3>
+<pre class="programlisting">  “text”                     <span class="type">char</span> *</pre>
+<p>The text to display.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTextModel--use-markup"></a><h3>The <code class="literal">“use-markup”</code> property</h3>
+<pre class="programlisting">  “use-markup”               <span class="type">gboolean</span></pre>
+<p>Whether to parse PangoMarkup in the text, to support different styles.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTextModel--width"></a><h3>The <code class="literal">“width”</code> property</h3>
+<pre class="programlisting">  “width”                    <span class="type">double</span></pre>
+<p>The width to use to layout the text, or -1 to let the text use as much horizontal space as needed.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTextModel--wrap"></a><h3>The <code class="literal">“wrap”</code> property</h3>
+<pre class="programlisting">  “wrap”                     <span class="type">PangoWrapMode</span></pre>
+<p>The preferred method of wrapping the string if a width has been set.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: PANGO_WRAP_WORD</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTextModel--x"></a><h3>The <code class="literal">“x”</code> property</h3>
+<pre class="programlisting">  “x”                        <span class="type">double</span></pre>
+<p>The x coordinate of the text.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GooCanvasTextModel--y"></a><h3>The <code class="literal">“y”</code> property</h3>
+<pre class="programlisting">  “y”                        <span class="type">double</span></pre>
+<p>The y coordinate of the text.</p>
+<p>Owner: GooCanvasTextModel</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.35.1</div>
+</body>
+</html>

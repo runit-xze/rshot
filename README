@@ -1,3 +1,40 @@
+# Shutter
+
+Shutter is a feature-rich screenshot program for Linux-based operating systems.
+
+## 🚀 Development Quick Start
+
+Get up and running in less than 2 minutes.
+
+### 1. Environment Setup
+*   **VS Code (Recommended):** Open this folder and click **"Reopen in Container"**. All dependencies, Perl v5.40, and tools are pre-configured.
+*   **Manual (Linux):** Ensure you have Perl installed, then run:
+    ```bash
+    ./bin/setup
+    ```
+
+### 2. Run Shutter
+```bash
+carton exec bin/shutter
+```
+
+### 3. Mock Capture (For Rapid Testing)
+Test the entire pipeline without taking real screenshots:
+```bash
+carton exec bin/shutter --mock-capture --full
+```
+
+---
+
+## 📖 Documentation
+*   [**Contributing Guide**](CONTRIBUTING.md) - How to set up, test, and submit PRs.
+*   [**Architecture Overview**](ARCHITECTURE.md) - Understanding the Moo-based modular design.
+*   [**Life of a Screenshot**](docs/LIFE_OF_A_SCREENSHOT.md) - A temporal trace of the capture workflow.
+*   [**Refactor Progress**](REFACTOR_PROGRESS.md) - Track the migration from the legacy monolith.
+
+---
+
+## Legacy Information
 Shutter
 Copyright (C) 2008-2013 Mario Kemper <mario.kemper@gmail.com>
 Copyright (C) 2020-2021 Google LLC, contributed by Alexey Sokolov <sokolov@google.com>

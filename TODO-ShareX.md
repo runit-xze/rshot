@@ -1,33 +1,16 @@
-# ShareX Modernization TODOs
+# ShareX Modernization (Status: Integrated)
 
-This document tracks upcoming features to bring ShareX-like capabilities to Shutter.
+This project goal of bringing ShareX-like capabilities to Shutter has been largely achieved. Remaining items are tracked in the main `ROADMAP.md`.
 
-## 1. The "After Capture" Task Pipeline
-**Priority:** High | **Effort:** Medium | **Impact:** Massive
-- [x] Build a configurable queue of actions that execute sequentially after a screenshot is taken.
-- [x] Transition `CustomUploader.pm` from a singular "Upload" action to a step within a plugin-based task manager.
-- [x] Support workflows like: `[Save to disk] -> [Open in Editor] -> [Upload to Catbox] -> [Copy Link to Clipboard]`.
-- [x] Design choice needed: Keep UI in the Preferences dialog or add a dedicated "Workflow" configuration tab.
+## ✅ Completed Features
+- [x] **"After Capture" Task Pipeline:** Configurable sequence of actions (Save, Open, Upload, Copy).
+- [x] **"Pin to Screen":** Floating image overlays.
+- [x] **File Naming Templates:** Advanced macro support for dynamic filenames.
+- [x] **SXCU Compatibility:** Support for custom ShareX uploaders.
+- [x] **URL Shortening:** Integration with TinyURL for upload links.
 
-## 2. "Pin to Screen"
-**Priority:** Medium | **Effort:** Low | **Impact:** High
-- [x] Create a simple overlay window that renders the image buffer, allowing a captured region to float on top of all other windows.
-- [x] Add a quick toggle or keyboard shortcut to activate "Pin to Screen" for the most recent capture.
+## 🔄 Transitioned to ROADMAP.md
+- [ ] **OCR Integration:** OCR support using Tesseract (Phase 6).
+- [ ] **QR Code Generation:** Display QR codes for upload links (Phase 4.3).
 
-## 3. File Naming Templates
-**Priority:** Medium | **Effort:** Low | **Impact:** High
-- [x] Implement string formatter macros for file naming (e.g., `%y-%mo-%d_%h-%mi-%s` for date/time or `%pn` for project name).
-- [x] Apply formatting before saving the file to `~/Pictures/Shutter`.
-- [x] Note: Shutter currently supports `%Y-%m-%d` via `strftime`. Evaluate extending this to full macro templates.
-
-## 4. Direct Clipboard/OCR Workflow
-**Priority:** Low | **Effort:** High | **Impact:** Medium
-- [ ] Integrate a lightweight OCR step that runs before or during the upload.
-- [ ] Use a system-level tool like `tesseract` to extract recognized text from a region.
-- [ ] Add option to copy recognized text directly to clipboard.
-
-## 5. "After Upload" Actions
-**Priority:** Medium | **Effort:** Medium | **Impact:** Medium
-- [x] Build a system for actions following a successful `.sxcu` upload.
-- [x] Implement URL shortener integration (e.g., TinyURL or Bitly).
-- [ ] Implement QR Code generation for the returned link to display on screen.
+*This document is now preserved for historical context.*

@@ -28,6 +28,9 @@ use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
 use Net::DBus;
+use Log::Any;
+
+my $log = Log::Any->get_logger;
 
 has cli => (is => 'ro', required => 1);
 
@@ -53,8 +56,7 @@ sub fct_control_wm_settings {
         $fpl = $compiz->get_object("/org/freedesktop/compiz/core/screen0/focus_prevention_level", "org.freedesktop.compiz");
     };
     if ($@) {
-        warn "INFO: DBus connection to org.freedesktop.compiz failed --> skipping compiz related tasks\n\n";
-        warn $@ . "\n\n";
+        $log->info("DBus connection to org.freedesktop.compiz failed --> skipping compiz related tasks: $@");
         return $curr_value;
     }
 
@@ -80,8 +82,7 @@ sub fct_control_wm_settings {
             }
         };
         if ($@) {
-            warn "ERROR: Unable to set/get focus_level_prevention --> skipping compiz related tasks\n\n";
-            warn $@ . "\n\n";
+            $log->error("Unable to set/get focus_level_prevention --> skipping compiz related tasks: $@");
         }
     }
 

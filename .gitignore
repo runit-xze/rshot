@@ -1,1 +1,8 @@
 .vscode
+*.bak
+*.tdy
+*.LOG
+blib/
+pm_to_blib
+Makefile.old
+MYMETA.*

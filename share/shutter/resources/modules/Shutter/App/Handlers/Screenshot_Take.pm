@@ -27,7 +27,19 @@ no warnings 'experimental::try';
 use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
+use File::Basename;
+use POSIX qw(strftime);
+use URI::Escape qw(uri_unescape);
 use Shutter::App::SimpleDialogs;
+use Shutter::Screenshot::Workspace;
+use Shutter::Screenshot::Window;
+use Shutter::Screenshot::WindowName;
+use Shutter::Screenshot::WindowXid;
+use Shutter::Screenshot::SelectorAuto;
+use Shutter::Screenshot::SelectorAdvanced;
+use Shutter::Screenshot::Web;
+use Shutter::Screenshot::Error;
+use Shutter::Pixbuf::Border;
 
 has cli => (is => 'ro', required => 1);
 
@@ -58,7 +70,7 @@ sub evt_take_screenshot {
         && !$selfcapture)
     {
 
-        fct_control_main_window('hide') if defined &fct_control_main_window;
+        $cli->handlers->get('Core')->fct_control_main_window('hide');
 
     } else {
 
@@ -72,19 +84,19 @@ sub evt_take_screenshot {
     $notify->close if $notify;
 
     #disable signal-handler
-    fct_control_signals('block') if defined &fct_control_signals;
+    $cli->handlers->get('Core')->fct_control_signals('block');
 
     if ($data eq "web" || $data eq "tray_web") {
-        fct_take_screenshot($widget, $data, $folder_from_config, $extra) if defined &fct_take_screenshot;
+        $self->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
 
         #unblock signal handler
-        fct_control_signals('unblock') if defined &fct_control_signals;
+        $cli->handlers->get('Core')->fct_control_signals('unblock');
         return TRUE;
     } elsif (!$x11_supported && $data ne "full" && $data ne "tray_full") {
         my $sd = Shutter::App::SimpleDialogs->new;
         $sd->dlg_error_message($d->get("Can't take screenshots without X11 server"), $d->get("Failed"));
-        fct_control_signals('unblock') if defined &fct_control_signals;
-        fct_control_main_window('show') if defined &fct_control_main_window;
+        $cli->handlers->get('Core')->fct_control_signals('unblock');
+        $cli->handlers->get('Core')->fct_control_main_window('show');
         return TRUE;
     }
 
@@ -97,7 +109,7 @@ sub evt_take_screenshot {
         my $scd_text;
         if ($data eq "menu" || $data eq "tray_menu") {
             $scd_text = $d->get("Please activate the menu you want to capture");
-            if ($ENV{GDK_SCALE} > 1) {
+            if ($ENV{GDK_SCALE} && $ENV{GDK_SCALE} > 1) {
                 my $sd = Shutter::App::SimpleDialogs->new;
                 $sd->dlg_info_message("Capturing a cascading menu is known to be broken with HiDPI.\nPlease unset GDK_SCALE variable and restart Shutter.\nPlease follow https://github.com/shutter-project/shutter/issues/326 and send us the patch\nWill attempt capturing it anyway...", undef, 'gtk-ok');
             }
@@ -158,14 +170,14 @@ sub evt_take_screenshot {
         Glib::Timeout->add(
             $menu_delay->get_value * 1000,
             sub {
-                fct_take_screenshot($widget, $data, $folder_from_config, $extra) if defined &fct_take_screenshot;
+                $self->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
 
                 #unblock signal handler
-                fct_control_signals('unblock') if defined &fct_control_signals;
+                $cli->handlers->get('Core')->fct_control_signals('unblock');
                 return FALSE;
             });
     } else {
-        if (($data eq "section" || $data eq "tray_section") && $ENV{GDK_SCALE} > 1) {
+        if (($data eq "section" || $data eq "tray_section") && $ENV{GDK_SCALE} && $ENV{GDK_SCALE} > 1) {
             my $sd = Shutter::App::SimpleDialogs->new;
             $sd->dlg_info_message("Capturing a window section is known to be broken with HiDPI.\nPlease unset GDK_SCALE variable and restart Shutter.\nPlease follow https://github.com/shutter-project/shutter/issues/326 and send us the patch\nWill attempt capturing it anyway...", undef, 'gtk-ok');
         }
@@ -175,10 +187,10 @@ sub evt_take_screenshot {
         Glib::Timeout->add(
             $hide_time->get_value,
             sub {
-                fct_take_screenshot($widget, $data, $folder_from_config, $extra) if defined &fct_take_screenshot;
+                $self->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
 
                 #unblock signal handler
-                fct_control_signals('unblock') if defined &fct_control_signals;
+                $cli->handlers->get('Core')->fct_control_signals('unblock');
                 return FALSE;
             });
     }
@@ -186,18 +198,299 @@ sub evt_take_screenshot {
     return TRUE;
 }
 
+sub fct_take_screenshot {
+    my ($self, $widget, $data, $folder_from_config, $extra) = @_;
+    my $cli = $self->cli;
+    my $sc = $cli->sc;
+    my $shf = $cli->shf;
+    my $sd = $cli->{sd};
+    my $sp = $cli->{sp};
+    my $lp = $cli->{lp};
+    my $acp = $cli->{acp};
+    my $pins = $cli->{pins};
+    my $d = $sc->get_gettext;
+    my $sm = $cli->{settings_manager};
+
+    # Get settings from SettingsManager
+    my $quality_value = $sm->get_setting('general', 'quality') // 9;
+    my $filename_value = $sm->get_setting('general', 'filename') // '$name_%NNN';
+    my $folder = $sm->get_setting('general', 'folder') // $folder_from_config // Glib::get_user_special_dir('pictures') // Glib::get_home_dir();
+    
+    my $save_no_active = $sm->get_setting('general', 'save_no') // FALSE;
+    my $save_ask_active = $sm->get_setting('general', 'save_ask') // FALSE;
+    
+    my $filetype_index = $sm->get_setting('general', 'filetype') // 0;
+    
+    my $cursor_active = $sm->get_setting('general', 'cursor') // FALSE;
+    
+    # Other settings (stubs for now)
+    my $notify_timeout_active = $cli->{_notify_timeout_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $current_monitor_active = $cli->{_current_monitor_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $border_active = $cli->{_border_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $winresize_active = $cli->{_winresize_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $winresize_w = $cli->{_winresize_w} // Shutter::App::Init::_mock_widget(800);
+    my $winresize_h = $cli->{_winresize_h} // Shutter::App::Init::_mock_widget(600);
+    my $hide_time = $cli->{_hide_time} // Shutter::App::Init::_mock_widget(250);
+    my $autoshape_active = $cli->{_autoshape_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $is_hidden = $cli->{_is_hidden} // FALSE;
+    my $visible_windows_active = $cli->{_visible_windows_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $menu_waround_active = $cli->{_menu_waround_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $zoom_active = $cli->{_zoom_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $as_help_active = $cli->{_as_help_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $asel_size1 = $cli->{_asel_size1} // Shutter::App::Init::_mock_widget(0);
+    my $asel_size2 = $cli->{_asel_size2} // Shutter::App::Init::_mock_widget(0);
+    my $asel_size3 = $cli->{_asel_size3} // Shutter::App::Init::_mock_widget(0);
+    my $asel_size4 = $cli->{_asel_size4} // Shutter::App::Init::_mock_widget(0);
+    my $as_confirmation_necessary = $cli->{_as_confirmation_necessary} // Shutter::App::Init::_mock_widget(FALSE);
+    my $combobox_web_width = $cli->{_combobox_web_width} // Shutter::App::Init::_mock_widget(1024);
+    my $st = $cli->{st};
+    my $bordereffect_active = $cli->{_bordereffect_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $bordereffect = $cli->{_bordereffect} // Shutter::App::Init::_mock_widget(0);
+    my $bordereffect_cbtn = $cli->{_bordereffect_cbtn} // Shutter::App::Init::_mock_widget(undef);
+    my $im_colors_active = $cli->{_im_colors_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $combobox_im_colors = $cli->{_combobox_im_colors} // Shutter::App::Init::_mock_widget(0);
+    my $thumbnail_active = $cli->{_thumbnail_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $thumbnail = $cli->{_thumbnail} // Shutter::App::Init::_mock_widget(25);
+    my $no_autocopy_active = $cli->{_no_autocopy_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $image_autocopy_active = $cli->{_image_autocopy_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $fname_autocopy_active = $cli->{_fname_autocopy_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $progname_active = $cli->{_progname_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $progname = $cli->{_progname} // Shutter::App::Init::_mock_widget(undef);
+    my $notify_after_active = $cli->{_notify_after_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $present_after_active = $cli->{_present_after_active} // Shutter::App::Init::_mock_widget(FALSE);
+    my $clipboard = Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern('CLIPBOARD', FALSE));
+    my $x11_supported = $cli->{_x11_supported};
+    my $wnck_screen = undef;
+    try { $wnck_screen = Wnck::Screen::get_default(); } catch ($e) { }
+
+    print "\n$data was emitted by widget " . ($widget // 'none') . "\n" if $sc->get_debug;
+
+    # screenshot(pixbuf) and screenshot name
+    my $screenshot       = undef;
+    my $screenshooter    = undef;
+    my $screenshot_name  = undef;
+    my $thumbnail_ending = "thumb";
+
+    # Mock Capture Mode
+    my $filetype_value;
+
+    if ($sc->get_mock_capture) {
+        print "Mock Capture Mode enabled - using static test image\n" if $sc->get_debug;
+        $screenshot = Gtk3::Gdk::Pixbuf->new_from_file($sc->get_root . "/share/shutter/resources/icons/web_image.svg");
+        
+        $quality_value = 90;
+        $filetype_value = "png";
+        $folder = $folder_from_config || "/tmp";
+        $filename_value = "mock_capture";
+        
+        $screenshooter = MockScreenshooter->new;
+        goto POST_CAPTURE;
+    }
+
+    #delay
+    my $delay_value = undef;
+
+    #include_cursor
+    my $include_cursor = undef;
+
+    #folder to save
+    if ($save_no_active) {
+        # $folder = Shutter::App::Directories::get_cache_dir(); # FIXME: Directories.pm might not be loaded
+        $folder = "/tmp/shutter_cache";
+        mkdir $folder unless -d $folder;
+    }
+
+    #determine current file type
+    my @supported_formats;
+    foreach my $format (Gtk3::Gdk::Pixbuf::get_formats()) {
+        my $format_name = $format->get_name;
+        if (grep { $_ eq $format_name } qw(jpeg png bmp webp avif)) {
+            $format_name = "jpg" if $format_name eq "jpeg";
+            push @supported_formats, $format_name;
+        }
+    }
+    $filetype_value = $supported_formats[$filetype_index] // "png";
+
+    #delay
+    unless ($data eq "menu" || $data eq "tray_menu" || $data eq "tooltip" || $data eq "tray_tooltip") {
+        if (defined $sc->get_delay) {
+            $delay_value = int $sc->get_delay;
+        } else {
+            $delay_value = int($delay_value // 0);
+        }
+    } else {
+        $delay_value = 0;
+    }
+
+    #cursor
+    if ($sc->get_include_cursor) {
+        $include_cursor = $sc->get_include_cursor;
+    } elsif ($sc->get_remove_cursor) {
+        $include_cursor = FALSE;
+    } else {
+        $include_cursor = $cursor_active;
+    }
+
+    #fullscreen screenshot
+    if ($data eq "full" || $data eq "tray_full") {
+        if ($x11_supported) {
+            $screenshooter = Shutter::Screenshot::Workspace->new(
+                $sc, $include_cursor, $delay_value,
+                $notify_timeout_active->get_active,
+                $wnck_screen ? $wnck_screen->get_active_workspace : undef,
+                undef, undef, $current_monitor_active->get_active
+            );
+            $screenshot = $screenshooter->workspace();
+        } else {
+            $screenshot = Shutter::Screenshot::Wayland::xdg_portal($screenshooter);
+        }
+    } elsif ($data =~ /^(window|tray_window|awindow|tray_awindow|section|tray_section|menu|tray_menu|tooltip|tray_tooltip)$/) {
+        # FIXME: fct_control_wm_settings not easily accessible
+        if (defined $extra && $extra) {
+            $screenshooter = Shutter::Screenshot::WindowName->new(
+                $sc, $include_cursor, $delay_value, $notify_timeout_active->get_active,
+                $border_active->get_active, $winresize_active->get_active, $winresize_w->get_value, $winresize_h->get_value,
+                $hide_time->get_value, $data, $autoshape_active->get_active
+            );
+            $screenshot = $screenshooter->window_find_by_name($extra);
+        } else {
+            $screenshooter = Shutter::Screenshot::Window->new(
+                $sc, $include_cursor, $delay_value, $notify_timeout_active->get_active,
+                $border_active->get_active, $winresize_active->get_active, $winresize_w->get_value, $winresize_h->get_value,
+                $hide_time->get_value, $data, $autoshape_active->get_active, $is_hidden,
+                $visible_windows_active->get_active, $menu_waround_active->get_active
+            );
+            $screenshot = $screenshooter->window();
+        }
+    } elsif ($data eq "select" || $data eq "tray_select") {
+        if (defined $extra && $extra) {
+            my @coords = split(',', $extra);
+            $screenshooter = Shutter::Screenshot::SelectorAuto->new($sc, $include_cursor, $delay_value, $notify_timeout_active->get_active);
+            $screenshot = $screenshooter->select_auto($coords[0], $coords[1], $coords[2], $coords[3]);
+        } else {
+            $screenshooter = Shutter::Screenshot::SelectorAdvanced->new(
+                $sc, $include_cursor, $delay_value, $notify_timeout_active->get_active,
+                $zoom_active->get_active, $hide_time->get_value, $as_help_active->get_active, $asel_size3->get_value,
+                $asel_size4->get_value, $asel_size1->get_value, $asel_size2->get_value, $as_confirmation_necessary->get_active,
+            );
+            $screenshot = $screenshooter->select_advanced();
+        }
+    } elsif ($data eq "web" || $data eq "tray_web") {
+        my $website_width = 1024;
+        if ($combobox_web_width->get_active_text =~ /(\d+)/) {
+            $website_width = $1;
+        }
+        $screenshooter = Shutter::Screenshot::Web->new($sc, 10, $website_width); # Fixed 10s timeout for now
+        $screenshot    = $screenshooter->dlg_website($extra);
+    }
+
+    POST_CAPTURE:
+
+    unless ($screenshot) {
+        $sd->dlg_error_message($d->get("Error while taking the screenshot."), $d->get("Failed"));
+        $cli->handlers->get('Core')->fct_control_main_window('show');
+        return FALSE;
+    }
+
+    my $giofile = undef;
+    my $error = Shutter::Screenshot::Error->new($sc, $screenshot, $data, $extra);
+    if ($error->is_error) {
+        my $detailed_error_text = $screenshooter ? $screenshooter->get_error_text : '';
+        my ($response, $status_text) = $error->show_dialog($detailed_error_text);
+        if ($error->is_aborted_by_user) {
+            $cli->handlers->get('Core')->fct_control_main_window('show', $present_after_active->get_active);
+        } else {
+            $cli->handlers->get('Core')->fct_control_main_window('show');
+        }
+        return FALSE;
+    } else {
+        if ($sc->get_export_filename) {
+            my ($short, $folder_path, $ext) = fileparse($shf->switch_home_in_file($shf->utf8_decode($sc->get_export_filename)), qr/\.[^.]*/);
+            $filetype_value = $ext; $filetype_value =~ s/\.//;
+            $short = strftime $short, localtime;
+            $short =~ s/(\/|\#)/-/g;
+            my $tmp_filename = $folder_path . $short . $ext;
+            $tmp_filename = File::Spec->rel2abs($tmp_filename) unless File::Spec->file_name_is_absolute($tmp_filename);
+            $tmp_filename = $cli->handlers->get('Util_File')->fct_parse_filename_wildcards($tmp_filename, $screenshooter, $screenshot);
+            $giofile = Glib::IO::File::new_for_path($tmp_filename);
+        } else {
+            $filename_value = $shf->utf8_decode(strftime $filename_value, localtime);
+            $filename_value =~ s/(\/|\#)/-/g;
+            $filename_value = $cli->handlers->get('Util_File')->fct_parse_filename_wildcards($filename_value, $screenshooter, $screenshot);
+            $giofile = $cli->handlers->get('Util_Get')->fct_get_next_filename($filename_value, $folder, $filetype_value);
+        }
+
+        unless ($giofile) {
+            $sd->dlg_error_message($d->get("There was an error determining the filename."), $d->get("Failed"));
+            $cli->handlers->get('Core')->fct_control_main_window('show');
+            return FALSE;
+        }
+
+        $screenshot_name = $shf->utf8_decode(uri_unescape($giofile->get_path));
+        $screenshot_name = "/" . $giofile->get_basename unless $screenshot_name;
+        $giofile = Glib::IO::File::new_for_path($screenshot_name);
+
+        # Bordereffect
+        if ($bordereffect_active->get_active) {
+            my $pbuf_border = Shutter::Pixbuf::Border->new($sc);
+            $screenshot = $pbuf_border->create_border($screenshot, $bordereffect->get_value, $bordereffect_cbtn->get_color);
+        }
+
+        # Save pixbuf
+        unless ($sp->save_pixbuf_to_file($screenshot, $screenshot_name, $filetype_value, $quality_value)) {
+            $cli->handlers->get('Core')->fct_control_main_window('show');
+            return FALSE;
+        }
+    }
+
+    if ($giofile->query_exists) {
+        # Integrate into session
+        unless ($sc->get_no_session) {
+            $cli->handlers->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook($giofile, $screenshot, $screenshooter);
+        }
+
+        # After Capture Pipeline
+        if ($acp && $acp->get_steps) {
+            my $upload_link_container = \ '';
+            $acp->execute({
+                filename    => $screenshot_name,
+                pixbuf      => $screenshot,
+                clipboard   => $clipboard,
+                upload_link => \$upload_link_container,
+                editor_cb   => sub {
+                    $cli->handlers->get('Upload_Main')->fct_open_with_program(@_);
+                },
+                upload_cb   => sub {
+                    $cli->handlers->get('Dialogs_Upload')->fct_upload();
+                },
+                pin_cb      => sub {
+                    my ($pbuf) = @_;
+                    $pins->pin($pbuf, $sc) if $pins;
+                },
+            });
+        }
+    }
+
+    $cli->handlers->get('Core')->fct_control_main_window('show', $present_after_active->get_active);
+
+    if ($sc->get_exit_after_capture) {
+        $cli->handlers->get('Core')->evt_delete_window('', 'quit');
+    }
+
+    return TRUE;
+}
+
+
+package MockScreenshooter {
+    sub new { bless {}, shift }
+    sub get_mode { "mock" }
+    sub get_action_name { "mock_action" }
+    sub get_history { 1 }
+    sub get_error_text { "" }
+    sub can { 1 }
+    sub redo_capture {
+        return Gtk3::Gdk::Pixbuf->new_from_file($ENV{SHUTTER_ROOT} . "/share/shutter/resources/icons/web_image.svg");
+    }
+}
 
 1;
-
-__END__
-
-=head1 NAME
-
-Shutter::App::Handlers::Screenshot_Take - Screenshot take handlers
-
-=head1 DESCRIPTION
-
-Extracted from bin/shutter.
-Migrated to use the CLI object for state access instead of package globals.
-
-=cut

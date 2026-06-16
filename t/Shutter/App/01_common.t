@@ -115,9 +115,9 @@ subtest "Getters and setters" => sub {
     };
 
     subtest "debug" => sub {
-        is( $sc->get_debug, TRUE, "debug is enabled by default" );
-        $sc->set_debug(FALSE);
-        is( $sc->get_debug, FALSE, "debug is disabled" );
+        is( $sc->get_debug, FALSE, "debug is disabled by default" );
+        $sc->set_debug(TRUE);
+        is( $sc->get_debug, TRUE, "debug is enabled" );
     };
 
     subtest "clear_cache" => sub {

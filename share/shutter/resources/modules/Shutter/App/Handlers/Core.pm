@@ -49,6 +49,7 @@ sub evt_value_changed {
 sub evt_take_screenshot {
     my ($self, $widget, $data, $folder_from_config, $extra) = @_;
     my $sc = $self->cli->sc;
+    my $d = $sc->get_gettext;
     my $window = $self->cli->window;
     my $hide_time = $self->cli->{_hide_time};
     my $hide_active = $self->cli->{_hide_active};
@@ -62,7 +63,7 @@ sub evt_take_screenshot {
     }
     
     if ($hide_active->get_active && $data ne "web" && $data ne "tray_web" && !$is_hidden && !$selfcapture) {
-        fct_control_main_window('hide');
+        $self->fct_control_main_window('hide');
     } else {
         ($window->{x}, $window->{y}) = $window->get_position;
     }
@@ -70,19 +71,19 @@ sub evt_take_screenshot {
     my $notify = $sc->get_notification_object;
     $notify->close;
     
-    fct_control_signals('block');
+    $self->fct_control_signals('block');
     
     if ($data eq "web" || $data eq "tray_web") {
-        fct_take_screenshot($widget, $data, $folder_from_config, $extra);
-        fct_control_signals('unblock');
+        $self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
+        $self->fct_control_signals('unblock');
         return TRUE;
     }
     
     if (!$x11_supported && $data ne "full" && $data ne "tray_full") {
         my $sd = Shutter::App::SimpleDialogs->new;
         $sd->dlg_error_message($d->get("Can't take screenshots without X11 server"), $d->get("Failed"));
-        fct_control_signals('unblock');
-        fct_control_main_window('show');
+        $self->fct_control_signals('unblock');
+        $self->fct_control_main_window('show');
         return TRUE;
     }
     
@@ -99,14 +100,14 @@ sub evt_take_screenshot {
         }
         
         Glib::Timeout->add($menu_delay->get_value * 1000, sub {
-            fct_take_screenshot($widget, $data, $folder_from_config, $extra);
-            fct_control_signals('unblock');
+            $self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
+            $self->fct_control_signals('unblock');
             return FALSE;
         });
     } else {
         Glib::Timeout->add($hide_time->get_value, sub {
-            fct_take_screenshot($widget, $data, $folder_from_config, $extra);
-            fct_control_signals('unblock');
+            $self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
+            $self->fct_control_signals('unblock');
             return FALSE;
         });
     }
@@ -129,20 +130,14 @@ sub evt_delete_window {
 
 sub evt_about {
     my ($self) = @_;
-    my $sd = Shutter::App::SimpleDialogs->new($self->cli->window);
-    my $d = $self->cli->sc->get_gettext;
-    $sd->dlg_about_message(
-        $d->get("About ") . $self->cli->sc->get_appname,
-        $d->get("Feature-rich Screenshot Tool") . "\n\n" .
-        $d->get("Shutter is a feature-rich screenshot program.") . "\n\n" .
-        $d->get("Copyright (C) 2008-2013 Mario Kemper") . "\n" .
-        $d->get("Copyright (C) 2020-2021 Google LLC")
-    );
+    use Shutter::App::AboutDialog;
+    my $about = Shutter::App::AboutDialog->new($self->cli->sc);
+    $about->show;
 }
 
 sub evt_show_settings {
     my ($self) = @_;
-    evt_show_settings();
+    $self->cli->handlers->get('Dialogs_Settings')->evt_show_settings();
 }
 
 sub fct_control_main_window {
@@ -166,23 +161,23 @@ sub fct_control_signals {
     }
 }
 
-sub fct_zoom_in { fct_zoom_in() }
-sub fct_zoom_out { fct_zoom_out() }
-sub fct_zoom_100 { fct_zoom_100() }
-sub fct_zoom_best { fct_zoom_best() }
-sub fct_fullscreen { fct_fullscreen() }
-sub fct_undo { fct_undo() }
-sub fct_redo { fct_redo() }
-sub fct_clipboard { my ($self, $mode) = @_; fct_clipboard($mode) }
-sub fct_delete { fct_delete() }
-sub fct_select_all { fct_select_all() }
-sub fct_trash { fct_trash() }
-sub fct_draw { fct_draw() }
-sub fct_plugin { fct_plugin() }
-sub fct_send { fct_send() }
-sub fct_upload { fct_upload() }
-sub fct_email { my ($self, $mode) = @_; fct_email($mode) }
-sub fct_print { my ($self, $mode) = @_; fct_print($mode) }
+sub fct_zoom_in { shift->cli->handlers->get('Edit_Nav')->fct_zoom_in() }
+sub fct_zoom_out { shift->cli->handlers->get('Edit_Nav')->fct_zoom_out() }
+sub fct_zoom_100 { shift->cli->handlers->get('Edit_Nav')->fct_zoom_100() }
+sub fct_zoom_best { shift->cli->handlers->get('Edit_Nav')->fct_zoom_best() }
+sub fct_fullscreen { shift->cli->handlers->get('Edit_Nav')->fct_fullscreen(@_) }
+sub fct_undo { shift->cli->handlers->get('Edit_Nav')->fct_undo() }
+sub fct_redo { shift->cli->handlers->get('Edit_Nav')->fct_redo() }
+sub fct_clipboard { my $self = shift; $self->cli->handlers->get('Edit_Nav')->fct_clipboard(@_) }
+sub fct_delete { shift->cli->handlers->get('Edit_Delete')->fct_delete() }
+sub fct_select_all { shift->cli->handlers->get('Edit_Delete')->fct_select_all() }
+sub fct_trash { shift->cli->handlers->get('Edit_Delete')->fct_trash() }
+sub fct_draw { shift->cli->handlers->get('Edit_Draw')->fct_draw() }
+sub fct_plugin { shift->cli->handlers->get('Edit_Draw')->fct_plugin() }
+sub fct_send { shift->cli->handlers->get('Dialogs_Upload')->fct_send() }
+sub fct_upload { shift->cli->handlers->get('Dialogs_Upload')->fct_upload() }
+sub fct_email { my $self = shift; $self->cli->handlers->get('Util_File')->fct_email(@_) }
+sub fct_print { my $self = shift; $self->cli->handlers->get('Util_File')->fct_print(@_) }
 
 1;
 
@@ -196,5 +191,6 @@ Shutter::App::Handlers::Core – Core event handlers
 
 Extracts ~1500 lines of core event handlers from bin/shutter.
 Uses CLI object for state access instead of package globals.
+Uses registry to delegate to specialized handler modules.
 
 =cut

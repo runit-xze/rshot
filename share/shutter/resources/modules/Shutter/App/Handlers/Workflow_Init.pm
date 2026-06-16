@@ -29,6 +29,7 @@ use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
 use File::Glob qw(bsd_glob);
 use IPC::Cmd qw(can_run);
+use Log::Any;
 use Shutter::App::Directories;
 use Shutter::App::Constants qw(SHUTTER_VERSION SHUTTER_REV);
 
@@ -36,19 +37,16 @@ has cli => (is => 'ro', required => 1);
 
 sub fct_init_debug_output {
     my ($self) = @_;
+    my $log = Log::Any->get_logger;
 
-    print "\nINFO: gathering system information...";
-    print "\n";
-    print "\n";
-    print "Shutter ";
-    print SHUTTER_VERSION;
-    print ' ';
-    print SHUTTER_REV;
-    print "\n";
+    $log->debug("gathering system information...");
+    $log->debug("Shutter " . SHUTTER_VERSION . " " . SHUTTER_REV);
 
     #kernel info
     if (can_run('uname')) {
-        print `uname -a`, "\n";
+        my $uname = `uname -a`;
+        chomp $uname;
+        $log->debug($uname);
     }
 
     eval {
@@ -59,21 +57,21 @@ sub fct_init_debug_output {
             $value =~ s/^(['"])(.*)\1$/$2/;
             ($key, $value)
         } <$fh>;
-        local $, = ' ';
-        say grep { $_ } map { $map{$_} } qw/NAME VERSION_ID BUILD_ID/;
+        my $os_info = join(' ', grep { $_ } map { $map{$_} } qw/NAME VERSION_ID BUILD_ID/);
+        $log->debug($os_info);
     };
-    say "Cannot open /etc/os-release" if $@;
+    $log->debug("Cannot open /etc/os-release") if $@;
 
-    printf "Glib %s \n", $Glib::VERSION;
-    printf "Gtk3 %s \n", $Gtk3::VERSION;
-    print "\n";
+    $log->debug(sprintf "Glib %s", $Glib::VERSION);
+    $log->debug(sprintf "Gtk3 %s", $Gtk3::VERSION);
 
     # The version info stuff appeared in 1.040.
-    print "Glib built for " . join(".", Glib->GET_VERSION_INFO) . ", running with " . join(".", Glib::major_version(), Glib::minor_version(), Glib::micro_version()) . "\n"
-        if $Glib::VERSION >= 1.040;
-    print "Gtk3 built for " . join(".", Gtk3->GET_VERSION_INFO) . ", running with " . join(".", Gtk3::major_version(), Gtk3::minor_version(), Gtk3::micro_version()) . "\n"
-        if $Gtk3::VERSION >= 1.040;
-    print "\n";
+    if ($Glib::VERSION >= 1.040) {
+        $log->debug("Glib built for " . join(".", Glib->GET_VERSION_INFO) . ", running with " . join(".", Glib::major_version(), Glib::minor_version(), Glib::micro_version()));
+    }
+    if ($Gtk3::VERSION >= 1.040) {
+        $log->debug("Gtk3 built for " . join(".", Gtk3->GET_VERSION_INFO) . ", running with " . join(".", Gtk3::major_version(), Gtk3::minor_version(), Gtk3::micro_version()));
+    }
 
     return TRUE;
 }
@@ -81,6 +79,7 @@ sub fct_init_debug_output {
 sub fct_init_depend {
     my ($self) = @_;
     my $cli = $self->cli;
+    my $log = Log::Any->get_logger;
     
     #imagemagick/perlmagick
     unless (can_run('convert')) {
@@ -101,7 +100,11 @@ sub fct_init_depend {
     #goocanvas
     eval { require GooCanvas2; require GooCanvas2::CairoTypes; };
     if ($@) {
+        $log->error("Failed to load GooCanvas2: $@");
         $cli->{_goocanvas} = FALSE;
+    } else {
+        $log->info("GooCanvas2 loaded successfully");
+        $cli->{_goocanvas} = TRUE;
     }
 
     #libimage-exiftool-perl

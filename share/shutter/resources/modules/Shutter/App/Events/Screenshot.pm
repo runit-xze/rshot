@@ -35,7 +35,7 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 
 sub evt_take_screenshot ($self, $source, $mode, $window_name, $extra) {
-    evt_take_screenshot($source, $mode, $window_name, $extra);
+    $self->cli->handlers->get('Core')->evt_take_screenshot(undef, $mode, undef, $extra);
 }
 
 sub shortcut_select ($self) {
@@ -46,8 +46,7 @@ sub shortcut_full ($self) {
     $self->evt_take_screenshot('global_keybinding', 'full', undef, undef);
 }
 
-sub shortcut_window ($self) {
-    my ($pattern) = @_;
+sub shortcut_window ($self, $pattern) {
     $self->evt_take_screenshot('global_keybinding', 'window', undef, $pattern);
 }
 
@@ -63,8 +62,7 @@ sub shortcut_tooltip ($self) {
     $self->evt_take_screenshot('global_keybinding', 'tooltip', undef, undef);
 }
 
-sub shortcut_web ($self) {
-    my ($url) = @_;
+sub shortcut_web ($self, $url) {
     $self->evt_take_screenshot('global_keybinding', 'web', undef, $url);
 }
 

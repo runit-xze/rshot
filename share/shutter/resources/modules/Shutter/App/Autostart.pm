@@ -28,6 +28,9 @@ use feature 'try'; no warnings 'experimental::try';
 
 #Glib
 use Glib qw/TRUE FALSE/;
+use Log::Any;
+
+my $log = Log::Any->get_logger;
 
 sub new ($class) {
 
@@ -51,7 +54,7 @@ sub create_autostart_file ($self, $dir, $enabled, $min, $nonotification) {
 	my $path = $dir . "/shutter.desktop";
 
 	open my $fh, ">:utf8", $path or do {
-		warn "WARNING: can not create/update file $path: $!\n";
+		$log->warn("can not create/update file $path: $!");
 		return FALSE;
 	};
 	foreach my $line (@data) {
@@ -71,7 +74,7 @@ sub create_autostart_file ($self, $dir, $enabled, $min, $nonotification) {
 		}
 		print $fh $line;
 	}
-	close $fh or warn "WARNING: close $path fail: $!\n";
+	close $fh or $log->warn("close $path fail: $!");
 
 	return TRUE;
 }

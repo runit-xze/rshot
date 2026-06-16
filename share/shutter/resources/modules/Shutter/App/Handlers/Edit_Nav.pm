@@ -34,17 +34,16 @@ use Shutter::App::Directories;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_clipboard {
-    my ($self, $widget, $mode) = @_;
-
+sub fct_clipboard ($self, $widget = undef, $mode = 'image') {
     my $cli = $self->cli;
-    my $d = $cli->sc->get_gettext;
+    my $h   = $cli->handlers;
+    my $d   = $cli->sc->get_gettext;
     my $clipboard = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
     my $session_start_screen = $cli->{_session_start_screen};
     my $session_screens = $cli->{_session_screens};
     my $lp = $cli->{_lp}; # LoadPixbuf module
 
-    my $key = fct_get_current_file();
+    my $key = $h->get('Menu_Ret_Get')->fct_get_current_file();
 
     #create shutter region object
     my $sr = Shutter::Geometry::Region->new();
@@ -53,7 +52,7 @@ sub fct_clipboard {
 
     #single file
     if ($key) {
-        return FALSE unless fct_screenshot_exists($key);
+        return FALSE unless $h->get('UI_Status')->fct_screenshot_exists($key);
         push(@clipboard_array, $key);
     } else {
         if ($session_start_screen && $session_start_screen->{'first_page'} && $session_start_screen->{'first_page'}->{'view'}) {
@@ -97,7 +96,7 @@ sub fct_clipboard {
     if ($clipboard_string) {
         chomp $clipboard_string;
         $clipboard->set_text($clipboard_string);
-        fct_show_status_message(1, $d->get("Selected filenames copied to clipboard"));
+        $h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected filenames copied to clipboard"));
     }
 
     if ($clipboard_region->num_rectangles) {
@@ -112,17 +111,16 @@ sub fct_clipboard {
         }
 
         $clipboard->set_image($clipboard_image);
-        fct_show_status_message(1, $d->get("Selected images copied to clipboard"));
+        $h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected images copied to clipboard"));
     }
 
     return TRUE;
 }
 
-sub fct_clipboard_import {
-    my ($self) = @_;
-
+sub fct_clipboard_import ($self) {
     my $cli = $self->cli;
-    my $d = $cli->sc->get_gettext;
+    my $h   = $cli->handlers;
+    my $d   = $cli->sc->get_gettext;
     my $clipboard = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
     my $saveDir_button = $cli->{_saveDir_button};
     my $save_no_active = $cli->{_save_no_active};
@@ -151,7 +149,7 @@ sub fct_clipboard_import {
         
         unless ($filetype_value) {
             $sd->dlg_error_message($d->get("No valid filetype specified"), $d->get("Failed"));
-            fct_control_main_window('show');
+            $h->get('Core')->fct_control_main_window('show');
             return FALSE;
         }
         
@@ -166,21 +164,20 @@ sub fct_clipboard_import {
         
         #save pixbuf to tempfile and integrate it
         if ($sp && $sp->save_pixbuf_to_file($image, $tmpfilename, $filetype_value)) {
-            my $new_key = fct_integrate_screenshot_in_notebook(Glib::IO::File::new_for_path($tmpfilename), $image);
+            my $new_key = $h->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook(Glib::IO::File::new_for_path($tmpfilename), $image);
             if ($new_key && $session_screens->{$new_key} && $session_screens->{$new_key}->{'image'}) {
                 $session_screens->{$new_key}->{'image'}->set_fitting(TRUE);
             }
         }
 
     } else {
-        fct_show_status_message(1, $d->get("There is no image data in the clipboard to paste"));
+        $h->get('UI_Status')->fct_show_status_message(1, $d->get("There is no image data in the clipboard to paste"));
     }
 
     return TRUE;
 }
 
-sub fct_fullscreen {
-    my ($self, $widget) = @_;
+sub fct_fullscreen ($self, $widget = undef) {
     my $window = $self->cli->window;
 
     if ($window) {
@@ -192,18 +189,18 @@ sub fct_fullscreen {
     }
 }
 
-sub fct_redo {
-    my ($self) = @_;
+sub fct_redo ($self) {
     my $cli = $self->cli;
-    my $d = $cli->sc->get_gettext;
-    my $sd = $cli->sc->{_sd};
+    my $h   = $cli->handlers;
+    my $d   = $cli->sc->get_gettext;
+    my $sd  = $cli->sc->{_sd};
     my $session_screens = $cli->{_session_screens};
 
-    my $key = fct_get_current_file();
+    my $key = $h->get('Menu_Ret_Get')->fct_get_current_file();
 
     #single file
     if ($key) {
-        return FALSE unless fct_screenshot_exists($key);
+        return FALSE unless $h->get('UI_Status')->fct_screenshot_exists($key);
 
         #and revert last version
         my $last_version = pop @{$session_screens->{$key}->{'redo'}};
@@ -215,8 +212,8 @@ sub fct_redo {
             }
 
             if (cp($last_version, $session_screens->{$key}->{'long'})) {
-                fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'gui');
-                fct_show_status_message(1, $d->get("Last action redone"));
+                $h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'gui');
+                $h->get('UI_Status')->fct_show_status_message(1, $d->get("Last action redone"));
                 #delete last_version from filesystem
                 unlink $last_version;
             } else {
@@ -225,28 +222,28 @@ sub fct_redo {
                     sprintf($d->get("There was an error performing redo on %s."), "'" . $session_screens->{$key}->{'long'} . "'"),
                     undef, undef, undef, undef, undef, undef, $@
                 );
-                fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'clear');
+                $h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'clear');
             }
 
             #setup a new filemonitor, so we get noticed if the file changed
-            fct_add_file_monitor($key);
+            $h->get('Events_Init')->fct_add_file_monitor($key);
         }
     }
     return TRUE;
 }
 
-sub fct_undo {
-    my ($self) = @_;
+sub fct_undo ($self) {
     my $cli = $self->cli;
-    my $d = $cli->sc->get_gettext;
-    my $sd = $cli->sc->{_sd};
+    my $h   = $cli->handlers;
+    my $d   = $cli->sc->get_gettext;
+    my $sd  = $cli->sc->{_sd};
     my $session_screens = $cli->{_session_screens};
 
-    my $key = fct_get_current_file();
+    my $key = $h->get('Menu_Ret_Get')->fct_get_current_file();
 
     #single file
     if ($key) {
-        return FALSE unless fct_screenshot_exists($key);
+        return FALSE unless $h->get('UI_Status')->fct_screenshot_exists($key);
 
         #push current version to redo
         #(current version is always the last element in the array)
@@ -263,8 +260,8 @@ sub fct_undo {
             }
 
             if (cp($last_version, $session_screens->{$key}->{'long'})) {
-                fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'gui');
-                fct_show_status_message(1, $d->get("Last action undone"));
+                $h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'gui');
+                $h->get('UI_Status')->fct_show_status_message(1, $d->get("Last action undone"));
                 #delete last_version from filesystem
                 unlink $last_version;
             } else {
@@ -273,46 +270,42 @@ sub fct_undo {
                     sprintf($d->get("There was an error performing undo on %s."), "'" . $session_screens->{$key}->{'long'} . "'"),
                     undef, undef, undef, undef, undef, undef, $@
                 );
-                fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'clear');
+                $h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'clear');
             }
 
             #setup a new filemonitor, so we get noticed if the file changed
-            fct_add_file_monitor($key);
+            $h->get('Events_Init')->fct_add_file_monitor($key);
         }
     }
     return TRUE;
 }
 
-sub fct_zoom_100 {
-    my ($self) = @_;
-    my $key = fct_get_current_file();
+sub fct_zoom_100 ($self) {
+    my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
     my $session_screens = $self->cli->{_session_screens};
     if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
         $session_screens->{$key}->{'image'}->set_zoom(1);
     }
 }
 
-sub fct_zoom_best {
-    my ($self) = @_;
-    my $key = fct_get_current_file();
+sub fct_zoom_best ($self) {
+    my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
     my $session_screens = $self->cli->{_session_screens};
     if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
         $session_screens->{$key}->{'image'}->set_fitting(TRUE);
     }
 }
 
-sub fct_zoom_in {
-    my ($self) = @_;
-    my $key = fct_get_current_file();
+sub fct_zoom_in ($self) {
+    my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
     my $session_screens = $self->cli->{_session_screens};
     if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
         $session_screens->{$key}->{'image'}->zoom_in;
     }
 }
 
-sub fct_zoom_out {
-    my ($self) = @_;
-    my $key = fct_get_current_file();
+sub fct_zoom_out ($self) {
+    my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
     my $session_screens = $self->cli->{_session_screens};
     if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
         $session_screens->{$key}->{'image'}->zoom_out;
@@ -329,7 +322,45 @@ Shutter::App::Handlers::Edit_Nav – Edit navigation handlers (Zoom, Undo, Clipb
 
 =head1 DESCRIPTION
 
-Extracted from bin/shutter.
-Migrated to use the CLI object for state access instead of package globals.
+This module handles navigation and editing actions such as zoom, undo/redo, and clipboard operations for screenshots in Shutter.
+It has been migrated to use the CLI object for state access instead of package globals.
+
+=head1 METHODS
+
+=head2 fct_clipboard
+
+Copies selected screenshots (or their images) to the clipboard.
+
+=head2 fct_clipboard_import
+
+Imports an image from the clipboard into the session.
+
+=head2 fct_fullscreen
+
+Toggles fullscreen mode for the main window.
+
+=head2 fct_redo
+
+Redoes the last undone action for the current screenshot.
+
+=head2 fct_undo
+
+Undoes the last action for the current screenshot.
+
+=head2 fct_zoom_100
+
+Zooms the current screenshot to 100%.
+
+=head2 fct_zoom_best
+
+Zooms the current screenshot to fit the view.
+
+=head2 fct_zoom_in
+
+Zooms in on the current screenshot.
+
+=head2 fct_zoom_out
+
+Zooms out on the current screenshot.
 
 =cut

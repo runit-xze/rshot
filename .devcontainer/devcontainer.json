@@ -1,0 +1,37 @@
+{
+    "name": "Shutter Development",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "perl.perlNavigator.perlPath": "perl",
+                "perl.perlNavigator.includePaths": [
+                    "share/shutter/resources/modules",
+                    "t/lib"
+                ],
+                "perl.perlNavigator.perltidyProfile": ".perltidyrc",
+                "perl.perlNavigator.perlcriticProfile": ".perlcriticrc",
+                "perl.perlNavigator.perlcriticEnabled": true,
+                "[perl]": {
+                    "editor.defaultFormatter": "bscan.perltidy",
+                    "editor.formatOnSave": true
+                }
+            },
+            "extensions": [
+                "bscan.perlnavigator",
+                "bscan.perltidy",
+                "dwenegar.perl-critic",
+                "geraldbecker.perl-toolbox"
+            ]
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {}
+    },
+    "forwardPorts": [],
+    "postCreateCommand": "carton install && ./bin/setup",
+    "remoteUser": "vscode"
+}

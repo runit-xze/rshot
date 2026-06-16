@@ -3,6 +3,20 @@ prefix = /usr/local
 all:
 	./po2mo.sh
 
+lint:
+	carton exec perlcritic bin/ share/shutter/resources/modules/ t/
+
+test:
+	carton exec prove -Ishare/shutter/resources/modules -It/lib -r t/
+
+map:
+	./scripts/map_dependencies.pl > DEPENDENCIES.md
+	sed -i '1i# Dependency Map\n\n```mermaid' DEPENDENCIES.md
+	echo '```' >> DEPENDENCIES.md
+
+tidy:
+	perltidy -b bin/shutter $$(find share/shutter/resources/modules/ -name "*.pm") $$(find t/ -name "*.t")
+
 clean:
 	if [ -d $(srcdir)share/locale ]; then \
 		rm -r $(srcdir)share/locale; \

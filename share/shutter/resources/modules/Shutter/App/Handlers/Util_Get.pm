@@ -159,8 +159,8 @@ sub fct_get_next_filename {
         while ($new_giofile->query_exists) {
             $filename_value = $existing_filename . "(" . sprintf("%03d", $count++) . ")";
             $new_giofile    = Glib::IO::File::new_for_path($folder);
-            $new_giofile    = $new_giofile->append_string("$filename_value.$filetype_value");
-            print "Checking new uri: " . $new_giofile->to_string . "\n"
+            $new_giofile    = $new_giofile->get_child("$filename_value.$filetype_value");
+            print "Checking new uri: " . $new_giofile->get_path . "\n"
                 if $sc->get_debug;
         }
     }

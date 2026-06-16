@@ -28,11 +28,15 @@ use utf8;
 use v5.40;
 use feature 'try'; no warnings 'experimental::try';
 use Gtk3;
+use Log::Any;
+use Shutter::App::SimpleDialogs;
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
+
+my $log = Log::Any->get_logger;
 
 ##################public subs##################
 sub new ($class, $common) {
@@ -128,6 +132,22 @@ sub utf8_decode ($self, $string) {
 	return $string;
 }
 
+sub escape_string ($self, $string) {
+	return $string;
+}
+
+sub unescape_string ($self, $string) {
+	return $string;
+}
+
+sub unescape_string_for_display ($self, $string) {
+	return $string;
+}
+
+sub escape_path_string ($self, $string) {
+	return $string;
+}
+
 sub usage ($self) {
 
 	print "shutter [options]\n";
@@ -177,6 +197,199 @@ sub format_bytes ($self, $bytes) {
 		$i++;
 	}
 	return sprintf($bytes == int($bytes) ? "%d %s" : "%.1f %s", $bytes, $units[$i]);
+}
+
+sub validate_filename ($self, $myfilename, $myfilename_hint) {
+	my @invalid_codes = (47, 92);
+	$myfilename->signal_connect(
+		'key-press-event' => sub {
+			shift;
+			my $event = shift;
+
+			my $input = Gtk3::Gdk::keyval_to_unicode($event->keyval);
+
+			#invalid input
+			if (grep { $input == $_ } @invalid_codes) {
+				my $char = chr($input);
+				$char = '&amp;' if $char eq '&';
+				$myfilename_hint->set_markup("<span size='small'>" . sprintf($self->{_d}->get("Reserved character %s is not allowed to be in a filename."), "'" . $char . "'") . "</span>");
+				return TRUE;
+			} else {
+				#clear possible message when valid char is entered
+				$myfilename_hint->set_markup("<span size='small'></span>");
+				return FALSE;
+			}
+		}
+	);
+}
+
+sub get_program_model ($self) {
+	my $model = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::Scalar');
+	my $sc = $self->{_common};
+	my $d = $self->{_d};
+
+	# TODO: check goocanvas properly
+	my $goocanvas = TRUE;
+
+	#add Shutter's built-in editor to the list
+	if ($goocanvas) {
+		my $icon_pixbuf = undef;
+		my $icon        = 'shutter';
+		if ($sc->get_theme->has_icon($icon)) {
+			my ($iw, $ih) = $self->icon_size('menu');
+			eval { $icon_pixbuf = $sc->get_theme->load_icon($icon, $ih, 'generic-fallback'); };
+			if ($@) {
+				$log->warn("Could not load icon $icon: $@");
+				$icon_pixbuf = undef;
+			}
+		}
+		$model->set($model->append, 0, $icon_pixbuf, 1, $d->get("Built-in Editor"), 2, 'shutter-built-in');
+	}
+
+	#get applications
+	my $apps = Glib::IO::AppInfo::get_recommended_for_type('image/png');
+
+	return $model unless defined $apps && scalar @$apps;
+
+	#create menu items
+	foreach my $app (@$apps) {
+		#ignore Shutter's desktop entry
+		next if $app->get_id eq 'shutter.desktop';
+
+		my $app_name = $self->utf8_decode($app->get_display_name);
+
+		#get icon
+		my $icon_pixbuf = undef;
+		my $icon        = $app->get_icon;
+		if ($icon) {
+			my ($iw, $ih) = $self->icon_size('menu');
+			eval {
+				my $icon_info = $sc->get_theme->choose_icon($icon->get_names, $ih, []);
+				$icon_pixbuf = $icon_info->load_icon if $icon_info;
+			};
+			if ($@) {
+				$log->warn("Could not load icon for $app_name: $@");
+				$icon_pixbuf = undef;
+			}
+		}
+		$model->set($model->append, 0, $icon_pixbuf, 1, $app_name, 2, $app);
+	}
+
+	return $model;
+}
+
+sub check_installed_programs ($self, $progname) {
+	#update list of available programs in settings dialog
+	if ($progname) {
+		my $model         = $progname->get_model();
+		my $progname_iter = $progname->get_active_iter();
+
+		#get last prog
+		my $progname_value;
+		if (defined $progname_iter) {
+			$progname_value = $model->get_value($progname_iter, 1);
+		}
+
+		#rebuild model with new hash of installed programs...
+		$model = $self->get_program_model();
+		$progname->set_model($model);
+
+		#...and try to set last value
+		if ($progname_value) {
+			$model->foreach(sub { $self->fct_iter_programs(@_, $progname_value, $progname) });
+		} else {
+			$progname->set_active(0);
+		}
+
+		#nothing has been set
+		if ($progname->get_active == -1) {
+			$progname->set_active(0);
+		}
+	}
+
+	return TRUE;
+}
+
+sub fct_iter_programs ($self, $model, $path, $iter, $data, $progname_widget) {
+	my $program = $model->get_value($iter, 1);
+
+	if ($program eq $data) {
+		$progname_widget->set_active_iter($iter);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+sub load_plugin_tree ($self, $plugins, $lp) {
+	my $effects_model = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String');
+	my $shutter_root = $self->{_common}->get_root;
+
+	foreach my $pkey (sort keys %$plugins) {
+		if ($plugins->{$pkey}->{'binary'}) {
+			unless ($plugins->{$pkey}->{'pixbuf'} || $plugins->{$pkey}->{'pixbuf_object'}) {
+				$plugins->{$pkey}->{'pixbuf'} = $plugins->{$pkey}->{'binary'} . ".png"
+					if ($self->file_exists($plugins->{$pkey}->{'binary'} . ".png"));
+				$plugins->{$pkey}->{'pixbuf'} = $plugins->{$pkey}->{'binary'} . ".svg"
+					if ($self->file_exists($plugins->{$pkey}->{'binary'} . ".svg"));
+
+				if ($self->file_exists($plugins->{$pkey}->{'pixbuf'})) {
+					$plugins->{$pkey}->{'pixbuf_object'} = $lp->load($plugins->{$pkey}->{'pixbuf'}, ($self->icon_size('menu'))[1]);
+				} else {
+					$plugins->{$pkey}->{'pixbuf'}        = "$shutter_root/share/shutter/resources/icons/executable.svg";
+					$plugins->{$pkey}->{'pixbuf_object'} = $lp->load($plugins->{$pkey}->{'pixbuf'}, ($self->icon_size('menu'))[1]);
+				}
+			}
+
+			$effects_model->set(
+				$effects_model->append,
+				0, $plugins->{$pkey}->{'pixbuf_object'},
+				1, $plugins->{$pkey}->{'name'},
+				2, $plugins->{$pkey}->{'category'},
+				3, $plugins->{$pkey}->{'tooltip'},
+				4, $plugins->{$pkey}->{'lang'},
+				5, $plugins->{$pkey}->{'binary'},
+				6, $pkey,
+			);
+		} else {
+			$log->warn("Plugin $pkey is not configured properly, ignoring");
+			delete $plugins->{$pkey};
+		}
+	}
+
+	return $effects_model;
+}
+
+sub load_accounts_tree ($self, $accounts) {
+	my $accounts_model = Gtk3::ListStore->new(
+		'Glib::String', 'Glib::String', 'Glib::String',  'Glib::String',  'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String',
+		'Glib::String', 'Glib::String', 'Glib::Boolean', 'Glib::Boolean', 'Glib::Boolean'
+	);
+
+	foreach (keys %$accounts) {
+		my $hidden_text = "";
+		for (my $i = 1 ; $i <= length($accounts->{$_}->{'password'} // "") ; $i++) {
+			$hidden_text .= '*';
+		}
+		$accounts_model->set(
+			$accounts_model->append,
+			0,  $accounts->{$_}->{'host'},
+			1,  $accounts->{$_}->{'username'},
+			2,  $hidden_text,
+			3,  $accounts->{$_}->{'not_used_yet'},
+			4,  $accounts->{$_}->{'register_color'},
+			5,  $accounts->{$_}->{'register_text'},
+			6,  $accounts->{$_}->{'module'},
+			7,  $accounts->{$_}->{'path'},
+			8,  $accounts->{$_}->{'folder'},
+			9,  $accounts->{$_}->{'description'},
+			10, $accounts->{$_}->{'supports_anonymous_upload'},
+			11, $accounts->{$_}->{'supports_authorized_upload'},
+			12, $accounts->{$_}->{'supports_oauth_upload'},
+		);
+	}
+
+	return $accounts_model;
 }
 
 sub ncmp ($self, $a, $b) {

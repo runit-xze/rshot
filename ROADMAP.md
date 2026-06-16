@@ -1,120 +1,61 @@
-# Shutter Modular Refactoring Roadmap
+# Shutter Modernization Roadmap 2.0
 
-This document outlines the ongoing work to transition Shutter from a monolithic `bin/shutter` architecture to a modern, modular Moo-based design.
+This document outlines the strategic path for Shutter as it transitions from a legacy Perl/GTK2 application to a modern, modular, and high-performance screenshot suite.
 
-## Current Status
+## 🏆 Completed Milestones
 
-### Completed (Committed)
-- `Shutter::App::UI` module created for UI orchestration (backward compatibility)
-- `Shutter::App::UI::Windows` for main window creation
-- ShareX `.sxcu` uploader support implemented with URL shortening via TinyURL
-- QR code display via `qrencode` integrated
-- AfterCapturePipeline module for configurable task workflows
-- PinToScreen module for floating screenshot overlay
-- File naming macros implementation (`%y`, `%mo`, `%d`, `%h`, `%mi`, `%s`, `%pn`, `%wt`, `%ww`, `%wh`)
-- Modernized codebase to Perl v5.40 (header pragmas, try/catch, subroutine signatures)
-- Dropped 5 external dependencies, replaced with core Perl implementations
-- Removed gnome-web-photo and Image::Magick/Proc::Simple requirements
-- `Shutter::App::CLI` - New application entry point (committed)
-- `Shutter::App::Constants` - Project-wide constants (committed)
-- `Shutter::App::Init` - Core object initialization (committed)
-- `Shutter::App::Session` - Session tab management (committed)
-- `Shutter::App::Workflow` - After-capture pipeline setup (committed)
-- Core modules in `Shutter::App::Core/`:
-  - `SessionManager` - Session state and tab management
-  - `SettingsManager` - Settings persistence and profiles
-  - `ScreenshotHandler` - Screenshot capture orchestration
-  - `UploadManager` - File upload functionality
-- UI modules in `Shutter::App::UI/`:
-  - `Windows` - Main window creation and layout
-  - `Menus` - Menu and toolbar signal wiring
-- Event modules in `Shutter::App::Events/`:
-  - `File` - File operation handlers
-  - `Screenshot` - Screenshot-related events
-  - `Edit` - Edit action handlers
-- Handler modules in `Shutter::App::Handlers/` - Extracted ~1500+ lines of subroutines
+### Core Architecture
+- [x] **Monolith Elimination:** `bin/shutter` reduced from 11,500+ LOC to <100 LOC.
+- [x] **Moo Migration:** Core logic moved to `Shutter::App::*` using modern Moo OOP.
+- [x] **Handler Registry:** Centralized event handling via `Shutter::App::Handlers::Registry`.
+- [x] **Modern Perl:** Adopted Perl v5.40 standards (signatures, try/catch, utf8).
+- [x] **Logging:** Standardized on `Log::Any` across the entire codebase.
 
-## Architecture Vision
+### New Features (ShareX-inspired)
+- [x] **After Capture Pipeline:** Configurable sequence of post-capture tasks.
+- [x] **Pin to Screen:** Floating screenshot overlays for quick reference.
+- [x] **SXCU Support:** Compatibility with ShareX custom uploader configurations.
+- [x] **Modern Naming:** Extensive file-naming macro support (`%y`, `%wt`, etc.).
 
-```
-Shutter::App::CLI (entry point)
-├── Shutter::App::UI::Windows (main window)
-├── Shutter::App::UI::Menus (menu/toolbar wiring)
-├── Shutter::App::Core::SessionManager (tab/session state)
-├── Shutter::App::Core::SettingsManager (settings/profiles)
-├── Shutter::App::Core::ScreenshotHandler (capture logic)
-├── Shutter::App::Core::UploadManager (upload logic)
-├── Shutter::App::AfterCapturePipeline (post-capture workflow)
-├── Shutter::App::PinToScreen (floating overlay)
-└── Shutter::App::Event::* (event handlers)
-```
+---
 
-## Phase 1: Module Integration (Completed)
+## 🏗️ Phase 4: Subsystem Modularization (Active)
 
-- [x] Wire `Shutter::App::CLI` as primary entry point (replace bin/shutter bottom section)
-- [x] Complete `Shutter::App::Init::initialize` to create all core objects
-- [x] Integrate `Shutter::App::UI::Windows` for window creation
-- [x] Integrate `Shutter::App::UI::Menus` for menu/toolbar signals
-- [x] Connect `Shutter::App::Session` to notebook widget
-- [x] Ensure `AfterCapturePipeline` is initialized and connected to settings
+The primary goal is to break down the remaining large modules that still carry legacy patterns.
 
-## Phase 2: Handler Migration (In Progress)
+### 4.1 Drawing Tool Refactoring
+- [ ] **Break up `DrawingTool.pm` (7,300 LOC):** Extract UI management, tool logic (Ellipse, Rectangle, etc.), and state into separate Moo classes.
+- [ ] **Modernize Rendering:** Ensure drawing tools are fully compatible with Cairo and GTK3 drawing signals.
 
-- [x] Create handler modules in `Shutter::App::Handlers/`
-- [x] `Shutter::App::Handlers::Core` - Core event handlers (screenshot, window, menu actions)
-- [x] `Shutter::App::Handlers::Menu` - Menu action handlers
-- [x] `Shutter::App::Handlers::Edit_Delete` - Delete, remove, trash actions
-- [x] `Shutter::App::Handlers::Edit_Nav` - Zoom, undo/redo, clipboard actions
-- [x] `Shutter::App::Handlers::Edit_Draw` - Drawing and plugin actions
-- [x] `Shutter::App::Handlers::Dialogs_Upload` - Upload dialogs and prompts
-- [x] `Shutter::App::Handlers::Util_File` - File system utilities
-- [x] `Shutter::App::Handlers::Util_Get` - Utility getters
-- [x] `Shutter::App::Handlers::Init_Accounts` - Initialization accounts handlers
-- [x] `Shutter::App::Handlers::Init_Handlers` - File/session initialization
-- [x] `Shutter::App::Handlers::Init_Model` - Initialization model handlers
-- [x] `Shutter::App::Handlers::UI_Status` - UI status handlers
-- [x] `Shutter::App::Handlers::UI_Tabs` - UI tabs handlers
-- [ ] Migrate the remaining ~30 handler modules (`Workflow_*`, `Menu_Ret_*`, `Screenshot_*`, etc.) to fully use `$self->cli` instead of implicit globals.
-- [ ] Register all handlers in the `Shutter::App::Handlers` central registry
-- [ ] Update `Menus.pm` and `Events::*` to instantiate and call handlers via the registry
+### 4.2 Screenshot Engines
+- [ ] **Advanced Selector:** Modernize `SelectorAdvanced.pm` to use Cairo-based overlays instead of legacy X11 primitives.
+- [ ] **Wayland Parity:** Improve Wayland support via XDG Desktop Portals for improved security and compatibility.
 
-## Phase 3: API Modernization (Next)
+### 4.3 Upload System
+- [ ] **Uploader Standardization:** Ensure all legacy uploaders (FTP, etc.) are converted to the new `UploadManager` pattern.
+- [ ] **Post-Upload Actions:** Finalize "Copy URL" and "Generate QR Code" workflows.
 
-- [ ] Replace package-global variables with object attributes
-- [ ] Replace direct subroutine calls with handler registry pattern (`Shutter::App::Handlers`)
-- [ ] Ensure all modules use Moo with proper dependency injection
-- [ ] Add proper error handling with try/catch throughout
+---
 
-## Phase 4: Testing & Integration
+## 🎨 Phase 5: GTK3 & HiDPI Polish
 
-- [ ] Test application startup with new modular architecture
-- [ ] Verify screenshot capture and save functionality
-- [ ] Verify upload pipeline execution
-- [ ] Verify workflow configuration in Preferences
-- [ ] Verify Pin to Screen feature
+- [ ] **HiDPI Fixes:** Resolve menu capture and multi-monitor scaling issues.
+- [ ] **Widget Modernization:** Replace deprecated `HBox/VBox` with `Gtk3::Box`.
+- [ ] **SSH/X Forwarding:** Debug and fix issues with remote X sessions.
+- [ ] **UI Refinement:** Improve "stickiness" of the selection cursor to region edges.
 
-## Phase 5: Cleanup
+---
 
-- [ ] Remove redundant code from `bin/shutter`
-- [ ] Remove deprecated global variable usage
-- [ ] Update documentation (GEMINI.md files)
-- [ ] Ensure backward compatibility with plugins
+## 🧪 Phase 6: Quality & Documentation
 
-## Known Issues
+- [ ] **Unit Testing:** Build a comprehensive test suite for `SessionManager` and `SettingsManager` using `Test2::V0`.
+- [ ] **GEMINI Documentation:** Achieve 100% coverage for all modules in the `GEMINI/` directory.
+- [ ] **CI Integration:** Automate AppImage builds and test runs via GitHub Actions.
 
-- Handler modules still reference globals like `$sc`, `$d`, `$session_screens`
-- Some event modules call subroutines that haven't been migrated yet
-- Settings dialog integration needs completion (needs vbox_workflow widget)
-- `Menus.pm` currently calls package subroutines like `fct_undo()`, `fct_redo()` which need to be methods
+---
 
-## Dependencies
+## 🚀 Future Vision (Backlog)
 
-The modular architecture requires these modules to be loaded in order:
-1. `Shutter::App::Constants` - First, for version/app constants
-2. `Shutter::App::Common` - Core state container
-3. `Shutter::App::HelperFunctions` - Utility functions
-4. `Shutter::App::Options` - CLI argument parsing
-5. `Shutter::App::Init` - Object initialization
-6. `Shutter::App::UI::*` - UI components
-7. `Shutter::App::Events::*` - Event handlers
-8. `Shutter::App::Workflow` - Workflow setup
+- [ ] **OCR Integration:** OCR support using Tesseract for instant text extraction.
+- [ ] **Plugin API:** Stable API for 3rd party "After Capture" and "Uploader" plugins.
+- [ ] **Native Wayland Capture:** Native implementation for GNOME/KDE/Sway environments without XWayland.

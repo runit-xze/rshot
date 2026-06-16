@@ -74,7 +74,8 @@ sub fct_integrate_screenshot_in_notebook {
             $indx = $count;
         } else {
             $indx = $num_files + 1;
-            while ($indx < fct_get_latest_tab_key()) {
+            my $h_get = $cli->handlers->get('Menu_Ret_Get');
+            while ($indx < $h_get->fct_get_latest_tab_key()) {
                 $indx++;
             }
 
@@ -82,7 +83,7 @@ sub fct_integrate_screenshot_in_notebook {
             $session_start_screen->{'first_page'}->{'num_session_files'} = $indx;
         }
     } else {
-        $indx = fct_get_latest_tab_key() if defined &fct_get_latest_tab_key;
+        $indx = $cli->handlers->get('Menu_Ret_Get')->fct_get_latest_tab_key();
     }
 
     $key = "[" . $indx . "] - $fname";
@@ -117,42 +118,46 @@ sub fct_integrate_screenshot_in_notebook {
 
     #and append page with label == key
     my $new_index = 0;
-    if (defined $num_files && $num_files > 0) {
-        if (defined $history && $history->get_history) {
-            $new_index = $notebook->insert_page(fct_create_tab($key, FALSE), $hbox_tab_label, $indx) if defined &fct_create_tab;
-        } elsif (defined $count) {
-            $new_index = $notebook->insert_page(fct_create_tab($key, FALSE), $hbox_tab_label, $count) if defined &fct_create_tab;
+    if ($notebook) {
+        my $h_session = $cli->handlers->get('Workflow_Session');
+        if (defined $num_files && $num_files > 0) {
+            if (defined $history && $history->get_history) {
+                $new_index = $notebook->insert_page($h_session->fct_create_tab($key, FALSE), $hbox_tab_label, $indx);
+            } elsif (defined $count) {
+                $new_index = $notebook->insert_page($h_session->fct_create_tab($key, FALSE), $hbox_tab_label, $count);
+            } else {
+                $new_index = $notebook->insert_page($h_session->fct_create_tab($key, FALSE), $hbox_tab_label, $indx);
+            }
         } else {
-            $new_index = $notebook->insert_page(fct_create_tab($key, FALSE), $hbox_tab_label, $indx) if defined &fct_create_tab;
+            $new_index = $notebook->append_page($h_session->fct_create_tab($key, FALSE), $hbox_tab_label);
         }
-    } else {
-        $new_index = $notebook->append_page(fct_create_tab($key, FALSE), $hbox_tab_label) if defined &fct_create_tab;
+        $session_screens->{$key}->{'tab_child'}      = $notebook->get_nth_page($new_index);
     }
     $session_screens->{$key}->{'tab_indx'}       = $indx;
     $session_screens->{$key}->{'tab_label'}      = $tab_label;
     $session_screens->{$key}->{'hbox_tab_label'} = $hbox_tab_label;
-    $session_screens->{$key}->{'tab_child'}      = $notebook->get_nth_page($new_index);
-    $tab_close_button->signal_connect(clicked => sub { fct_remove($key) if defined &fct_remove; });
+    $tab_close_button->signal_connect(clicked => sub { $cli->handlers->get('Edit_Delete')->fct_remove($key); });
 
     #this value is undefined when all files are loaded
     #in this case we switch to any new image
-    unless (defined $session_start_screen->{'first_page'}->{'num_session_files'}) {
-        $notebook->set_current_page($new_index);
-    } else {
-
-        #if there is a history we recently took a screenshot
-        #switch to that page
-        #(even though the session is still loading)
-        if (defined $history && $history->get_history) {
+    if ($notebook) {
+        unless (defined $session_start_screen->{'first_page'}->{'num_session_files'}) {
             $notebook->set_current_page($new_index);
+        } else {
+
+            #if there is a history we recently took a screenshot
+            #switch to that page
+            #(even though the session is still loading)
+            if (defined $history && $history->get_history) {
+                $notebook->set_current_page($new_index);
+            }
         }
     }
 
-    if (defined &fct_update_tab) {
-        if ($self->fct_update_tab($key, $pixbuf, $giofile, undef, undef, TRUE)) {
-            #setup a filemonitor, so we get noticed if the file changed
-            fct_add_file_monitor($key) if defined &fct_add_file_monitor;
-        }
+    my $h_status = $cli->handlers->get('UI_Status');
+    if ($h_status->fct_update_tab($key, $pixbuf, $giofile, undef, undef, TRUE)) {
+        #setup a filemonitor, so we get noticed if the file changed
+        $cli->handlers->get('Events_Init')->fct_add_file_monitor($key);
     }
 
     return $key;

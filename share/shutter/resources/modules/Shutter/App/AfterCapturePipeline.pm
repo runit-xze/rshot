@@ -19,6 +19,9 @@ use feature 'try'; no warnings 'experimental::try';
 use Glib qw/TRUE FALSE/;
 use Gtk3;
 use JSON::MaybeXS;
+use Log::Any;
+
+my $log = Log::Any->get_logger;
 
 # Valid step types and their display labels
 my %STEP_TYPES = (
@@ -55,7 +58,7 @@ sub load_from_json ($self, $json_str) {
         my $data = JSON::MaybeXS->new->decode($json_str);
         $self->{_steps} = $data if ref $data eq 'ARRAY';
     } catch ($e) {
-        warn "AfterCapturePipeline: failed to parse steps JSON: $e";
+        $log->warn("failed to parse steps JSON: $e");
         $self->{_steps} = [];
     }
 }

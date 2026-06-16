@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -e
+
+echo "Setting up Shutter development environment..."
+
+# Check for Perl
+if ! command -v perl &> /dev/null; then
+    echo "Error: Perl is not installed."
+    exit 1
+fi
+
+# Check for cpanm
+if ! command -v cpanm &> /dev/null; then
+    echo "cpanm not found. Attempting to install it..."
+    curl -L https://cpanmin.us | perl - --sudo App::cpanminus
+fi
+
+# Check for Carton
+if ! command -v carton &> /dev/null; then
+    echo "Carton not found. Installing it..."
+    cpanm --sudo Carton
+fi
+
+# Install dependencies
+echo "Installing dependencies via Carton..."
+carton install
+
+# Install pre-commit hook
+if [ -f scripts/install-hooks.sh ]; then
+    echo "Installing git hooks..."
+    ./scripts/install-hooks.sh
+fi
+
+echo "Setup complete! You can now run Shutter with: carton exec bin/shutter"

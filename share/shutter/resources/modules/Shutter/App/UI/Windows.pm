@@ -34,21 +34,19 @@ use Glib qw/TRUE FALSE/;
 
 has common => (is => 'ro', required => 1);
 has app => (is => 'ro', required => 1);
+has cli => (is => 'ro', required => 1);
 has _window => (is => 'rw');
 has _vbox => (is => 'rw');
 
-sub BUILD ($self) {
+sub BUILD ($self, $args) {
     my $sc = $self->common;
     my $app = $self->app;
-
-    my $menu_module = Shutter::App::Menu->new($sc);
-    my $toolbar_module = Shutter::App::Toolbar->new($sc);
 
     my $window = Gtk3::ApplicationWindow->new($app);
     $self->_window($window);
     $sc->set_mainwindow($window);
 
-    $window->signal_connect('delete-event' => sub { evt_delete_window('', 'quit') });
+    $window->signal_connect('delete-event' => sub { $self->cli->handlers->get('Core')->evt_delete_window('', 'quit') });
     $window->set_border_width(0);
     $window->set_resizable(TRUE);
     $window->set_focus_on_map(TRUE);
@@ -56,14 +54,9 @@ sub BUILD ($self) {
 
     Gtk3::Window::set_default_icon_name("shutter");
 
-    # Store for backward compatibility
-    $sc->{_sm} = $menu_module;
-    $sc->{_st} = $toolbar_module;
-
     my $vbox = Gtk3::VBox->new(FALSE, 0);
     $self->_vbox($vbox);
     $window->add($vbox);
-    $vbox->pack_start($menu_module->create_menu, FALSE, TRUE, 0);
 }
 
 sub get_window { $_[0]->_window }

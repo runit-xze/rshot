@@ -9,6 +9,12 @@ requires "GooCanvas2";
 requires "Locale::gettext";
 requires "File::Copy::Recursive";
 requires "Moo", ">= 2.0";
+requires "Log::Any";
+requires "Log::Any::Adapter";
+requires "Log::Any::Adapter::Stderr";
+requires "Log::Any::Adapter::File";
 
 test_requires "Test::MockModule";
 test_requires "Test::Strict";
+test_requires "Perl::Critic";
+test_requires "Test::Perl::Critic";

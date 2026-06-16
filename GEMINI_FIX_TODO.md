@@ -1,0 +1,910 @@
+# Documentation Fixes TODO
+
+## Phase 1: Create Missing GEMINI/*.md Files
+- [x] Shutter::App
+- [x] Shutter::App::AboutDialog
+- [x] Shutter::App::AfterCapturePipeline
+- [x] Shutter::App::Autostart
+- [x] Shutter::App::Constants
+- [x] Shutter::App::Core::ScreenshotHandler
+- [x] Shutter::App::Core::SessionManager
+- [x] Shutter::App::Core::SettingsManager
+- [x] Shutter::App::Core::UploadManager
+- [x] Shutter::App::Directories
+- [x] Shutter::App::Events::Edit
+- [x] Shutter::App::Events::File
+- [x] Shutter::App::Events::Screenshot
+- [x] Shutter::App::GlobalSettings
+- [x] Shutter::App::Handlers
+- [x] Shutter::App::Handlers::Core
+- [x] Shutter::App::Handlers::Dialogs_Open
+- [x] Shutter::App::Handlers::Dialogs_Plugin
+- [x] Shutter::App::Handlers::Dialogs_Rename
+- [x] Shutter::App::Handlers::Dialogs_Settings
+- [x] Shutter::App::Handlers::Dialogs_Upload
+- [x] Shutter::App::Handlers::Edit_Delete
+- [x] Shutter::App::Handlers::Edit_Draw
+- [x] Shutter::App::Handlers::Edit_Nav
+- [x] Shutter::App::Handlers::Events_Control
+- [x] Shutter::App::Handlers::Events_Init
+- [x] Shutter::App::Handlers::Events_Tray
+- [x] Shutter::App::Handlers::Init_Accounts
+- [x] Shutter::App::Handlers::Init_Handlers
+- [x] Shutter::App::Handlers::Init_Model
+- [x] Shutter::App::Handlers::Menu
+- [x] Shutter::App::Handlers::Menu_Ret_Get
+- [x] Shutter::App::Handlers::Menu_Ret_Tray
+- [x] Shutter::App::Handlers::Menu_Ret_Upload
+- [x] Shutter::App::Handlers::Menu_Ret_UploadLinks
+- [x] Shutter::App::Handlers::Menu_Ret_Workspace
+- [x] Shutter::App::Handlers::Registry
+- [x] Shutter::App::Handlers::Screenshot_Actions
+- [x] Shutter::App::Handlers::Screenshot_InitTray
+- [x] Shutter::App::Handlers::Screenshot_Take
+- [x] Shutter::App::Handlers::Screenshot_UI
+- [x] Shutter::App::Handlers::UI_Status
+- [x] Shutter::App::Handlers::UI_Tabs
+- [x] Shutter::App::Handlers::Upload_Execute
+- [x] Shutter::App::Handlers::Upload_Main
+- [x] Shutter::App::Handlers::Util_File
+- [x] Shutter::App::Handlers::Util_Get
+- [x] Shutter::App::Handlers::Workflow_Control
+- [x] Shutter::App::Handlers::Workflow_Init
+- [x] Shutter::App::Handlers::Workflow_Integrate
+- [x] Shutter::App::Handlers::Workflow_Post
+- [x] Shutter::App::Handlers::Workflow_Save
+- [x] Shutter::App::Handlers::Workflow_Session
+- [x] Shutter::App::Menu
+- [x] Shutter::App::Notification
+- [x] Shutter::App::Options
+
+- [ ] Shutter::App::Options
+- [ ] Shutter::App::PinToScreen
+- [ ] Shutter::App::Session
+- [ ] Shutter::App::ShutterNotification
+- [ ] Shutter::App::SimpleDialogs
+- [ ] Shutter::App::Toolbar
+- [ ] Shutter::App::UI
+- [ ] Shutter::App::UI::MainWindow
+- [ ] Shutter::App::UI::Menus
+- [ ] Shutter::App::UI::SettingsDialog
+- [ ] Shutter::App::UI::Settings::Main
+- [ ] Shutter::App::UI::Windows
+- [ ] Shutter::App::Workflow
+- [ ] Shutter::Draw::DrawingTool
+- [ ] Shutter::Draw::Ellipse
+- [ ] Shutter::Draw::UIManager
+- [ ] Shutter::Draw::Utils
+- [ ] Shutter::Geometry::Region
+- [ ] Shutter::Pixbuf::Border
+- [ ] Shutter::Pixbuf::Load
+- [ ] Shutter::Pixbuf::Save
+- [ ] Shutter::Screenshot::Error
+- [ ] Shutter::Screenshot::History
+- [ ] Shutter::Screenshot::Main
+- [ ] Shutter::Screenshot::SelectorAdvanced
+- [ ] Shutter::Screenshot::SelectorAuto
+- [ ] Shutter::Screenshot::Wayland
+- [ ] Shutter::Screenshot::Web
+- [ ] Shutter::Screenshot::Window
+- [ ] Shutter::Screenshot::WindowName
+- [ ] Shutter::Screenshot::WindowXid
+- [ ] Shutter::Screenshot::Workspace
+- [ ] Shutter::Upload::FTP
+- [ ] Shutter::Upload::Shared
+- [ ] Shutter::Upload::ShareX
+
+## Phase 2: Update AGENTS.md Component Tables
+- [ ] Process `modules_not_in_agents_md.txt`
+- [ ] For each module:
+    - [ ] Identify appropriate table in `AGENTS.md`.
+    - [ ] Construct Markdown table row entry.
+    - [ ] Insert row into `AGENTS.md`.
+
+## Phase 3: Populate Documentation Content (Placeholder)
+- [x] Shutter::App
+- [ ] Shutter::App::AboutDialog
+- [ ] Shutter::App::AfterCapturePipeline
+- [ ] Shutter::App::Autostart
+- [ ] Shutter::App::Constants
+- [ ] Shutter::App::Core::ScreenshotHandler
+- [ ] Shutter::App::Core::SessionManager
+- [ ] Shutter::App::Core::SettingsManager
+- [ ] Shutter::App::Core::UploadManager
+- [ ] Shutter::App::Directories
+- [ ] Shutter::App::Events::Edit
+- [ ] Shutter::App::Events::File
+- [ ] Shutter::App::Events::Screenshot
+- [ ] Shutter::App::GlobalSettings
+- [ ] Shutter::App::Handlers
+- [ ] Shutter::App::Handlers::Core
+- [ ] Shutter::App::Handlers::Dialogs_Open
+- [ ] Shutter::App::Handlers::Dialogs_Plugin
+- [ ] Shutter::App::Handlers::Dialogs_Rename
+- [ ] Shutter::App::Handlers::Dialogs_Settings
+- [ ] Shutter::App::Handlers::Dialogs_Upload
+- [ ] Shutter::App::Handlers::Edit_Delete
+- [ ] Shutter::App::Handlers::Edit_Draw
+- [ ] Shutter::App::Handlers::Edit_Nav
+- [ ] Shutter::App::Handlers::Events_Control
+- [ ] Shutter::App::Handlers::Events_Init
+- [ ] Shutter::App::Handlers::Events_Tray
+- [ ] Shutter::App::Handlers::Init_Accounts
+- [ ] Shutter::App::Handlers::Init_Handlers
+- [ ] Shutter::App::Handlers::Init_Model
+- [ ] Shutter::App::Handlers::Menu
+- [ ] Shutter::App::Handlers::Menu_Ret_Get
+- [ ] Shutter::App::Handlers::Menu_Ret_Tray
+- [ ] Shutter::App::Handlers::Menu_Ret_Upload
+- [ ] Shutter::App::Handlers::Menu_Ret_UploadLinks
+- [ ] Shutter::App::Handlers::Menu_Ret_Workspace
+- [ ] Shutter::App::Handlers::Registry
+- [ ] Shutter::App::Handlers::Screenshot_Actions
+- [ ] Shutter::App::Handlers::Screenshot_InitTray
+- [ ] Shutter::App::Handlers::Screenshot_Take
+- [ ] Shutter::App::Handlers::Screenshot_UI
+- [ ] Shutter::App::Handlers::UI_Status
+- [ ] Shutter::App::Handlers::UI_Tabs
+- [ ] Shutter::App::Handlers::Upload_Execute
+- [ ] Shutter::App::Handlers::Upload_Main
+- [ ] Shutter::App::Handlers::Util_File
+- [ ] Shutter::App::Handlers::Util_Get
+- [ ] Shutter::App::Handlers::Workflow_Control
+- [ ] Shutter::App::Handlers::Workflow_Init
+- [x] Shutter::App::Handlers::Workflow_Integrate
+- [x] Shutter::App::Handlers::Workflow_Post
+- [x] Shutter::App::Handlers::Workflow_Save
+- [x] Shutter::App::Handlers::Workflow_Session
+- [x] Shutter::App::Menu
+- [x] Shutter::App::Notification
+- [x] Shutter::App::Options
+
+- [ ] Shutter::App::Options
+- [ ] Shutter::App::PinToScreen
+- [ ] Shutter::App::Session
+- [ ] Shutter::App::ShutterNotification
+- [ ] Shutter::App::SimpleDialogs
+- [ ] Shutter::App::Toolbar
+- [ ] Shutter::App::UI
+- [ ] Shutter::App::UI::MainWindow
+- [ ] Shutter::App::UI::Menus
+- [ ] Shutter::App::UI::SettingsDialog
+- [ ] Shutter::App::UI::Settings::Main
+- [ ] Shutter::App::UI::Windows
+- [ ] Shutter::App::Workflow
+- [ ] Shutter::Draw::DrawingTool
+- [ ] Shutter::Draw::Ellipse
+- [ ] Shutter::Draw::UIManager
+- [ ] Shutter::Draw::Utils
+- [ ] Shutter::Geometry::Region
+- [ ] Shutter::Pixbuf::Border
+- [ ] Shutter::Pixbuf::Load
+- [ ] Shutter::Pixbuf::Save
+- [ ] Shutter::Screenshot::Error
+- [ ] Shutter::Screenshot::History
+- [ ] Shutter::Screenshot::Main
+- [ ] Shutter::Screenshot::SelectorAdvanced
+- [ ] Shutter::Screenshot::SelectorAuto
+- [ ] Shutter::Screenshot::Wayland
+- [ ] Shutter::Screenshot::Web
+- [ ] Shutter::Screenshot::Window
+- [ ] Shutter::Screenshot::WindowName
+- [ ] Shutter::Screenshot::WindowXid
+- [ ] Shutter::Screenshot::Workspace
+- [ ] Shutter::Upload::FTP
+- [ ] Shutter::Upload::Shared
+- [ ] Shutter::Upload::ShareX
+
+## Phase 2: Update AGENTS.md Component Tables
+- [ ] Process `modules_not_in_agents_md.txt`
+- [ ] For each module:
+    - [ ] Identify appropriate table in `AGENTS.md`.
+    - [ ] Construct Markdown table row entry.
+    - [ ] Insert row into `AGENTS.md`.
+
+## Phase 3: Populate Documentation Content (Placeholder)
+- [x] Shutter::App
+- [ ] Shutter::App::AboutDialog
+- [ ] Shutter::App::AfterCapturePipeline
+- [ ] Shutter::App::Autostart
+- [ ] Shutter::App::Constants
+- [ ] Shutter::App::Core::ScreenshotHandler
+- [ ] Shutter::App::Core::SessionManager
+- [ ] Shutter::App::Core::SettingsManager
+- [ ] Shutter::App::Core::UploadManager
+- [ ] Shutter::App::Directories
+- [ ] Shutter::App::Events::Edit
+- [ ] Shutter::App::Events::File
+- [ ] Shutter::App::Events::Screenshot
+- [ ] Shutter::App::GlobalSettings
+- [ ] Shutter::App::Handlers
+- [ ] Shutter::App::Handlers::Core
+- [ ] Shutter::App::Handlers::Dialogs_Open
+- [ ] Shutter::App::Handlers::Dialogs_Plugin
+- [ ] Shutter::App::Handlers::Dialogs_Rename
+- [ ] Shutter::App::Handlers::Dialogs_Settings
+- [ ] Shutter::App::Handlers::Dialogs_Upload
+- [ ] Shutter::App::Handlers::Edit_Delete
+- [ ] Shutter::App::Handlers::Edit_Draw
+- [ ] Shutter::App::Handlers::Edit_Nav
+- [ ] Shutter::App::Handlers::Events_Control
+- [ ] Shutter::App::Handlers::Events_Init
+- [ ] Shutter::App::Handlers::Events_Tray
+- [ ] Shutter::App::Handlers::Init_Accounts
+- [ ] Shutter::App::Handlers::Init_Handlers
+- [ ] Shutter::App::Handlers::Init_Model
+- [ ] Shutter::App::Handlers::Menu
+- [ ] Shutter::App::Handlers::Menu_Ret_Get
+- [ ] Shutter::App::Handlers::Menu_Ret_Tray
+- [ ] Shutter::App::Handlers::Menu_Ret_Upload
+- [ ] Shutter::App::Handlers::Menu_Ret_UploadLinks
+- [ ] Shutter::App::Handlers::Menu_Ret_Workspace
+- [ ] Shutter::App::Handlers::Registry
+- [ ] Shutter::App::Handlers::Screenshot_Actions
+- [ ] Shutter::App::Handlers::Screenshot_InitTray
+- [ ] Shutter::App::Handlers::Screenshot_Take
+- [ ] Shutter::App::Handlers::Screenshot_UI
+- [ ] Shutter::App::Handlers::UI_Status
+- [ ] Shutter::App::Handlers::UI_Tabs
+- [ ] Shutter::App::Handlers::Upload_Execute
+- [ ] Shutter::App::Handlers::Upload_Main
+- [ ] Shutter::App::Handlers::Util_File
+- [ ] Shutter::App::Handlers::Util_Get
+- [ ] Shutter::App::Handlers::Workflow_Control
+- [ ] Shutter::App::Handlers::Workflow_Init
+- [x] Shutter::App::Handlers::Workflow_Integrate
+- [x] Shutter::App::Handlers::Workflow_Post
+- [x] Shutter::App::Handlers::Workflow_Save
+- [x] Shutter::App::Handlers::Workflow_Session
+- [x] Shutter::App::Menu
+- [x] Shutter::App::Notification
+- [x] Shutter::App::Options
+
+- [ ] Shutter::App::Options
+- [ ] Shutter::App::PinToScreen
+- [ ] Shutter::App::Session
+- [ ] Shutter::App::ShutterNotification
+- [ ] Shutter::App::SimpleDialogs
+- [ ] Shutter::App::Toolbar
+- [ ] Shutter::App::UI
+- [ ] Shutter::App::UI::MainWindow
+- [ ] Shutter::App::UI::Menus
+- [ ] Shutter::App::UI::SettingsDialog
+- [ ] Shutter::App::UI::Settings::Main
+- [ ] Shutter::App::UI::Windows
+- [ ] Shutter::App::Workflow
+- [ ] Shutter::Draw::DrawingTool
+- [ ] Shutter::Draw::Ellipse
+- [ ] Shutter::Draw::UIManager
+- [ ] Shutter::Draw::Utils
+- [ ] Shutter::Geometry::Region
+- [ ] Shutter::Pixbuf::Border
+- [ ] Shutter::Pixbuf::Load
+- [ ] Shutter::Pixbuf::Save
+- [ ] Shutter::Screenshot::Error
+- [ ] Shutter::Screenshot::History
+- [ ] Shutter::Screenshot::Main
+- [ ] Shutter::Screenshot::SelectorAdvanced
+- [ ] Shutter::Screenshot::SelectorAuto
+- [ ] Shutter::Screenshot::Wayland
+- [ ] Shutter::Screenshot::Web
+- [ ] Shutter::Screenshot::Window
+- [ ] Shutter::Screenshot::WindowName
+- [ ] Shutter::Screenshot::WindowXid
+- [ ] Shutter::Screenshot::Workspace
+- [ ] Shutter::Upload::FTP
+- [ ] Shutter::Upload::Shared
+- [ ] Shutter::Upload::ShareX
+
+## Phase 2: Update AGENTS.md Component Tables
+- [ ] Process `modules_not_in_agents_md.txt`
+- [ ] For each module:
+    - [ ] Identify appropriate table in `AGENTS.md`.
+    - [ ] Construct Markdown table row entry.
+    - [ ] Insert row into `AGENTS.md`.
+
+## Phase 3: Populate Documentation Content (Placeholder)
+- [x] Shutter::App
+- [ ] Shutter::App::AboutDialog
+- [ ] Shutter::App::AfterCapturePipeline
+- [ ] Shutter::App::Autostart
+- [ ] Shutter::App::Constants
+- [ ] Shutter::App::Core::ScreenshotHandler
+- [ ] Shutter::App::Core::SessionManager
+- [ ] Shutter::App::Core::SettingsManager
+- [ ] Shutter::App::Core::UploadManager
+- [ ] Shutter::App::Directories
+- [ ] Shutter::App::Events::Edit
+- [ ] Shutter::App::Events::File
+- [ ] Shutter::App::Events::Screenshot
+- [ ] Shutter::App::GlobalSettings
+- [ ] Shutter::App::Handlers
+- [ ] Shutter::App::Handlers::Core
+- [ ] Shutter::App::Handlers::Dialogs_Open
+- [ ] Shutter::App::Handlers::Dialogs_Plugin
+- [ ] Shutter::App::Handlers::Dialogs_Rename
+- [ ] Shutter::App::Handlers::Dialogs_Settings
+- [ ] Shutter::App::Handlers::Dialogs_Upload
+- [ ] Shutter::App::Handlers::Edit_Delete
+- [ ] Shutter::App::Handlers::Edit_Draw
+- [ ] Shutter::App::Handlers::Edit_Nav
+- [ ] Shutter::App::Handlers::Events_Control
+- [ ] Shutter::App::Handlers::Events_Init
+- [ ] Shutter::App::Handlers::Events_Tray
+- [ ] Shutter::App::Handlers::Init_Accounts
+- [ ] Shutter::App::Handlers::Init_Handlers
+- [ ] Shutter::App::Handlers::Init_Model
+- [ ] Shutter::App::Handlers::Menu
+- [ ] Shutter::App::Handlers::Menu_Ret_Get
+- [ ] Shutter::App::Handlers::Menu_Ret_Tray
+- [ ] Shutter::App::Handlers::Menu_Ret_Upload
+- [ ] Shutter::App::Handlers::Menu_Ret_UploadLinks
+- [ ] Shutter::App::Handlers::Menu_Ret_Workspace
+- [ ] Shutter::App::Handlers::Registry
+- [ ] Shutter::App::Handlers::Screenshot_Actions
+- [ ] Shutter::App::Handlers::Screenshot_InitTray
+- [ ] Shutter::App::Handlers::Screenshot_Take
+- [ ] Shutter::App::Handlers::Screenshot_UI
+- [ ] Shutter::App::Handlers::UI_Status
+- [ ] Shutter::App::Handlers::UI_Tabs
+- [ ] Shutter::App::Handlers::Upload_Execute
+- [ ] Shutter::App::Handlers::Upload_Main
+- [ ] Shutter::App::Handlers::Util_File
+- [ ] Shutter::App::Handlers::Util_Get
+- [ ] Shutter::App::Handlers::Workflow_Control
+- [ ] Shutter::App::Handlers::Workflow_Init
+- [x] Shutter::App::Handlers::Workflow_Integrate
+- [x] Shutter::App::Handlers::Workflow_Post
+- [x] Shutter::App::Handlers::Workflow_Save
+- [x] Shutter::App::Handlers::Workflow_Session
+- [x] Shutter::App::Menu
+- [x] Shutter::App::Notification
+- [x] Shutter::App::Options
+
+- [ ] Shutter::App::Options
+- [ ] Shutter::App::PinToScreen
+- [ ] Shutter::App::Session
+- [ ] Shutter::App::ShutterNotification
+- [ ] Shutter::App::SimpleDialogs
+- [ ] Shutter::App::Toolbar
+- [ ] Shutter::App::UI
+- [ ] Shutter::App::UI::MainWindow
+- [ ] Shutter::App::UI::Menus
+- [ ] Shutter::App::UI::SettingsDialog
+- [ ] Shutter::App::UI::Settings::Main
+- [ ] Shutter::App::UI::Windows
+- [ ] Shutter::App::Workflow
+- [ ] Shutter::Draw::DrawingTool
+- [ ] Shutter::Draw::Ellipse
+- [ ] Shutter::Draw::UIManager
+- [ ] Shutter::Draw::Utils
+- [ ] Shutter::Geometry::Region
+- [ ] Shutter::Pixbuf::Border
+- [ ] Shutter::Pixbuf::Load
+- [ ] Shutter::Pixbuf::Save
+- [ ] Shutter::Screenshot::Error
+- [ ] Shutter::Screenshot::History
+- [ ] Shutter::Screenshot::Main
+- [ ] Shutter::Screenshot::SelectorAdvanced
+- [ ] Shutter::Screenshot::SelectorAuto
+- [ ] Shutter::Screenshot::Wayland
+- [ ] Shutter::Screenshot::Web
+- [ ] Shutter::Screenshot::Window
+- [ ] Shutter::Screenshot::WindowName
+- [ ] Shutter::Screenshot::WindowXid
+- [ ] Shutter::Screenshot::Workspace
+- [ ] Shutter::Upload::FTP
+- [ ] Shutter::Upload::Shared
+- [ ] Shutter::Upload::ShareX
+
+## Phase 2: Update AGENTS.md Component Tables
+- [ ] Process `modules_not_in_agents_md.txt`
+- [ ] For each module:
+    - [ ] Identify appropriate table in `AGENTS.md`.
+    - [ ] Construct Markdown table row entry.
+    - [ ] Insert row into `AGENTS.md`.
+
+## Phase 3: Populate Documentation Content (Placeholder)
+- [x] Shutter::App
+- [ ] Shutter::App::AboutDialog
+- [ ] Shutter::App::AfterCapturePipeline
+- [ ] Shutter::App::Autostart
+- [ ] Shutter::App::Constants
+- [ ] Shutter::App::Core::ScreenshotHandler
+- [ ] Shutter::App::Core::SessionManager
+- [ ] Shutter::App::Core::SettingsManager
+- [ ] Shutter::App::Core::UploadManager
+- [ ] Shutter::App::Directories
+- [ ] Shutter::App::Events::Edit
+- [ ] Shutter::App::Events::File
+- [ ] Shutter::App::Events::Screenshot
+- [ ] Shutter::App::GlobalSettings
+- [ ] Shutter::App::Handlers
+- [ ] Shutter::App::Handlers::Core
+- [ ] Shutter::App::Handlers::Dialogs_Open
+- [ ] Shutter::App::Handlers::Dialogs_Plugin
+- [ ] Shutter::App::Handlers::Dialogs_Rename
+- [ ] Shutter::App::Handlers::Dialogs_Settings
+- [ ] Shutter::App::Handlers::Dialogs_Upload
+- [ ] Shutter::App::Handlers::Edit_Delete
+- [ ] Shutter::App::Handlers::Edit_Draw
+- [ ] Shutter::App::Handlers::Edit_Nav
+- [ ] Shutter::App::Handlers::Events_Control
+- [ ] Shutter::App::Handlers::Events_Init
+- [ ] Shutter::App::Handlers::Events_Tray
+- [ ] Shutter::App::Handlers::Init_Accounts
+- [ ] Shutter::App::Handlers::Init_Handlers
+- [ ] Shutter::App::Handlers::Init_Model
+- [ ] Shutter::App::Handlers::Menu
+- [ ] Shutter::App::Handlers::Menu_Ret_Get
+- [ ] Shutter::App::Handlers::Menu_Ret_Tray
+- [ ] Shutter::App::Handlers::Menu_Ret_Upload
+- [ ] Shutter::App::Handlers::Menu_Ret_UploadLinks
+- [ ] Shutter::App::Handlers::Menu_Ret_Workspace
+- [ ] Shutter::App::Handlers::Registry
+- [ ] Shutter::App::Handlers::Screenshot_Actions
+- [ ] Shutter::App::Handlers::Screenshot_InitTray
+- [ ] Shutter::App::Handlers::Screenshot_Take
+- [ ] Shutter::App::Handlers::Screenshot_UI
+- [ ] Shutter::App::Handlers::UI_Status
+- [ ] Shutter::App::Handlers::UI_Tabs
+- [ ] Shutter::App::Handlers::Upload_Execute
+- [ ] Shutter::App::Handlers::Upload_Main
+- [ ] Shutter::App::Handlers::Util_File
+- [ ] Shutter::App::Handlers::Util_Get
+- [ ] Shutter::App::Handlers::Workflow_Control
+- [ ] Shutter::App::Handlers::Workflow_Init
+- [x] Shutter::App::Handlers::Workflow_Integrate
+- [x] Shutter::App::Handlers::Workflow_Post
+- [x] Shutter::App::Handlers::Workflow_Save
+- [x] Shutter::App::Handlers::Workflow_Session
+- [x] Shutter::App::Menu
+- [x] Shutter::App::Notification
+- [x] Shutter::App::Options
+
+- [ ] Shutter::App::Options
+- [ ] Shutter::App::PinToScreen
+- [ ] Shutter::App::Session
+- [ ] Shutter::App::ShutterNotification
+- [ ] Shutter::App::SimpleDialogs
+- [ ] Shutter::App::Toolbar
+- [ ] Shutter::App::UI
+- [ ] Shutter::App::UI::MainWindow
+- [ ] Shutter::App::UI::Menus
+- [ ] Shutter::App::UI::SettingsDialog
+- [ ] Shutter::App::UI::Settings::Main
+- [ ] Shutter::App::UI::Windows
+- [ ] Shutter::App::Workflow
+- [ ] Shutter::Draw::DrawingTool
+- [ ] Shutter::Draw::Ellipse
+- [ ] Shutter::Draw::UIManager
+- [ ] Shutter::Draw::Utils
+- [ ] Shutter::Geometry::Region
+- [ ] Shutter::Pixbuf::Border
+- [ ] Shutter::Pixbuf::Load
+- [ ] Shutter::Pixbuf::Save
+- [ ] Shutter::Screenshot::Error
+- [ ] Shutter::Screenshot::History
+- [ ] Shutter::Screenshot::Main
+- [ ] Shutter::Screenshot::SelectorAdvanced
+- [ ] Shutter::Screenshot::SelectorAuto
+- [ ] Shutter::Screenshot::Wayland
+- [ ] Shutter::Screenshot::Web
+- [ ] Shutter::Screenshot::Window
+- [ ] Shutter::Screenshot::WindowName
+- [ ] Shutter::Screenshot::WindowXid
+- [ ] Shutter::Screenshot::Workspace
+- [ ] Shutter::Upload::FTP
+- [ ] Shutter::Upload::Shared
+- [ ] Shutter::Upload::ShareX
+
+## Phase 2: Update AGENTS.md Component Tables
+- [ ] Process `modules_not_in_agents_md.txt`
+- [ ] For each module:
+    - [ ] Identify appropriate table in `AGENTS.md`.
+    - [ ] Construct Markdown table row entry.
+    - [ ] Insert row into `AGENTS.md`.
+
+## Phase 3: Populate Documentation Content (Placeholder)
+- [x] Shutter::App
+- [ ] Shutter::App::AboutDialog
+- [ ] Shutter::App::AfterCapturePipeline
+- [ ] Shutter::App::Autostart
+- [ ] Shutter::App::Constants
+- [ ] Shutter::App::Core::ScreenshotHandler
+- [ ] Shutter::App::Core::SessionManager
+- [ ] Shutter::App::Core::SettingsManager
+- [ ] Shutter::App::Core::UploadManager
+- [ ] Shutter::App::Directories
+- [ ] Shutter::App::Events::Edit
+- [ ] Shutter::App::Events::File
+- [ ] Shutter::App::Events::Screenshot
+- [ ] Shutter::App::GlobalSettings
+- [ ] Shutter::App::Handlers
+- [ ] Shutter::App::Handlers::Core
+- [ ] Shutter::App::Handlers::Dialogs_Open
+- [ ] Shutter::App::Handlers::Dialogs_Plugin
+- [ ] Shutter::App::Handlers::Dialogs_Rename
+- [ ] Shutter::App::Handlers::Dialogs_Settings
+- [ ] Shutter::App::Handlers::Dialogs_Upload
+- [ ] Shutter::App::Handlers::Edit_Delete
+- [ ] Shutter::App::Handlers::Edit_Draw
+- [ ] Shutter::App::Handlers::Edit_Nav
+- [ ] Shutter::App::Handlers::Events_Control
+- [ ] Shutter::App::Handlers::Events_Init
+- [ ] Shutter::App::Handlers::Events_Tray
+- [ ] Shutter::App::Handlers::Init_Accounts
+- [ ] Shutter::App::Handlers::Init_Handlers
+- [ ] Shutter::App::Handlers::Init_Model
+- [ ] Shutter::App::Handlers::Menu
+- [ ] Shutter::App::Handlers::Menu_Ret_Get
+- [ ] Shutter::App::Handlers::Menu_Ret_Tray
+- [ ] Shutter::App::Handlers::Menu_Ret_Upload
+- [ ] Shutter::App::Handlers::Menu_Ret_UploadLinks
+- [ ] Shutter::App::Handlers::Menu_Ret_Workspace
+- [ ] Shutter::App::Handlers::Registry
+- [ ] Shutter::App::Handlers::Screenshot_Actions
+- [ ] Shutter::App::Handlers::Screenshot_InitTray
+- [ ] Shutter::App::Handlers::Screenshot_Take
+- [ ] Shutter::App::Handlers::Screenshot_UI
+- [ ] Shutter::App::Handlers::UI_Status
+- [ ] Shutter::App::Handlers::UI_Tabs
+- [ ] Shutter::App::Handlers::Upload_Execute
+- [ ] Shutter::App::Handlers::Upload_Main
+- [ ] Shutter::App::Handlers::Util_File
+- [ ] Shutter::App::Handlers::Util_Get
+- [ ] Shutter::App::Handlers::Workflow_Control
+- [ ] Shutter::App::Handlers::Workflow_Init
+- [x] Shutter::App::Handlers::Workflow_Integrate
+- [x] Shutter::App::Handlers::Workflow_Post
+- [x] Shutter::App::Handlers::Workflow_Save
+- [x] Shutter::App::Handlers::Workflow_Session
+- [x] Shutter::App::Menu
+- [x] Shutter::App::Notification
+- [x] Shutter::App::Options
+
+- [ ] Shutter::App::Options
+- [ ] Shutter::App::PinToScreen
+- [ ] Shutter::App::Session
+- [ ] Shutter::App::ShutterNotification
+- [ ] Shutter::App::SimpleDialogs
+- [ ] Shutter::App::Toolbar
+- [ ] Shutter::App::UI
+- [ ] Shutter::App::UI::MainWindow
+- [ ] Shutter::App::UI::Menus
+- [ ] Shutter::App::UI::SettingsDialog
+- [ ] Shutter::App::UI::Settings::Main
+- [ ] Shutter::App::UI::Windows
+- [ ] Shutter::App::Workflow
+- [ ] Shutter::Draw::DrawingTool
+- [ ] Shutter::Draw::Ellipse
+- [ ] Shutter::Draw::UIManager
+- [ ] Shutter::Draw::Utils
+- [ ] Shutter::Geometry::Region
+- [ ] Shutter::Pixbuf::Border
+- [ ] Shutter::Pixbuf::Load
+- [ ] Shutter::Pixbuf::Save
+- [ ] Shutter::Screenshot::Error
+- [ ] Shutter::Screenshot::History
+- [ ] Shutter::Screenshot::Main
+- [ ] Shutter::Screenshot::SelectorAdvanced
+- [ ] Shutter::Screenshot::SelectorAuto
+- [ ] Shutter::Screenshot::Wayland
+- [ ] Shutter::Screenshot::Web
+- [ ] Shutter::Screenshot::Window
+- [ ] Shutter::Screenshot::WindowName
+- [ ] Shutter::Screenshot::WindowXid
+- [ ] Shutter::Screenshot::Workspace
+- [ ] Shutter::Upload::FTP
+- [ ] Shutter::Upload::Shared
+- [ ] Shutter::Upload::ShareX
+
+## Phase 2: Update AGENTS.md Component Tables
+- [ ] Process `modules_not_in_agents_md.txt`
+- [ ] For each module:
+    - [ ] Identify appropriate table in `AGENTS.md`.
+    - [ ] Construct Markdown table row entry.
+    - [ ] Insert row into `AGENTS.md`.
+
+## Phase 3: Populate Documentation Content (Placeholder)
+- [x] Shutter::App
+- [ ] Shutter::App::AboutDialog
+- [ ] Shutter::App::AfterCapturePipeline
+- [ ] Shutter::App::Autostart
+- [ ] Shutter::App::Constants
+- [ ] Shutter::App::Core::ScreenshotHandler
+- [ ] Shutter::App::Core::SessionManager
+- [ ] Shutter::App::Core::SettingsManager
+- [ ] Shutter::App::Core::UploadManager
+- [ ] Shutter::App::Directories
+- [ ] Shutter::App::Events::Edit
+- [ ] Shutter::App::Events::File
+- [ ] Shutter::App::Events::Screenshot
+- [ ] Shutter::App::GlobalSettings
+- [ ] Shutter::App::Handlers
+- [ ] Shutter::App::Handlers::Core
+- [ ] Shutter::App::Handlers::Dialogs_Open
+- [ ] Shutter::App::Handlers::Dialogs_Plugin
+- [ ] Shutter::App::Handlers::Dialogs_Rename
+- [ ] Shutter::App::Handlers::Dialogs_Settings
+- [ ] Shutter::App::Handlers::Dialogs_Upload
+- [ ] Shutter::App::Handlers::Edit_Delete
+- [ ] Shutter::App::Handlers::Edit_Draw
+- [ ] Shutter::App::Handlers::Edit_Nav
+- [ ] Shutter::App::Handlers::Events_Control
+- [ ] Shutter::App::Handlers::Events_Init
+- [ ] Shutter::App::Handlers::Events_Tray
+- [ ] Shutter::App::Handlers::Init_Accounts
+- [ ] Shutter::App::Handlers::Init_Handlers
+- [ ] Shutter::App::Handlers::Init_Model
+- [ ] Shutter::App::Handlers::Menu
+- [ ] Shutter::App::Handlers::Menu_Ret_Get
+- [ ] Shutter::App::Handlers::Menu_Ret_Tray
+- [ ] Shutter::App::Handlers::Menu_Ret_Upload
+- [ ] Shutter::App::Handlers::Menu_Ret_UploadLinks
+- [ ] Shutter::App::Handlers::Menu_Ret_Workspace
+- [ ] Shutter::App::Handlers::Registry
+- [ ] Shutter::App::Handlers::Screenshot_Actions
+- [ ] Shutter::App::Handlers::Screenshot_InitTray
+- [ ] Shutter::App::Handlers::Screenshot_Take
+- [ ] Shutter::App::Handlers::Screenshot_UI
+- [ ] Shutter::App::Handlers::UI_Status
+- [ ] Shutter::App::Handlers::UI_Tabs
+- [ ] Shutter::App::Handlers::Upload_Execute
+- [ ] Shutter::App::Handlers::Upload_Main
+- [ ] Shutter::App::Handlers::Util_File
+- [ ] Shutter::App::Handlers::Util_Get
+- [ ] Shutter::App::Handlers::Workflow_Control
+- [ ] Shutter::App::Handlers::Workflow_Init
+- [x] Shutter::App::Handlers::Workflow_Integrate
+- [x] Shutter::App::Handlers::Workflow_Post
+- [x] Shutter::App::Handlers::Workflow_Save
+- [x] Shutter::App::Handlers::Workflow_Session
+- [x] Shutter::App::Menu
+- [x] Shutter::App::Notification
+- [x] Shutter::App::Options
+
+- [ ] Shutter::App::Options
+- [ ] Shutter::App::PinToScreen
+- [ ] Shutter::App::Session
+- [ ] Shutter::App::ShutterNotification
+- [ ] Shutter::App::SimpleDialogs
+- [ ] Shutter::App::Toolbar
+- [ ] Shutter::App::UI
+- [ ] Shutter::App::UI::MainWindow
+- [ ] Shutter::App::UI::Menus
+- [ ] Shutter::App::UI::SettingsDialog
+- [ ] Shutter::App::UI::Settings::Main
+- [ ] Shutter::App::UI::Windows
+- [ ] Shutter::App::Workflow
+- [ ] Shutter::Draw::DrawingTool
+- [ ] Shutter::Draw::Ellipse
+- [ ] Shutter::Draw::UIManager
+- [ ] Shutter::Draw::Utils
+- [ ] Shutter::Geometry::Region
+- [ ] Shutter::Pixbuf::Border
+- [ ] Shutter::Pixbuf::Load
+- [ ] Shutter::Pixbuf::Save
+- [ ] Shutter::Screenshot::Error
+- [ ] Shutter::Screenshot::History
+- [ ] Shutter::Screenshot::Main
+- [ ] Shutter::Screenshot::SelectorAdvanced
+- [ ] Shutter::Screenshot::SelectorAuto
+- [ ] Shutter::Screenshot::Wayland
+- [ ] Shutter::Screenshot::Web
+- [ ] Shutter::Screenshot::Window
+- [ ] Shutter::Screenshot::WindowName
+- [ ] Shutter::Screenshot::WindowXid
+- [ ] Shutter::Screenshot::Workspace
+- [ ] Shutter::Upload::FTP
+- [ ] Shutter::Upload::Shared
+- [ ] Shutter::Upload::ShareX
+
+## Phase 2: Update AGENTS.md Component Tables
+- [ ] Process `modules_not_in_agents_md.txt`
+- [ ] For each module:
+    - [ ] Identify appropriate table in `AGENTS.md`.
+    - [ ] Construct Markdown table row entry.
+    - [ ] Insert row into `AGENTS.md`.
+
+## Phase 3: Populate Documentation Content (Placeholder)
+- [x] Shutter::App
+- [ ] Shutter::App::AboutDialog
+- [ ] Shutter::App::AfterCapturePipeline
+- [ ] Shutter::App::Autostart
+- [ ] Shutter::App::Constants
+- [ ] Shutter::App::Core::ScreenshotHandler
+- [ ] Shutter::App::Core::SessionManager
+- [ ] Shutter::App::Core::SettingsManager
+- [ ] Shutter::App::Core::UploadManager
+- [ ] Shutter::App::Directories
+- [ ] Shutter::App::Events::Edit
+- [ ] Shutter::App::Events::File
+- [ ] Shutter::App::Events::Screenshot
+- [ ] Shutter::App::GlobalSettings
+- [ ] Shutter::App::Handlers
+- [ ] Shutter::App::Handlers::Core
+- [ ] Shutter::App::Handlers::Dialogs_Open
+- [ ] Shutter::App::Handlers::Dialogs_Plugin
+- [ ] Shutter::App::Handlers::Dialogs_Rename
+- [ ] Shutter::App::Handlers::Dialogs_Settings
+- [ ] Shutter::App::Handlers::Dialogs_Upload
+- [ ] Shutter::App::Handlers::Edit_Delete
+- [ ] Shutter::App::Handlers::Edit_Draw
+- [ ] Shutter::App::Handlers::Edit_Nav
+- [ ] Shutter::App::Handlers::Events_Control
+- [ ] Shutter::App::Handlers::Events_Init
+- [ ] Shutter::App::Handlers::Events_Tray
+- [ ] Shutter::App::Handlers::Init_Accounts
+- [ ] Shutter::App::Handlers::Init_Handlers
+- [ ] Shutter::App::Handlers::Init_Model
+- [ ] Shutter::App::Handlers::Menu
+- [ ] Shutter::App::Handlers::Menu_Ret_Get
+- [ ] Shutter::App::Handlers::Menu_Ret_Tray
+- [ ] Shutter::App::Handlers::Menu_Ret_Upload
+- [ ] Shutter::App::Handlers::Menu_Ret_UploadLinks
+- [ ] Shutter::App::Handlers::Menu_Ret_Workspace
+- [ ] Shutter::App::Handlers::Registry
+- [ ] Shutter::App::Handlers::Screenshot_Actions
+- [ ] Shutter::App::Handlers::Screenshot_InitTray
+- [ ] Shutter::App::Handlers::Screenshot_Take
+- [ ] Shutter::App::Handlers::Screenshot_UI
+- [ ] Shutter::App::Handlers::UI_Status
+- [ ] Shutter::App::Handlers::UI_Tabs
+- [ ] Shutter::App::Handlers::Upload_Execute
+- [ ] Shutter::App::Handlers::Upload_Main
+- [ ] Shutter::App::Handlers::Util_File
+- [ ] Shutter::App::Handlers::Util_Get
+- [ ] Shutter::App::Handlers::Workflow_Control
+- [ ] Shutter::App::Handlers::Workflow_Init
+- [x] Shutter::App::Handlers::Workflow_Integrate
+- [x] Shutter::App::Handlers::Workflow_Post
+- [x] Shutter::App::Handlers::Workflow_Save
+- [x] Shutter::App::Handlers::Workflow_Session
+- [x] Shutter::App::Menu
+- [x] Shutter::App::Notification
+- [x] Shutter::App::Options
+
+- [ ] Shutter::App::Options
+- [ ] Shutter::App::PinToScreen
+- [ ] Shutter::App::Session
+- [ ] Shutter::App::ShutterNotification
+- [ ] Shutter::App::SimpleDialogs
+- [ ] Shutter::App::Toolbar
+- [ ] Shutter::App::UI
+- [ ] Shutter::App::UI::MainWindow
+- [ ] Shutter::App::UI::Menus
+- [ ] Shutter::App::UI::SettingsDialog
+- [ ] Shutter::App::UI::Settings::Main
+- [ ] Shutter::App::UI::Windows
+- [ ] Shutter::App::Workflow
+- [ ] Shutter::Draw::DrawingTool
+- [ ] Shutter::Draw::Ellipse
+- [ ] Shutter::Draw::UIManager
+- [ ] Shutter::Draw::Utils
+- [ ] Shutter::Geometry::Region
+- [ ] Shutter::Pixbuf::Border
+- [ ] Shutter::Pixbuf::Load
+- [ ] Shutter::Pixbuf::Save
+- [ ] Shutter::Screenshot::Error
+- [ ] Shutter::Screenshot::History
+- [ ] Shutter::Screenshot::Main
+- [ ] Shutter::Screenshot::SelectorAdvanced
+- [ ] Shutter::Screenshot::SelectorAuto
+- [ ] Shutter::Screenshot::Wayland
+- [ ] Shutter::Screenshot::Web
+- [ ] Shutter::Screenshot::Window
+- [ ] Shutter::Screenshot::WindowName
+- [ ] Shutter::Screenshot::WindowXid
+- [ ] Shutter::Screenshot::Workspace
+- [ ] Shutter::Upload::FTP
+- [ ] Shutter::Upload::Shared
+- [ ] Shutter::Upload::ShareX
+
+## Phase 2: Update AGENTS.md Component Tables
+- [ ] Process `modules_not_in_agents_md.txt`
+- [ ] For each module:
+    - [ ] Identify appropriate table in `AGENTS.md`.
+    - [ ] Construct Markdown table row entry.
+    - [ ] Insert row into `AGENTS.md`.
+
+## Phase 3: Populate Documentation Content (Placeholder)
+- [x] Shutter::App
+- [ ] Shutter::App::AboutDialog
+- [ ] Shutter::App::AfterCapturePipeline
+- [ ] Shutter::App::Autostart
+- [ ] Shutter::App::Constants
+- [ ] Shutter::App::Core::ScreenshotHandler
+- [ ] Shutter::App::Core::SessionManager
+- [ ] Shutter::App::Core::SettingsManager
+- [ ] Shutter::App::Core::UploadManager
+- [ ] Shutter::App::Directories
+- [ ] Shutter::App::Events::Edit
+- [ ] Shutter::App::Events::File
+- [ ] Shutter::App::Events::Screenshot
+- [ ] Shutter::App::GlobalSettings
+- [ ] Shutter::App::Handlers
+- [ ] Shutter::App::Handlers::Core
+- [ ] Shutter::App::Handlers::Dialogs_Open
+- [ ] Shutter::App::Handlers::Dialogs_Plugin
+- [ ] Shutter::App::Handlers::Dialogs_Rename
+- [ ] Shutter::App::Handlers::Dialogs_Settings
+- [ ] Shutter::App::Handlers::Dialogs_Upload
+- [ ] Shutter::App::Handlers::Edit_Delete
+- [ ] Shutter::App::Handlers::Edit_Draw
+- [ ] Shutter::App::Handlers::Edit_Nav
+- [ ] Shutter::App::Handlers::Events_Control
+- [ ] Shutter::App::Handlers::Events_Init
+- [ ] Shutter::App::Handlers::Events_Tray
+- [ ] Shutter::App::Handlers::Init_Accounts
+- [ ] Shutter::App::Handlers::Init_Handlers
+- [ ] Shutter::App::Handlers::Init_Model
+- [ ] Shutter::App::Handlers::Menu
+- [ ] Shutter::App::Handlers::Menu_Ret_Get
+- [ ] Shutter::App::Handlers::Menu_Ret_Tray
+- [ ] Shutter::App::Handlers::Menu_Ret_Upload
+- [ ] Shutter::App::Handlers::Menu_Ret_UploadLinks
+- [ ] Shutter::App::Handlers::Menu_Ret_Workspace
+- [ ] Shutter::App::Handlers::Registry
+- [ ] Shutter::App::Handlers::Screenshot_Actions
+- [ ] Shutter::App::Handlers::Screenshot_InitTray
+- [ ] Shutter::App::Handlers::Screenshot_Take
+- [ ] Shutter::App::Handlers::Screenshot_UI
+- [ ] Shutter::App::Handlers::UI_Status
+- [ ] Shutter::App::Handlers::UI_Tabs
+- [ ] Shutter::App::Handlers::Upload_Execute
+- [ ] Shutter::App::Handlers::Upload_Main
+- [ ] Shutter::App::Handlers::Util_File
+- [ ] Shutter::App::Handlers::Util_Get
+- [ ] Shutter::App::Handlers::Workflow_Control
+- [ ] Shutter::App::Handlers::Workflow_Init
+- [x] Shutter::App::Handlers::Workflow_Integrate
+- [x] Shutter::App::Handlers::Workflow_Post
+- [x] Shutter::App::Handlers::Workflow_Save
+- [x] Shutter::App::Handlers::Workflow_Session
+- [x] Shutter::App::Menu
+- [x] Shutter::App::Notification
+- [x] Shutter::App::Options
+
+- [ ] Shutter::App::Options
+- [ ] Shutter::App::PinToScreen
+- [ ] Shutter::App::Session
+- [ ] Shutter::App::ShutterNotification
+- [ ] Shutter::App::SimpleDialogs
+- [ ] Shutter::App::Toolbar
+- [ ] Shutter::App::UI
+- [ ] Shutter::App::UI::MainWindow
+- [ ] Shutter::App::UI::Menus
+- [ ] Shutter::App::UI::SettingsDialog
+- [ ] Shutter::App::UI::Settings::Main
+- [ ] Shutter::App::UI::Windows
+- [ ] Shutter::App::Workflow
+- [ ] Shutter::Draw::DrawingTool
+- [ ] Shutter::Draw::Ellipse
+- [ ] Shutter::Draw::UIManager
+- [ ] Shutter::Draw::Utils
+- [ ] Shutter::Geometry::Region
+- [ ] Shutter::Pixbuf::Border
+- [ ] Shutter::Pixbuf::Load
+- [ ] Shutter::Pixbuf::Save
+- [ ] Shutter::Screenshot::Error
+- [ ] Shutter::Screenshot::History
+- [ ] Shutter::Screenshot::Main
+- [ ] Shutter::Screenshot::SelectorAdvanced
+- [ ] Shutter::Screenshot::SelectorAuto
+- [ ] Shutter::Screenshot::Wayland
+- [ ] Shutter::Screenshot::Web
+- [ ] Shutter::Screenshot::Window
+- [ ] Shutter::Screenshot::WindowName
+- [ ] Shutter::Screenshot::WindowXid
+- [ ] Shutter::Screenshot::Workspace
+- [ ] Shutter::Upload::FTP
+- [ ] Shutter::Upload::Shared
+- [ ] Shutter::Upload::ShareX
+
+## Phase 2: Update AGENTS.md Component Tables
+- [ ] Process `modules_not_in_agents_md.txt`
+- [ ] For each module:
+    - [ ] Identify appropriate table in `AGENTS.md`.
+    - [ ] Construct Markdown table row entry.
+    - [ ] Insert row into `AGENTS.md`.

@@ -29,6 +29,7 @@ use feature 'try';
 no warnings 'experimental::try';
 use Moo;
 use Gtk3;
+use Log::Any;
 
 #Gettext and filename parsing
 use POSIX qw/ setlocale /;
@@ -43,6 +44,7 @@ has appname      => ( is => "ro", required => 1 );
 has version      => ( is => "ro", required => 1 );
 has rev          => ( is => "ro", required => 1 );
 has pid          => ( is => "ro", required => 1 );
+has cli          => ( is => "ro" );
 
 has debug              => ( is => "rw", default => sub {FALSE} );
 has clear_cache        => ( is => "rw", default => sub {FALSE} );
@@ -50,6 +52,11 @@ has min                => ( is => "rw", default => sub {FALSE} );
 has disable_systray    => ( is => "rw", default => sub {FALSE} );
 has exit_after_capture => ( is => "rw", default => sub {FALSE} );
 has no_session         => ( is => "rw", default => sub {FALSE} );
+has mock_capture       => ( is => "rw", default => sub {FALSE} );
+
+has log_file  => ( is => "rw", default => sub {undef} );
+has log_json  => ( is => "rw", default => sub {FALSE} );
+has log_level => ( is => "rw", default => sub {"info"} );
 
 # private attributes
 has _start_with       => ( is => "rw", lazy => 1 );
@@ -134,6 +141,7 @@ sub get_version               { shift->version }
 sub get_rev                   { shift->rev }
 sub get_gettext               { shift->gettext_object }
 sub get_theme                 { shift->icontheme }
+sub get_helper_functions      { shift->cli->shf }
 sub get_notification_object   { shift->notification }
 sub set_notification_object   { shift->notification(shift) if @_ }
 sub get_globalsettings_object { shift->global_settings }
@@ -162,6 +170,15 @@ sub get_exit_after_capture    { shift->exit_after_capture }
 sub set_exit_after_capture    { shift->exit_after_capture(shift) if @_ }
 sub get_no_session            { shift->no_session }
 sub set_no_session            { shift->no_session(shift) if @_ }
+sub get_mock_capture          { shift->mock_capture }
+sub set_mock_capture          { shift->mock_capture(shift) if @_ }
+
+sub get_log_file              { shift->log_file }
+sub set_log_file              { shift->log_file(shift) if @_ }
+sub get_log_json              { shift->log_json }
+sub set_log_json              { shift->log_json(shift) if @_ }
+sub get_log_level             { shift->log_level }
+sub set_log_level             { shift->log_level(shift) if @_ }
 
 sub get_start_with ($self) {
     return ( $self->_start_with, $self->_start_with_extra );

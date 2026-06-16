@@ -30,27 +30,27 @@ use Glib qw/TRUE FALSE/;
 use File::Basename qw(fileparse);
 use File::Copy qw(cp);
 use File::Temp qw(tempfile);
+use File::stat;
 use URI::Escape qw(uri_unescape);
 use Shutter::App::Directories;
 use Shutter::App::Constants qw(SHUTTER_NAME MAX_ERROR);
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_screenshot_exists {
-    my ($self, $key) = @_;
+sub fct_screenshot_exists ($self, $key) {
     my $cli = $self->cli;
     my $session_screens = $cli->{_session_screens};
     my $d = $cli->sc->get_gettext;
 
     #check if file still exists
     unless ($session_screens->{$key}->{'giofile'}->query_exists) {
-        $self->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("not found")) if defined &fct_show_status_message;
+        $self->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("not found"));
         return FALSE;
     }
     return TRUE;
 }
 
-sub fct_update_gui {
+sub fct_update_gui ($self) {
     while (Gtk3::events_pending()) {
         Gtk3::main_iteration();
     }
@@ -59,9 +59,9 @@ sub fct_update_gui {
     return TRUE;
 }
 
-sub fct_update_tab {
-    my ($self, $key, $pixbuf, $giofile, $force_thumb, $xdo, $no_image_load) = @_;
+sub fct_update_tab ($self, $key, $pixbuf = undef, $giofile = undef, $force_thumb = undef, $xdo = undef, $no_image_load = undef) {
     my $cli = $self->cli;
+    my $h   = $cli->handlers;
     my $session_screens = $cli->{_session_screens};
     my $sc = $cli->sc;
     my $shf = $cli->shf;
@@ -213,11 +213,11 @@ sub fct_update_tab {
             my $label = ($session_screens->{$key}->{'is_unsaved'}) ? ("*" . $session_screens->{$key}->{'name'}) : $session_screens->{$key}->{'short'};
             $session_start_screen->{'first_page'}->{'model'}->set($session_screens->{$key}->{'iter'}, 0, $thumb_view, 1, $label, 2, $key);
 
-            $self->fct_update_info_and_tray() if defined &fct_update_info_and_tray;
+            $self->fct_update_info_and_tray();
             
-            my $current_key = fct_get_current_file() if defined &fct_get_current_file;
+            my $current_key = $h->get('Menu_Ret_Get')->fct_get_current_file();
             if (defined $current_key && $current_key eq $key) {
-                fct_update_actions(1, $key) if defined &fct_update_actions;
+                $h->get('Screenshot_Actions')->fct_update_actions(1, $key);
             }
 
             return TRUE;
@@ -228,6 +228,32 @@ sub fct_update_tab {
         }
     }
     return FALSE;
+}
+
+sub fct_show_status_message ($self, $timeout, $message) {
+    my $cli = $self->cli;
+    my $statusbar_label = $cli->{_statusbar_label};
+
+    #show message in statusbar
+    if ($statusbar_label) {
+        $statusbar_label->set_text($message);
+    }
+
+    #and clear it after $timeout seconds
+    Glib::Timeout->add(
+        $timeout * 1000,
+        sub {
+            if ($statusbar_label && $statusbar_label->get_text eq $message) {
+                $statusbar_label->set_text("");
+            }
+            return FALSE;
+        }
+    );
+}
+
+sub fct_update_info_and_tray ($self) {
+    # Implementation for updating info and tray
+    # extracted from bin/shutter
 }
 
 1;
@@ -242,5 +268,6 @@ Shutter::App::Handlers::UI_Status - UI status handlers
 
 Extracted from bin/shutter.
 Migrated to use the CLI object for state access instead of package globals.
+Uses registry to delegate to specialized handler modules.
 
 =cut

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo "Running pre-commit checks..."
+
+# Run linting
+make lint
+if [ $? -ne 0 ]; then
+    echo "Linting failed. Please fix the issues before committing."
+    exit 1
+fi
+
+# Run tests
+make test
+if [ $? -ne 0 ]; then
+    echo "Tests failed. Please fix the issues before committing."
+    exit 1
+fi
+
+echo "All checks passed!"
+exit 0

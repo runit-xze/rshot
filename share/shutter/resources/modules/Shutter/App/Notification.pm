@@ -29,11 +29,14 @@ use v5.40;
 use feature 'try'; no warnings 'experimental::try';
 
 use Net::DBus;
+use Log::Any;
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
+
+my $log = Log::Any->get_logger;
 
 sub new ($class) {
 
@@ -45,7 +48,7 @@ sub new ($class) {
 		$self->{_notifications_object}  = $self->{_notifications_service}->get_object('/org/freedesktop/Notifications', 'org.freedesktop.Notifications');
 	}
 	catch ($e) {
-		print "Warning: $e", "\n";
+		$log->warn("Warning: $e");
 	}
 
 	#last nid
@@ -65,7 +68,7 @@ sub show ($self, $summary, $body, $nid = undef) {
 		}
 	}
 	catch ($e) {
-		print "NotifyWarning: $e", "\n";
+		$log->warn("NotifyWarning: $e");
 	}
 
 	return $self->{_nid};
@@ -82,7 +85,7 @@ sub close ($self, $nid = undef) {
 			}
 		}
 		catch ($e) {
-			print "CloseNotificationWarning: $e", "\n";
+			$log->warn("CloseNotificationWarning: $e");
 		}
 		return TRUE;
 	}

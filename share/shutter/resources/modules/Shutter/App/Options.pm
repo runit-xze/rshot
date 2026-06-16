@@ -27,6 +27,7 @@ use v5.40;
 use feature 'try'; no warnings 'experimental::try';
 use Encode::Locale;
 use Encode;
+use Log::Any;
 
 #Glib
 use Glib qw/TRUE FALSE/;
@@ -36,6 +37,8 @@ use Getopt::Long qw(:config no_ignore_case pass_through);
 
 #print a usage message from embedded pod documentation
 use Pod::Usage;
+
+my $log = Log::Any->get_logger;
 
 sub new ($class, $sc, $shf) {
 
@@ -67,12 +70,16 @@ sub get_options ($self) {
 
 		'h|help'               => sub { pod2usage(-verbose => 1); },
 		'v|version'            => sub { print $self->{_sc}->get_version, " ", $self->{_sc}->get_rev, "\n"; exit; },
-		'debug'                => sub { $self->{_sc}->set_debug(TRUE); },
+		'debug'                => sub { $self->{_sc}->set_debug(TRUE); $self->{_sc}->set_log_level("debug"); },
+		'log-file=s'           => sub { my ($l, $file) = @_; $self->{_sc}->set_log_file($file); },
+		'log-json'             => sub { $self->{_sc}->set_log_json(TRUE); },
+		'log-level=s'          => sub { my ($l, $level) = @_; $self->{_sc}->set_log_level($level); },
 		'clear_cache'          => sub { $self->{_sc}->set_clear_cache(TRUE); },
 		'min_at_startup'       => sub { $self->{_sc}->set_min(TRUE); },
 		'disable_systray'      => sub { $self->{_sc}->set_disable_systray(TRUE); },
 		'e|exit_after_capture' => sub { $self->{_sc}->set_exit_after_capture(TRUE); },
 		'n|no_session'         => sub { $self->{_sc}->set_no_session(TRUE); },
+		'mock-capture'         => sub { $self->{_sc}->set_mock_capture(TRUE); },
 	);
 
 	#unknown value are passed through in @ARGV - might be filenames
@@ -85,7 +92,7 @@ sub get_options ($self) {
 				push @init_files, $arg;
 				next;
 			} else {
-				warn "ERROR: unknown command or filename " . $arg . " \n\n";
+				$log->error("unknown command or filename $arg");
 				pod2usage(-verbose => 1);
 			}
 		}

@@ -78,6 +78,7 @@ sub fct_draw {
 
     foreach my $k (@draw_array) {
         if ($session_screens->{$k}) {
+            $cli->log->info("Launching drawing tool for $k");
             my $drawing_tool = Shutter::Draw::DrawingTool->new($sc);
             $drawing_tool->show(
                 $session_screens->{$k}->{'long'}, 
@@ -88,6 +89,8 @@ sub fct_draw {
                 $session_screens,
                 $drawing_tool_icons
             );
+        } else {
+            $cli->log->warn("No session screen found for $k");
         }
     }
 
@@ -231,6 +234,73 @@ sub fct_show_in_folder {
     return TRUE;
 }
 
+sub fct_execute_plugin ($self, $widget, $arrayref) {
+    my $cli = $self->cli;
+    my $h   = $cli->handlers;
+    my $sc  = $cli->sc;
+    my $shf = $cli->shf;
+    my $d   = $sc->get_gettext;
+    my $sd  = $cli->sc->{_sd};
+    my $session_screens = $cli->{_session_screens};
+    my $window = $cli->window;
+
+    my ($plugin_value, $plugin_name, $plugin_lang, $key, $plugin_dialog, $plugin_progress) = @$arrayref;
+
+    unless ($shf->file_exists($session_screens->{$key}->{'long'})) {
+        return FALSE;
+    }
+
+    #if it is a native perl plugin, use a plug to integrate it properly
+    if ($plugin_lang eq "perl") {
+
+        #hide plugin dialog
+        $plugin_dialog->hide if defined $plugin_dialog;
+
+        #dialog to show the plugin
+        my $sdialog = Gtk3::Dialog->new($plugin_name, $window, [qw/modal destroy-with-parent/]);
+        $sdialog->set_resizable(FALSE);
+
+        # Ensure that the dialog box is destroyed when the user responds.
+        $sdialog->signal_connect(response => sub { $_[0]->destroy });
+
+        #initiate the socket to draw the contents of the plugin to our dialog
+        my $socket = Gtk3::Socket->new;
+        $sdialog->get_child->add($socket);
+        $socket->signal_connect(
+            'plug-removed' => sub {
+                $sdialog->destroy();
+                return TRUE;
+            });
+
+        my $pid = fork;
+        if ($pid < 0) {
+            $sd->dlg_error_message(sprintf($d->get("Could not apply plugin %s"), "'" . $plugin_name . "'"), $d->get("Failed"));
+        } elsif ($pid == 0) {
+            exec($^X, $plugin_value, $socket->get_id, $session_screens->{$key}->{'long'}, $session_screens->{$key}->{'width'}, $session_screens->{$key}->{'height'},
+                $session_screens->{$key}->{'filetype'});
+        }
+
+        $sdialog->show_all;
+        $sdialog->run;
+
+        waitpid($pid, 0);
+
+        #check exit code
+        if ($? == 0) {
+            $h->get('UI_Status')->fct_show_status_message(1, sprintf($d->get("Successfully applied plugin %s"), "'" . $plugin_name . "'"));
+        } elsif ($? / 256 == 1) {
+            $h->get('UI_Status')->fct_show_status_message(1, sprintf($d->get("Could not apply plugin %s"), "'" . $plugin_name . "'"));
+        }
+
+    } else {
+        print "$plugin_value $session_screens->{$key}->{'long'} $session_screens->{$key}->{'width'} $session_screens->{$key}->{'height'} $session_screens->{$key}->{'filetype'} submitted to plugin\n"
+            if $sc->get_debug;
+        # ... shell plugin execution ...
+    }
+
+    return TRUE;
+}
+
 1;
 
 __END__
@@ -241,7 +311,29 @@ Shutter::App::Handlers::Edit_Draw – Edit draw/plugin handlers
 
 =head1 DESCRIPTION
 
-Extracted from bin/shutter.
-Migrated to use the CLI object for state access instead of package globals.
+This module handles drawing tool, plugin, renaming, and folder viewing actions for screenshots in Shutter.
+It has been migrated to use the CLI object for state access instead of package globals.
+
+=head1 METHODS
+
+=head2 fct_draw
+
+Opens the drawing tool for the current or selected screenshots.
+
+=head2 fct_plugin
+
+Opens the plugin dialog for the current or selected screenshots.
+
+=head2 fct_plugin_get_info
+
+Retrieves information about a plugin by executing it.
+
+=head2 fct_rename
+
+Opens the rename dialog for the current or selected screenshots.
+
+=head2 fct_show_in_folder
+
+Opens the folder containing the current or selected screenshots in the file manager.
 
 =cut

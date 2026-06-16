@@ -43,52 +43,68 @@ has '_settings' => (is => 'rw', default => sub { {} });
 sub save_settings {
     my ($self, $profilename) = @_;
     my $sc = $self->_common;
+    my $shf = $sc->get_helper_functions;
     my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
     my $d = $sc->get_gettext;
 
     my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
-    $settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml" if defined $profilename && $profilename ne "";
+    if (defined $profilename && $profilename ne "") {
+        $settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml";
+    }
 
     my %settings = %{$self->_settings};
     $settings{'general'}->{'app_version'} = $sc->get_version . $sc->get_rev;
 
     eval {
         my ($tmpfh, $tmpfilename) = tempfile(UNLINK => 1);
-        XMLout(\%settings, OutputFile => $tmpfilename);
+        XMLout(\%settings, OutputFile => $tmpfilename, NoAttr => 1, KeepRoot => 1);
         mv($tmpfilename, $settingsfile);
     };
     if ($@) {
         $sd->dlg_error_message($@, $d->get("Settings could not be saved!"));
+        return FALSE;
     }
     return TRUE;
 }
 
 sub load_settings {
-    my ($self, $data, $profilename) = @_;
+    my ($self, $profilename) = @_;
     my $sc = $self->_common;
+    my $d = $sc->get_gettext;
     my $shf = $sc->get_helper_functions;
     my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
-    my $d = $sc->get_gettext;
 
     my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
     $settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml" if defined $profilename;
 
-    my $settings_xml;
+    my $settings_xml = {};
     if ($shf->file_exists($settingsfile)) {
         eval {
-            $settings_xml = XMLin(IO::File->new($settingsfile));
+            $settings_xml = XMLin(IO::File->new($settingsfile), ForceArray => 0, KeyAttr => [], KeepRoot => 1);
         };
         if ($@) {
             $sd->dlg_error_message($@, $d->get("Settings could not be restored!"));
             unlink $settingsfile;
         }
     }
+    $self->_settings($settings_xml);
     return $settings_xml;
+}
+
+sub get_setting ($self, $section, $key) {
+    return $self->_settings->{$section}->{$key} if exists $self->_settings->{$section} && exists $self->_settings->{$section}->{$key};
+    return undef;
+}
+
+sub set_setting ($self, $section, $key, $value) {
+    $self->_settings->{$section} = {} unless exists $self->_settings->{$section};
+    $self->_settings->{$section}->{$key} = $value;
 }
 
 sub load_accounts {
     my ($self, $profilename) = @_;
     my $sc = $self->_common;
+    my $d = $sc->get_gettext;
     my $shf = $sc->get_helper_functions;
     my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
 

@@ -158,18 +158,15 @@ sub fct_load_session {
             $count++;
 
             #refresh gui
-            fct_update_gui() if defined &fct_update_gui;
+            $cli->handlers->get('UI_Status')->fct_update_gui();
 
             #do the real work
             my $new_giofile = Glib::IO::File::new_for_path(${$session_xml}{$key}{'filename'});
-        if (defined &fct_integrate_screenshot_in_notebook) {
-            if ($self->fct_integrate_screenshot_in_notebook($new_giofile, undef, undef, $count)) {
-                $self->fct_show_status_message(1, $shf->utf8_decode($new_giofile->get_path) . " " . $d->get("opened")) if defined &fct_show_status_message;
+            if ($cli->handlers->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook($new_giofile, undef, undef, $count)) {
+                $cli->handlers->get('UI_Status')->fct_show_status_message(1, $shf->utf8_decode($new_giofile->get_path) . " " . $d->get("opened"));
             } else {
-                $self->fct_show_status_message(1, sprintf($d->get("Error while opening image %s."), "'" . $new_giofile->get_basename . "'")) if defined &fct_show_status_message;
+                $cli->handlers->get('UI_Status')->fct_show_status_message(1, sprintf($d->get("Error while opening image %s."), "'" . $new_giofile->get_basename . "'"));
             }
-        }
-
         }
 
         #clear the value after loading the files
@@ -204,15 +201,13 @@ sub fct_open_files {
         next if $self->fct_is_uri_in_session($new_giofile, TRUE);
 
         #refresh gui
-        fct_update_gui() if defined &fct_update_gui;
+        $cli->handlers->get('UI_Status')->fct_update_gui();
 
         #do the real work
-        if (defined &fct_integrate_screenshot_in_notebook) {
-            if ($self->fct_integrate_screenshot_in_notebook($new_giofile)) {
-                $self->fct_show_status_message(1, $shf->utf8_decode($new_giofile->get_path) . " " . $d->get("opened")) if defined &fct_show_status_message;
-            } else {
-                $self->fct_show_status_message(1, sprintf($d->get("Error while opening image %s."), "'" . $shf->utf8_decode($new_giofile->get_basename) . "'")) if defined &fct_show_status_message;
-            }
+        if ($cli->handlers->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook($new_giofile)) {
+            $cli->handlers->get('UI_Status')->fct_show_status_message(1, $shf->utf8_decode($new_giofile->get_path) . " " . $d->get("opened"));
+        } else {
+            $cli->handlers->get('UI_Status')->fct_show_status_message(1, sprintf($d->get("Error while opening image %s."), "'" . $shf->utf8_decode($new_giofile->get_basename) . "'"));
         }
     }
 

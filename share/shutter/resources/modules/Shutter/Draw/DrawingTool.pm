@@ -187,54 +187,56 @@ sub new {
 
 	$self->{_stipple_pixbuf} = Gtk3::Gdk::Pixbuf->new_from_file($self->{_sc}->get_root . '/share/shutter/resources/gui/stipple.png');
 
+	$self->{_sc}->log->info("DrawingTool initialized");
+
 	bless $self, $class;
 
 	return $self;
-}
+	}
 
-#~ sub DESTROY {
-#~ my $self = shift;
-#~ print "$self dying at\n";
-#~ }
+	#~ sub DESTROY {
+	#~ my $self = shift;
+	#~ print "$self dying at\n";
+	#~ }
 
-# Workaround for broken xpm parsing in glycin:
-# https://gitlab.gnome.org/GNOME/glycin/-/work_items/291
-sub parse_xpm_hotspot {
-    my ($xpm_path) = @_;
-    my ($x_hot, $y_hot);
+	# Workaround for broken xpm parsing in glycin:
+	# https://gitlab.gnome.org/GNOME/glycin/-/work_items/291
+	sub parse_xpm_hotspot {
+	my ($xpm_path) = @_;
+	my ($x_hot, $y_hot);
 
-    open my $fh, '<', $xpm_path or do {
-        print "ERROR: Cannot open $xpm_path: $!\n";
-        return (undef, undef);
-    };
+	open my $fh, '<', $xpm_path or do {
+	    print "ERROR: Cannot open $xpm_path: $!\n";
+	    return (undef, undef);
+	};
 
-    while (my $line = <$fh>) {
-        chomp($line);
+	while (my $line = <$fh>) {
+	    chomp($line);
 
-        # Look for the XPM header line with format:
-        # "width height ncolors chars_per_pixel [x_hot y_hot]"
-        # Example: "32 32 3 1 4 4"
-        if ($line =~ /"(\d+)\s+(\d+)\s+(\d+)\s+(\d+)(?:\s+(\d+)\s+(\d+))?/) {
-            my ($width, $height, $ncolors, $cpp, $xh, $yh) = ($1, $2, $3, $4, $5, $6);
+	    # Look for the XPM header line with format:
+	    # "width height ncolors chars_per_pixel [x_hot y_hot]"
+	    # Example: "32 32 3 1 4 4"
+	    if ($line =~ /"(\d+)\s+(\d+)\s+(\d+)\s+(\d+)(?:\s+(\d+)\s+(\d+))?/) {
+	        my ($width, $height, $ncolors, $cpp, $xh, $yh) = ($1, $2, $3, $4, $5, $6);
 
-            if (defined($xh) && defined($yh)) {
-                $x_hot = $xh;
-                $y_hot = $yh;
-            } else {
-                print "DEBUG: No hotspot in header in $xpm_path\n";
-            }
+	        if (defined($xh) && defined($yh)) {
+	            $x_hot = $xh;
+	            $y_hot = $yh;
+	        } else {
+	            print "DEBUG: No hotspot in header in $xpm_path\n";
+	        }
 
-            last;  # Header is on the first data line
-        }
-    }
-    close $fh;
+	        last;  # Header is on the first data line
+	    }
+	}
+	close $fh;
 
-    return ($x_hot, $y_hot);
-}
+	return ($x_hot, $y_hot);
+	}
 
-sub show {
+	sub show {
 	my $self = shift;
-
+	$self->{_sc}->log->info("DrawingTool show called");
 	$self->{_filename}    = shift;
 	$self->{_filetype}    = shift;
 	$self->{_mimetype}    = shift;

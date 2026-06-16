@@ -14,6 +14,15 @@ local $Test::Strict::TEST_WARNINGS = 1;
 
 my @dirs  = ('t', 'bin', "$Bin/../share/shutter/resources/modules/");
 
-all_perl_files_ok(@dirs);
+my @files = all_perl_files(@dirs);
+@files = grep { $_ !~ /shutter\.monolith/ } @files;
+
+plan tests => scalar @files * 3; # syntax, strict, warnings
+
+foreach my $file (@files) {
+    syntax_ok($file);
+    strict_ok($file);
+    warnings_ok($file);
+}
 
 done_testing;

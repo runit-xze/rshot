@@ -30,12 +30,11 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_delete {
-    my ($self, $key, $action) = @_;
-
+sub fct_delete ($self, $key = undef, $action = undef) {
     my $cli = $self->cli;
-    my $d = $cli->sc->get_gettext;
-    my $sd = $cli->sc->{_sd};
+    my $h   = $cli->handlers;
+    my $d   = $cli->sc->get_gettext;
+    my $sd  = $cli->sc->{_sd};
     my $ask_on_delete_active = $cli->{_ask_on_delete_active};
     my $session_screens = $cli->{_session_screens};
     my $session_start_screen = $cli->{_session_start_screen};
@@ -45,7 +44,7 @@ sub fct_delete {
 
     #close current tab (unless $key is provided or close_all)
     unless (defined $action && $action eq 'menu_close_all') {
-        $key = fct_get_current_file() unless $key;
+        $key = $h->get('Menu_Ret_Get')->fct_get_current_file() unless $key;
     }
 
     #single file
@@ -68,7 +67,7 @@ sub fct_delete {
         }
 
         $notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));    #delete tab
-        fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("deleted"))
+        $h->get('Upload_Execute')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("deleted"))
             if defined($session_screens->{$key}->{'long'});
 
         if (defined $session_screens->{$key}->{'iter'}
@@ -78,7 +77,7 @@ sub fct_delete {
         }
 
         #unlink undo and redo files
-        fct_unlink_tempfiles($key);
+        $h->get('Util_File')->fct_unlink_tempfiles($key);
 
         delete $session_screens->{$key};
 
@@ -107,7 +106,7 @@ sub fct_delete {
                 my $response = $sd->dlg_question_message("", $d->get("Are you sure you want to move the selected files to the trash?"), 'gtk-cancel', $d->get("Move to _Trash"),);
                 return FALSE unless $response == 20;
             } else {
-                fct_show_status_message(1, $d->get("No screenshots selected"));
+                $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("No screenshots selected"));
                 return FALSE;
             }
         }
@@ -142,7 +141,7 @@ sub fct_delete {
         }
 
         if (scalar @to_delete == 0) {
-            fct_show_status_message(1, $d->get("No screenshots selected"));
+            $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("No screenshots selected"));
             return FALSE;
         }
 
@@ -155,27 +154,26 @@ sub fct_delete {
             }
 
             #unlink undo and redo files
-            fct_unlink_tempfiles($key);
+            $h->get('Util_File')->fct_unlink_tempfiles($key);
 
             delete $session_screens->{$key};
         }
 
-        fct_show_status_message(1, $d->get("Selected screenshots deleted"));
+        $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("Selected screenshots deleted"));
 
         $window->show_all unless $is_hidden;
 
     }
 
-    fct_update_info_and_tray();
+    $h->get('UI_Status')->fct_update_info_and_tray();
 
     return TRUE;
 }
 
-sub fct_remove {
-    my ($self, $key, $action) = @_;
-
+sub fct_remove ($self, $key = undef, $action = undef) {
     my $cli = $self->cli;
-    my $d = $cli->sc->get_gettext;
+    my $h   = $cli->handlers;
+    my $d   = $cli->sc->get_gettext;
     my $delete_on_close_active = $cli->{_delete_on_close_active};
     my $session_screens = $cli->{_session_screens};
     my $session_start_screen = $cli->{_session_start_screen};
@@ -185,7 +183,7 @@ sub fct_remove {
 
     #close current tab (unless $key is provided or close_all)
     unless (defined $action && $action eq 'menu_close_all') {
-        $key = fct_get_current_file() unless $key;
+        $key = $h->get('Menu_Ret_Get')->fct_get_current_file() unless $key;
     }
 
     #single file
@@ -203,7 +201,7 @@ sub fct_remove {
         }
 
         $notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));    #delete tab
-        fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("removed from session"))
+        $h->get('Upload_Execute')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("removed from session"))
             if defined($session_screens->{$key}->{'long'});
 
         if (defined $session_screens->{$key}->{'iter'}
@@ -213,7 +211,7 @@ sub fct_remove {
         }
 
         #unlink undo and redo files
-        fct_unlink_tempfiles($key);
+        $h->get('Util_File')->fct_unlink_tempfiles($key);
 
         delete $session_screens->{$key};
 
@@ -254,7 +252,7 @@ sub fct_remove {
         }
 
         if (scalar @to_remove == 0) {
-            fct_show_status_message(1, $d->get("No screenshots selected"));
+            $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("No screenshots selected"));
             return FALSE;
         }
 
@@ -267,24 +265,23 @@ sub fct_remove {
             }
 
             #unlink undo and redo files
-            fct_unlink_tempfiles($key);
+            $h->get('Util_File')->fct_unlink_tempfiles($key);
 
             delete $session_screens->{$key};
         }
 
-        fct_show_status_message(1, $d->get("Selected screenshots removed"));
+        $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("Selected screenshots removed"));
 
         $window->show_all unless $is_hidden;
 
     }
 
-    fct_update_info_and_tray();
+    $h->get('UI_Status')->fct_update_info_and_tray();
 
     return TRUE;
 }
 
-sub fct_select_all {
-    my ($self) = @_;
+sub fct_select_all ($self) {
     my $session_start_screen = $self->cli->{_session_start_screen};
     
     if ($session_start_screen && $session_start_screen->{'first_page'} && $session_start_screen->{'first_page'}->{'view'}) {
@@ -294,8 +291,7 @@ sub fct_select_all {
     return TRUE;
 }
 
-sub fct_trash {
-    my ($self, $key) = @_;
+sub fct_trash ($self, $key) {
     my $session_screens = $self->cli->{_session_screens};
 
     #cancel handle
@@ -318,7 +314,25 @@ Shutter::App::Handlers::Edit_Delete – Edit action handlers (Delete, Remove, Se
 
 =head1 DESCRIPTION
 
-Extracted from bin/shutter.
-Migrated to use the CLI object for state access instead of package globals.
+This module handles edit actions related to deleting or removing screenshots in Shutter.
+It has been migrated to use the CLI object for state access instead of package globals.
+
+=head1 METHODS
+
+=head2 fct_delete
+
+Moves a screenshot (or selected screenshots) to the trash.
+
+=head2 fct_remove
+
+Removes a screenshot (or selected screenshots) from the session.
+
+=head2 fct_select_all
+
+Selects all screenshots in the session.
+
+=head2 fct_trash
+
+Moves a single file to the trash.
 
 =cut

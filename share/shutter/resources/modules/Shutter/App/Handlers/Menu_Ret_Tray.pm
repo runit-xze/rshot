@@ -161,6 +161,27 @@ sub fct_ret_tray_menu {
     return $menu_tray;
 }
 
+sub fct_update_tray_menu ($self, $screen) {
+    my $cli = $self->cli;
+    my $h   = $cli->handlers;
+    my $sc  = $cli->sc;
+    my $tray_menu = $cli->{_tray_menu};
+
+    if ($sc->get_debug) {
+        print "\nfct_update_tray_menu was called by $screen\n";
+    }
+
+    #update window list
+    if ($tray_menu) {
+        foreach my $child ($tray_menu->get_children) {
+            if ($child->get_name eq 'windowlist') {
+                $child->set_submenu($h->get('Menu_Ret_Workspace')->fct_ret_window_menu());
+                last;
+            }
+        }
+    }
+}
+
 1;
 
 __END__

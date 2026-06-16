@@ -43,9 +43,7 @@ sub fct_create_session_notebook {
     #enable dnd for it
     if ($notebook) {
         $notebook->drag_dest_set('all', [Gtk3::TargetEntry->new('text/uri-list', [], 0)], 'link');
-        if (defined &fct_drop_handler) {
-            $notebook->signal_connect(drag_data_received => sub { $self->fct_drop_handler(@_) });
-        }
+        $notebook->signal_connect(drag_data_received => sub { $cli->handlers->get('Init_Handlers')->fct_drop_handler(@_) });
         $notebook->signal_connect(drag_motion => sub {
             my ($view, $ctx, $x, $y, $time) = @_;
             for my $target (@{$ctx->list_targets}) {
@@ -71,9 +69,7 @@ sub fct_create_session_notebook {
     $session_start_screen->{'first_page'}->{'tab_child'} = $notebook->get_nth_page($new_index) if $notebook;
 
     if ($notebook) {
-        if (defined &evt_notebook_switch) {
-            $notebook->signal_connect('switch-page' => sub { evt_notebook_switch(@_) });
-        }
+        $notebook->signal_connect('switch-page' => sub { $cli->handlers->get('Screenshot_UI')->evt_notebook_switch(@_) });
     }
 
     return $notebook;
@@ -92,8 +88,10 @@ sub fct_create_tab {
 
     unless ($is_all) {
         #Gtk3::ImageView - empty at first
-        # Note: Gtk3::ImageView might not be available, assuming it exists based on original code
-        $session_screens->{$key}->{'image'} = Gtk3::ImageView->new() if defined &Gtk3::ImageView::new;
+        try {
+            $session_screens->{$key}->{'image'} = Gtk3::ImageView->new();
+        } catch ($e) { }
+        
         if ($session_screens->{$key}->{'image'}) {
             $session_screens->{$key}->{'image'}->set_fitting(TRUE);
             $session_screens->{$key}->{'image'}->get_style_context->add_provider($css_provider_alpha, 0) if $css_provider_alpha;
@@ -101,44 +99,53 @@ sub fct_create_tab {
         }
 
         my $scrolled_window_image = Gtk3::ScrolledWindow->new;
-        $scrolled_window_image->add_with_viewport($session_screens->{$key}->{'image'}) if $session_screens->{$key}->{'image'};
+        if ($session_screens->{$key}->{'image'}) {
+            $scrolled_window_image->add_with_viewport($session_screens->{$key}->{'image'});
+        } else {
+             $scrolled_window_image->add_with_viewport(Gtk3::Label->new("Image View Not Available"));
+        }
 
-        $session_screens->{$key}->{'image'}->signal_connect(
-            'scroll-event',
-            sub {
-                my ($view, $ev) = @_;
-                if ($ev->direction eq 'left') {
-                    $ev->direction('up');
-                } elsif ($ev->direction eq 'right') {
-                    $ev->direction('down');
-                }
-                return FALSE;
-            }) if $session_screens->{$key}->{'image'};
-
-        $session_screens->{$key}->{'image'}->signal_connect(
-            'button-press-event',
-            sub {
-                my ($view, $ev) = @_;
-                if ($ev->button == 1 && $ev->type eq '2button-press') {
-                    fct_zoom_best() if defined &fct_zoom_best;
-                    return TRUE;
-                } else {
+        if ($session_screens->{$key}->{'image'}) {
+            $session_screens->{$key}->{'image'}->signal_connect(
+                'scroll-event',
+                sub {
+                    my ($view, $ev) = @_;
+                    if ($ev->direction eq 'left') {
+                        $ev->direction('up');
+                    } elsif ($ev->direction eq 'right') {
+                        $ev->direction('down');
+                    }
                     return FALSE;
-                }
-            }) if $session_screens->{$key}->{'image'};
+                });
+
+            $session_screens->{$key}->{'image'}->signal_connect(
+                'button-press-event',
+                sub {
+                    my ($view, $ev) = @_;
+                    if ($ev->button == 1 && $ev->type eq '2button-press') {
+                        $cli->handlers->get('Core')->fct_zoom_best();
+                        return TRUE;
+                    } else {
+                        return FALSE;
+                    }
+                });
+        }
 
         $vbox_tab->pack_start($scrolled_window_image, TRUE, TRUE, 0);
         $vbox->pack_start($vbox_tab, TRUE, TRUE, 0);
 
         $vbox_tab_event->add($vbox);
         $vbox_tab_event->show_all;
-        $vbox_tab_event->signal_connect('button-press-event' => sub { evt_tab_button_press(@_, $key) }) if defined &evt_tab_button_press;
+        $vbox_tab_event->signal_connect('button-press-event' => sub { $cli->handlers->get('Events_Tray')->evt_tab_button_press(@_, $key) });
 
         return $vbox_tab_event;
     } else {
         #create iconview for session
-        $session_start_screen->{'first_page'}->{'model'} = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::String');
-        $session_start_screen->{'first_page'}->{'model'}->set_sort_column_id(2, 'descending');
+        # Use existing model if available
+        unless ($session_start_screen->{'first_page'}->{'model'}) {
+            $session_start_screen->{'first_page'}->{'model'} = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::String');
+            $session_start_screen->{'first_page'}->{'model'}->set_sort_column_id(2, 'descending');
+        }
         $session_start_screen->{'first_page'}->{'view'} = Gtk3::IconView->new_with_model($session_start_screen->{'first_page'}->{'model'});
 
         $session_start_screen->{'first_page'}->{'view'}->set_item_width(100);
@@ -146,8 +153,8 @@ sub fct_create_tab {
         $session_start_screen->{'first_page'}->{'view'}->set_text_column(1);
         $session_start_screen->{'first_page'}->{'view'}->set_selection_mode('multiple');
 
-        $session_start_screen->{'first_page'}->{'view'}->signal_connect('selection-changed' => sub { evt_iconview_sel_changed(@_) }) if defined &evt_iconview_sel_changed;
-        $session_start_screen->{'first_page'}->{'view'}->signal_connect('item-activated'    => sub { evt_iconview_item_activated(@_) }) if defined &evt_iconview_item_activated;
+        $session_start_screen->{'first_page'}->{'view'}->signal_connect('selection-changed' => sub { $cli->handlers->get('Events_Tray')->evt_iconview_sel_changed(@_) });
+        $session_start_screen->{'first_page'}->{'view'}->signal_connect('item-activated'    => sub { $cli->handlers->get('Events_Tray')->evt_iconview_item_activated(@_) });
 
         my $scrolled_window_view = Gtk3::ScrolledWindow->new;
         $scrolled_window_view->set_policy('automatic', 'automatic');
@@ -156,7 +163,7 @@ sub fct_create_tab {
 
         my $view_event = Gtk3::EventBox->new;
         $view_event->add($scrolled_window_view);
-        $view_event->signal_connect('button-press-event' => sub { evt_iconview_button_press(@_, $session_start_screen->{'first_page'}->{'view'}) }) if defined &evt_iconview_button_press;
+        $view_event->signal_connect('button-press-event' => sub { $cli->handlers->get('Events_Tray')->evt_iconview_button_press(@_, $session_start_screen->{'first_page'}->{'view'}) });
 
         $session_start_screen->{'first_page'}->{'view'}->enable_model_drag_source(
             'button1-mask',

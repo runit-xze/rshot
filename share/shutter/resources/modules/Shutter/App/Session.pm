@@ -36,10 +36,16 @@ has cli => (is => 'ro', required => 1);
 has manager => (is => 'rw');
 has notebook => (is => 'rw');
 
-sub BUILD ($self) {
-    $self->manager(Shutter::App::Core::SessionManager->new($self->cli->sc));
+sub BUILD ($self, $args) {
+    $self->manager(Shutter::App::Core::SessionManager->new(_common => $self->cli->sc));
     $self->notebook(Gtk3::Notebook->new);
-    $self->cli->{notebook} = $self->notebook;
+    $self->cli->notebook($self->notebook);
+    $self->cli->{_notebook} = $self->notebook;
+
+    # Add a dummy tab to make sure notebook is visible
+    my $label = Gtk3::Label->new("Session");
+    my $content = Gtk3::Label->new("No screenshots in this session yet.");
+    $self->notebook->append_page($content, $label);
 }
 
 sub create_notebook ($self) {

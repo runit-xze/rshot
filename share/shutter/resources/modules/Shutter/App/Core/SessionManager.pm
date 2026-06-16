@@ -97,9 +97,9 @@ sub fct_integrate_screenshot_in_notebook {
     $key = "[" . $indx . "] - $fname";
 
     if (defined $history && $history->get_history) {
-        $session_screens{$key}->{'history'} = $history;
+        $session_screens->{$key}->{'history'} = $history;
         $session_start_screen->{'first_page'}->{'history'} = $history;
-        $session_screens{$key}->{'history_timestamp'} = time;
+        $session_screens->{$key}->{'history_timestamp'} = time;
     }
 
     return $key;

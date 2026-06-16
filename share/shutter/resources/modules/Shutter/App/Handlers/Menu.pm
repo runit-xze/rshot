@@ -315,7 +315,53 @@ Shutter::App::Handlers::Menu – Menu action handlers
 
 =head1 DESCRIPTION
 
-Extracted from bin/shutter.
-Migrated to use the CLI object for state access instead of package globals.
+This module handles menu actions in Shutter.
+It has been migrated to use the CLI object for state access instead of package globals.
+
+=head1 METHODS
+
+=head2 evt_about
+
+Opens the About dialog.
+
+=head2 evt_apply_profile
+
+Applies the selected profile settings.
+
+=head2 evt_bug
+
+Opens the bug report page in the browser.
+
+=head2 evt_delete_profile
+
+Deletes the selected profile.
+
+=head2 evt_delete_window
+
+Handles the deletion/closing of the main window.
+
+=head2 evt_page_setup
+
+Opens the page setup dialog for printing.
+
+=head2 evt_question
+
+Opens the FAQ/Help page in the browser.
+
+=head2 evt_save_as
+
+Opens the save dialog for exporting files.
+
+=head2 evt_save_profile
+
+Saves the current settings as a new profile.
+
+=head2 evt_show_settings
+
+Shows the settings dialog.
+
+=head2 evt_translate
+
+Opens the translation page in the browser.
 
 =cut

@@ -35,21 +35,17 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 has sm => (is => 'rw');
 has st => (is => 'rw');
-has core_handlers => (is => 'rw');
-has workflow_handlers => (is => 'rw');
 
-sub BUILD ($self) {
+sub BUILD ($self, $args) {
     my $sc = $self->cli->sc;
     my $vbox = $self->cli->vbox;
 
-    $self->sm(Shutter::App::Menu->new($sc));
-    $self->st(Shutter::App::Toolbar->new($sc));
+    $self->sm($self->cli->{sm} // Shutter::App::Menu->new($sc));
+    $self->st($self->cli->{st} // Shutter::App::Toolbar->new($sc));
 
     $vbox->pack_start($self->sm->create_menu, FALSE, TRUE, 0);
-
-    # Create handler objects
-    $self->core_handlers(Shutter::App::Handlers::Core->new(cli => $self->cli));
-    $self->workflow_handlers(Shutter::App::Handlers::Workflow->new(cli => $self->cli));
+    $vbox->pack_start($self->st->create_toolbar, FALSE, TRUE, 0);
+    $vbox->pack_start($self->cli->notebook, TRUE, TRUE, 0);
 
     $self->_connect_menu_items;
     $self->_connect_toolbar_items;
@@ -57,32 +53,37 @@ sub BUILD ($self) {
 
 sub _connect_menu_items ($self) {
     my $sm = $self->sm;
-    my $core = $self->core_handlers;
+    my $h  = $self->cli->handlers;
 
     $sm->{_menuitem_open}->signal_connect('activate' => sub {
         my @files = grep { $self->cli->shf->file_exists($_) } @ARGV;
-        fct_open_files(@files);
-        fct_control_main_window('show');
+        $h->get('Init_Handlers')->fct_open_files(@files);
+        $h->get('Core')->fct_control_main_window('show');
     });
 
-    $sm->{_menuitem_quit}->signal_connect('activate' => sub { $core->evt_delete_window(undef, 'quit') });
-    $sm->{_menuitem_undo}->signal_connect('activate' => sub { fct_undo() });
-    $sm->{_menuitem_redo}->signal_connect('activate' => sub { fct_redo() });
-    $sm->{_menuitem_zoom_in}->signal_connect('activate' => sub { fct_zoom_in() });
-    $sm->{_menuitem_zoom_out}->signal_connect('activate' => sub { fct_zoom_out() });
-    $sm->{_menuitem_fullscreen}->signal_connect('toggled' => sub { fct_fullscreen() });
-}
+    $sm->{_menuitem_quit}->signal_connect('activate' => sub { $h->get('Core')->evt_delete_window(undef, 'quit') });
+    $sm->{_menuitem_undo}->signal_connect('activate' => sub { $h->get('Edit_Nav')->fct_undo() });
+    $sm->{_menuitem_redo}->signal_connect('activate' => sub { $h->get('Edit_Nav')->fct_redo() });
+    $sm->{_menuitem_zoom_in}->signal_connect('activate' => sub { $h->get('Edit_Nav')->fct_zoom_in() });
+    $sm->{_menuitem_zoom_out}->signal_connect('activate' => sub { $h->get('Edit_Nav')->fct_zoom_out() });
+    $sm->{_menuitem_fullscreen}->signal_connect('toggled' => sub ($widget) { $h->get('Edit_Nav')->fct_fullscreen($widget) });
+    $sm->{_menuitem_about}->signal_connect('activate' => sub { $h->get('Core')->evt_about() });
+    $sm->{_menuitem_settings}->signal_connect('activate' => sub { $h->get('Core')->evt_show_settings() });
+    $sm->{_menuitem_selection}->signal_connect('activate' => sub { $h->get('Core')->evt_take_screenshot(undef, 'select', undef, undef) });
+    $sm->{_menuitem_draw}->signal_connect('activate' => sub { $h->get('Edit_Draw')->fct_draw() });
+    $sm->{_menuitem_large_draw}->signal_connect('activate' => sub { $h->get('Edit_Draw')->fct_draw() });
+    }
 
 sub _connect_toolbar_items ($self) {
     my $st = $self->st;
-    my $core = $self->core_handlers;
+    my $h  = $self->cli->handlers;
 
-    $st->{_redoshot}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'redoshot', undef, undef) });
-    $st->{_select}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'select', undef, undef) });
-    $st->{_full}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'full', undef, undef) });
-    $st->{_window}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'window', undef, undef) });
-    $st->{_menu}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'menu', undef, undef) });
-    $st->{_tooltip}->signal_connect('clicked' => sub { $core->evt_take_screenshot(undef, 'tooltip', undef, undef) });
+    $st->{_redoshot}->signal_connect('clicked' => sub { $h->get('Core')->evt_take_screenshot(undef, 'redoshot', undef, undef) });
+    $st->{_select}->signal_connect('clicked' => sub { $h->get('Core')->evt_take_screenshot(undef, 'select', undef, undef) });
+    $st->{_full}->signal_connect('clicked' => sub { $h->get('Core')->evt_take_screenshot(undef, 'full', undef, undef) });
+    $st->{_window}->signal_connect('clicked' => sub { $h->get('Core')->evt_take_screenshot(undef, 'window', undef, undef) });
+    $st->{_menu}->signal_connect('clicked' => sub { $h->get('Core')->evt_take_screenshot(undef, 'menu', undef, undef) });
+    $st->{_tooltip}->signal_connect('clicked' => sub { $h->get('Core')->evt_take_screenshot(undef, 'tooltip', undef, undef) });
 }
 
 1;
