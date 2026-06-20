@@ -6,7 +6,7 @@ use Net::DBus::Reactor;
 
 package Shutter::Screenshot::Wayland;
 
-sub xdg_portal ($screenshooter) {
+sub xdg_portal ($screenshooter, $interactive = 0) {
 	my $reactor = Net::DBus::Reactor->main;
 	my $bus = Net::DBus->find;
 	my $me = $bus->get_unique_name;
@@ -30,7 +30,9 @@ sub xdg_portal ($screenshooter) {
 		$token =~ s/\.//g;
 		my $request = $portal_service->get_object("/org/freedesktop/portal/desktop/request/$me/$token", 'org.freedesktop.portal.Request');
 		my $conn = $request->connect_to_signal(Response => $cb);
-		my $request_path = $portal->Screenshot('', {handle_token=>$token});
+		my $options = {handle_token => $token};
+		$options->{interactive} = Net::DBus::dbus_boolean(1) if $interactive;
+		my $request_path = $portal->Screenshot('', $options);
 		if ($request->get_object_path ne $request_path) {
 			$request->disconnect_from_signal(Response => $conn);
 			$request = $portal_service->get_object($request_path, 'org.freedesktop.portal.Request');

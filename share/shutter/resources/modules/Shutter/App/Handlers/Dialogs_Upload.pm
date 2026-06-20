@@ -140,7 +140,7 @@ sub dlg_upload {
     my $shf = $cli->shf;
     my $d = $sc->get_gettext;
     my $window = $cli->window;
-    my $clipboard = Gtk3::Clipboard::get(Gtk3::Gdk::SELECTION_CLIPBOARD);
+    my $clipboard = Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern('CLIPBOARD', 0));
 
     my $dlg_header     = $d->get("Upload / Export");
     my $hosting_dialog = Gtk3::Dialog->new($dlg_header, $window, [qw/modal destroy-with-parent/]);
@@ -154,7 +154,7 @@ sub dlg_upload {
     #we need to know what plugins are fully set up
     my $model = Gtk3::ListStore->new('Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String');
 
-    my $accounts_ref = $sc->global_settings->{accounts} // {};
+    my $accounts_ref = $cli->{_accounts} // {};
     my %accounts = %$accounts_ref;
 
     foreach (keys %accounts) {
@@ -166,17 +166,17 @@ sub dlg_upload {
         if ($accounts{$_}->{'supports_authorized_upload'}) {
             if ($accounts{$_}->{'username'} ne "" && $accounts{$_}->{'password'} ne "") {
                 $model->set(
-                    $model->append,  0, $accounts{$_}->{'module'}, 1, $accounts{$_}->{'username'}, 2, $accounts{$_}->{'password'}, 3,
+                    $model->append,  0, $_, 1, $accounts{$_}->{'username'}, 2, $accounts{$_}->{'password'}, 3,
                     $short_username, 4, $accounts{$_}->{'module'}, 5, $accounts{$_}->{'folder'}, 6, $accounts{$_}->{'path'});
             }
         }
 
         if ($accounts{$_}->{'supports_anonymous_upload'}) {
-            $model->set($model->append, 0, $accounts{$_}->{'module'}, 1, $d->get("Guest"), 2, "", 3, $d->get("Guest"), 4, $accounts{$_}->{'module'}, 5, $accounts{$_}->{'folder'}, 6, $accounts{$_}->{'path'});
+            $model->set($model->append, 0, $_, 1, $d->get("Guest"), 2, "", 3, $d->get("Guest"), 4, $accounts{$_}->{'module'}, 5, $accounts{$_}->{'folder'}, 6, $accounts{$_}->{'path'});
         }
 
         if ($accounts{$_}->{'supports_oauth_upload'}) {
-            $model->set($model->append, 0, $accounts{$_}->{'module'}, 1, $d->get("OAuth"), 2, "", 3, $d->get("OAuth"), 4, $accounts{$_}->{'module'}, 5, $accounts{$_}->{'folder'}, 6, $accounts{$_}->{'path'});
+            $model->set($model->append, 0, $_, 1, $d->get("OAuth"), 2, "", 3, $d->get("OAuth"), 4, $accounts{$_}->{'module'}, 5, $accounts{$_}->{'folder'}, 6, $accounts{$_}->{'path'});
         }
     }
 
@@ -225,18 +225,10 @@ sub dlg_upload {
     $pl_hbox1->pack_start($places_fc, TRUE, TRUE, 0);
     $pl_vbox1->pack_start($pl_hbox1, FALSE, FALSE, 3);
 
-    my $ftp_vbox_dlg = Gtk3::VBox->new(FALSE, 0);
-    # FTP widgets would need to be recreated or accessed from a central place.
-    # For now, keeping it consistent with the monolithic logic but modularized.
-
     my $unotebook = Gtk3::Notebook->new;
     my $hosting_label = Gtk3::Label->new;
     $hosting_label->set_text($d->get("Public hosting"));
     $unotebook->append_page($pub_vbox1,    $hosting_label);
-    
-    my $ftp_label = Gtk3::Label->new;
-    $ftp_label->set_text("FTP");
-    $unotebook->append_page($ftp_vbox_dlg, $ftp_label); # Placeholder for FTP
 
     my $places_label = Gtk3::Label->new;
     $places_label->set_text($d->get("Places"));
@@ -275,6 +267,7 @@ sub dlg_upload {
                 my $model            = $hosting->get_model();
                 my $hosting_iter     = $hosting->get_active_iter();
                 my $hosting_host     = $model->get_value($hosting_iter, 0);
+                my $hosting_display  = $model->get_value($hosting_iter, 0);
                 my $hosting_username = $model->get_value($hosting_iter, 1);
                 my $hosting_password = $model->get_value($hosting_iter, 2);
                 my $hosting_module   = $model->get_value($hosting_iter, 4);
@@ -301,7 +294,7 @@ sub dlg_upload {
 
                 my $uploader;
                 if ($hosting_module eq 'ShareX') {
-                    $uploader = $hosting_module->new($hosting_path, $sc->get_debug, $sc->get_root, $d, $window, $sc->get_version);
+                    $uploader = "Shutter::Upload::ShareX"->new($hosting_path, $sc->get_debug, $sc->get_root, $d, $window, $sc->get_version);
                 } else {
                     $uploader = $hosting_module->new($hosting_host, $sc->get_debug, $sc->get_root, $d, $window, $sc->get_version);
                 }
@@ -310,7 +303,7 @@ sub dlg_upload {
                     my $counter = 1;
                     $hosting_progress->set_fraction(0);
                     foreach my $key (sort @files_to_upload) {
-                        my $file = $sc->get_session_screens->{$key}->{'long'};
+                        my $file = $cli->{_session_screens}->{$key}->{'long'};
                         $hosting_progress->set_text("Uploading $file");
                         $cli->handlers->get('UI_Status')->fct_update_gui();
 
@@ -319,8 +312,8 @@ sub dlg_upload {
                         if ($upload_response{'status'} >= 200 && $upload_response{'status'} < 300) { # is_success replacement
                             foreach (keys %upload_response) {
                                 next if $_ eq 'status';
-                                $sc->get_session_screens->{$key}->{'links'}->{$hosting_module}->{$_} = $upload_response{$_};
-                                $sc->get_session_screens->{$key}->{'links'}->{$hosting_module}->{'menuentry'} = $hosting_module;
+                                $cli->{_session_screens}->{$key}->{'links'}->{$hosting_display}->{$_} = $upload_response{$_};
+                                $cli->{_session_screens}->{$key}->{'links'}->{$hosting_display}->{'menuentry'} = $hosting_display;
                             }
                             $uploader->show;
                             $cli->handlers->get('UI_Status')->fct_show_status_message(1, $file . " " . $d->get("uploaded"));
@@ -338,8 +331,6 @@ sub dlg_upload {
                     $uploader->show_all;
                 }
             } elsif ($unotebook->get_current_page == 1) {
-                # FTP upload logic - needs Shutter::Upload::FTP to be modernized too
-            } elsif ($unotebook->get_current_page == 2) {
                 # Places export logic
             }
 

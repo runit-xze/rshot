@@ -1,13 +1,15 @@
 # Shutter::App::Handlers::Menu_Ret_Get
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Menu_Ret_Get module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Menu_Ret_Get.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Menu_Ret_Get module)
+## Description
+Documentation for `Shutter::App::Handlers::Menu_Ret_Get`. This module handles functionality related to Menu_Ret_Get.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Menu_Ret_Get module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Menu_Ret_Get module)

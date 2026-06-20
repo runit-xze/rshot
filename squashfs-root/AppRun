@@ -1,9 +1,0 @@
-#!/bin/bash
-if [ -z "$APPDIR" ]; then
-    APPDIR="$(dirname "$(readlink -f "$0")")"
-fi
-export PERL5LIB="$APPDIR/usr/lib/perl5:$APPDIR/usr/share/perl5:$APPDIR/usr/lib/x86_64-linux-gnu/perl5/5.40"
-export LD_LIBRARY_PATH="$APPDIR/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"
-export GI_TYPELIB_PATH="$APPDIR/usr/lib/x86_64-linux-gnu/girepository-1.0:$GI_TYPELIB_PATH"
-export PATH="$APPDIR/usr/bin:$PATH"
-exec shutter "$@"

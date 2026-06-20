@@ -1,13 +1,19 @@
 # Shutter::App::Handlers::Edit_Nav
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Edit_Nav module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Edit_Nav.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Edit_Nav module)
+## Description
+Documentation for `Shutter::App::Handlers::Edit_Nav`. This module handles functionality related to Edit_Nav.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Edit_Nav module)
+- `File::Copy`
+- `File::Spec`
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `Shutter::App::Directories`
+- `Shutter::Geometry::Region`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Edit_Nav module)

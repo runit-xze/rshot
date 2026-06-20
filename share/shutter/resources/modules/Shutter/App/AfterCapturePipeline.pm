@@ -113,7 +113,7 @@ sub execute ($self, $context) {
 
         } elsif ($type eq 'pin_to_screen') {
             $context->{pin_cb}->($context->{pixbuf})
-                if ref $context->{pin_cb} eq 'CODE';
+                if ref $context->{pin_cb} eq 'CODE' && defined $context->{pixbuf};
 
         } elsif ($type eq 'run_command') {
             my $cmd = $step->{command} // '';

@@ -28,18 +28,11 @@ use utf8;
 use v5.40;
 use feature 'try'; no warnings 'experimental::try';
 
+use Moo;
 use Gtk3;
 
 #Glib
 use Glib qw/TRUE FALSE/;
-
-sub new ($class) {
-	#constructor
-	my $self = {};
-
-	bless $self, $class;
-	return $self;
-}
 
 sub get_clipbox ($self, $region) {
 
@@ -47,8 +40,8 @@ sub get_clipbox ($self, $region) {
 	my $clip = undef;
 
 	#calculate clipbox
-	my $len = $region->num_rectangles-1;
-	for my $i (0..$len) {
+	my $len = $region->num_rectangles - 1;
+	for my $i (0 .. $len) {
 		my $rect = $region->get_rectangle($i);
 
 		unless (defined $clip) {
@@ -56,11 +49,11 @@ sub get_clipbox ($self, $region) {
 		} else {
 			if ($rect->{x} < $clip->{x}) {
 				$clip->{width} = $clip->{width} + $clip->{x};
-				$clip->{x} = $rect->{x};
+				$clip->{x}     = $rect->{x};
 			}
 			if ($rect->{y} < $clip->{y}) {
 				$clip->{height} = $clip->{height} + $clip->{y};
-				$clip->{y} = $rect->{y};
+				$clip->{y}      = $rect->{y};
 			}
 			if ($rect->{x} + $rect->{width} > $clip->{x} + $clip->{width}) {
 				$clip->{width} = $rect->{x} + $rect->{width} - $clip->{x};
@@ -75,10 +68,9 @@ sub get_clipbox ($self, $region) {
 	if (defined $clip) {
 		return $clip;
 	} else {
-		return {x=>0, y=>0, width=>0, height=>0};
+		return {x => 0, y => 0, width => 0, height => 0};
 	}
 
 }
 
 1;
-

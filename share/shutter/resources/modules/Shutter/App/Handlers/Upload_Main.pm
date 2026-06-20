@@ -267,17 +267,15 @@ sub fct_upload {
     my $cli = $self->cli;
     my $session_start_screen = $cli->{_session_start_screen};
     
-    my $key = fct_get_current_file() if defined &fct_get_current_file;
+    my $key = $cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
     my @upload_array;
 
     #single file
     if ($key) {
-        if (defined &fct_screenshot_exists) {
-            return FALSE unless fct_screenshot_exists($key);
-        }
+        return FALSE unless $cli->handlers->get('UI_Status')->fct_screenshot_exists($key);
         push(@upload_array, $key);
-        dlg_upload(@upload_array) if defined &dlg_upload;
+        $cli->handlers->get('Dialogs_Upload')->dlg_upload(@upload_array);
 
         #session tab
     } else {
@@ -288,9 +286,7 @@ sub fct_upload {
                     my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
                     if (defined $iter) {
                         my $k = $session_start_screen->{'first_page'}->{'model'}->get_value($iter, 2);
-                        if (defined &fct_screenshot_exists) {
-                            return FALSE unless fct_screenshot_exists($k);
-                        }
+                        return FALSE unless $cli->handlers->get('UI_Status')->fct_screenshot_exists($k);
                         push(@upload_array, $k);
                     }
 
@@ -298,14 +294,14 @@ sub fct_upload {
                 undef
             );
         }
-        dlg_upload(@upload_array) if defined &dlg_upload;
+        $cli->handlers->get('Dialogs_Upload')->dlg_upload(@upload_array);
 
     }
 
     #update actions
     #new public links might be available
     foreach my $k (@upload_array) {
-        fct_update_actions(1, $k) if defined &fct_update_actions;
+        $cli->handlers->get('Screenshot_Actions')->fct_update_actions(1, $k);
     }
 
     return TRUE;

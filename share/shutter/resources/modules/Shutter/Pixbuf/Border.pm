@@ -28,25 +28,13 @@ use utf8;
 use v5.40;
 use feature 'try'; no warnings 'experimental::try';
 
+use Moo;
 use Gtk3;
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
-#--------------------------------------
-
-sub new ($class, $common) {
-	#constructor
-	my $self = {_common => $common};
-
-	bless $self, $class;
-	return $self;
-}
-
-#~ sub DESTROY {
-#~ my $self = shift;
-#~ print "$self dying at\n";
-#~ }
+has '_common' => (is => 'ro', required => 1, init_arg => 'common');
 
 sub create_border ($self, $pixbuf, $width, $color) {
 	#create new pixbuf
@@ -65,7 +53,7 @@ sub create_border ($self, $pixbuf, $width, $color) {
 	#copy source pixbuf to new pixbuf
 	try { $pixbuf->copy_area(0, 0, $pixbuf->get_width, $pixbuf->get_height, $tmp_pbuf, $width, $width); }
 	catch ($e) {
-		print "create border failed: $e\n" if $self->{_common}->get_debug;
+		print "create border failed: $e\n" if $self->_common->get_debug;
 		return $pixbuf;
 	}
 

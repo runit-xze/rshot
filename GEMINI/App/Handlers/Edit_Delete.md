@@ -1,13 +1,15 @@
 # Shutter::App::Handlers::Edit_Delete
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Edit_Delete module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Edit_Delete.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Edit_Delete module)
+## Description
+Documentation for `Shutter::App::Handlers::Edit_Delete`. This module handles functionality related to Edit_Delete.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Edit_Delete module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Edit_Delete module)

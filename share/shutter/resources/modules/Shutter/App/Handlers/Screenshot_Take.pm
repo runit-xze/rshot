@@ -203,9 +203,9 @@ sub fct_take_screenshot {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $shf = $cli->shf;
-    my $sd = $cli->{sd};
-    my $sp = $cli->{sp};
-    my $lp = $cli->{lp};
+    my $sd = $cli->{_sd};
+    my $sp = $cli->{_sp};
+    my $lp = $cli->{_lp};
     my $acp = $cli->{acp};
     my $pins = $cli->{pins};
     my $d = $sc->get_gettext;
@@ -219,7 +219,7 @@ sub fct_take_screenshot {
     my $save_no_active = $sm->get_setting('general', 'save_no') // FALSE;
     my $save_ask_active = $sm->get_setting('general', 'save_ask') // FALSE;
     
-    my $filetype_index = $sm->get_setting('general', 'filetype') // 0;
+    my $filetype_index = $sm->get_setting('general', 'filetype');
     
     my $cursor_active = $sm->get_setting('general', 'cursor') // FALSE;
     
@@ -302,13 +302,18 @@ sub fct_take_screenshot {
 
     #determine current file type
     my @supported_formats;
+    my $png_index = 0;
+    my $i = 0;
     foreach my $format (Gtk3::Gdk::Pixbuf::get_formats()) {
         my $format_name = $format->get_name;
         if (grep { $_ eq $format_name } qw(jpeg png bmp webp avif)) {
             $format_name = "jpg" if $format_name eq "jpeg";
             push @supported_formats, $format_name;
+            $png_index = $i if $format_name eq "png";
+            $i++;
         }
     }
+    $filetype_index //= $png_index;
     $filetype_value = $supported_formats[$filetype_index] // "png";
 
     #delay
@@ -345,35 +350,45 @@ sub fct_take_screenshot {
             $screenshot = Shutter::Screenshot::Wayland::xdg_portal($screenshooter);
         }
     } elsif ($data =~ /^(window|tray_window|awindow|tray_awindow|section|tray_section|menu|tray_menu|tooltip|tray_tooltip)$/) {
-        # FIXME: fct_control_wm_settings not easily accessible
-        if (defined $extra && $extra) {
-            $screenshooter = Shutter::Screenshot::WindowName->new(
-                $sc, $include_cursor, $delay_value, $notify_timeout_active->get_active,
-                $border_active->get_active, $winresize_active->get_active, $winresize_w->get_value, $winresize_h->get_value,
-                $hide_time->get_value, $data, $autoshape_active->get_active
-            );
-            $screenshot = $screenshooter->window_find_by_name($extra);
+        if ($x11_supported) {
+            # FIXME: fct_control_wm_settings not easily accessible
+            if (defined $extra && $extra) {
+                $screenshooter = Shutter::Screenshot::WindowName->new(
+                    $sc, $include_cursor, $delay_value, $notify_timeout_active->get_active,
+                    $border_active->get_active, $winresize_active->get_active, $winresize_w->get_value, $winresize_h->get_value,
+                    $hide_time->get_value, $data, $autoshape_active->get_active
+                );
+                $screenshot = $screenshooter->window_find_by_name($extra);
+            } else {
+                $screenshooter = Shutter::Screenshot::Window->new(
+                    $sc, $include_cursor, $delay_value, $notify_timeout_active->get_active,
+                    $border_active->get_active, $winresize_active->get_active, $winresize_w->get_value, $winresize_h->get_value,
+                    $hide_time->get_value, $data, $autoshape_active->get_active, $is_hidden,
+                    $visible_windows_active->get_active, $menu_waround_active->get_active
+                );
+                $screenshot = $screenshooter->window();
+            }
         } else {
-            $screenshooter = Shutter::Screenshot::Window->new(
-                $sc, $include_cursor, $delay_value, $notify_timeout_active->get_active,
-                $border_active->get_active, $winresize_active->get_active, $winresize_w->get_value, $winresize_h->get_value,
-                $hide_time->get_value, $data, $autoshape_active->get_active, $is_hidden,
-                $visible_windows_active->get_active, $menu_waround_active->get_active
-            );
-            $screenshot = $screenshooter->window();
+            $screenshooter = {}; # dummy object
+            $screenshot = Shutter::Screenshot::Wayland::xdg_portal($screenshooter, 1);
         }
     } elsif ($data eq "select" || $data eq "tray_select") {
-        if (defined $extra && $extra) {
-            my @coords = split(',', $extra);
-            $screenshooter = Shutter::Screenshot::SelectorAuto->new($sc, $include_cursor, $delay_value, $notify_timeout_active->get_active);
-            $screenshot = $screenshooter->select_auto($coords[0], $coords[1], $coords[2], $coords[3]);
+        if ($x11_supported) {
+            if (defined $extra && $extra) {
+                my @coords = split(',', $extra);
+                $screenshooter = Shutter::Screenshot::SelectorAuto->new($sc, $include_cursor, $delay_value, $notify_timeout_active->get_active);
+                $screenshot = $screenshooter->select_auto($coords[0], $coords[1], $coords[2], $coords[3]);
+            } else {
+                $screenshooter = Shutter::Screenshot::SelectorAdvanced->new(
+                    $sc, $include_cursor, $delay_value, $notify_timeout_active->get_active,
+                    $zoom_active->get_active, $hide_time->get_value, $as_help_active->get_active, $asel_size3->get_value,
+                    $asel_size4->get_value, $asel_size1->get_value, $asel_size2->get_value, $as_confirmation_necessary->get_active,
+                );
+                $screenshot = $screenshooter->select_advanced();
+            }
         } else {
-            $screenshooter = Shutter::Screenshot::SelectorAdvanced->new(
-                $sc, $include_cursor, $delay_value, $notify_timeout_active->get_active,
-                $zoom_active->get_active, $hide_time->get_value, $as_help_active->get_active, $asel_size3->get_value,
-                $asel_size4->get_value, $asel_size1->get_value, $asel_size2->get_value, $as_confirmation_necessary->get_active,
-            );
-            $screenshot = $screenshooter->select_advanced();
+            $screenshooter = {}; # dummy object
+            $screenshot = Shutter::Screenshot::Wayland::xdg_portal($screenshooter, 1);
         }
     } elsif ($data eq "web" || $data eq "tray_web") {
         my $website_width = 1024;

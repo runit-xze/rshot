@@ -209,6 +209,22 @@ sub create_toolbar ($self) {
 
 	#--------------------------------------
 
+	#button record gif
+	#--------------------------------------
+	my $image_gif = Gtk3::Image->new_from_icon_name('media-record', 'large-toolbar');
+	$self->{_gif} = Gtk3::ToolButton->new($image_gif, $d->get("Record GIF"));
+	$self->{_gif}->set_tooltip_text($d->get("Record the screen as an animated GIF"));
+
+	#--------------------------------------
+
+	#button record video
+	#--------------------------------------
+	my $image_video = Gtk3::Image->new_from_icon_name('camera-video', 'large-toolbar');
+	$self->{_video} = Gtk3::ToolButton->new($image_video, $d->get("Record Video"));
+	$self->{_video}->set_tooltip_text($d->get("Record the screen as a video file"));
+
+	#--------------------------------------
+
 	#expanding separator
 	#--------------------------------------
 	my $expander_r = Gtk3::SeparatorToolItem->new;
@@ -236,7 +252,7 @@ sub create_toolbar ($self) {
 	$self->{_upload} = Gtk3::MenuToolButton->new($image_upload, $d->get("Export"));
 	$self->{_upload}->set_is_important(TRUE);
 
-	$self->{_upload}->set_tooltip_text($d->get("Upload your images to an image hosting service, FTP site or export them to an arbitrary folder"));
+	$self->{_upload}->set_tooltip_text($d->get("Upload your images to an image hosting service or export them to an arbitrary folder"));
 	$self->{_upload}->set_arrow_tooltip_text($d->get("Show links to previous uploads"));
 
 	#--------------------------------------
@@ -258,6 +274,8 @@ sub create_toolbar ($self) {
 
 	#~ $self->{_toolbar}->insert( Gtk3::SeparatorToolItem->new, -1 );
 	$self->{_toolbar}->insert($self->{_web}, -1);
+	$self->{_toolbar}->insert($self->{_gif}, -1);
+	$self->{_toolbar}->insert($self->{_video}, -1);
 
 	#~ $self->{_toolbar}->insert( Gtk3::SeparatorToolItem->new, -1 );
 	$self->{_toolbar}->insert($expander_r,      -1);

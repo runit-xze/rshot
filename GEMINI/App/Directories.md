@@ -1,13 +1,12 @@
 # Shutter::App::Directories
 
-## Purpose
-(Purpose of Shutter::App::Directories module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Directories.pm`
 
-## Usage
-(How to use Shutter::App::Directories module)
+## Description
+Documentation for `Shutter::App::Directories`. This module handles functionality related to Directories.
 
 ## Dependencies
-(Dependencies of Shutter::App::Directories module)
+- `5.010`
+- `Glib`
+- `constant`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Directories module)

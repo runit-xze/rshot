@@ -56,13 +56,16 @@ sub new ($class, $common) {
 }
 
 sub xdg_open ($self, $dialog, $link, $user_data) {
-	my @args = ("xdg-open", "$link");
-	system(@args);
-	if ($?) {
+	eval {
+        my $uri = $link;
+        $uri = "file://$uri" unless $uri =~ m{^[a-zA-Z]+://};
+        Gtk3::show_uri_on_window(undef, $uri, Gtk3::Gdk::CURRENT_TIME);
+    };
+	if ($@) {
 		my $response = $self->{_dialogs}->dlg_error_message(
 			sprintf($self->{_d}->get("Error while executing %s."),        "'xdg-open'"),
 			sprintf($self->{_d}->get("There was an error executing %s."), "'xdg-open'"),
-			undef, undef, undef, undef, undef, undef, sprintf($self->{_d}->get("Exit Code: %d."), $? >> 8));
+			undef, undef, undef, undef, undef, undef, $@);
 	}
 }
 

@@ -80,10 +80,18 @@ sub initialize ($cli) {
     $cli->{_notify_ptimeout_active} = _mock_widget(FALSE);
     $cli->{_is_hidden}   = FALSE;
     
-    $cli->{_x11_supported} = ($ENV{XDG_SESSION_TYPE} // '') eq "wayland" ? FALSE : TRUE;
+    if (-e '/.flatpak-info') {
+        $cli->{_x11_supported} = FALSE;
+    } else {
+        $cli->{_x11_supported} = ($ENV{XDG_SESSION_TYPE} // '') eq "wayland" ? FALSE : TRUE;
+    }
     
     # Create core managers
-    my $session_manager = Shutter::App::Core::SessionManager->new(_common => $sc);
+    my $session_manager = Shutter::App::Core::SessionManager->new(
+        _common => $sc,
+        _session_screens => $cli->{_session_screens},
+        _session_start_screen => $cli->{_session_start_screen}
+    );
     $cli->{session_manager} = $session_manager;
     
     my $settings_manager = Shutter::App::Core::SettingsManager->new(_common => $sc);
@@ -92,6 +100,7 @@ sub initialize ($cli) {
     # Load settings and accounts
     my $settings_xml = $settings_manager->load_settings;
     my $accounts = $settings_manager->load_accounts;
+    $cli->{_accounts} = $accounts;
     
     my $screenshot_handler = Shutter::App::Core::ScreenshotHandler->new(_common => $sc);
     $cli->{screenshot_handler} = $screenshot_handler;
@@ -104,16 +113,17 @@ sub initialize ($cli) {
     
     # Create UI components
     my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
-    $cli->{sd} = $sd;
+    $cli->{_sd} = $sd;
+    $sc->{_sd}  = $sd;   # handlers read it via $cli->sc->{_sd}
     
     my $sp = Shutter::Pixbuf::Save->new($sc);
-    $cli->{sp} = $sp;
+    $cli->{_sp} = $sp;
     
     my $lp = Shutter::Pixbuf::Load->new($sc);
-    $cli->{lp} = $lp;
+    $cli->{_lp} = $lp;
     
     my $lp_ne = Shutter::Pixbuf::Load->new($sc, undef, TRUE);
-    $cli->{lp_ne} = $lp_ne;
+    $cli->{_lp_ne} = $lp_ne;
     
     # Create after-capture pipeline
     my $d = $sc->get_gettext;

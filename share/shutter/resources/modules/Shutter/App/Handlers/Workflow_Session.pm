@@ -26,6 +26,7 @@ no warnings 'experimental::try';
 
 use Moo;
 use Gtk3 '-init';
+use Gtk3::ImageView;
 use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
@@ -87,10 +88,100 @@ sub fct_create_tab {
     my $vbox_tab_event = Gtk3::EventBox->new;
 
     unless ($is_all) {
-        #Gtk3::ImageView - empty at first
+        my $scrolled_window_image;
+        if ($key =~ /\.mp4$/i) {
+            eval {
+                require Glib::Object::Introspection;
+                Glib::Object::Introspection->setup(basename => 'Gst', version => '1.0', package => 'Gst');
+                Gst::init(\@ARGV);
+            };
+            
+            my $playbin;
+            my $gtksink;
+            try {
+                $playbin = Gst::ElementFactory::make('playbin', 'playbin');
+                $gtksink = Gst::ElementFactory::make('gtksink', 'gtksink');
+                $playbin->set_property('video-sink', $gtksink);
+            } catch ($e) {
+                warn "Failed to create GStreamer elements: $e\n";
+            }
+            
+            if ($playbin && $gtksink) {
+                $session_screens->{$key}->{'playbin'} = $playbin;
+                my $vbox_player = Gtk3::VBox->new(FALSE, 5);
+                my $widget = $gtksink->get_property('widget');
+                
+                my $scrolled_video = Gtk3::ScrolledWindow->new;
+                $scrolled_video->add_with_viewport($widget);
+                
+                $vbox_player->pack_start($scrolled_video, TRUE, TRUE, 0);
+                
+                my $hbox_controls = Gtk3::HBox->new(FALSE, 5);
+                
+                my $btn_play = Gtk3::Button->new_from_icon_name("media-playback-start", 4);
+                my $btn_pause = Gtk3::Button->new_from_icon_name("media-playback-pause", 4);
+                my $btn_stop = Gtk3::Button->new_from_icon_name("media-playback-stop", 4);
+                
+                my $scale = Gtk3::Scale->new_with_range('horizontal', 0, 100, 1);
+                $scale->set_draw_value(FALSE);
+                $scale->set_hexpand(TRUE);
+                
+                $btn_play->signal_connect(clicked => sub { 
+                    my ($ret, $pos) = $playbin->query_position('time');
+                    my ($ret_d, $dur) = $playbin->query_duration('time');
+                    if ($ret && $ret_d && $pos >= $dur - 100000000) {
+                        # At end, rewind
+                        $playbin->seek_simple('time', ['flush', 'key-unit'], 0);
+                    }
+                    $playbin->set_state('playing'); 
+                });
+                
+                $btn_pause->signal_connect(clicked => sub { $playbin->set_state('paused') });
+                $btn_stop->signal_connect(clicked => sub { 
+                    $playbin->set_state('paused'); 
+                    $playbin->seek_simple('time', ['flush', 'key-unit'], 0);
+                });
+                
+                $scale->signal_connect('change-value' => sub {
+                    my ($widget, $scroll, $val) = @_;
+                    $playbin->seek_simple('time', ['flush', 'key-unit'], $val * 1000000000);
+                    return FALSE;
+                });
+                
+                Glib::Timeout->add(500, sub {
+                    return FALSE unless $session_screens->{$key}->{'playbin'}; # Stop if destroyed
+                    my ($ret_d, $dur) = $playbin->query_duration('time');
+                    if ($ret_d && $dur > 0) {
+                        $scale->set_range(0, $dur / 1000000000);
+                        my ($ret_p, $pos) = $playbin->query_position('time');
+                        if ($ret_p) {
+                            $scale->set_value($pos / 1000000000);
+                        }
+                    }
+                    return TRUE;
+                });
+                
+                $hbox_controls->pack_start($btn_play, FALSE, FALSE, 0);
+                $hbox_controls->pack_start($btn_pause, FALSE, FALSE, 0);
+                $hbox_controls->pack_start($btn_stop, FALSE, FALSE, 0);
+                $hbox_controls->pack_start($scale, TRUE, TRUE, 0);
+                
+                $vbox_player->pack_start($hbox_controls, FALSE, FALSE, 5);
+                
+                $vbox_tab->pack_start($vbox_player, TRUE, TRUE, 0);
+            } else {
+                $scrolled_window_image = Gtk3::ScrolledWindow->new;
+                $scrolled_window_image->add_with_viewport(Gtk3::Label->new("Video Playback Not Available"));
+                $vbox_tab->pack_start($scrolled_window_image, TRUE, TRUE, 0);
+            }
+        } else {
+            #Gtk3::ImageView - empty at first
         try {
             $session_screens->{$key}->{'image'} = Gtk3::ImageView->new();
-        } catch ($e) { }
+        } catch ($e) {
+            warn "Failed to create Gtk3::ImageView: $e\n";
+            $cli->log->error("Failed to create Gtk3::ImageView: $e") if $cli->can('log') && $cli->log;
+        }
         
         if ($session_screens->{$key}->{'image'}) {
             $session_screens->{$key}->{'image'}->set_fitting(TRUE);
@@ -98,7 +189,7 @@ sub fct_create_tab {
             $session_screens->{$key}->{'image'}->set('zoom-step', 1.2);
         }
 
-        my $scrolled_window_image = Gtk3::ScrolledWindow->new;
+        $scrolled_window_image = Gtk3::ScrolledWindow->new;
         if ($session_screens->{$key}->{'image'}) {
             $scrolled_window_image->add_with_viewport($session_screens->{$key}->{'image'});
         } else {
@@ -131,7 +222,11 @@ sub fct_create_tab {
                 });
         }
 
-        $vbox_tab->pack_start($scrolled_window_image, TRUE, TRUE, 0);
+        }
+        
+        if (!$session_screens->{$key}->{'playbin'}) {
+            $vbox_tab->pack_start($scrolled_window_image, TRUE, TRUE, 0);
+        }
         $vbox->pack_start($vbox_tab, TRUE, TRUE, 0);
 
         $vbox_tab_event->add($vbox);

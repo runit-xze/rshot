@@ -26,30 +26,29 @@ use utf8;
 use v5.40;
 use feature 'try'; no warnings 'experimental::try';
 
+use Moo;
+
 #Glib
 use Glib qw/TRUE FALSE/;
 use Log::Any;
 
 my $log = Log::Any->get_logger;
 
-sub new ($class) {
+has '_data' => (is => 'ro', lazy => 1, default => \&_load_data);
 
-	my $self = {};
-
-	#read data
+sub _load_data {
+	my @data;
 	binmode DATA, ":utf8";
-	while (my $data = <DATA>) {
-		push @{$self->{_data}}, $data;
+	while (my $line = <DATA>) {
+		push @data, $line;
 	}
-
-	bless $self, $class;
-	return $self;
+	return \@data;
 }
 
 sub create_autostart_file ($self, $dir, $enabled, $min, $nonotification) {
 
 	#copy in order keep original data
-	my @data = @{$self->{_data}};
+	my @data = @{$self->_data};
 
 	my $path = $dir . "/shutter.desktop";
 

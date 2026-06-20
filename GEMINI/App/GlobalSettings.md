@@ -1,13 +1,13 @@
 # Shutter::App::GlobalSettings
 
-## Purpose
-(Purpose of Shutter::App::GlobalSettings module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/GlobalSettings.pm`
 
-## Usage
-(How to use Shutter::App::GlobalSettings module)
+## Description
+Documentation for `Shutter::App::GlobalSettings`. This module handles functionality related to GlobalSettings.
 
 ## Dependencies
-(Dependencies of Shutter::App::GlobalSettings module)
+- `Glib`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::GlobalSettings module)

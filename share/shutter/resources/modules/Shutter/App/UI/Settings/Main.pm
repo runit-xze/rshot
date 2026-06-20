@@ -36,6 +36,10 @@ has _fname_autocopy => (is => 'rw');
 has _no_autocopy => (is => 'rw');
 has _cursor_active => (is => 'rw');
 has _delay => (is => 'rw');
+has _gif_fps => (is => 'rw');
+has _gif_max_duration => (is => 'rw');
+has _gif_countdown => (is => 'rw');
+has _gif_cursor => (is => 'rw');
 
 sub BUILD ($self, $args) {
     my $sc = $self->cli->sc;
@@ -61,17 +65,21 @@ sub BUILD ($self, $args) {
     my $combobox_type = Gtk3::ComboBoxText->new;
     
     my @supported_formats;
+    my $png_index = 0;
+    my $i = 0;
     foreach my $format (Gtk3::Gdk::Pixbuf::get_formats()) {
         my $format_name = $format->get_name;
         if (grep { $_ eq $format_name } qw(jpeg png bmp webp avif)) {
             $format_name = "jpg" if $format_name eq "jpeg";
             $combobox_type->append_text($format_name . " - " . $format->get_description);
             push @supported_formats, $format_name;
+            $png_index = $i if $format_name eq "png";
+            $i++;
         }
     }
     $self->{_supported_formats} = \@supported_formats;
     
-    my $current_type = $sm->get_setting('general', 'filetype') // 0;
+    my $current_type = $sm->get_setting('general', 'filetype') // $png_index;
     $combobox_type->set_active($current_type);
     
     $filetype_box->pack_start($filetype_label, FALSE, TRUE, 12);
@@ -144,33 +152,6 @@ sub BUILD ($self, $args) {
     $save_frame->add($save_vbox);
     $vbox_main->pack_start($save_frame, FALSE, TRUE, 3);
     
-    # --- Capture Frame ---
-    my $capture_frame = Gtk3::Frame->new;
-    my $capture_frame_label = Gtk3::Label->new;
-    $capture_frame_label->set_markup("<b>" . $d->get("Capture") . "</b>");
-    $capture_frame->set_label_widget($capture_frame_label);
-    $capture_frame->set_shadow_type('none');
-    
-    my $capture_vbox = Gtk3::VBox->new(FALSE, 0);
-    
-    my $cursor_active = Gtk3::CheckButton->new_with_label($d->get("Include cursor when taking a screenshot"));
-    $cursor_active->set_active($sm->get_setting('general', 'cursor') // FALSE);
-    $capture_vbox->pack_start($cursor_active, FALSE, TRUE, 3);
-    
-    my $delay_box = Gtk3::HBox->new(FALSE, 0);
-    my $delay_label = Gtk3::Label->new($d->get("Capture after a delay of"));
-    my $delay = Gtk3::SpinButton->new_with_range(0, 99, 1);
-    $delay->set_value($sm->get_setting('general', 'delay') // 0);
-    my $delay_vlabel = Gtk3::Label->new($d->get("seconds"));
-    
-    $delay_box->pack_start($delay_label, FALSE, FALSE, 12);
-    $delay_box->pack_start($delay, FALSE, FALSE, 0);
-    $delay_box->pack_start($delay_vlabel, FALSE, FALSE, 5);
-    $capture_vbox->pack_start($delay_box, TRUE, TRUE, 3);
-    
-    $capture_frame->add($capture_vbox);
-    $vbox_main->pack_start($capture_frame, FALSE, TRUE, 3);
-
     # Sizegroups
     my $sg_main = Gtk3::SizeGroup->new('horizontal');
     $sg_main->add_widget($scale_label);
@@ -187,8 +168,6 @@ sub BUILD ($self, $args) {
     $self->_save_auto($save_auto);
     $self->_save_ask($save_ask);
     $self->_save_no($save_no);
-    $self->_cursor_active($cursor_active);
-    $self->_delay($delay);
 }
 
 sub get_widget ($self) {
@@ -205,8 +184,6 @@ sub save ($self) {
     $sm->set_setting('general', 'save_auto', $self->_save_auto->get_active);
     $sm->set_setting('general', 'save_ask', $self->_save_ask->get_active);
     $sm->set_setting('general', 'save_no', $self->_save_no->get_active);
-    $sm->set_setting('general', 'cursor', $self->_cursor_active->get_active);
-    $sm->set_setting('general', 'delay', $self->_delay->get_value);
 }
 
 1;

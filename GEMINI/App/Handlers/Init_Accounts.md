@@ -1,13 +1,17 @@
 # Shutter::App::Handlers::Init_Accounts
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Init_Accounts module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Init_Accounts.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Init_Accounts module)
+## Description
+Documentation for `Shutter::App::Handlers::Init_Accounts`. This module handles functionality related to Init_Accounts.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Init_Accounts module)
+- `Glib`
+- `Gtk3`
+- `IO::File`
+- `Moo`
+- `XML::Simple`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Init_Accounts module)

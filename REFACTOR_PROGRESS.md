@@ -22,13 +22,13 @@ This document tracks the second wave of modularization, focusing on decomposing 
 ## Active Task: Drawing Tool Decomposition
 *Goal: Reduce DrawingTool.pm to <500 lines of UI glue code.*
 
-- [ ] Extract `DrawingTool::Pen`
-- [ ] Extract `DrawingTool::Ellipse`
-- [ ] Extract `DrawingTool::Rectangle`
-- [ ] Extract `DrawingTool::Blur`
-- [ ] Extract `DrawingTool::Censor`
-- [ ] Extract `DrawingTool::Highlighter`
-- [ ] Extract `DrawingTool::Arrow`
-- [ ] Extract `DrawingTool::Text`
-- [ ] Implement `DrawingTool::CanvasManager` (Moo)
-- [ ] Implement `DrawingTool::ToolbarManager` (Moo)
+- [x] Extract `DrawingTool::Pen`
+- [x] Extract `DrawingTool::Ellipse`
+- [x] Extract `DrawingTool::Rectangle`
+- [x] Extract `DrawingTool::Blur`
+- [x] Extract `DrawingTool::Censor`
+- [x] Extract `DrawingTool::Highlighter`
+- [x] Extract `DrawingTool::Arrow`
+- [x] Extract `DrawingTool::Text`
+- [x] Implement `DrawingTool::CanvasManager` (Moo)
+- [x] Implement `DrawingTool::ToolbarManager` (Moo)

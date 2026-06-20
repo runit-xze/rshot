@@ -56,9 +56,9 @@ sub evt_activate_systray_statusicon {
     }
 
     unless ($cli->{_is_hidden}) {
-        fct_control_main_window('hide') if defined &fct_control_main_window;
+        $self->cli->handlers->get('Core')->fct_control_main_window('hide');
     } else {
-        fct_control_main_window('show') if defined &fct_control_main_window;
+        $self->cli->handlers->get('Core')->fct_control_main_window('show');
     }
     return TRUE;
 }
@@ -110,7 +110,7 @@ sub evt_iconview_sel_changed {
     
     #we don't handle selection changes
     #if we are not in the session tab
-    if (defined &fct_get_current_file && fct_get_current_file()) {
+    if ($self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file()) {
         return FALSE;
     }
 
@@ -132,9 +132,9 @@ sub evt_iconview_sel_changed {
             },
             undef
         );
-        fct_update_actions(scalar @sel_items, $key) if defined &fct_update_actions;
+        $self->cli->handlers->get('Screenshot_Actions')->fct_update_actions(scalar @sel_items, $key);
     } else {
-        fct_update_actions(scalar @sel_items) if defined &fct_update_actions;
+        $self->cli->handlers->get('Screenshot_Actions')->fct_update_actions(scalar @sel_items);
     }
 
     return TRUE;
@@ -154,9 +154,9 @@ sub evt_show_systray {
     #left button (mouse)
     if ($data->button == 1) {
         if ($window->visible) {
-            fct_control_main_window('hide') if defined &fct_control_main_window;
+            $self->cli->handlers->get('Core')->fct_control_main_window('hide');
         } else {
-            fct_control_main_window('show') if defined &fct_control_main_window;
+            $self->cli->handlers->get('Core')->fct_control_main_window('show');
         }
     }
 

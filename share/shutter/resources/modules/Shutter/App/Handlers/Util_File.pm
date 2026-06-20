@@ -420,11 +420,17 @@ sub fct_parse_filename_wildcards {
         if $sc->get_debug;
     
     #parse width and height
-    my $swidth  = $screenshot->get_width;
-    my $sheight = $screenshot->get_height;
+    my ($swidth, $sheight) = (0, 0);
+    if (defined $screenshot) {
+        $swidth  = $screenshot->get_width;
+        $sheight = $screenshot->get_height;
 
-    $screenshot_name =~ s/\$w/$swidth/g;
-    $screenshot_name =~ s/\$h/$sheight/g;
+        $screenshot_name =~ s/\$w/$swidth/g;
+        $screenshot_name =~ s/\$h/$sheight/g;
+    } else {
+        $screenshot_name =~ s/\$w/0/g;
+        $screenshot_name =~ s/\$h/0/g;
+    }
 
     print "Parsed \$width and \$height: $screenshot_name\n"
         if $sc->get_debug;

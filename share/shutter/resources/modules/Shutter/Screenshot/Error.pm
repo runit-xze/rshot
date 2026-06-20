@@ -74,12 +74,11 @@ sub is_error ($self) {
 	}
 }
 
-sub set_error {
-	my $self = shift;
-	if (@_) {
-		$self->{_code}  = shift;
-		$self->{_data}  = shift;
-		$self->{_extra} = shift;
+sub set_error ($self, $code = undef, $data = undef, $extra = undef) {
+	if (defined $code) {
+		$self->{_code}  = $code;
+		$self->{_data}  = $data;
+		$self->{_extra} = $extra;
 	}
 	return ($self->{_code}, $self->{_data}, $self->{_extra});
 }

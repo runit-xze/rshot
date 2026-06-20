@@ -1,13 +1,17 @@
 # Shutter::App::Handlers::Dialogs_Open
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Dialogs_Open module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Dialogs_Open.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Dialogs_Open module)
+## Description
+Documentation for `Shutter::App::Handlers::Dialogs_Open`. This module handles functionality related to Dialogs_Open.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Dialogs_Open module)
+- `File::Basename`
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `Shutter::App::SimpleDialogs`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Dialogs_Open module)

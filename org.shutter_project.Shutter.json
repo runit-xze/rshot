@@ -3,7 +3,7 @@
     "runtime": "org.gnome.Platform",
     "runtime-version": "45",
     "sdk": "org.gnome.Sdk",
-    "command": "shutter",
+    "command": "rshot",
     "finish-args": [
         "--share=ipc",
         "--socket=fallback-x11",
@@ -11,17 +11,72 @@
         "--device=dri",
         "--share=network",
         "--filesystem=home",
-        "--talk-name=org.freedesktop.Notifications"
+        "--talk-name=org.freedesktop.Notifications",
+        "--talk-name=org.freedesktop.portal.Desktop",
+        "--talk-name=org.freedesktop.portal.FileChooser",
+        "--talk-name=org.freedesktop.DBus"
     ],
     "modules": [
+        {
+            "name": "perl",
+            "no-autogen": true,
+            "config-opts": [
+                "-des",
+                "-Duseshrplib",
+                "-Dprefix=/app"
+            ],
+            "build-options": {
+                "cflags": "-fPIC",
+                "ldflags": "-fpic"
+            },
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.cpan.org/src/5.0/perl-5.40.0.tar.gz",
+                    "sha256": "c740348f357396327a9795d3e8323bafd0fe8a5c7835fc1cbaba0cc8dfe7161f"
+                },
+                {
+                    "type": "shell",
+                    "commands": [
+                        "ln -s configure{.gnu,}"
+                    ]
+                }
+            ],
+            "post-install": [
+                "chmod -R u+w /app/lib/perl5"
+            ],
+            "cleanup": [
+                "/bin/corelist", "/bin/cpan", "/bin/enc2xs", "/bin/encguess",
+                "/bin/h2ph", "/bin/h2xs", "/bin/instmodsh", "/bin/json_pp",
+                "/bin/libnetcfg", "/bin/perlbug", "/bin/perldoc", "/bin/perlivp",
+                "/bin/perlthanks", "/bin/piconv", "/bin/pl2pm", "/bin/pod*",
+                "/bin/prove", "/bin/ptar*", "/bin/shasum", "/bin/splain",
+                "/bin/xsubpp", "/bin/zipdetails", "/include", "/man", "*.pod"
+            ]
+        },
+        {
+            "name": "perl-libs",
+            "buildsystem": "simple",
+            "build-commands": [
+                "chmod +x perl-libs/install.sh",
+                "bash perl-libs/install.sh",
+                "chmod -R u+w /app/lib/perl5"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "path": "generated-sources.json"
+                }
+            ]
+        },
         {
             "name": "shutter",
             "buildsystem": "simple",
             "build-commands": [
-                "mkdir -p /app/bin /app/share",
+                "mkdir -p /app/bin /app/share/shutter",
                 "cp -r bin/* /app/bin/",
-                "cp -r share/* /app/share/",
-                "chmod +x /app/bin/shutter"
+                "cp -r share/shutter/* /app/share/shutter/",
+                "chmod +x /app/bin/rshot"
             ],
             "sources": [
                 {

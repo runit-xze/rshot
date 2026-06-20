@@ -1,0 +1,309 @@
+[
+  {
+    "dest": "perl-libs/Module-Runtime",
+    "sha256": "0bf77ef68e53721914ff554eada20973596310b4e2cf1401fc958601807de577",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/H/HA/HAARG/Module-Runtime-0.018.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Sub-Quote",
+    "sha256": "967282d54d2d51b198c67935594f93e4dea3e54d1e5bced158c94e29be868a4b",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/H/HA/HAARG/Sub-Quote-2.006009.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Exporter-Tiny",
+    "sha256": "6499f09a6432cf87b133fb9580a8a9a9a6c566821346b1fdee95f7b64c0317b1",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/T/TO/TOBYINK/Exporter-Tiny-1.006003.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Type-Tiny",
+    "sha256": "cd583e4983039f35052d490f0c4439124ba667d4f09c4e3aec47de5200f9921a",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/T/TO/TOBYINK/Type-Tiny-2.010001.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Role-Tiny",
+    "sha256": "4618ec524618c104dc28a8cc86af129a00cad282aea7f4c75060ba05d4c8f4d7",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/H/HA/HAARG/Role-Tiny-2.002005.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Class-Method-Modifiers",
+    "sha256": "65cd85bfe475d066e9186f7a8cc636070985b30b0ebb1cde8681cf062c2e15fc",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/E/ET/ETHER/Class-Method-Modifiers-2.15.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Moo",
+    "sha256": "fb5a2952649faed07373f220b78004a9c6aba387739133740c1770e9b1f4b108",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/H/HA/HAARG/Moo-2.005005.tar.gz"
+  },
+  {
+    "dest": "perl-libs/CPAN-Changes",
+    "sha256": "1b022a0a6451827d060ee9cbfe9b2d8edbac2a3d7155cbee33ea93274b830fb5",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/H/HA/HAARG/CPAN-Changes-0.500005.tar.gz"
+  },
+  {
+    "dest": "perl-libs/File-ShareDir-Install",
+    "sha256": "8f9533b198f2d4a9a5288cbc7d224f7679ad05a7a8573745599789428bc5aea0",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/E/ET/ETHER/File-ShareDir-Install-0.14.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Class-Inspector",
+    "sha256": "cc295d23a472687c24489d58226ead23b9fdc2588e522f0b5f0747741700694e",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Class-Inspector-1.36.tar.gz"
+  },
+  {
+    "dest": "perl-libs/File-ShareDir",
+    "sha256": "3bb2a20ba35df958dc0a4f2306fc05d903d8b8c4de3c8beefce17739d281c958",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/R/RE/REHSACK/File-ShareDir-1.118.tar.gz"
+  },
+  {
+    "dest": "perl-libs/XML-Twig",
+    "sha256": "0b744a9737a070f95c32154afd526bf5ebe76a59feb8bc1f5dbc6cdaa5e0e529",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/M/MI/MIROD/XML-Twig-3.54.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Test-Pod",
+    "sha256": "60a8dbcc60168bf1daa5cc2350236df9343e9878f4ab9830970a5dde6fe8e5fc",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/E/ET/ETHER/Test-Pod-1.52.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Devel-Symdump",
+    "sha256": "826f81a107f5592a2516766ed43beb47e10cc83edc9ea48090b02a36040776c0",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/A/AN/ANDK/Devel-Symdump-2.18.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Pod-Parser",
+    "sha256": "5deccbf55d750ce65588cd211c1a03fa1ef3aaa15d1ac2b8d85383a42c1427ea",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/M/MA/MAREKR/Pod-Parser-1.67.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Pod-Coverage",
+    "sha256": "30b7a0b0c942f44a7552c0d34e9b1f2e0ba0b67955c61e3b1589ec369074b107",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/R/RC/RCLAMP/Pod-Coverage-0.23.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Test-Pod-Coverage",
+    "sha256": "48c9cca9f7d99eee741176445b431adf09c029e1aa57c4703c9f46f7601d40d4",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/N/NE/NEILB/Test-Pod-Coverage-1.10.tar.gz"
+  },
+  {
+    "dest": "perl-libs/MIME-Base32",
+    "sha256": "ab21fa99130e33a0aff6cdb596f647e5e565d207d634ba2ef06bdbef50424e99",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/R/RE/REHSACK/MIME-Base32-1.303.tar.gz"
+  },
+  {
+    "dest": "perl-libs/URI",
+    "sha256": "89648964ce5ae006726951f42f718576fbefe9e98a41bd2212d57386163092d2",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/URI-5.35.tar.gz"
+  },
+  {
+    "dest": "perl-libs/IO-HTML",
+    "sha256": "c87b2df59463bbf2c39596773dfb5c03bde0f7e1051af339f963f58c1cbd8bf5",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/C/CJ/CJM/IO-HTML-1.004.tar.gz"
+  },
+  {
+    "dest": "perl-libs/LWP-MediaTypes",
+    "sha256": "8f1bca12dab16a1c2a7c03a49c5e58cce41a6fec9519f0aadfba8dad997919d9",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/LWP-MediaTypes-6.04.tar.gz"
+  },
+  {
+    "dest": "perl-libs/TimeDate",
+    "sha256": "baddd0306ae2e86e9ec28d3de5439e514643e80b3735e43bd0fbb426d73304de",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/A/AT/ATOOMIC/TimeDate-2.35.tar.gz"
+  },
+  {
+    "dest": "perl-libs/HTTP-Date",
+    "sha256": "7b685191c6acc3e773d1fc02c95ee1f9fae94f77783175f5e78c181cc92d2b52",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/HTTP-Date-6.06.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Encode-Locale",
+    "sha256": "176fa02771f542a4efb1dbc2a4c928e8f4391bf4078473bd6040d8f11adb0ec1",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/G/GA/GAAS/Encode-Locale-1.05.tar.gz"
+  },
+  {
+    "dest": "perl-libs/HTTP-Message",
+    "sha256": "78abef1d833146b48d17db219b1b03d53cbbe37a28ccdad0efdcc5833ca5c60c",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/HTTP-Message-7.02.tar.gz"
+  },
+  {
+    "dest": "perl-libs/File-Copy-Recursive",
+    "sha256": "d3971cf78a8345e38042b208bb7b39cb695080386af629f4a04ffd6549df1157",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/D/DM/DMUEY/File-Copy-Recursive-0.45.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Log-Any",
+    "sha256": "1fa8a6121dce297406f67adbcb4d92db01e9dd85781cb6ef710dc333bb9cfd56",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/P/PR/PREACTION/Log-Any-1.720.tar.gz"
+  },
+  {
+    "dest": "perl-libs/JSON-MaybeXS",
+    "sha256": "cd3937afa78831f80a2ad5abab6c51b9e82fca4c31e5856ea208d598db5dc867",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/E/ET/ETHER/JSON-MaybeXS-1.004008.tar.gz"
+  },
+  {
+    "dest": "perl-libs/HTTP-Negotiate",
+    "sha256": "1c729c1ea63100e878405cda7d66f9adfd3ed4f1d6cacaca0ee9152df728e016",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/G/GA/GAAS/HTTP-Negotiate-6.01.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Net-HTTP",
+    "sha256": "290ed9a97b05c7935b048e6d2a356035871fca98ad72c01c5961726adf85c83c",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/Net-HTTP-6.24.tar.gz"
+  },
+  {
+    "dest": "perl-libs/WWW-RobotRules",
+    "sha256": "8522b532935a11bfa688c2e113bac66729df4851be50c2c26d4b06f45fade472",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/WWW-RobotRules-6.03.tar.gz"
+  },
+  {
+    "dest": "perl-libs/HTTP-Cookies",
+    "sha256": "8c9a541a4a39f6c0c7e3d0b700b05dfdb830bd490a1b1942a7dedd1b50d9a8c8",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/HTTP-Cookies-6.11.tar.gz"
+  },
+  {
+    "dest": "perl-libs/Try-Tiny",
+    "sha256": "ef2d6cab0bad18e3ab1c4e6125cc5f695c7e459899f512451c8fa3ef83fa7fc0",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/E/ET/ETHER/Try-Tiny-0.32.tar.gz"
+  },
+  {
+    "dest": "perl-libs/HTML-Tagset",
+    "sha256": "eb89e145a608ed1f8f141a57472ee5f69e67592a432dcd2e8b1dbb445f2b230b",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/P/PE/PETDANCE/HTML-Tagset-3.24.tar.gz"
+  },
+  {
+    "dest": "perl-libs/File-Listing",
+    "sha256": "189b3a13fc0a1ba412b9d9ec5901e9e5e444cc746b9f0156d4399370d33655c6",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/File-Listing-6.16.tar.gz"
+  },
+  {
+    "dest": "perl-libs/libwww-perl",
+    "sha256": "e75f0fa9d3c6f0daf5a5a72fa9f8b1c9c0d23e3a84a8522ccb4f835232b95505",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/libwww-perl-6.83.tar.gz"
+  },
+  {
+    "dest": "perl-libs/X11-Protocol",
+    "sha256": "de96dd6c7c1f25f3287aa7af64902bf84acaaa8e0c3bb76aa1676367e04a08b7",
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/S/SM/SMCCAM/X11-Protocol-0.56.tar.gz"
+  },
+  {
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/D/DA/DANBERR/Net-DBus-1.2.0.tar.gz",
+    "sha256": "e7a1ac9ef4a1235b3fdbd5888f86c347182306467bd79abc9b0756a64b441cbc",
+    "dest": "perl-libs/Net-DBus"
+  },
+  {
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/P/PV/PVANDRY/Locale-gettext-1.07.tar.gz",
+    "sha256": "909d47954697e7c04218f972915b787bd1244d75e3bd01620bc167d5bbc49c15",
+    "dest": "perl-libs/Locale-gettext"
+  },
+  {
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/A/AT/ATOOMIC/Clone-0.50.tar.gz",
+    "sha256": "f9732a4a857974db30905233589113003301b585b0cecda29a21cfba5bb014f9",
+    "dest": "perl-libs/Clone"
+  },
+  {
+    "type": "archive",
+    "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/HTML-Parser-3.85.tar.gz",
+    "sha256": "fd42ba6abe07241cf0ad57be246c3980065f683e4465e59b46af9efebc8e0c71",
+    "dest": "perl-libs/HTML-Parser"
+  },
+  {
+    "commands": [
+      "set -e",
+      "function make_install {",
+      "    mod_dir=$1",
+      "    cd $mod_dir",
+      "    if [ -f 'Makefile.PL' ]; then",
+      "        perl Makefile.PL PREFIX=${FLATPAK_DEST} && make install PREFIX=${FLATPAK_DEST}",
+      "    elif [ -f 'Build.PL' ]; then",
+      "        perl Build.PL && ./Build && ./Build install",
+      "    else",
+      "        echo 'No Makefile.PL or Build.PL found. Do not know how to install this module'",
+      "        exit 1",
+      "    fi",
+      "}",
+      "(make_install perl-libs/Module-Runtime)",
+      "(make_install perl-libs/Sub-Quote)",
+      "(make_install perl-libs/Exporter-Tiny)",
+      "(make_install perl-libs/Type-Tiny)",
+      "(make_install perl-libs/Role-Tiny)",
+      "(make_install perl-libs/Class-Method-Modifiers)",
+      "(make_install perl-libs/Moo)",
+      "(make_install perl-libs/CPAN-Changes)",
+      "(make_install perl-libs/File-ShareDir-Install)",
+      "(make_install perl-libs/Class-Inspector)",
+      "(make_install perl-libs/File-ShareDir)",
+      "(make_install perl-libs/XML-Twig)",
+      "(make_install perl-libs/Test-Pod)",
+      "(make_install perl-libs/Devel-Symdump)",
+      "(make_install perl-libs/Pod-Parser)",
+      "(make_install perl-libs/Pod-Coverage)",
+      "(make_install perl-libs/Test-Pod-Coverage)",
+      "(make_install perl-libs/MIME-Base32)",
+      "(make_install perl-libs/URI)",
+      "(make_install perl-libs/IO-HTML)",
+      "(make_install perl-libs/LWP-MediaTypes)",
+      "(make_install perl-libs/TimeDate)",
+      "(make_install perl-libs/HTTP-Date)",
+      "(make_install perl-libs/Encode-Locale)",
+      "(make_install perl-libs/HTTP-Message)",
+      "(make_install perl-libs/File-Copy-Recursive)",
+      "(make_install perl-libs/Log-Any)",
+      "(make_install perl-libs/JSON-MaybeXS)",
+      "(make_install perl-libs/HTTP-Negotiate)",
+      "(make_install perl-libs/Net-HTTP)",
+      "(make_install perl-libs/WWW-RobotRules)",
+      "(make_install perl-libs/HTTP-Cookies)",
+      "(make_install perl-libs/Try-Tiny)",
+      "(make_install perl-libs/HTML-Tagset)",
+      "(make_install perl-libs/File-Listing)",
+      "(make_install perl-libs/libwww-perl)",
+      "(make_install perl-libs/X11-Protocol)",
+      "(make_install perl-libs/Net-DBus)",
+      "(make_install perl-libs/Locale-gettext)",
+      "(make_install perl-libs/Clone)",
+      "(make_install perl-libs/HTML-Parser)"
+    ],
+    "dest": "perl-libs",
+    "dest-filename": "install.sh",
+    "type": "script"
+  }
+]

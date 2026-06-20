@@ -1,13 +1,16 @@
 # Shutter::App::Core::ScreenshotHandler
 
-## Purpose
-(Purpose of Shutter::App::Core::ScreenshotHandler module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Core/ScreenshotHandler.pm`
 
-## Usage
-(How to use Shutter::App::Core::ScreenshotHandler module)
+## Description
+Documentation for `Shutter::App::Core::ScreenshotHandler`. This module handles functionality related to ScreenshotHandler.
 
 ## Dependencies
-(Dependencies of Shutter::App::Core::ScreenshotHandler module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `Time::HiRes`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Core::ScreenshotHandler module)

@@ -8,9 +8,9 @@ This document tracks the decomposition of `Shutter::Draw::DrawingTool.pm`.
 - [x] Canvas Manager
 - [x] Pen Tool (Stub & Delegate)
 - [x] Ellipse Tool (Stub & Delegate)
-- [ ] Rectangle Tool (Stub & Delegate)
-- [ ] Toolbar Manager Extraction
-- [ ] Logic Extraction (Iterative migration from `DrawingTool.pm` to Tool Classes)
+- [x] Rectangle Tool (Stub & Delegate)
+- [x] Toolbar Manager Extraction
+- [x] Logic Extraction (Iterative migration from `DrawingTool.pm` to Tool Classes)
 
 ## 📋 Pending Tasks
 1.  **Refactor `DrawingTool.pm`** to expose internal state (canvas, item storage) to the new tool classes.

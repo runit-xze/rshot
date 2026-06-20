@@ -64,6 +64,7 @@ use XML::Simple;
 
 #Glib
 use Glib qw/TRUE FALSE/;
+use Gtk3::ImageView;
 
 require Shutter::Draw::Utils;
 require Shutter::App::Directories;
@@ -187,7 +188,10 @@ sub new {
 
 	$self->{_stipple_pixbuf} = Gtk3::Gdk::Pixbuf->new_from_file($self->{_sc}->get_root . '/share/shutter/resources/gui/stipple.png');
 
-	$self->{_sc}->log->info("DrawingTool initialized");
+	print "DrawingTool initialized\n" if $self->{_sc}->get_debug;
+
+	require Shutter::Draw::ToolbarManager;
+	$self->{_toolbar_manager} = Shutter::Draw::ToolbarManager->new(app => $self);
 
 	bless $self, $class;
 
@@ -236,7 +240,7 @@ sub new {
 
 	sub show {
 	my $self = shift;
-	$self->{_sc}->log->info("DrawingTool show called");
+	print "DrawingTool show called\n" if $self->{_sc}->get_debug;
 	$self->{_filename}    = shift;
 	$self->{_filetype}    = shift;
 	$self->{_mimetype}    = shift;
@@ -500,7 +504,7 @@ sub new {
 	#$self->{_table}->attach($self->{_hruler}, 1, 2, 0, 1, ['expand', 'shrink', 'fill'], [], 0, 0);
 	#$self->{_table}->attach($self->{_vruler}, 0, 1, 1, 2, [], ['fill', 'expand', 'shrink'], 0, 0);
 
-	$self->{_bhbox} = $self->setup_bottom_hbox;
+	$self->{_bhbox} = $self->{_toolbar_manager}->setup_bottom_hbox;
 	$self->{_drawing_inner_vbox}->pack_start($self->{_table}, TRUE,  TRUE, 0);
 	$self->{_drawing_inner_vbox}->pack_start($self->{_bhbox}, FALSE, TRUE, 0);
 
@@ -571,173 +575,6 @@ sub new {
 	return TRUE;
 }
 
-sub setup_bottom_hbox {
-	my $self = shift;
-
-	my $drawing_bottom_hbox = Gtk3::HBox->new(FALSE, 5);
-
-	#fill color
-	my $fill_color_label = Gtk3::Label->new($self->{_d}->get("Fill color") . ":");
-	$self->{_fill_color_w} = Gtk3::ColorButton->new();
-	$self->{_fill_color_w}->set_rgba($self->{_fill_color});
-	$self->{_fill_color_w}->set_use_alpha(TRUE);
-	$self->{_fill_color_w}->set_title($self->{_d}->get("Choose fill color"));
-
-	$fill_color_label->set_tooltip_text($self->{_d}->get("Adjust fill color and opacity"));
-	$self->{_fill_color_w}->set_tooltip_text($self->{_d}->get("Adjust fill color and opacity"));
-
-	$drawing_bottom_hbox->pack_start($fill_color_label,      FALSE, FALSE, 5);
-	$drawing_bottom_hbox->pack_start($self->{_fill_color_w}, FALSE, FALSE, 5);
-
-	#stroke color
-	my $stroke_color_label = Gtk3::Label->new($self->{_d}->get("Stroke color") . ":");
-	$self->{_stroke_color_w} = Gtk3::ColorButton->new();
-	$self->{_stroke_color_w}->set_rgba($self->{_stroke_color});
-	$self->{_stroke_color_w}->set_use_alpha(TRUE);
-	$self->{_stroke_color_w}->set_title($self->{_d}->get("Choose stroke color"));
-
-	$stroke_color_label->set_tooltip_text($self->{_d}->get("Adjust stroke color and opacity"));
-	$self->{_stroke_color_w}->set_tooltip_text($self->{_d}->get("Adjust stroke color and opacity"));
-
-	$drawing_bottom_hbox->pack_start($stroke_color_label,      FALSE, FALSE, 5);
-	$drawing_bottom_hbox->pack_start($self->{_stroke_color_w}, FALSE, FALSE, 5);
-
-	#line_width
-	my $linew_label = Gtk3::Label->new($self->{_d}->get("Line width") . ":");
-	$self->{_line_spin_w} = Gtk3::SpinButton->new_with_range(0.5, 300, 0.1);
-	$self->{_line_spin_w}->set_value($self->{_line_width});
-
-	$linew_label->set_tooltip_text($self->{_d}->get("Adjust line width"));
-	$self->{_line_spin_w}->set_tooltip_text($self->{_d}->get("Adjust line width"));
-
-	$drawing_bottom_hbox->pack_start($linew_label,          FALSE, FALSE, 5);
-	$drawing_bottom_hbox->pack_start($self->{_line_spin_w}, FALSE, FALSE, 5);
-
-	#font button
-	my $font_label = Gtk3::Label->new($self->{_d}->get("Font") . ":");
-	$self->{_font_btn_w} = Gtk3::FontButton->new();
-	$self->{_font_btn_w}->set_font_name($self->{_font});
-
-	$font_label->set_tooltip_text($self->{_d}->get("Select font family and size"));
-	$self->{_font_btn_w}->set_tooltip_text($self->{_d}->get("Select font family and size"));
-
-	$drawing_bottom_hbox->pack_start($font_label,          FALSE, FALSE, 5);
-	$drawing_bottom_hbox->pack_start($self->{_font_btn_w}, FALSE, FALSE, 5);
-
-	#image button
-	my $image_label = Gtk3::Label->new($self->{_d}->get("Insert image") . ":");
-	my $image_btn   = Gtk3::MenuToolButton->new(undef, undef);
-
-	Glib::Idle->add(
-		sub {
-			$image_btn->set_menu($self->import_from_filesystem($image_btn));
-			return FALSE;
-		});
-
-	#handle property changes
-	#changes are applied directly to the current item
-	$self->{_line_spin_wh} = $self->{_line_spin_w}->signal_connect(
-		'value-changed' => sub {
-			$self->{_line_width} = $self->{_line_spin_w}->get_value;
-
-			if ($self->{_current_item}) {
-
-				#apply all changes directly
-				my $item = $self->{_current_item};
-				if (my $child = $self->get_child_item($item)) {
-					$item = $child;
-				}
-				my $parent = $self->get_parent_item($item);
-
-				#determine key for item hash
-				my $key = $self->get_item_key($item, $parent);
-
-				$self->apply_properties($item, $parent, $key, $self->{_fill_color_w}, $self->{_stroke_color_w}, $self->{_line_spin_w}, $self->{_stroke_color_w}, $self->{_font_btn_w});
-
-			}
-
-		});
-
-	$self->{_stroke_color_wh} = $self->{_stroke_color_w}->signal_connect(
-		'color-set' => sub {
-			$self->{_stroke_color}       = $self->{_stroke_color_w}->get_rgba;
-
-			if ($self->{_current_item}) {
-
-				#apply all changes directly
-				my $item = $self->{_current_item};
-				if (my $child = $self->get_child_item($item)) {
-					$item = $child;
-				}
-				my $parent = $self->get_parent_item($item);
-
-				#determine key for item hash
-				my $key = $self->get_item_key($item, $parent);
-
-				$self->apply_properties($item, $parent, $key, $self->{_fill_color_w}, $self->{_stroke_color_w}, $self->{_line_spin_w}, $self->{_stroke_color_w}, $self->{_font_btn_w});
-
-			}
-
-		});
-
-	$self->{_fill_color_wh} = $self->{_fill_color_w}->signal_connect(
-		'color-set' => sub {
-			$self->{_fill_color}       = $self->{_fill_color_w}->get_rgba;
-
-			if ($self->{_current_item}) {
-
-				#apply all changes directly
-				my $item = $self->{_current_item};
-				if (my $child = $self->get_child_item($item)) {
-					$item = $child;
-				}
-				my $parent = $self->get_parent_item($item);
-
-				#determine key for item hash
-				my $key = $self->get_item_key($item, $parent);
-
-				$self->apply_properties($item, $parent, $key, $self->{_fill_color_w}, $self->{_stroke_color_w}, $self->{_line_spin_w}, $self->{_stroke_color_w}, $self->{_font_btn_w});
-
-			}
-
-		});
-
-	$self->{_font_btn_wh} = $self->{_font_btn_w}->signal_connect(
-		'font-set' => sub {
-			my $font_descr = Pango::FontDescription::from_string($self->{_font_btn_w}->get_font_name);
-			$self->{_font} = $self->{_font_btn_w}->get_font_name;
-
-			if ($self->{_current_item}) {
-
-				#apply all changes directly
-				my $item = $self->{_current_item};
-				if (my $child = $self->get_child_item($item)) {
-					$item = $child;
-				}
-				my $parent = $self->get_parent_item($item);
-
-				#determine key for item hash
-				my $key = $self->get_item_key($item, $parent);
-
-				$self->apply_properties($item, $parent, $key, $self->{_fill_color_w}, $self->{_stroke_color_w}, $self->{_line_spin_w}, $self->{_stroke_color_w}, $self->{_font_btn_w});
-
-			}
-
-		});
-
-	$image_btn->signal_connect(
-		'clicked' => sub {
-			$self->{_canvas}->get_window->set_cursor($self->change_cursor_to_current_pixbuf);
-		});
-
-	$image_label->set_tooltip_text($self->{_d}->get("Insert an arbitrary object or file"));
-	$image_btn->set_tooltip_text($self->{_d}->get("Insert an arbitrary object or file"));
-
-	$drawing_bottom_hbox->pack_start($image_label, FALSE, FALSE, 5);
-	$drawing_bottom_hbox->pack_start($image_btn,   FALSE, FALSE, 5);
-
-	return $drawing_bottom_hbox;
-}
 
 sub setup_right_vbox_c {
 	my $self = shift;
@@ -1895,10 +1732,9 @@ sub save {
 			$self->handle_bg_rects('show');
 			return $pixbuf;
 		}
-
 		#save pixbuf to file
 		my $pixbuf_save = Shutter::Pixbuf::Save->new($self->{_sc}, $self->{_drawing_window});
-		return $pixbuf_save->save_pixbuf_to_file($pixbuf, $filename, $filetype);
+		return $pixbuf_save->save_pixbuf_to_file($pixbuf, $filename, $filetype, undef);
 
 	}
 
@@ -6540,80 +6376,11 @@ sub create_polyline {
 	my $self      = shift;
 	my $ev        = shift;
 	my $copy_item = shift;
-
-	#this is a highlighter?
-	#we need different default values in this case
 	my $highlighter = shift;
 
-	my @points         = ();
-	my $stroke_color = $self->{_stroke_color};
-	my $transform;
-	my $line_width = $self->{_line_width};
-
-	#use event coordinates
-	if ($ev) {
-		@points = ($ev->x, $ev->y, $ev->x, $ev->y);
-
-		#use source item coordinates
-	} elsif ($copy_item) {
-		foreach (@{$self->{_items}{$copy_item}{points}}) {
-			push @points, $_ + 20;
-		}
-
-		$stroke_color = $self->{_items}{$copy_item}{stroke_color};
-		$transform      = $self->{_items}{$copy_item}->get('transform');
-		$line_width     = $self->{_items}{$copy_item}->get('line_width');
-	}
-
-	my $item = undef;
-	if ($highlighter) {
-		$stroke_color = Gtk3::Gdk::RGBA::parse('#FFFF00');
-		$stroke_color->alpha(0.5);
-		$item = GooCanvas2::CanvasPolyline->new(
-			parent=>$self->{_canvas}->get_root_item, close_path=>FALSE,
-			'stroke-color-gdk-rgba' => $stroke_color,
-			'line-width'     => 18,
-			'fill-rule'      => 'CAIRO_FILL_RULE_EVEN_ODD',
-			'line-cap'       => 'CAIRO_LINE_CAP_SQUARE',
-			'line-join'      => 'CAIRO_LINE_JOIN_BEVEL',
-		);
-	} else {
-		$item = GooCanvas2::CanvasPolyline->new(
-			parent=>$self->{_canvas}->get_root_item, close_path=>FALSE,
-			'stroke-color-gdk-rgba' => $stroke_color,
-			'line-width'     => $line_width,
-			'line-cap'       => 'CAIRO_LINE_CAP_ROUND',
-			'line-join'      => 'CAIRO_LINE_JOIN_ROUND',
-		);
-	}
-
-	$self->{_current_new_item} = $item unless ($copy_item);
-	$self->{_items}{$item} = $item;
-
-	#need at least 2 points
-	push @{$self->{_items}{$item}{'points'}}, @points;
-	$self->{_items}{$item}->set(points    => Shutter::Draw::Utils::points_to_canvas_points(@{$self->{_items}{$item}{'points'}}));
-	$self->{_items}{$item}->set(transform => $transform) if $transform;
-
-	if ($highlighter) {
-
-		#set type flag
-		$self->{_items}{$item}{type}               = 'highlighter';
-		$self->{_items}{$item}{uid}                = $self->{_uid}++;
-		$self->{_items}{$item}{stroke_color}       = Gtk3::Gdk::RGBA::parse('#FFFF00');
-		$self->{_items}{$item}{stroke_color}->alpha(0.5);
-	} else {
-
-		#set type flag
-		$self->{_items}{$item}{type}               = 'freehand';
-		$self->{_items}{$item}{uid}                = $self->{_uid}++;
-		$self->{_items}{$item}{stroke_color}       = $self->{_stroke_color};
-	}
-
-	$self->setup_item_signals($self->{_items}{$item});
-	$self->setup_item_signals_extra($self->{_items}{$item});
-
-	return $item;
+	require Shutter::Draw::Polyline;
+	my $poly = Shutter::Draw::Polyline->new( app => $self );
+	return $poly->setup($ev, $copy_item, $highlighter);
 }
 
 sub create_censor {
@@ -6621,45 +6388,9 @@ sub create_censor {
 	my $ev        = shift;
 	my $copy_item = shift;
 
-	my @points = ();
-	my $transform;
-
-	#use event coordinates
-	if ($ev) {
-		@points = ($ev->x, $ev->y, $ev->x, $ev->y);
-
-		#use source item coordinates
-	} elsif ($copy_item) {
-		foreach (@{$self->{_items}{$copy_item}{points}}) {
-			push @points, $_ + 20;
-		}
-		$transform = $self->{_items}{$copy_item}->get('transform');
-	}
-
-	my $item = GooCanvas2::CanvasPolyline->new(
-		parent=>$self->{_canvas}->get_root_item, close_path=>FALSE,
-		'stroke-pixbuf' => $self->{_stipple_pixbuf},
-		'line-width'     => 14,
-		'line-cap'       => 'CAIRO_LINE_CAP_ROUND',
-		'line-join'      => 'CAIRO_LINE_JOIN_ROUND',
-	);
-
-	$self->{_current_new_item} = $item unless ($copy_item);
-	$self->{_items}{$item} = $item;
-
-	#set type flag
-	$self->{_items}{$item}{type} = 'censor';
-	$self->{_items}{$item}{uid}  = $self->{_uid}++;
-
-	#need at least 2 points
-	push @{$self->{_items}{$item}{'points'}}, @points;
-	$self->{_items}{$item}->set(points    => Shutter::Draw::Utils::points_to_canvas_points(@{$self->{_items}{$item}{'points'}}));
-	$self->{_items}{$item}->set(transform => $transform) if $transform;
-
-	$self->setup_item_signals($self->{_items}{$item});
-	$self->setup_item_signals_extra($self->{_items}{$item});
-
-	return $item;
+	require Shutter::Draw::Censor;
+	my $censor = Shutter::Draw::Censor->new( app => $self );
+	return $censor->setup($ev, $copy_item);
 }
 
 sub create_pixel_image {
@@ -6667,73 +6398,9 @@ sub create_pixel_image {
 	my $ev        = shift;
 	my $copy_item = shift;
 
-	my ($x, $y, $width, $height) = (0, 0, 0, 0);
-
-	#use event coordinates and selected color
-	if ($ev) {
-		$x = $ev->x;
-		$y = $ev->y;
-
-		#use source item coordinates and item color
-	} elsif ($copy_item) {
-		$x = $copy_item->get('x') + 20;
-		$y = $copy_item->get('y') + 20;
-		$width = $copy_item->get('width');
-		$height = $copy_item->get('height');
-	}
-
-	my $item    = GooCanvas2::CanvasRect->new(
-		parent=>$self->{_canvas}->get_root_item, x=>$x, y=>$y, width=>$width, height=>$height,
-		'fill-color-rgba' => 0,
-		'line-dash'    => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'   => 1,
-		'stroke-color' => 'gray',
-	);
-
-	$self->{_current_new_item} = $item unless ($copy_item);
-	$self->{_items}{$item} = $item;
-
-	#blank pixbuf
-	my $blank = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, 2, 2);
-
-	#whole pixbuf is transparent
-	$blank->fill(0x00000000);
-
-	$self->{_items}{$item}{pixelize} = GooCanvas2::CanvasImage->new(
-		parent=>$self->{_canvas}->get_root_item,
-		pixbuf=>$blank,
-		x=>$item->get('x'),
-		y=>$item->get('y'),
-		'width'  => 2,
-		'height' => 2,
-	);
-
-	#set type flag
-	$self->{_items}{$item}{type} = 'pixelize';
-	$self->{_items}{$item}{uid}  = $self->{_uid}++;
-
-	#create rectangles
-	$self->handle_rects('create', $item);
-
-	if ($copy_item) {
-		$self->{_items}{$item}{pixelize}->set(
-			'x'      => int $self->{_items}{$item}->get('x'),
-			'y'      => int $self->{_items}{$item}->get('y'),
-			'width'  => $self->{_items}{$item}->get('width'),
-			'height' => $self->{_items}{$item}->get('height'),
-			'pixbuf' => $self->get_pixelated_pixbuf_from_canvas($self->{_items}{$item}),
-		);
-
-		$self->handle_embedded('update', $item, undef, undef, TRUE);
-	}
-
-	$self->setup_item_signals($self->{_items}{$item}{pixelize});
-	$self->setup_item_signals_extra($self->{_items}{$item}{pixelize});
-
-	$self->setup_item_signals($self->{_items}{$item});
-	$self->setup_item_signals_extra($self->{_items}{$item});
-
-	return $item;
+	require Shutter::Draw::Blur;
+	my $blur = Shutter::Draw::Blur->new( app => $self );
+	return $blur->setup($ev, $copy_item);
 }
 
 sub create_image {
@@ -6836,95 +6503,9 @@ sub create_text {
 	my $ev        = shift;
 	my $copy_item = shift;
 
-	my ($x, $y, $width, $height)     = (0, 0, 0, 0);
-	my $stroke_color = $self->{_stroke_color};
-	my $text           = $self->{_d}->get('New text...');
-	my $line_width     = $self->{_line_width};
-
-	#use event coordinates and selected color
-	if ($ev) {
-		$x = $ev->x;
-		$y = $ev->y;
-
-		#use source item coordinates and item color
-	} elsif ($copy_item) {
-		$x = $copy_item->get('x') + 20;
-		$y = $copy_item->get('y') + 20;
-		$width = $copy_item->get('width');
-		$height = $copy_item->get('height');
-		$stroke_color = $self->{_items}{$copy_item}{stroke_color};
-		$text           = $self->{_items}{$copy_item}{text}->get('text');
-		$line_width     = $self->{_items}{$copy_item}{text}->get('line-width');
-	}
-
-	my $item    = GooCanvas2::CanvasRect->new(
-		parent=>$self->{_canvas}->get_root_item, x=>$x, y=>$y, width=>$width, height=>$height,
-		'fill-color-rgba' => 0,
-		'line-dash'    => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'   => 1,
-		'stroke-color' => 'gray',
-	);
-
-	$self->{_current_new_item} = $item unless ($copy_item);
-	$self->{_items}{$item} = $item;
-
-	$self->{_items}{$item}{text} = GooCanvas2::CanvasText->new(
-		parent=>$self->{_canvas}->get_root_item, text=>"<span font_desc='" . $self->{_font} . "' >" . $text . "</span>",
-		x=>$item->get('x'),
-		y=>$item->get('y'),
-		width=>-1,
-		anchor=>'nw',
-		'use-markup'   => TRUE,
-		'fill-color-gdk-rgba' => $stroke_color,
-		'line-width'   => $line_width,
-	);
-
-	#adjust parent rectangle
-	my $tb = $self->{_items}{$item}{text}->get_bounds;
-	my $w  = abs($tb->x1 - $tb->x2);
-	my $h  = abs($tb->y1 - $tb->y2);
-
-	if ($copy_item) {
-		$self->{_items}{$item}->set(
-			'x'          => $self->{_items}{$item}->get('x') + 20,
-			'y'          => $self->{_items}{$item}->get('y') + 20,
-			'width'      => $w,
-			'height'     => $h,
-			'visibility' => 'hidden',
-		);
-	} else {
-		$self->{_items}{$item}->set(
-			'x'          => $ev->x - $w,
-			'y'          => $ev->y - $h,
-			'width'      => $w,
-			'height'     => $h,
-			'visibility' => 'hidden',
-		);
-	}
-
-	#update text
-	$self->handle_embedded('hide', $item);
-
-	#set type flag
-	$self->{_items}{$item}{type} = 'text';
-	$self->{_items}{$item}{uid}  = $self->{_uid}++;
-
-	$self->{_items}{$item}{stroke_color}       = $self->{_stroke_color};
-
-	#create rectangles
-	$self->handle_rects('create', $item);
-	if ($copy_item) {
-		$self->handle_embedded('update', $item);
-		$self->handle_rects('hide', $item);
-	}
-
-	$self->setup_item_signals($self->{_items}{$item}{text});
-	$self->setup_item_signals_extra($self->{_items}{$item}{text});
-
-	$self->setup_item_signals($self->{_items}{$item});
-	$self->setup_item_signals_extra($self->{_items}{$item});
-
-	return $item;
+	require Shutter::Draw::Text;
+	my $text = Shutter::Draw::Text->new( app => $self );
+	return $text->setup($ev, $copy_item);
 }
 
 sub create_line {
@@ -6934,106 +6515,9 @@ sub create_line {
 	my $end_arrow   = shift;
 	my $start_arrow = shift;
 
-	my ($x, $y, $width, $height)     = (0, 0, 0, 0);
-	my $stroke_color = $self->{_stroke_color};
-	my $line_width     = $self->{_line_width};
-	my $mirrored_w     = 0;
-	my $mirrored_h     = 0;
-
-	#default values
-	my $arrow_width      = 4;
-	my $arrow_length     = 5;
-	my $arrow_tip_length = 4;
-
-	#use event coordinates and selected color
-	if ($ev) {
-		$x = $ev->x;
-		$y = $ev->y;
-
-		#use source item coordinates and item color
-	} elsif ($copy_item) {
-		$x = $copy_item->get('x') + 20;
-		$y = $copy_item->get('y') + 20;
-		$width = $copy_item->get('width');
-		$height = $copy_item->get('height');
-		$stroke_color = $self->{_items}{$copy_item}{stroke_color};
-		$line_width     = $self->{_items}{$copy_item}{line}->get('line-width');
-		$mirrored_w     = $self->{_items}{$copy_item}{mirrored_w};
-		$mirrored_h     = $self->{_items}{$copy_item}{mirrored_h};
-
-		#arrow specific properties
-		$end_arrow        = $self->{_items}{$copy_item}{end_arrow};
-		$start_arrow      = $self->{_items}{$copy_item}{start_arrow};
-		$arrow_width      = $self->{_items}{$copy_item}{arrow_width};
-		$arrow_length     = $self->{_items}{$copy_item}{arrow_length};
-		$arrow_tip_length = $self->{_items}{$copy_item}{arrow_tip_length};
-	}
-
-	my $item    = GooCanvas2::CanvasRect->new(
-		parent=>$self->{_canvas}->get_root_item, x=>$x, y=>$y, width=>$width, height=>$height,
-		'fill-color-rgba' => 0,
-		'line-dash'    => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'   => 1,
-		'stroke-color' => 'gray',
-	);
-
-	$self->{_current_new_item} = $item unless ($copy_item);
-	$self->{_items}{$item} = $item;
-
-	$self->{_items}{$item}{line} = GooCanvas2::CanvasPolyline->new(
-		parent=>$self->{_canvas}->get_root_item,
-		close_path=>FALSE,
-		points => Shutter::Draw::Utils::points_to_canvas_points(
-			$item->get('x'),
-			$item->get('y'),
-			$item->get('x') + $item->get('width'),
-			$item->get('y') + $item->get('height'),
-		),
-		'stroke-color-gdk-rgba'   => $stroke_color,
-		'line-width'       => $line_width,
-		'line-cap'         => 'CAIRO_LINE_CAP_ROUND',
-		'line-join'        => 'CAIRO_LINE_JOIN_ROUND',
-		'end-arrow'        => $end_arrow,
-		'start-arrow'      => $start_arrow,
-		'arrow-length'     => $arrow_length,
-		'arrow-width'      => $arrow_width,
-		'arrow-tip-length' => $arrow_tip_length,
-		'visibility'       => 'hidden',
-	);
-
-	if (defined $end_arrow || defined $start_arrow) {
-
-		#save arrow specific properties
-		$self->{_items}{$item}{end_arrow}        = $self->{_items}{$item}{line}->get('end-arrow');
-		$self->{_items}{$item}{start_arrow}      = $self->{_items}{$item}{line}->get('start-arrow');
-		$self->{_items}{$item}{arrow_width}      = $self->{_items}{$item}{line}->get('arrow-width');
-		$self->{_items}{$item}{arrow_length}     = $self->{_items}{$item}{line}->get('arrow-length');
-		$self->{_items}{$item}{arrow_tip_length} = $self->{_items}{$item}{line}->get('arrow-tip-length');
-	}
-
-	#set type flag
-	$self->{_items}{$item}{type} = 'line';
-	$self->{_items}{$item}{uid}  = $self->{_uid}++;
-
-	$self->{_items}{$item}{mirrored_w} = $mirrored_w;
-	$self->{_items}{$item}{mirrored_h} = $mirrored_h;
-
-	$self->{_items}{$item}{stroke_color}       = $self->{_stroke_color};
-
-	#create rectangles
-	$self->handle_rects('create', $item);
-	if ($copy_item) {
-		$self->handle_embedded('update', $item);
-		$self->handle_rects('hide', $item);
-	}
-
-	$self->setup_item_signals($self->{_items}{$item}{line});
-	$self->setup_item_signals_extra($self->{_items}{$item}{line});
-
-	$self->setup_item_signals($self->{_items}{$item});
-	$self->setup_item_signals_extra($self->{_items}{$item});
-
-	return $item;
+	require Shutter::Draw::Arrow;
+	my $arrow = Shutter::Draw::Arrow->new( app => $self );
+	return $arrow->setup($ev, $copy_item, $end_arrow, $start_arrow);
 }
 
 sub create_ellipse {
@@ -7042,131 +6526,9 @@ sub create_ellipse {
 	my $copy_item = shift;
 	my $numbered  = shift;
 
-	my ($x, $y, $width, $height)     = (0, 0, 0, 0);
-	my $stroke_color = $self->{_stroke_color};
-	my $fill_color   = $self->{_fill_color};
-	my $line_width     = $self->{_line_width};
-
-	#use event coordinates and selected color
-	if ($ev) {
-		$x = $ev->x;
-		$y = $ev->y;
-
-		#use source item coordinates and item color
-	} elsif ($copy_item) {
-		$x = $copy_item->get('x') + 20;
-		$y = $copy_item->get('y') + 20;
-		$width = $copy_item->get('width');
-		$height = $copy_item->get('height');
-		$stroke_color = $self->{_items}{$copy_item}{stroke_color};
-		$fill_color   = $self->{_items}{$copy_item}{fill_color};
-		$line_width     = $self->{_items}{$copy_item}{ellipse}->get('line-width');
-		$numbered       = TRUE if exists $self->{_items}{$copy_item}{text};
-	}
-
-	my $item    = GooCanvas2::CanvasRect->new(
-		parent=>$self->{_canvas}->get_root_item, x=>$x, y=>$y, width=>$width, height=>$height,
-		'fill-color-rgba' => 0,
-		'line-dash'    => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'   => 1,
-		'stroke-color' => 'gray',
-	);
-
-	$self->{_current_new_item} = $item unless ($copy_item);
-	$self->{_items}{$item} = $item;
-
-	$self->{_items}{$item}{ellipse} = GooCanvas2::CanvasEllipse->new(
-		parent=>$self->{_canvas}->get_root_item, x=>$item->get('x'), y=>$item->get('y'), width=>$item->get('width'),
-		height=>$item->get('height'),
-		'fill-color-gdk-rgba'   => $fill_color,
-		'stroke-color-gdk-rgba' => $stroke_color,
-		'line-width'     => $line_width,
-	);
-
-	#numbered ellipse
-	if ($numbered) {
-
-		my $number = $self->get_highest_auto_digit();
-		$number++;
-
-		$self->{_items}{$item}{text} = GooCanvas2::CanvasText->new(
-			parent=>$self->{_canvas}->get_root_item, text=>"<span font_desc='" . $self->{_font} . "' >" . $number . "</span>",
-			x=>$self->{_items}{$item}{ellipse}->get('center-x'),
-			y=>$self->{_items}{$item}{ellipse}->get('center-y'),
-			width=>-1,
-			anchor=> 'center',
-			'use-markup'   => TRUE,
-			'fill-color-gdk-rgba'   => $stroke_color,
-			'line-width'   => $line_width,
-		);
-
-		#save used number
-		$self->{_items}{$item}{text}{digit} = $number;
-
-		#set type flag
-		$self->{_items}{$item}{type} = 'number';
-		$self->{_items}{$item}{uid}  = $self->{_uid}++;
-
-		#adjust parent rectangle if numbered ellipse
-		my $tb = $self->{_items}{$item}{text}->get_bounds;
-
-		#keep ratio = 1
-		my $qs = abs($tb->x1 - $tb->x2);
-		$qs = abs($tb->y1 - $tb->y2) if abs($tb->y1 - $tb->y2) > abs($tb->x1 - $tb->x2);
-
-		#add line width of parent ellipse
-		$qs += $self->{_items}{$item}{ellipse}->get('line-width') + 5;
-
-		if ($copy_item) {
-			$self->{_items}{$item}->set(
-				'x'          => $self->{_items}{$item}->get('x') + 20,
-				'y'          => $self->{_items}{$item}->get('y') + 20,
-				'width'      => $qs,
-				'height'     => $qs,
-				'visibility' => 'hidden',
-			);
-		} else {
-			$self->{_items}{$item}->set(
-				'x'          => $self->{_items}{$item}->get('x') - $qs,
-				'y'          => $self->{_items}{$item}->get('y') - $qs,
-				'width'      => $qs,
-				'height'     => $qs,
-				'visibility' => 'hidden',
-			);
-		}
-
-		$self->handle_embedded('hide', $item);
-
-	} else {
-
-		#set type flag
-		$self->{_items}{$item}{type} = 'ellipse';
-		$self->{_items}{$item}{uid}  = $self->{_uid}++;
-	}
-
-	#save color and opacity as well
-	$self->{_items}{$item}{fill_color}         = $self->{_fill_color};
-	$self->{_items}{$item}{stroke_color}       = $self->{_stroke_color};
-
-	#create rectangles
-	$self->handle_rects('create', $item);
-	if ($copy_item) {
-		$self->handle_embedded('update', $item);
-		$self->handle_rects('hide', $item);
-	}
-
-	if ($numbered) {
-		$self->setup_item_signals($self->{_items}{$item}{text});
-		$self->setup_item_signals_extra($self->{_items}{$item}{text});
-	}
-
-	$self->setup_item_signals($self->{_items}{$item}{ellipse});
-	$self->setup_item_signals_extra($self->{_items}{$item}{ellipse});
-
-	$self->setup_item_signals($self->{_items}{$item});
-	$self->setup_item_signals_extra($self->{_items}{$item});
-
-	return $item;
+	require Shutter::Draw::Ellipse;
+	my $ellipse = Shutter::Draw::Ellipse->new( app => $self );
+	return $ellipse->setup($ev, $copy_item, $numbered);
 }
 
 sub create_rectangle {
@@ -7174,51 +6536,9 @@ sub create_rectangle {
 	my $ev        = shift;
 	my $copy_item = shift;
 
-	my ($x, $y, $width, $height)     = (0, 0, 0, 0);
-	my $stroke_color = $self->{_stroke_color};
-	my $fill_color   = $self->{_fill_color};
-	my $line_width     = $self->{_line_width};
-
-	#use event coordinates and selected color
-	if ($ev) {
-		$x = $ev->x;
-		$y = $ev->y;
-
-		#use source item coordinates and item color
-	} elsif ($copy_item) {
-		$x = $copy_item->get('x') + 20;
-		$y = $copy_item->get('y') + 20;
-		$width = $copy_item->get('width');
-		$height = $copy_item->get('height');
-		$stroke_color = $self->{_items}{$copy_item}{stroke_color};
-		$fill_color   = $self->{_items}{$copy_item}{fill_color};
-		$line_width     = $self->{_items}{$copy_item}->get('line-width');
-	}
-
-	my $item = GooCanvas2::CanvasRect->new(
-		parent=>$self->{_canvas}->get_root_item, x=>$x, y=>$y, width=>$width, height=>$height,
-		'fill-color-gdk-rgba'   => $fill_color,
-		'stroke-color-gdk-rgba' => $stroke_color,
-		'line-width'     => $line_width,
-	);
-
-	$self->{_current_new_item} = $item unless ($copy_item);
-	$self->{_items}{$item} = $item;
-
-	#set type flag
-	$self->{_items}{$item}{type} = 'rectangle';
-	$self->{_items}{$item}{uid}  = $self->{_uid}++;
-
-	$self->{_items}{$item}{fill_color}         = $self->{_fill_color};
-	$self->{_items}{$item}{stroke_color}       = $self->{_stroke_color};
-
-	#create rectangles
-	$self->handle_rects('create', $item);
-
-	$self->setup_item_signals($self->{_items}{$item});
-	$self->setup_item_signals_extra($self->{_items}{$item});
-
-	return $item;
+	require Shutter::Draw::Rectangle;
+	my $rect = Shutter::Draw::Rectangle->new( app => $self );
+	return $rect->setup($ev, $copy_item);
 }
 
 
@@ -7231,6 +6551,7 @@ sub clipboard { shift->{_clipboard} }
 sub items { shift->{_items} }
 sub drawing_window { shift->{_drawing_window} }
 sub canvas { shift->{_canvas} }
+sub stipple_pixbuf { shift->{_stipple_pixbuf} }
 
 sub cut {
 	my $self = shift;
@@ -7302,6 +6623,8 @@ sub uid { shift->{_uid} }
 sub increase_uid { shift->{_uid}++ }
 
 sub uimanager { shift->{_uimanager} }
+
+sub toolbar_manager { shift->{_toolbar_manager} }
 
 1;
 

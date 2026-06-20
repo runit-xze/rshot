@@ -28,6 +28,7 @@ use utf8;
 use v5.40;
 use feature 'try'; no warnings 'experimental::try';
 
+use Moo;
 use Net::DBus;
 use Log::Any;
 
@@ -38,50 +39,44 @@ use Glib qw/TRUE FALSE/;
 
 my $log = Log::Any->get_logger;
 
-sub new ($class) {
+has '_notifications_service' => (is => 'rw', default => undef);
+has '_notifications_object'  => (is => 'rw', default => undef);
+has '_nid'                   => (is => 'rw', default => 0);
 
-	my $self = {};
-
-	#Use notifications object
+sub BUILD ($self, $args) {
 	try {
-		$self->{_notifications_service} = Net::DBus->session->get_service('org.freedesktop.Notifications');
-		$self->{_notifications_object}  = $self->{_notifications_service}->get_object('/org/freedesktop/Notifications', 'org.freedesktop.Notifications');
+		$self->_notifications_service(Net::DBus->session->get_service('org.freedesktop.Notifications'));
+		$self->_notifications_object($self->_notifications_service->get_object('/org/freedesktop/Notifications', 'org.freedesktop.Notifications'));
 	}
 	catch ($e) {
 		$log->warn("Warning: $e");
 	}
-
-	#last nid
-	$self->{_nid} = 0;
-
-	bless $self, $class;
-	return $self;
 }
 
 sub show ($self, $summary, $body, $nid = undef) {
-	$nid //= $self->{_nid};
+	$nid //= $self->_nid;
 
 	#notification
 	try {
-		if (defined $self->{_notifications_object}) {
-			$self->{_nid} = $self->{_notifications_object}->Notify('Shutter', $nid, "gtk-dialog-info", $summary, $body, [], {}, -1);
+		if (defined $self->_notifications_object) {
+			$self->_nid($self->_notifications_object->Notify('Shutter', $nid, "gtk-dialog-info", $summary, $body, [], {}, -1));
 		}
 	}
 	catch ($e) {
 		$log->warn("NotifyWarning: $e");
 	}
 
-	return $self->{_nid};
+	return $self->_nid;
 }
 
 sub close ($self, $nid = undef) {
-	$nid //= $self->{_nid};
+	$nid //= $self->_nid;
 
 	#close notification
 	if ($nid) {
 		try {
-			if (defined $self->{_notifications_object}) {
-				$self->{_notifications_object}->CloseNotification($nid);
+			if (defined $self->_notifications_object) {
+				$self->_notifications_object->CloseNotification($nid);
 			}
 		}
 		catch ($e) {

@@ -1,13 +1,15 @@
 # Shutter::App::Core::UploadManager
 
-## Purpose
-(Purpose of Shutter::App::Core::UploadManager module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Core/UploadManager.pm`
 
-## Usage
-(How to use Shutter::App::Core::UploadManager module)
+## Description
+Documentation for `Shutter::App::Core::UploadManager`. This module handles functionality related to UploadManager.
 
 ## Dependencies
-(Dependencies of Shutter::App::Core::UploadManager module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Core::UploadManager module)

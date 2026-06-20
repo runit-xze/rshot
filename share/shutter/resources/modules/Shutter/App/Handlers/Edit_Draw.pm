@@ -27,6 +27,7 @@ no warnings 'experimental::try';
 use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
+use Shutter::Draw::DrawingTool;
 
 has cli => (is => 'ro', required => 1);
 
@@ -37,13 +38,13 @@ sub fct_draw {
     my $session_start_screen = $cli->{_session_start_screen};
     my $session_screens = $cli->{_session_screens};
 
-    my $key = fct_get_current_file();
+    my $key = $cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
     my @draw_array;
 
     #single file
     if ($key) {
-        return FALSE unless fct_screenshot_exists($key);
+        return FALSE unless $cli->handlers->get('UI_Status')->fct_screenshot_exists($key);
         push(@draw_array, $key);
     } else {
         if ($session_start_screen && $session_start_screen->{'first_page'} && $session_start_screen->{'first_page'}->{'view'}) {
@@ -74,6 +75,8 @@ sub fct_draw {
         $drawing_tool_icons = "dark";
     } elsif ($drawing_tool_auto_icons_active && $drawing_tool_auto_icons_active->get_active()) {
         $drawing_tool_icons = "auto";
+    } else {
+        $drawing_tool_icons = "auto";   # default when no preference widget is configured
     }
 
     foreach my $k (@draw_array) {
@@ -105,19 +108,19 @@ sub fct_plugin {
     my $session_start_screen = $cli->{_session_start_screen};
     my $plugins = $cli->{_plugins} || {};
 
-    my $key = fct_get_current_file();
+    my $key = $cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
     my @plugin_array;
 
     #single file
     if ($key) {
-        return FALSE unless fct_screenshot_exists($key);
+        return FALSE unless $cli->handlers->get('UI_Status')->fct_screenshot_exists($key);
 
         unless (keys %$plugins > 0) {
             $sd->dlg_error_message($d->get("No plugin installed"), $d->get("Failed"));
         } else {
             push(@plugin_array, $key);
-            dlg_plugin(@plugin_array);
+            $cli->handlers->get('Dialogs_Plugin')->dlg_plugin(@plugin_array);
         }
     } else {
         if ($session_start_screen && $session_start_screen->{'first_page'} && $session_start_screen->{'first_page'}->{'view'}) {
@@ -133,7 +136,7 @@ sub fct_plugin {
                 undef
             );
         }
-        dlg_plugin(@plugin_array);
+        $cli->handlers->get('Dialogs_Plugin')->dlg_plugin(@plugin_array);
     }
     return TRUE;
 }
@@ -154,13 +157,13 @@ sub fct_rename {
     my $session_start_screen = $cli->{_session_start_screen};
     my $session_screens = $cli->{_session_screens};
 
-    my $key = fct_get_current_file();
+    my $key = $cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
     my @rename_array;
 
     #single file
     if ($key) {
-        return FALSE unless fct_screenshot_exists($key);
+        return FALSE unless $cli->handlers->get('UI_Status')->fct_screenshot_exists($key);
 
         print "Renaming of file " . $session_screens->{$key}->{'long'} . " started\n"
             if $sc->get_debug;
@@ -182,7 +185,7 @@ sub fct_rename {
         }
     }
 
-    dlg_rename(@rename_array);
+    $cli->handlers->get('Dialogs_Rename')->dlg_rename(@rename_array);
 
     return TRUE;
 }
@@ -195,13 +198,13 @@ sub fct_show_in_folder {
     my $session_start_screen = $cli->{_session_start_screen};
     my $session_screens = $cli->{_session_screens};
 
-    my $key = fct_get_current_file();
+    my $key = $cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
     my @show_in_folder_array;
 
     #single file
     if ($key) {
-        return FALSE unless fct_screenshot_exists($key);
+        return FALSE unless $cli->handlers->get('UI_Status')->fct_screenshot_exists($key);
 
         print "Showing in filebrowser started  - file: " . $session_screens->{$key}->{'long'} . "\n"
             if $sc->get_debug;
@@ -227,7 +230,7 @@ sub fct_show_in_folder {
     foreach my $ckey (@show_in_folder_array) {
         if ($session_screens->{$ckey} && $session_screens->{$ckey}->{'folder'}) {
             utf8::encode(my $folder_name_utf8 = $session_screens->{$ckey}->{'folder'});
-            $shf->xdg_open(undef, $folder_name_utf8);
+            $shf->xdg_open(undef, $folder_name_utf8, undef);
         }
     }
 

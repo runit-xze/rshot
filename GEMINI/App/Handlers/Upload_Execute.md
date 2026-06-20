@@ -1,13 +1,16 @@
 # Shutter::App::Handlers::Upload_Execute
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Upload_Execute module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Upload_Execute.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Upload_Execute module)
+## Description
+Documentation for `Shutter::App::Handlers::Upload_Execute`. This module handles functionality related to Upload_Execute.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Upload_Execute module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `Shutter::App::Directories`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Upload_Execute module)

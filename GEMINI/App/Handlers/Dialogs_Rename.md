@@ -1,13 +1,17 @@
 # Shutter::App::Handlers::Dialogs_Rename
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Dialogs_Rename module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Dialogs_Rename.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Dialogs_Rename module)
+## Description
+Documentation for `Shutter::App::Handlers::Dialogs_Rename`. This module handles functionality related to Dialogs_Rename.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Dialogs_Rename module)
+- `File::Basename`
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `Shutter::App::SimpleDialogs`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Dialogs_Rename module)

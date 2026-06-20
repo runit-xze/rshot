@@ -1,13 +1,15 @@
 # Shutter::App::Handlers::Dialogs_Plugin
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Dialogs_Plugin module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Dialogs_Plugin.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Dialogs_Plugin module)
+## Description
+Documentation for `Shutter::App::Handlers::Dialogs_Plugin`. This module handles functionality related to Dialogs_Plugin.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Dialogs_Plugin module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Dialogs_Plugin module)

@@ -41,16 +41,20 @@ sub upload_file {
     my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
 
     return FALSE unless $key;
-    return FALSE unless exists $sc->get_session_screens->{$key};
+    return FALSE unless exists $sc->cli->{_session_screens}->{$key};
 
-    my $file = $sc->get_session_screens->{$key}->{'long'};
-    my $upload_plugin = Shutter::Upload::FTP->new;
+    my $file = $sc->cli->{_session_screens}->{$key}->{'long'};
+    my $userhash = $sc->cli->{settings_manager}->get_setting('general', 'catbox_userhash') // '';
+    
+    require Shutter::Upload::Catbox;
+    my $upload_plugin = Shutter::Upload::Catbox->new(userhash => $userhash);
 
     my %upload_result = $upload_plugin->upload($file);
 
     if ($upload_result{success}) {
-        $sc->get_session_screens->{$key}->{'links'} = {
+        $sc->cli->{_session_screens}->{$key}->{'links'}->{'Catbox.moe'} = {
             'direct_link' => $upload_result{url},
+            'menuentry'   => 'Catbox.moe',
         };
         fct_show_status_message(1, $d->get("File uploaded successfully"));
         return $upload_result{url};

@@ -26,11 +26,14 @@ package Shutter::App::UI;
 use utf8;
 use v5.40;
 use feature 'try';
-no warnings 'experimental::try';
+no my $log = Log::Any->get_logger; $log->debugings 'experimental::try';
 
 use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
+use Log::Any;
+
+my $log = Log::Any->get_logger;
 
 # This module provides backward compatibility - it wraps the Common object
 # and provides UI setup methods that were previously in bin/shutter
@@ -60,8 +63,15 @@ sub setup_app_objects {
 
     my $vbox = Gtk3::VBox->new(FALSE, 0);
     $sc->get_mainwindow->add($vbox);
-    $vbox->pack_start($sm->create_menu, FALSE, TRUE, 0);
-    $vbox->pack_start($st->create_toolbar, FALSE, TRUE, 0);
+    
+    my $menu = $sm->create_menu;
+    my $toolbar = $st->create_toolbar;
+    
+    my $log = Log::Any->get_logger; $log->debug "Packing menu: " . (defined $menu ? ref($menu) : "undef"));;
+    my $log = Log::Any->get_logger; $log->debug "Packing toolbar: " . (defined $toolbar ? ref($toolbar) : "undef"));;
+    
+    $vbox->pack_start($menu, FALSE, TRUE, 0);
+    $vbox->pack_start($toolbar, FALSE, TRUE, 0);
 
     my $status = Gtk3::Statusbar->new;
     $status->set_name('main-window-statusbar');

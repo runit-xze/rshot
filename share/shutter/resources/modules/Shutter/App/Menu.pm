@@ -481,6 +481,17 @@ sub fct_ret_new_menu ($self, $accel_group, $d, $shutter_root) {
 	}
 	$self->{_menu_new}->append($self->{_menuitem_web});
 
+	#record gif
+	$self->{_menuitem_gif} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Record _GIF'));
+	$self->{_menuitem_gif}->set_image(Gtk3::Image->new_from_icon_name('media-record', 'menu'));
+	$self->{_menuitem_gif}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Shift><Control>G'), qw/visible/);
+	$self->{_menu_new}->append($self->{_menuitem_gif});
+
+	$self->{_menuitem_video} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Record _Video'));
+	$self->{_menuitem_video}->set_image(Gtk3::Image->new_from_icon_name('camera-video', 'menu'));
+	$self->{_menuitem_video}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Shift><Control>V'), qw/visible/);
+	$self->{_menu_new}->append($self->{_menuitem_video});
+
 	$self->{_menu_new}->append(Gtk3::SeparatorMenuItem->new);
 
 	#import from clipboard
@@ -609,8 +620,8 @@ sub fct_ret_actions_menu_large ($self, $accel_group, $d, $shutter_root) {
 
 	$self->{_menuitem_large_send} = Gtk3::ImageMenuItem->new($d->get('_Send To...'));
 	$self->{_menuitem_large_send}->set_image(Gtk3::Image->new_from_icon_name('document-send', 'menu'));
-	$self->{_menuitem_send}->set_sensitive(FALSE);
-	$self->{_menuitem_send}->set_name('item-large-send');
+	$self->{_menuitem_large_send}->set_sensitive(FALSE);
+	$self->{_menuitem_large_send}->set_name('item-large-send');
 	$self->{_menu_large_actions}->append($self->{_menuitem_large_send});
 
 	$self->{_menuitem_large_upload} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('E_xport...'));

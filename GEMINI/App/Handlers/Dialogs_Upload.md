@@ -1,13 +1,17 @@
 # Shutter::App::Handlers::Dialogs_Upload
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Dialogs_Upload module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Dialogs_Upload.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Dialogs_Upload module)
+## Description
+Documentation for `Shutter::App::Handlers::Dialogs_Upload`. This module handles functionality related to Dialogs_Upload.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Dialogs_Upload module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `Shutter::App::SimpleDialogs`
+- `URI::Escape`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Dialogs_Upload module)

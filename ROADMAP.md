@@ -16,6 +16,7 @@ This document outlines the strategic path for Shutter as it transitions from a l
 - [x] **Pin to Screen:** Floating screenshot overlays for quick reference.
 - [x] **SXCU Support:** Compatibility with ShareX custom uploader configurations.
 - [x] **Modern Naming:** Extensive file-naming macro support (`%y`, `%wt`, etc.).
+- [x] **GIF Recording:** Animated GIF capture mode with region/window selection, countdown overlay, and configurable FPS/duration.
 
 ---
 

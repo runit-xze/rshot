@@ -104,7 +104,7 @@ sub fct_update_actions {
             }
 
             #upload links
-            my (undef, $menu_links_tb) = fct_ret_upload_links_menu($key, $st->{_upload}->get_menu) if defined &fct_ret_upload_links_menu;
+            my (undef, $menu_links_tb) = $self->cli->handlers->get('Menu_Ret_UploadLinks')->fct_ret_upload_links_menu($key, $st->{_upload}->get_menu);
             if ($st->{_upload}) {
                 $st->{_upload}->set_menu($menu_links_tb) if $menu_links_tb;
                 $st->{_upload}->set_sensitive($n_items);
@@ -165,7 +165,7 @@ sub fct_update_actions {
             $sm->{_menuitem_rename}->set_sensitive($n_items) if $sm->{_menuitem_rename};
 
             #upload links
-            my ($nmenu_entries, $menu_links) = fct_ret_upload_links_menu($key, $sm->{_menuitem_links}->get_submenu) if ($sm->{_menuitem_links} && defined &fct_ret_upload_links_menu);
+            my ($nmenu_entries, $menu_links) = $self->cli->handlers->get('Menu_Ret_UploadLinks')->fct_ret_upload_links_menu($key, $sm->{_menuitem_links}->get_submenu) if $sm->{_menuitem_links};
 
             if ($sm->{_menuitem_links}) {
                 $sm->{_menuitem_links}->set_submenu($menu_links) if $menu_links;
@@ -210,7 +210,7 @@ sub fct_update_actions {
             $sm->{_menuitem_large_copy_filename}->set_sensitive($n_items) if $sm->{_menuitem_large_copy_filename};
 
             #upload links
-            my ($nmenu_entries_large, $menu_links_large) = fct_ret_upload_links_menu($key, $sm->{_menuitem_large_links}->get_submenu) if ($sm->{_menuitem_large_links} && defined &fct_ret_upload_links_menu);
+            my ($nmenu_entries_large, $menu_links_large) = $self->cli->handlers->get('Menu_Ret_UploadLinks')->fct_ret_upload_links_menu($key, $sm->{_menuitem_large_links}->get_submenu) if $sm->{_menuitem_large_links};
 
             if ($sm->{_menuitem_large_links}) {
                 $sm->{_menuitem_large_links}->set_submenu($menu_links_large) if $menu_links_large;

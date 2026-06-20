@@ -35,7 +35,11 @@ use Glib qw/TRUE FALSE/;
 #Gtk3
 use Gtk3;
 
+use Log::Any;
+
 #--------------------------------------
+
+my $log = Log::Any->get_logger;
 
 sub new ($class, $sc) {
 
@@ -173,7 +177,7 @@ sub new ($class, $sc) {
 
 	}
 	catch ($e) {
-		print "Warning: $e", "\n";
+		$log->warn("ShutterNotification init warning: $e");
 	}
 
 	#last nid

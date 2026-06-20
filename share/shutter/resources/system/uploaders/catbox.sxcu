@@ -6,7 +6,8 @@
   "RequestURL": "https://catbox.moe/user/api.php",
   "Body": "MultipartFormData",
   "Arguments": {
-    "reqtype": "fileupload"
+    "reqtype": "fileupload",
+    "userhash": "$PROMPT:Catbox Userhash (optional)$"
   },
   "FileFormName": "fileToUpload"
 }

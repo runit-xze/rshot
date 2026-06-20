@@ -1,13 +1,15 @@
 # Shutter::App::Constants
 
-## Purpose
-(Purpose of Shutter::App::Constants module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Constants.pm`
 
-## Usage
-(How to use Shutter::App::Constants module)
+## Description
+Documentation for `Shutter::App::Constants`. This module handles functionality related to Constants.
 
 ## Dependencies
-(Dependencies of Shutter::App::Constants module)
+- `Exporter`
+- `Shutter::App::Constants`
+- `constant`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Constants module)

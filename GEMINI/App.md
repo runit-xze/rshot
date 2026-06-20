@@ -1,13 +1,14 @@
 # Shutter::App
 
-## Purpose
-(Purpose of Shutter::App module)
+**File Path:** `share/shutter/resources/modules/Shutter/App.pm`
 
-## Usage
-(How to use Shutter::App module)
+## Description
+Documentation for `Shutter::App`. This module handles functionality related to App.
 
 ## Dependencies
-(Dependencies of Shutter::App module)
+- `Glib`
+- `Glib::Object::Subclass`
+- `Gtk3`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App module)

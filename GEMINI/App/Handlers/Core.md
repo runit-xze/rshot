@@ -1,13 +1,16 @@
 # Shutter::App::Handlers::Core
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Core module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Core.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Core module)
+## Description
+Documentation for `Shutter::App::Handlers::Core`. This module handles functionality related to Core.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Core module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `Shutter::App::AboutDialog`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Core module)

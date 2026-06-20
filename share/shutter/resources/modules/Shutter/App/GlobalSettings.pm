@@ -28,60 +28,59 @@ use utf8;
 use v5.40;
 use feature 'try'; no warnings 'experimental::try';
 
+use Moo;
+
 #Glib
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new ($class) {
+has '_image_quality' => (
+	is      => 'rw',
+	default => sub {
+		{ "png" => undef, "jpg" => undef, "webp" => undef, "avif" => undef }
+	},
+);
 
-	my $self = {};
+has '_default_image_quality' => (
+	is      => 'ro',
+	default => sub {
+		{ "png" => 9, "jpg" => 90, "webp" => 98, "avif" => 68 }
+	},
+);
 
-	$self->{_image_quality} = {
-		"png"  => undef,
-		"jpg"  => undef,
-		"webp" => undef,
-		"avif" => undef
-	};
-
-	$self->{_default_image_quality} = {
-		"png"  => 9,
-		"jpg"  => 90,
-		"webp" => 98,
-		"avif" => 68
-	};
-
-	bless $self, $class;
-	return $self;
-}
+has '_gif_settings' => (
+	is      => 'rw',
+	default => sub {
+		{ fps => 10, max_duration => 30, countdown => 3, cursor => 1 }
+	},
+);
 
 #getter / setter
 
 sub get_image_quality ($self, $format) {
-	if (defined $self->{_image_quality}{$format}) {
-		return $self->{_image_quality}{$format};
+	if (defined $self->_image_quality->{$format}) {
+		return $self->_image_quality->{$format};
 	} else {
-		return $self->{_default_image_quality}{$format};
+		return $self->_default_image_quality->{$format};
 	}
 }
 
-# SKIP signatures: uses if (@_) getter/setter pattern
-sub set_image_quality {
-	my $self   = shift;
-	my $format = shift;
-	if (@_) {
-		$self->{_image_quality}{$format} = shift;
-	}
-	return $self->{_image_quality}{$format};
+sub set_image_quality ($self, $format, $value = undef) {
+	$self->_image_quality->{$format} = $value if defined $value;
+	return $self->_image_quality->{$format};
 }
 
 sub clear_quality_settings ($self) {
-	$self->{_image_quality} = {
-		"png"  => undef,
-		"jpg"  => undef,
-		"webp" => undef,
-		"avif" => undef
-	};
+	$self->_image_quality({ "png" => undef, "jpg" => undef, "webp" => undef, "avif" => undef });
+}
+
+sub get_gif_setting ($self, $key) {
+	return $self->_gif_settings->{$key};
+}
+
+sub set_gif_setting ($self, $key, $val) {
+	$self->_gif_settings->{$key} = $val;
 }
 
 1;

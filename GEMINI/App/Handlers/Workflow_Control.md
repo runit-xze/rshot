@@ -1,13 +1,17 @@
 # Shutter::App::Handlers::Workflow_Control
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Workflow_Control module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Workflow_Control.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Workflow_Control module)
+## Description
+Documentation for `Shutter::App::Handlers::Workflow_Control`. This module handles functionality related to Workflow_Control.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Workflow_Control module)
+- `Glib`
+- `Gtk3`
+- `Log::Any`
+- `Moo`
+- `Net::DBus`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Workflow_Control module)

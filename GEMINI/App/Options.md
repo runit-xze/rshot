@@ -1,20 +1,18 @@
 # Shutter::App::Options
 
-## Purpose
-This module handles command-line argument parsing for Shutter.
+**File Path:** `share/shutter/resources/modules/Shutter/App/Options.pm`
 
-## Usage
-Called at application startup to process flags like `--full`, `--select`, `--debug`, and to identify any image files passed as arguments to be opened.
+## Description
+Documentation for `Shutter::App::Options`. This module handles functionality related to Options.
 
 ## Dependencies
-*   `Getopt::Long`
-*   `Pod::Usage`
-*   `Encode`
-*   `Log::Any`
+- `Encode`
+- `Encode::Locale`
+- `Getopt::Long`
+- `Glib`
+- `Log::Any`
+- `Pod::Usage`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-*   **`get_options`**: 
-    *   Uses `Getopt::Long` to parse standard and project-specific CLI options.
-    *   Maps options to state changes in the `Common` state object (`sc`).
-    *   Handles `--help` and `--version` by printing and exiting.
-    *   Collects any remaining arguments (potential filenames) and returns them as an array reference.

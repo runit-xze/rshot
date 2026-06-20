@@ -357,7 +357,7 @@ sub _create_drawing_group {
         10,
         sub {
             my $action = shift;
-            $self->app->change_drawing_tool_cb($action);
+            $self->app->toolbar_manager->change_drawing_tool_cb($action);
         } );
 
     return $drawing_group;

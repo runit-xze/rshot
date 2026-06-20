@@ -1,13 +1,15 @@
 # Shutter::App::Handlers::Events_Control
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Events_Control module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Events_Control.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Events_Control module)
+## Description
+Documentation for `Shutter::App::Handlers::Events_Control`. This module handles functionality related to Events_Control.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Events_Control module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Events_Control module)

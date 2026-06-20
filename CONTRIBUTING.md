@@ -53,24 +53,6 @@ Detailed technical documentation can be found in the [**ARCHITECTURE.md**](ARCHI
 
 ---
 
-## 🛠️ Testing & Debugging
-
-New features should always include tests in the `t/` directory.
-
-```bash
-# Run all tests
-make test
-```
-
-### Development Mode (Mock Capture)
-
-Testing screenshot logic manually can be tedious. Shutter includes a **Mock Capture Mode**:
-
-```bash
-# Take a mock capture
-carton exec bin/shutter --mock-capture --full
-```
-
 ---
 
 ## 🎯 Good First Issues
@@ -81,14 +63,14 @@ Looking for a place to start?
 
 ---
 
-## Coding Standards
+## 🛠️ Coding Standards
 
 *   **Strict & Warnings**: Always use `use strict;` and `use warnings;` (or let Moo/v5.40 handle it).
 *   **Naming**: Use `snake_case` for methods and variables.
 *   **Formatting**: We use `perltidy`. Run `make tidy` before committing.
 *   **Static Analysis**: We use `perlcritic`. Run `make lint` to check for common issues.
 
-## Testing
+## 🛠️ Testing & Debugging
 
 New features should always include tests in the `t/` directory. Use `Test::More` and `Test::MockModule` where appropriate.
 
@@ -97,7 +79,7 @@ New features should always include tests in the `t/` directory. Use `Test::More`
 make test
 ```
 
-## Development Mode (Mock Capture)
+### Development Mode (Mock Capture)
 
 Testing screenshot logic manually can be tedious. Shutter includes a **Mock Capture Mode** that allows you to test the entire after-capture pipeline (naming, resizing, uploading, etc.) without actually taking a screenshot of your desktop.
 

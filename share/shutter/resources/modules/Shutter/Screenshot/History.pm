@@ -55,17 +55,16 @@ sub get_last_capture ($self) {
 	return ($self->{_drawable}, $self->{_x}, $self->{_y}, $self->{_w}, $self->{_h}, $self->{_region}, $self->{_wxid}, $self->{_gxid});
 }
 
-sub set_last_capture {
-	my $self = shift;
-	if (scalar @_ >= 5) {
-		$self->{_drawable} = shift;
-		$self->{_x}        = shift;
-		$self->{_y}        = shift;
-		$self->{_w}        = shift;
-		$self->{_h}        = shift;
-		$self->{_region}   = shift;
-		$self->{_wxid}     = shift;
-		$self->{_gxid}     = shift;
+sub set_last_capture ($self, $drawable = undef, $x = undef, $y = undef, $w = undef, $h = undef, $region = undef, $wxid = undef, $gxid = undef) {
+	if (defined $drawable && defined $x && defined $y && defined $w && defined $h) {
+		$self->{_drawable} = $drawable;
+		$self->{_x}        = $x;
+		$self->{_y}        = $y;
+		$self->{_w}        = $w;
+		$self->{_h}        = $h;
+		$self->{_region}   = $region;
+		$self->{_wxid}     = $wxid;
+		$self->{_gxid}     = $gxid;
 	} else {
 		warn "WARNING: Wrong number of arguments in Shutter::Screenshot::History::set_last_capture\n";
 	}

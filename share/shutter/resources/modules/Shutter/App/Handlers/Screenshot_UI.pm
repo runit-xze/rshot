@@ -37,7 +37,7 @@ sub evt_notebook_switch {
     my $session_screens = $cli->{_session_screens};
     my $lp = $cli->{_lp};
 
-    my $key = fct_get_file_by_index($int) if defined &fct_get_file_by_index;
+    my $key = $cli->handlers->get('UI_Tabs')->fct_get_file_by_index($int);
     if ($key) {
         Glib::Idle->add(
             sub {
@@ -55,7 +55,7 @@ sub evt_notebook_switch {
                         if ($session_screens->{$key}->{'long'}) {
 
                             #update window title
-                            fct_update_info_and_tray($key) if defined &fct_update_info_and_tray;
+                            $cli->handlers->get('UI_Status')->fct_update_info_and_tray($key);
 
                             #do nothing if the view does already show a pixbuf
                             if (exists $session_screens->{$ckey}
@@ -83,7 +83,7 @@ sub evt_notebook_switch {
     } else {
         Glib::Idle->add(
             sub {
-                fct_update_info_and_tray("session") if defined &fct_update_info_and_tray;
+                $cli->handlers->get('UI_Status')->fct_update_info_and_tray("session");
                 return FALSE;
             });
     }
@@ -95,7 +95,7 @@ sub evt_notebook_switch {
     }
 
     #enable/disable menu entry when we switch tabs
-    fct_update_actions($int, $key) if defined &fct_update_actions;
+    $cli->handlers->get('Screenshot_Actions')->fct_update_actions($int, $key);
 
     return TRUE;
 }

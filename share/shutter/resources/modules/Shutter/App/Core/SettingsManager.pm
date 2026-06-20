@@ -126,6 +126,47 @@ sub load_accounts {
             }
         }
     }
+
+    require File::Glob;
+    require File::Basename;
+    require JSON::MaybeXS;
+    my $shutter_root = $sc->get_root;
+    my @sxcu_paths = (
+        "$shutter_root/share/shutter/resources/system/uploaders/*.sxcu",
+        $ENV{'HOME'} . "/.shutter/uploaders/*.sxcu"
+    );
+    my $json = JSON::MaybeXS->new;
+    foreach my $sxcu_path (@sxcu_paths) {
+        my @sxcus = File::Glob::bsd_glob($sxcu_path);
+        foreach my $ukey (@sxcus) {
+            if (-f $ukey) {
+                my ($name, $folder, $type) = File::Basename::fileparse($ukey, qr/\.[^.]*/);
+                
+                eval {
+                    open(my $fh, '<', $ukey) or die "Cannot open $ukey";
+                    my $json_text = do { local $/; <$fh> };
+                    close($fh);
+                    my $sxcu = $json->decode($json_text);
+                    
+                    my $display_name = $sxcu->{Name} || $name;
+                    
+                    $accounts{$display_name}->{path} = $ukey;
+                    $accounts{$display_name}->{module} = "ShareX";
+                    $accounts{$display_name}->{host} = $sxcu->{RequestURL};
+                    $accounts{$display_name}->{folder} = "$shutter_root/share/shutter/resources/modules/Shutter/Upload";
+                    $accounts{$display_name}->{description} = "ShareX Custom Uploader ($display_name)";
+                    $accounts{$display_name}->{register_color} = "blue";
+                    $accounts{$display_name}->{register_text} = "";
+                    $accounts{$display_name}->{supports_anonymous_upload} = TRUE;
+                    $accounts{$display_name}->{supports_authorized_upload} = FALSE;
+                    $accounts{$display_name}->{supports_oauth_upload} = FALSE;
+                    $accounts{$display_name}->{username} = "" unless defined $accounts{$display_name}->{username};
+                    $accounts{$display_name}->{password} = "" unless defined $accounts{$display_name}->{password};
+                };
+            }
+        }
+    }
+
     return \%accounts;
 }
 

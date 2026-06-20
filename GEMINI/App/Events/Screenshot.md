@@ -1,13 +1,15 @@
 # Shutter::App::Events::Screenshot
 
-## Purpose
-(Purpose of Shutter::App::Events::Screenshot module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Events/Screenshot.pm`
 
-## Usage
-(How to use Shutter::App::Events::Screenshot module)
+## Description
+Documentation for `Shutter::App::Events::Screenshot`. This module handles functionality related to Screenshot.
 
 ## Dependencies
-(Dependencies of Shutter::App::Events::Screenshot module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Events::Screenshot module)

@@ -1,13 +1,15 @@
 # Shutter::App::Handlers::Menu
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Menu module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Menu.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Menu module)
+## Description
+Documentation for `Shutter::App::Handlers::Menu`. This module handles functionality related to Menu.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Menu module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Menu module)

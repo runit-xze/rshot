@@ -1,13 +1,20 @@
 # Shutter::App::Core::SettingsManager
 
-## Purpose
-(Purpose of Shutter::App::Core::SettingsManager module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Core/SettingsManager.pm`
 
-## Usage
-(How to use Shutter::App::Core::SettingsManager module)
+## Description
+Documentation for `Shutter::App::Core::SettingsManager`. This module handles functionality related to SettingsManager.
 
 ## Dependencies
-(Dependencies of Shutter::App::Core::SettingsManager module)
+- `File::Copy`
+- `File::Spec`
+- `File::Temp`
+- `Glib`
+- `Gtk3`
+- `IO::File`
+- `Moo`
+- `XML::Simple`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Core::SettingsManager module)

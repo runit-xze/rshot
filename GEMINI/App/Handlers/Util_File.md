@@ -1,13 +1,19 @@
 # Shutter::App::Handlers::Util_File
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Util_File module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Util_File.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Util_File module)
+## Description
+Documentation for `Shutter::App::Handlers::Util_File`. This module handles functionality related to Util_File.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Util_File module)
+- `File::Basename`
+- `File::Glob`
+- `Glib`
+- `Gtk3`
+- `JSON::MaybeXS`
+- `Moo`
+- `Shutter::App::Constants`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Util_File module)

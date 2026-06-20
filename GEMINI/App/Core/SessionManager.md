@@ -1,13 +1,18 @@
 # Shutter::App::Core::SessionManager
 
-## Purpose
-(Purpose of Shutter::App::Core::SessionManager module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Core/SessionManager.pm`
 
-## Usage
-(How to use Shutter::App::Core::SessionManager module)
+## Description
+Documentation for `Shutter::App::Core::SessionManager`. This module handles functionality related to SessionManager.
 
 ## Dependencies
-(Dependencies of Shutter::App::Core::SessionManager module)
+- `File::Copy`
+- `File::Spec`
+- `Glib`
+- `Gtk3`
+- `List::Util`
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Core::SessionManager module)

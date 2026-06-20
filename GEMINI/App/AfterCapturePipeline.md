@@ -1,13 +1,16 @@
 # Shutter::App::AfterCapturePipeline
 
-## Purpose
-(Purpose of Shutter::App::AfterCapturePipeline module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/AfterCapturePipeline.pm`
 
-## Usage
-(How to use Shutter::App::AfterCapturePipeline module)
+## Description
+Documentation for `Shutter::App::AfterCapturePipeline`. This module handles functionality related to AfterCapturePipeline.
 
 ## Dependencies
-(Dependencies of Shutter::App::AfterCapturePipeline module)
+- `Glib`
+- `Gtk3`
+- `JSON::MaybeXS`
+- `Log::Any`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::AfterCapturePipeline module)

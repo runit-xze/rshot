@@ -1,13 +1,13 @@
 # Shutter::App::Handlers::Registry
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Registry module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Registry.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Registry module)
+## Description
+Documentation for `Shutter::App::Handlers::Registry`. This module handles functionality related to Registry.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Registry module)
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Registry module)

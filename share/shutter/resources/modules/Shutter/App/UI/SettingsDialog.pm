@@ -33,6 +33,12 @@ use Gtk3;
 use Glib qw/TRUE FALSE/;
 use Shutter::App::Constants qw/SHUTTER_NAME/;
 use Shutter::App::UI::Settings::Main;
+use Shutter::App::UI::Settings::Behavior;
+use Shutter::App::UI::Settings::Capture;
+use Shutter::App::UI::Settings::Upload;
+use Shutter::App::UI::Settings::Plugins;
+use Shutter::App::UI::Settings::ShareX;
+use Shutter::App::UI::Settings::Video;
 
 has 'cli' => (is => 'ro', required => 1);
 has '_dialog' => (is => 'rw');
@@ -54,6 +60,36 @@ sub create_settings_dialog {
     my $tab_main = Shutter::App::UI::Settings::Main->new(cli => $self->cli);
     $notebook->append_page($tab_main->get_widget, Gtk3::Label->new($d->get("Main")));
     push @{$self->_tabs}, $tab_main;
+
+    # Behavior Tab
+    my $tab_behavior = Shutter::App::UI::Settings::Behavior->new(cli => $self->cli);
+    $notebook->append_page($tab_behavior->get_widget, Gtk3::Label->new($d->get("Behavior")));
+    push @{$self->_tabs}, $tab_behavior;
+
+    # Capture Tab
+    my $tab_capture = Shutter::App::UI::Settings::Capture->new(cli => $self->cli);
+    $notebook->append_page($tab_capture->get_widget, Gtk3::Label->new($d->get("Capture")));
+    push @{$self->_tabs}, $tab_capture;
+
+    # Upload Tab
+    my $tab_upload = Shutter::App::UI::Settings::Upload->new(cli => $self->cli);
+    $notebook->append_page($tab_upload->get_widget, Gtk3::Label->new($d->get("Upload")));
+    push @{$self->_tabs}, $tab_upload;
+
+    # Video Tab
+    my $tab_video = Shutter::App::UI::Settings::Video->new(cli => $self->cli);
+    $notebook->append_page($tab_video->get_widget, Gtk3::Label->new($d->get("Video")));
+    push @{$self->_tabs}, $tab_video;
+
+    # Plugins Tab
+    my $tab_plugins = Shutter::App::UI::Settings::Plugins->new(cli => $self->cli);
+    $notebook->append_page($tab_plugins->get_widget, Gtk3::Label->new($d->get("Plugins")));
+    push @{$self->_tabs}, $tab_plugins;
+
+    # ShareX Tab
+    my $tab_sharex = Shutter::App::UI::Settings::ShareX->new(cli => $self->cli);
+    $notebook->append_page($tab_sharex->get_widget, Gtk3::Label->new($d->get("ShareX")));
+    push @{$self->_tabs}, $tab_sharex;
 
     # Workflow Tab
     my $workflow_vbox = Gtk3::VBox->new(FALSE, 6);

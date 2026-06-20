@@ -142,10 +142,51 @@ sub fct_update_tab ($self, $key, $pixbuf = undef, $giofile = undef, $force_thumb
             my $im_height = undef;
 
             if (defined $pixbuf) {
-                $session_screens->{$key}->{'image'}->set_pixbuf($pixbuf) if $session_screens->{$key}->{'image'};
+                if ($session_screens->{$key}->{'playbin'}) {
+                    my $playbin = $session_screens->{$key}->{'playbin'};
+                    my $uri = $session_screens->{$key}->{'giofile'}->get_uri();
+                    $playbin->set_property('uri', $uri);
+                    $playbin->set_state('playing');
+                } elsif ($session_screens->{$key}->{'image'}) {
+                    if ($session_screens->{$key}->{'mime_type'} eq 'image/gif') {
+                        try {
+                            my $anim = Gtk3::Gdk::PixbufAnimation->new_from_file($session_screens->{$key}->{'long'});
+                            if ($anim && !$anim->is_static_image) {
+                                my $iter = $anim->get_iter(undef);
+                                $session_screens->{$key}->{'anim_iter'} = $iter;
+                                
+                                if (defined $session_screens->{$key}->{'anim_timer'}) {
+                                    Glib::Source->remove($session_screens->{$key}->{'anim_timer'});
+                                }
+                                
+                                $session_screens->{$key}->{'image'}->set_pixbuf($iter->get_pixbuf);
+                                
+                                my $delay = $iter->get_delay_time || 100;
+                                $delay = 100 if $delay < 20;
+                                
+                                my $timer = Glib::Timeout->add($delay, sub {
+                                    if (exists $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
+                                        my $current_iter = $session_screens->{$key}->{'anim_iter'};
+                                        $current_iter->advance(undef);
+                                        $session_screens->{$key}->{'image'}->set_pixbuf($current_iter->get_pixbuf);
+                                        return TRUE;
+                                    }
+                                    return FALSE;
+                                });
+                                $session_screens->{$key}->{'anim_timer'} = $timer;
+                            } else {
+                                $session_screens->{$key}->{'image'}->set_pixbuf($pixbuf);
+                            }
+                        } catch ($e) {
+                            $session_screens->{$key}->{'image'}->set_pixbuf($pixbuf);
+                        }
+                    } else {
+                        $session_screens->{$key}->{'image'}->set_pixbuf($pixbuf);
+                    }
+                }
+                
                 $im_width = $pixbuf->get_width;
                 $im_height = $pixbuf->get_height;
-
             } else {
                 (undef, $im_width, $im_height) = Gtk3::Gdk::Pixbuf::get_file_info($session_screens->{$key}->{'long'});
 
@@ -251,7 +292,7 @@ sub fct_show_status_message ($self, $timeout, $message) {
     );
 }
 
-sub fct_update_info_and_tray ($self) {
+sub fct_update_info_and_tray ($self, $key = undef) {
     # Implementation for updating info and tray
     # extracted from bin/shutter
 }

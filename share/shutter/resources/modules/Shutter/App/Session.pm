@@ -41,11 +41,9 @@ sub BUILD ($self, $args) {
     $self->notebook(Gtk3::Notebook->new);
     $self->cli->notebook($self->notebook);
     $self->cli->{_notebook} = $self->notebook;
-
-    # Add a dummy tab to make sure notebook is visible
-    my $label = Gtk3::Label->new("Session");
-    my $content = Gtk3::Label->new("No screenshots in this session yet.");
-    $self->notebook->append_page($content, $label);
+    # Note: fct_create_session_notebook is called from CLI._initialize_modules
+    # after handlers are ready. It creates the proper Session tab with IconView,
+    # sets scrollable=TRUE, sets up DnD, and connects the switch-page signal.
 }
 
 sub create_notebook ($self) {

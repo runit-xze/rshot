@@ -1,13 +1,14 @@
 # Shutter::App::Autostart
 
-## Purpose
-(Purpose of Shutter::App::Autostart module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Autostart.pm`
 
-## Usage
-(How to use Shutter::App::Autostart module)
+## Description
+Documentation for `Shutter::App::Autostart`. This module handles functionality related to Autostart.
 
 ## Dependencies
-(Dependencies of Shutter::App::Autostart module)
+- `Glib`
+- `Log::Any`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Autostart module)

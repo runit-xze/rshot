@@ -1,13 +1,20 @@
 # Shutter::App::Handlers::Init_Handlers
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Init_Handlers module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Init_Handlers.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Init_Handlers module)
+## Description
+Documentation for `Shutter::App::Handlers::Init_Handlers`. This module handles functionality related to Init_Handlers.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Init_Handlers module)
+- `File::Basename`
+- `File::Copy`
+- `Glib`
+- `Gtk3`
+- `IO::File`
+- `Moo`
+- `URI::Escape`
+- `XML::Simple`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Init_Handlers module)

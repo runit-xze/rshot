@@ -52,7 +52,7 @@ sub BUILD ($self, $args) {
     $window->set_focus_on_map(TRUE);
     $window->set_default_size(-1, 500);
 
-    Gtk3::Window::set_default_icon_name("shutter");
+    Gtk3::Window::set_default_icon_name("rshot");
 
     my $vbox = Gtk3::VBox->new(FALSE, 0);
     $self->_vbox($vbox);

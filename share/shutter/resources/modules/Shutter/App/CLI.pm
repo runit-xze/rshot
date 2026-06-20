@@ -110,7 +110,7 @@ sub _setup_logging ($self) {
     if ($sc->get_log_file) {
         Log::Any::Adapter->set('File', $sc->get_log_file, log_level => $level);
     } else {
-        Log::Any::Adapter->set('Stderr', log_level => $level);
+        Log::Any::Adapter->set("Stderr", log_level => "debug");
     }
     
     $self->log(Log::Any->get_logger);
@@ -178,16 +178,33 @@ sub _initialize_modules ($self) {
 
     my $session        = Shutter::App::Session->new(cli => $self);
     my $menus          = Shutter::App::UI::Menus->new(cli => $self);
-    
+
+    # Link legacy global references used by handlers
+    $self->{_sm} = $self->{sm};
+    $self->{_st} = $self->{st};
+    $self->{_session_screens} = $session->manager->_session_screens;
+    $self->{_session_start_screen} = $session->manager->_session_start_screen;
+
+    # Initialize css provider for ImageView alpha/transparency styling
+    $self->{_css_provider_alpha} = Gtk3::CssProvider->new;
+
+    my $status = Gtk3::Statusbar->new;
+    $status->set_name('main-window-statusbar');
+    $self->vbox->pack_start($status, FALSE, TRUE, 0);
+    $self->sc->{_status} = $status;
+    $self->{_status} = $status;
+
     my $file_events    = Shutter::App::Events::File->new(cli => $self);
     my $screenshot_events = Shutter::App::Events::Screenshot->new(cli => $self);
     my $edit_events    = Shutter::App::Events::Edit->new(cli => $self);
     $self->workflow(Shutter::App::Workflow->new(cli => $self));
 
-    Glib::Timeout->add(1000, sub {
-        $self->handlers->get('Core')->evt_show_settings();
-        return FALSE;
-    });
+    # Initialize the session notebook: sets scrollable=TRUE, creates the Session
+    # IconView tab, wires DnD and the switch-page signal. Must be called after
+    # all handlers are registered and before fct_load_session.
+    $self->handlers->get('Workflow_Session')->fct_create_session_notebook();
+
+    $self->handlers->get('Init_Handlers')->fct_load_session();
 }
 
 sub _register_actions ($self) {

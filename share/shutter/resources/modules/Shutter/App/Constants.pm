@@ -39,8 +39,8 @@ our @EXPORT_OK = qw(
 
 use constant MAX_ERROR       => 5;
 use constant SHUTTER_REV     => 'Rev.1876';
-use constant SHUTTER_NAME    => 'Shutter';
-use constant SHUTTER_VERSION => '0.99.7';
+use constant SHUTTER_NAME    => 'rshot';
+use constant SHUTTER_VERSION => '1';
 
 1;
 

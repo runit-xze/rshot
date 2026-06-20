@@ -79,6 +79,18 @@ sub evt_take_screenshot {
         return TRUE;
     }
     
+    if ($data =~ /^gif_select|^tray_gif_select|^gif_window|^tray_gif_window/) {
+        $self->cli->handlers->get('Screenshot_GifRecord')->evt_gif_record($widget, $data, $folder_from_config, $extra);
+        $self->fct_control_signals('unblock');
+        return TRUE;
+    }
+    
+    if ($data =~ /^video_select|^tray_video_select|^video_window|^tray_video_window/) {
+        $self->cli->handlers->get('Screenshot_VideoRecord')->evt_video_record($widget, $data, $folder_from_config, $extra);
+        $self->fct_control_signals('unblock');
+        return TRUE;
+    }
+    
     if (!$x11_supported && $data ne "full" && $data ne "tray_full") {
         my $sd = Shutter::App::SimpleDialogs->new;
         $sd->dlg_error_message($d->get("Can't take screenshots without X11 server"), $d->get("Failed"));
@@ -174,8 +186,8 @@ sub fct_select_all { shift->cli->handlers->get('Edit_Delete')->fct_select_all() 
 sub fct_trash { shift->cli->handlers->get('Edit_Delete')->fct_trash() }
 sub fct_draw { shift->cli->handlers->get('Edit_Draw')->fct_draw() }
 sub fct_plugin { shift->cli->handlers->get('Edit_Draw')->fct_plugin() }
-sub fct_send { shift->cli->handlers->get('Dialogs_Upload')->fct_send() }
-sub fct_upload { shift->cli->handlers->get('Dialogs_Upload')->fct_upload() }
+sub fct_send { shift->cli->handlers->get('Upload_Main')->fct_send() }
+sub fct_upload { shift->cli->handlers->get('Upload_Main')->fct_upload() }
 sub fct_email { my $self = shift; $self->cli->handlers->get('Util_File')->fct_email(@_) }
 sub fct_print { my $self = shift; $self->cli->handlers->get('Util_File')->fct_print(@_) }
 

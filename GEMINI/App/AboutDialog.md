@@ -1,13 +1,14 @@
 # Shutter::App::AboutDialog
 
-## Purpose
-(Purpose of Shutter::App::AboutDialog module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/AboutDialog.pm`
 
-## Usage
-(How to use Shutter::App::AboutDialog module)
+## Description
+Documentation for `Shutter::App::AboutDialog`. This module handles functionality related to AboutDialog.
 
 ## Dependencies
-(Dependencies of Shutter::App::AboutDialog module)
+- `Glib`
+- `Gtk3`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::AboutDialog module)

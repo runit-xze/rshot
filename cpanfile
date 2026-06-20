@@ -13,6 +13,10 @@ requires "Log::Any";
 requires "Log::Any::Adapter";
 requires "Log::Any::Adapter::Stderr";
 requires "Log::Any::Adapter::File";
+requires "JSON::MaybeXS";
+requires "LWP::UserAgent";
+requires "URI";
+requires "X11::Protocol";
 
 test_requires "Test::MockModule";
 test_requires "Test::Strict";

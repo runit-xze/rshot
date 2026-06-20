@@ -67,7 +67,7 @@ sub fct_delete ($self, $key = undef, $action = undef) {
         }
 
         $notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));    #delete tab
-        $h->get('Upload_Execute')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("deleted"))
+        $h->get('UI_Status')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("deleted"))
             if defined($session_screens->{$key}->{'long'});
 
         if (defined $session_screens->{$key}->{'iter'}
@@ -106,7 +106,7 @@ sub fct_delete ($self, $key = undef, $action = undef) {
                 my $response = $sd->dlg_question_message("", $d->get("Are you sure you want to move the selected files to the trash?"), 'gtk-cancel', $d->get("Move to _Trash"),);
                 return FALSE unless $response == 20;
             } else {
-                $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("No screenshots selected"));
+                $h->get('UI_Status')->fct_show_status_message(1, $d->get("No screenshots selected"));
                 return FALSE;
             }
         }
@@ -141,7 +141,7 @@ sub fct_delete ($self, $key = undef, $action = undef) {
         }
 
         if (scalar @to_delete == 0) {
-            $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("No screenshots selected"));
+            $h->get('UI_Status')->fct_show_status_message(1, $d->get("No screenshots selected"));
             return FALSE;
         }
 
@@ -159,7 +159,7 @@ sub fct_delete ($self, $key = undef, $action = undef) {
             delete $session_screens->{$key};
         }
 
-        $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("Selected screenshots deleted"));
+        $h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected screenshots deleted"));
 
         $window->show_all unless $is_hidden;
 
@@ -201,7 +201,7 @@ sub fct_remove ($self, $key = undef, $action = undef) {
         }
 
         $notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));    #delete tab
-        $h->get('Upload_Execute')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("removed from session"))
+        $h->get('UI_Status')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("removed from session"))
             if defined($session_screens->{$key}->{'long'});
 
         if (defined $session_screens->{$key}->{'iter'}
@@ -252,7 +252,7 @@ sub fct_remove ($self, $key = undef, $action = undef) {
         }
 
         if (scalar @to_remove == 0) {
-            $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("No screenshots selected"));
+            $h->get('UI_Status')->fct_show_status_message(1, $d->get("No screenshots selected"));
             return FALSE;
         }
 
@@ -270,7 +270,7 @@ sub fct_remove ($self, $key = undef, $action = undef) {
             delete $session_screens->{$key};
         }
 
-        $h->get('Upload_Execute')->fct_show_status_message(1, $d->get("Selected screenshots removed"));
+        $h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected screenshots removed"));
 
         $window->show_all unless $is_hidden;
 

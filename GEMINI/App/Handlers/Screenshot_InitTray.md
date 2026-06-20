@@ -1,13 +1,15 @@
 # Shutter::App::Handlers::Screenshot_InitTray
 
-## Purpose
-(Purpose of Shutter::App::Handlers::Screenshot_InitTray module)
+**File Path:** `share/shutter/resources/modules/Shutter/App/Handlers/Screenshot_InitTray.pm`
 
-## Usage
-(How to use Shutter::App::Handlers::Screenshot_InitTray module)
+## Description
+Documentation for `Shutter::App::Handlers::Screenshot_InitTray`. This module handles functionality related to Screenshot_InitTray.
 
 ## Dependencies
-(Dependencies of Shutter::App::Handlers::Screenshot_InitTray module)
+- `Glib`
+- `Gtk3`
+- `Moo`
+- `feature`
+- `utf8`
+- `v5.40`
 
-## Key Functions/Methods
-(Key functions or methods provided by Shutter::App::Handlers::Screenshot_InitTray module)
