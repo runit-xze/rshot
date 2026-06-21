@@ -38,8 +38,10 @@ sub on_drag_creation_shape {
 
 
 sub on_click_creation {
-	my ($self, $item, $target, $ev) = @_;
-	$self->drawing_tool->create_rectangle($ev, undef);
+	my ($self, $item, $target, $ev, $copy_item) = @_;
+	require Shutter::Draw::Rectangle;
+	my $rect = Shutter::Draw::Rectangle->new( app => $self->drawing_tool );
+	return $rect->setup($ev, $copy_item);
 }
 
 1;

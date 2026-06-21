@@ -38,8 +38,10 @@ sub on_drag_creation_shape {
 
 
 sub on_click_creation {
-	my ($self, $item, $target, $ev) = @_;
-	$self->drawing_tool->create_text($ev, undef);
+	my ($self, $item, $target, $ev, $copy_item) = @_;
+	require Shutter::Draw::Text;
+	my $text = Shutter::Draw::Text->new( app => $self->drawing_tool );
+	return $text->setup($ev, $copy_item);
 }
 
 

@@ -190,10 +190,26 @@ sub new {
 
 	print "DrawingTool initialized\n" if $self->{_sc}->get_debug;
 
+	bless $self, $class;
+
 	require Shutter::Draw::ToolbarManager;
 	$self->{_toolbar_manager} = Shutter::Draw::ToolbarManager->new(drawing_tool => $self);
 
-	bless $self, $class;
+	require Shutter::Draw::Tool::Registry;
+	my $registry = Shutter::Draw::Tool::Registry->new;
+	$registry->register_tool('rect', 'Shutter::Draw::Tool::Rectangle');
+	$registry->register_tool('ellipse', 'Shutter::Draw::Tool::Ellipse');
+	$registry->register_tool('text', 'Shutter::Draw::Tool::Text');
+	$registry->register_tool('line', 'Shutter::Draw::Tool::Line');
+	$registry->register_tool('arrow', 'Shutter::Draw::Tool::Arrow');
+	$registry->register_tool('highlighter', 'Shutter::Draw::Tool::Highlighter');
+	$registry->register_tool('freehand', 'Shutter::Draw::Tool::Pen');
+	$registry->register_tool('censor', 'Shutter::Draw::Tool::Censor');
+	$registry->register_tool('pixelize', 'Shutter::Draw::Tool::Blur');
+	$registry->register_tool('number', 'Shutter::Draw::Tool::Number');
+	$registry->register_tool('image', 'Shutter::Draw::Tool::Image');
+	require Shutter::Draw::CanvasManager;
+	$self->{_canvas_manager} = Shutter::Draw::CanvasManager->new(registry => $registry, drawing_tool => $self);
 
 	return $self;
 	}
@@ -5660,7 +5676,7 @@ sub event_item_on_leave_notify {
 sub setup_uimanager {
 	my $self = shift;
 
-	return Shutter::Draw::UIManager->new( drawing_tool => $self )->setup;
+	return Shutter::Draw::UIManager->new( app => $self )->setup;
 }
 
 sub import_from_dnd {
@@ -6378,9 +6394,8 @@ sub create_polyline {
 	my $copy_item = shift;
 	my $highlighter = shift;
 
-	require Shutter::Draw::Polyline;
-	my $poly = Shutter::Draw::Polyline->new( drawing_tool => $self );
-	return $poly->setup($ev, $copy_item, $highlighter);
+	$self->{_canvas_manager}->set_tool($highlighter ? 'highlighter' : 'freehand');
+	return $self->{_canvas_manager}->active_tool->on_click_creation(undef, undef, $ev, $copy_item);
 }
 
 sub create_censor {
@@ -6388,9 +6403,8 @@ sub create_censor {
 	my $ev        = shift;
 	my $copy_item = shift;
 
-	require Shutter::Draw::Censor;
-	my $censor = Shutter::Draw::Censor->new( drawing_tool => $self );
-	return $censor->setup($ev, $copy_item);
+	$self->{_canvas_manager}->set_tool('censor');
+	return $self->{_canvas_manager}->active_tool->on_click_creation(undef, undef, $ev, $copy_item);
 }
 
 sub create_pixel_image {
@@ -6398,9 +6412,8 @@ sub create_pixel_image {
 	my $ev        = shift;
 	my $copy_item = shift;
 
-	require Shutter::Draw::Blur;
-	my $blur = Shutter::Draw::Blur->new( drawing_tool => $self );
-	return $blur->setup($ev, $copy_item);
+	$self->{_canvas_manager}->set_tool('pixelize');
+	return $self->{_canvas_manager}->active_tool->on_click_creation(undef, undef, $ev, $copy_item);
 }
 
 sub create_image {
@@ -6503,9 +6516,8 @@ sub create_text {
 	my $ev        = shift;
 	my $copy_item = shift;
 
-	require Shutter::Draw::Text;
-	my $text = Shutter::Draw::Text->new( drawing_tool => $self );
-	return $text->setup($ev, $copy_item);
+	$self->{_canvas_manager}->set_tool('text');
+	return $self->{_canvas_manager}->active_tool->on_click_creation(undef, undef, $ev, $copy_item);
 }
 
 sub create_line {
@@ -6515,9 +6527,8 @@ sub create_line {
 	my $end_arrow   = shift;
 	my $start_arrow = shift;
 
-	require Shutter::Draw::Arrow;
-	my $arrow = Shutter::Draw::Arrow->new( drawing_tool => $self );
-	return $arrow->setup($ev, $copy_item, $end_arrow, $start_arrow);
+	$self->{_canvas_manager}->set_tool($end_arrow ? 'arrow' : 'line');
+	return $self->{_canvas_manager}->active_tool->on_click_creation(undef, undef, $ev, $copy_item);
 }
 
 sub create_ellipse {
@@ -6526,9 +6537,8 @@ sub create_ellipse {
 	my $copy_item = shift;
 	my $numbered  = shift;
 
-	require Shutter::Draw::Ellipse;
-	my $ellipse = Shutter::Draw::Ellipse->new( drawing_tool => $self );
-	return $ellipse->setup($ev, $copy_item, $numbered);
+	$self->{_canvas_manager}->set_tool('ellipse');
+	return $self->{_canvas_manager}->active_tool->on_click_creation(undef, undef, $ev, $copy_item, $numbered);
 }
 
 sub create_rectangle {
@@ -6536,9 +6546,8 @@ sub create_rectangle {
 	my $ev        = shift;
 	my $copy_item = shift;
 
-	require Shutter::Draw::Rectangle;
-	my $rect = Shutter::Draw::Rectangle->new( drawing_tool => $self );
-	return $rect->setup($ev, $copy_item);
+	$self->{_canvas_manager}->set_tool('rect');
+	return $self->{_canvas_manager}->active_tool->on_click_creation(undef, undef, $ev, $copy_item);
 }
 
 

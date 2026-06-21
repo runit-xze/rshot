@@ -30,8 +30,10 @@ sub on_drag_creation_points {
 
 
 sub on_click_creation {
-	my ($self, $item, $target, $ev) = @_;
-	$self->drawing_tool->create_censor($ev, undef);
+	my ($self, $item, $target, $ev, $copy_item) = @_;
+	require Shutter::Draw::Censor;
+	my $censor = Shutter::Draw::Censor->new( app => $self->drawing_tool );
+	return $censor->setup($ev, $copy_item);
 }
 
 1;

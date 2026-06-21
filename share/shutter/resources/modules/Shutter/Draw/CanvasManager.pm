@@ -5,11 +5,17 @@ use utf8;
 use v5.40;
 
 has registry => (is => 'ro', required => 1);
+has drawing_tool => (is => 'ro', required => 1);
 has active_tool => (is => 'rw');
 
 sub set_tool ($self, $tool_name) {
     my $tool_class = $self->registry->get_tool($tool_name);
-    $self->active_tool($tool_class->new);
+    if ($tool_class) {
+        eval "require $tool_class" or die "Could not load $tool_class: $@";
+        $self->active_tool($tool_class->new(drawing_tool => $self->drawing_tool));
+    } else {
+        $self->active_tool(undef);
+    }
 }
 
 sub on_draw ($self, $cr) {

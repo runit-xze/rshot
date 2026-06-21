@@ -30,8 +30,10 @@ sub on_drag_creation_points {
 
 
 sub on_click_creation {
-	my ($self, $item, $target, $ev) = @_;
-	$self->drawing_tool->create_polyline($ev, undef, TRUE);
+	my ($self, $item, $target, $ev, $copy_item) = @_;
+	require Shutter::Draw::Polyline;
+	my $poly = Shutter::Draw::Polyline->new( app => $self->drawing_tool );
+	return $poly->setup($ev, $copy_item, TRUE);
 }
 
 1;

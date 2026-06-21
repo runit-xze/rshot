@@ -39,8 +39,10 @@ sub on_drag_creation_shape {
 
 
 sub on_click_creation {
-	my ($self, $item, $target, $ev) = @_;
-	$self->drawing_tool->create_line($ev, undef, TRUE, FALSE);
+	my ($self, $item, $target, $ev, $copy_item) = @_;
+	require Shutter::Draw::Arrow;
+	my $arrow = Shutter::Draw::Arrow->new( app => $self->drawing_tool );
+	return $arrow->setup($ev, $copy_item, TRUE, FALSE);
 }
 
 1;

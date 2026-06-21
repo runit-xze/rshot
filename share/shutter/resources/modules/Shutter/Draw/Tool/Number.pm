@@ -21,8 +21,10 @@ sub on_drag_creation_shape {
 }
 
 sub on_click_creation {
-	my ($self, $item, $target, $ev) = @_;
-	$self->drawing_tool->create_ellipse($ev, undef, TRUE);
+	my ($self, $item, $target, $ev, $copy_item) = @_;
+	require Shutter::Draw::Ellipse;
+	my $ellipse = Shutter::Draw::Ellipse->new( app => $self->drawing_tool );
+	return $ellipse->setup($ev, $copy_item, TRUE);
 }
 
 sub is_text_tool {
