@@ -35,8 +35,7 @@ use Time::HiRes qw/usleep/;
 
 has '_common' => (is => 'ro', required => 1);
 
-sub take_screenshot {
-    my ($self, $widget, $data, $folder_from_config, $extra) = @_;
+sub take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
     my $sc = $self->_common;
     my $shf = $sc->get_helper_functions;
     my $d = $sc->get_gettext;

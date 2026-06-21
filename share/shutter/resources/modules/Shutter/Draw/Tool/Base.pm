@@ -8,8 +8,7 @@ use Glib qw/TRUE FALSE/;
 requires 'drawing_tool';
 
 
-sub on_motion_notify {
-	my ($self, $item, $target, $ev) = @_;
+sub on_motion_notify ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 
 	$dt->adjust_rulers($ev, $item);
@@ -365,8 +364,7 @@ sub on_motion_notify {
 }
 
 
-sub on_key_press {
-	my ($self, $item, $target, $ev) = @_;
+sub on_key_press ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 
 	if ($dt->{_current_item}) {
@@ -428,8 +426,7 @@ sub on_key_press {
 }
 
 
-sub on_button_press {
-	my ($self, $item, $target, $ev, $select) = @_;
+sub on_button_press ($self, $item, $target, $ev, $select) {
 	my $dt = $self->drawing_tool;
 
 	#~ print "button-press\n";
@@ -737,8 +734,7 @@ sub on_button_press {
 }
 
 
-sub on_button_release {
-	my ($self, $item, $target, $ev) = @_;
+sub on_button_release ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 
 	$dt->{_canvas}->pointer_ungrab($item, $ev->time);
@@ -1008,8 +1004,7 @@ sub on_button_release {
 }
 
 
-sub on_enter_notify {
-	my ($self, $item, $target, $ev) = @_;
+sub on_enter_notify ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 
 	return TRUE if $dt->{_busy};
@@ -1050,8 +1045,7 @@ sub on_enter_notify {
 }
 
 
-sub on_leave_notify {
-	my ($self, $item, $target, $ev) = @_;
+sub on_leave_notify ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 
 	return TRUE if $dt->{_busy};

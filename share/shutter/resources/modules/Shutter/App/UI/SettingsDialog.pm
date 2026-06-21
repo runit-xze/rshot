@@ -45,8 +45,7 @@ has '_dialog' => (is => 'rw');
 has '_profiles_box' => (is => 'rw');
 has '_tabs' => (is => 'rw', default => sub { [] });
 
-sub create_settings_dialog {
-    my ($self, $window) = @_;
+sub create_settings_dialog ($self, $window) {
     my $sc = $self->cli->sc;
     my $d = $sc->get_gettext;
 
@@ -115,14 +114,12 @@ sub save ($self) {
     $self->cli->{settings_manager}->save_settings;
 }
 
-sub show {
-    my ($self) = @_;
+sub show ($self) {
     $self->_dialog->show_all if $self->_dialog;
     return $self->_dialog->run if $self->_dialog;
 }
 
-sub hide {
-    my ($self) = @_;
+sub hide ($self) {
     $self->_dialog->hide() if $self->_dialog;
 }
 

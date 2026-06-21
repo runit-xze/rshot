@@ -31,8 +31,7 @@ use Digest::MD5 qw(md5_hex);
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_get_last_capture {
-    my ($self) = @_;
+sub fct_get_last_capture ($self) {
     my $session_start_screen = $self->cli->{_session_start_screen};
 
     if ($session_start_screen && exists $session_start_screen->{'first_page'}->{'history'}
@@ -43,8 +42,7 @@ sub fct_get_last_capture {
     return FALSE;
 }
 
-sub fct_get_next_filename {
-    my ($self, $filename_value, $folder, $filetype_value) = @_;
+sub fct_get_next_filename ($self, $filename_value, $folder, $filetype_value) {
     
     my $cli = $self->cli;
     my $sc = $cli->sc;
@@ -168,8 +166,7 @@ sub fct_get_next_filename {
     return $new_giofile;
 }
 
-sub fct_get_program_model {
-    my ($self) = @_;
+sub fct_get_program_model ($self) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $shf = $cli->shf;

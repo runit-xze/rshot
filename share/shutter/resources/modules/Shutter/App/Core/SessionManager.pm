@@ -42,13 +42,11 @@ has '_session_start_screen' => (is => 'rw', default => sub { {} });
 sub get_session_screens { return $_[0]->{_session_screens} }
 sub get_session_start_screen { return $_[0]->{_session_start_screen} }
 
-sub integrate_screenshot {
-    my ($self, $giofile, $pixbuf, $history, $count) = @_;
+sub integrate_screenshot ($self, $giofile, $pixbuf, $history, $count) {
     return $self->fct_integrate_screenshot_in_notebook($giofile, $pixbuf, $history, $count);
 }
 
-sub fct_integrate_screenshot_in_notebook {
-    my ($self, $giofile, $pixbuf, $history, $count) = @_;
+sub fct_integrate_screenshot_in_notebook ($self, $giofile, $pixbuf, $history, $count) {
     my $session_screens = $self->_session_screens;
     my $session_start_screen = $self->_session_start_screen;
     my $sc = $self->_common;
@@ -105,8 +103,7 @@ sub fct_integrate_screenshot_in_notebook {
     return $key;
 }
 
-sub fct_get_latest_tab_key {
-    my $self = shift;
+sub fct_get_latest_tab_key ($self) {
     my $session_screens = $self->_session_screens;
     my $latest_key = 0;
     foreach my $key (keys %$session_screens) {

@@ -7,8 +7,7 @@ use Glib qw/TRUE FALSE/;
 
 has drawing_tool => (is => 'ro', required => 1);
 
-sub setup_bottom_hbox {
-    my $self = shift;
+sub setup_bottom_hbox ($self) {
     my $app  = $self->drawing_tool;
 
     my $drawing_bottom_hbox = Gtk3::HBox->new(FALSE, 5);
@@ -147,9 +146,7 @@ sub setup_bottom_hbox {
     return $drawing_bottom_hbox;
 }
 
-sub change_drawing_tool_cb {
-    my $self   = shift;
-    my $action = shift;
+sub change_drawing_tool_cb ($self, $action) {
     my $app    = $self->drawing_tool;
 
     eval { $app->{_current_mode} = $action->get_current_value; };
@@ -259,8 +256,7 @@ sub change_drawing_tool_cb {
     }
 }
 
-sub setup_right_vbox_c {
-	my $self = shift;
+sub setup_right_vbox_c ($self) {
 	my $app = $self->drawing_tool;
 
 	my $cropping_bottom_vbox = Gtk3::VBox->new(FALSE, 5);
@@ -424,8 +420,7 @@ sub setup_right_vbox_c {
 
 	return ($crop_frame, $crop_ok);
 }
-sub zoom_in_cb {
-	my $self = shift;
+sub zoom_in_cb ($self) {
 	my $app = $self->drawing_tool;
 
 	if ($app->{_current_mode_descr} ne "crop") {
@@ -439,8 +434,7 @@ sub zoom_in_cb {
 	return TRUE;
 }
 
-sub zoom_out_cb {
-	my $self = shift;
+sub zoom_out_cb ($self) {
 	my $app = $self->drawing_tool;
 
 	if ($app->{_current_mode_descr} ne "crop") {
@@ -459,8 +453,7 @@ sub zoom_out_cb {
 	return TRUE;
 }
 
-sub zoom_normal_cb {
-	my $self = shift;
+sub zoom_normal_cb ($self) {
 	my $app = $self->drawing_tool;
 
 	if ($app->{_current_mode_descr} ne "crop") {
@@ -473,8 +466,7 @@ sub zoom_normal_cb {
 
 	return TRUE;
 }
-sub setup_view {
-	my $self = shift;
+sub setup_view ($self) {
 	my $app = $self->drawing_tool;
 	#view, selector, dragger
 	$app->{_view}     = Gtk3::ImageView->new;
@@ -517,8 +509,7 @@ sub setup_view {
 }
 
 
-sub setup_main_window {
-	my $mgr = shift;
+sub setup_main_window ($mgr) {
 	my $self = $mgr->drawing_tool;
 	print "DrawingTool show called\n" if $self->{_sc}->get_debug;
 	$self->{_filename}    = shift;

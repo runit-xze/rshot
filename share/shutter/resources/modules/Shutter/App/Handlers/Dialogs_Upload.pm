@@ -32,9 +32,7 @@ use URI::Escape qw(uri_unescape);
 
 has cli => (is => 'ro', required => 1);
 
-sub dlg_profile_name {
-    my ($self, $curr_profile_name, $combobox_settings_profiles) = @_;
-
+sub dlg_profile_name ($self, $curr_profile_name, $combobox_settings_profiles) {
     my $cli = $self->cli;
     my $window = $cli->window;
     my $d = $cli->sc->get_gettext;
@@ -108,8 +106,7 @@ sub dlg_profile_name {
     }
 }
 
-sub dlg_upload_error_message {
-    my ($self, $status, $max_filesize) = @_;
+sub dlg_upload_error_message ($self, $status, $max_filesize) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
 
@@ -130,9 +127,7 @@ sub dlg_upload_error_message {
     return $response;
 }
 
-sub dlg_upload {
-    my ($self, @files_to_upload) = @_;
-
+sub dlg_upload ($self, @files_to_upload) {
     return FALSE if @files_to_upload < 1;
 
     my $cli = $self->cli;
@@ -348,8 +343,7 @@ sub dlg_upload {
     }
 }
 
-sub dlg_upload_error_message_gnome_vfs {
-    my ($self, $target_giofile, $result) = @_;
+sub dlg_upload_error_message_gnome_vfs ($self, $target_giofile, $result) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
     my $shf = $cli->shf;

@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub evt_notebook_switch {
-    my ($self, $widget, $pointer, $int) = @_;
+sub evt_notebook_switch ($self, $widget, $pointer, $int) {
     my $cli = $self->cli;
     my $notebook = $cli->{_notebook};
     my $session_screens = $cli->{_session_screens};
@@ -100,8 +99,7 @@ sub evt_notebook_switch {
     return TRUE;
 }
 
-sub evt_value_changed {
-    my ($self, $widget, $data) = @_;
+sub evt_value_changed ($self, $widget, $data) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $d = $cli->sc->get_gettext;

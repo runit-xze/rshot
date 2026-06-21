@@ -12,9 +12,7 @@ has 'setup_signals'   => (is => 'ro', required => 1);
 has 'style_bg'        => (is => 'ro', required => 1);
 
 # Handle canvas background resize handles (3 handles)
-sub handle_bg_rects {
-    my ($self, $action, $bg_rect) = @_;
-
+sub handle_bg_rects ($self, $action, $bg_rect) {
     my $x      = $bg_rect->get('x');
     my $y      = $bg_rect->get('y');
     my $width  = $bg_rect->get('width');
@@ -54,9 +52,7 @@ sub handle_bg_rects {
 }
 
 # Handle item resize handles (8 handles)
-sub handle_item_handles {
-    my ($self, $action, $item) = @_;
-
+sub handle_item_handles ($self, $action, $item) {
     return FALSE unless $item && exists $self->items->{$item};
 
     my $x      = $self->items->{$item}->get('x');
@@ -88,9 +84,7 @@ sub handle_item_handles {
 }
 
 # Handle embedded items within parent rect
-sub handle_embedded {
-    my ($self, $action, $item, $new_width, $new_height, $force_show) = @_;
-
+sub handle_embedded ($self, $action, $item, $new_width, $new_height, $force_show) {
     return FALSE unless ($item && exists $self->items->{$item});
 
     if ($action eq 'update') {
@@ -111,15 +105,12 @@ sub handle_embedded {
 
 # Private methods
 
-sub _create_bg_handle {
-    my ($self, $bg_rect, $name, $x, $y) = @_;
-
+sub _create_bg_handle ($self, $bg_rect, $name, $x, $y) {
     $bg_rect->{$name} = $self->_make_handle_rect($x, $y);
     $self->setup_signals->($bg_rect->{$name});
 }
 
-sub _make_handle_rect {
-    my ($self, $x, $y) = @_;
+sub _make_handle_rect ($self, $x, $y) {
 
     # Must be overridden or injected with style_bg
     return GooCanvas2::CanvasRect->new(
@@ -133,8 +124,7 @@ sub _make_handle_rect {
     );
 }
 
-sub _create_item_handles {
-    my ($self, $item, $x, $y, $width, $height, $middle_h, $middle_v) = @_;
+sub _create_item_handles ($self, $item, $x, $y, $width, $height, $middle_h, $middle_v) {
 
     # Create all 8 handles
     $self->items->{$item}{'top-side'} = $self->_make_handle_rect($middle_h, $y);
@@ -150,9 +140,7 @@ sub _create_item_handles {
     $self->_setup_all_handle_signals($self->items->{$item});
 }
 
-sub _make_corner_handle {
-    my ($self, $x, $y) = @_;
-
+sub _make_corner_handle ($self, $x, $y) {
     return GooCanvas2::CanvasRect->new(
         parent => $self->canvas->get_root_item,
         x      => $x,
@@ -167,9 +155,7 @@ sub _make_corner_handle {
     );
 }
 
-sub _setup_all_handle_signals {
-    my ($self, $item_hash) = @_;
-
+sub _setup_all_handle_signals ($self, $item_hash) {
     my @handles = qw(
         top-side top-left-corner top-right-corner
         bottom-side bottom-left-corner bottom-right-corner
@@ -181,9 +167,7 @@ sub _setup_all_handle_signals {
     }
 }
 
-sub _delete_item_handles {
-    my ($self, $item) = @_;
-
+sub _delete_item_handles ($self, $item) {
     my @handles = qw(
         top-side top-left-corner top-right-corner
         bottom-side bottom-left-corner bottom-right-corner
@@ -197,9 +181,7 @@ sub _delete_item_handles {
     }
 }
 
-sub _update_item_handle_positions {
-    my ($self, $item, $x, $y, $width, $height, $visibility) = @_;
-
+sub _update_item_handle_positions ($self, $item, $x, $y, $width, $height, $visibility) {
     my $middle_h = $x + $width / 2;
     my $middle_v = $y + $height / 2;
     my $bottom   = $y + $height;
@@ -236,9 +218,7 @@ sub _update_item_handle_positions {
     $self->items->{$item}{'right-side'}->set('x' => $right, 'y' => $middle_v - 4, 'visibility' => $visibility);
 }
 
-sub _raise_item_handles {
-    my ($self, $item) = @_;
-
+sub _raise_item_handles ($self, $item) {
     my @handles = qw(
         top-side top-left-corner top-right-corner
         bottom-side bottom-left-corner bottom-right-corner
@@ -250,9 +230,7 @@ sub _raise_item_handles {
     }
 }
 
-sub _lower_item_handles {
-    my ($self, $item) = @_;
-
+sub _lower_item_handles ($self, $item) {
     my @handles = qw(
         top-side top-left-corner top-right-corner
         bottom-side bottom-left-corner bottom-right-corner
@@ -267,10 +245,7 @@ sub _lower_item_handles {
 # Actual embedded item logic
 require Shutter::Draw::Utils;
 
-sub _update_embedded {
-    my ($self, $item_hash, $force_show) = @_;
-
-
+sub _update_embedded ($self, $item_hash, $force_show) {
 		my $visibility = 'visible';
 
 		#embedded ellipse
@@ -387,8 +362,7 @@ sub _update_embedded {
 	
 }
 
-sub _delete_embedded {
-    my ($self, $item_hash) = @_;
+sub _delete_embedded ($self, $item_hash) {
 
 
 		#ellipse
@@ -429,10 +403,7 @@ sub _delete_embedded {
 	
 }
 
-sub _hide_embedded {
-    my ($self, $item_hash) = @_;
-
-
+sub _hide_embedded ($self, $item_hash) {
 		my $visibility = 'hidden';
 
 		#ellipse => hide rectangle as well
@@ -463,9 +434,7 @@ sub _hide_embedded {
 	
 }
 
-sub _mirror_line {
-    my ($self, $item_hash, $new_width, $new_height) = @_;
-
+sub _mirror_line ($self, $item_hash, $new_width, $new_height) {
 		if (exists $item_hash->{line}) {
 
 			#width

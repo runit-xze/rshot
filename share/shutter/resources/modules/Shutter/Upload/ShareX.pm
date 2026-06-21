@@ -22,8 +22,7 @@ has debug => (is => 'ro', default => sub { 0 });
 has main_gtk_window => (is => 'ro');
 has _sxcu => (is => 'rw');
 
-sub BUILD {
-    my ($self) = @_;
+sub BUILD ($self) {
     my $json = JSON::MaybeXS->new;
     eval {
         open(my $fh, '<', $self->sxcu_path) or die "Cannot open " . $self->sxcu_path;
@@ -36,9 +35,7 @@ sub BUILD {
     }
 }
 
-sub upload {
-    my ($self, $upload_filename) = @_;
-
+sub upload ($self, $upload_filename) {
     return (success => 0, error => "File not found") unless -e $upload_filename;
     return (success => 0, error => "Failed to load sxcu") unless $self->_sxcu;
 
@@ -151,8 +148,7 @@ sub upload {
     return %upload_result;
 }
 
-sub _show_qr_dialog {
-    my ($self, $qr_path, $url) = @_;
+sub _show_qr_dialog ($self, $qr_path, $url) {
     return unless -f $qr_path;
     return unless $self->main_gtk_window;
 

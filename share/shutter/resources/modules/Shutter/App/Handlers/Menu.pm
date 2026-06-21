@@ -30,13 +30,11 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub evt_about {
-    my ($self) = @_;
+sub evt_about ($self) {
     Shutter::App::AboutDialog->new($self->cli->sc)->show;
 }
 
-sub evt_apply_profile {
-    my ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) = @_;
+sub evt_apply_profile ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) {
     my $d = $self->cli->sc->get_gettext;
 
     if ($combobox_settings_profiles->get_active_text) {
@@ -54,13 +52,11 @@ sub evt_apply_profile {
     return TRUE;
 }
 
-sub evt_bug {
-    my ($self) = @_;
+sub evt_bug ($self) {
     $self->cli->shf->xdg_open(undef, "https://github.com/shutter-project/shutter/issues/new?labels=bug&template=bug_report.md", undef);
 }
 
-sub evt_delete_profile {
-    my ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) = @_;
+sub evt_delete_profile ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) {
     my $shf = $self->cli->shf;
     my $d = $self->cli->sc->get_gettext;
     my $sd = $self->cli->sc->{_sd};
@@ -92,8 +88,7 @@ sub evt_delete_profile {
     return TRUE;
 }
 
-sub evt_delete_window {
-    my ($self, $widget, $data, $scounter) = @_;
+sub evt_delete_window ($self, $widget, $data, $scounter) {
     my $sc = $self->cli->sc;
     my $close_at_close_active = $self->cli->{_close_at_close_active};
     my $tray = $self->cli->{_tray};
@@ -172,8 +167,7 @@ sub evt_delete_window {
     return TRUE;
 }
 
-sub evt_page_setup {
-    my ($self, $widget, $data) = @_;
+sub evt_page_setup ($self, $widget, $data) {
     my $shf = $self->cli->shf;
     my $window = $self->cli->window;
     my $pagesetup = $self->cli->{_pagesetup};
@@ -190,13 +184,11 @@ sub evt_page_setup {
     return TRUE;
 }
 
-sub evt_question {
-    my ($self) = @_;
+sub evt_question ($self) {
     $self->cli->shf->xdg_open(undef, "https://shutter-project.org/faq-help/", undef);
 }
 
-sub evt_save_as {
-    my ($self, $widget, $data) = @_;
+sub evt_save_as ($self, $widget, $data) {
     my $sc = $self->cli->sc;
     my $session_start_screen = $self->cli->{_session_start_screen};
     
@@ -242,8 +234,7 @@ sub evt_save_as {
     return TRUE;
 }
 
-sub evt_save_profile {
-    my ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) = @_;
+sub evt_save_profile ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) {
     my $curr_profile_name = $combobox_settings_profiles->get_active_text || "";
     my $new_profile_name = dlg_profile_name($curr_profile_name, $combobox_settings_profiles);
 
@@ -280,8 +271,7 @@ sub evt_save_profile {
     return TRUE;
 }
 
-sub evt_show_settings {
-    my ($self) = @_;
+sub evt_show_settings ($self) {
     fct_check_installed_programs();
 
     my $settings_dialog = $self->cli->{_settings_dialog};
@@ -300,8 +290,7 @@ sub evt_show_settings {
     return FALSE;
 }
 
-sub evt_translate {
-    my ($self) = @_;
+sub evt_translate ($self) {
     $self->cli->shf->xdg_open(undef, "https://translations.launchpad.net/shutter", undef);
 }
 

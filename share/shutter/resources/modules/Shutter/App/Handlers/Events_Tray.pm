@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub evt_accounts {
-    my ($self, $tree, $path, $column) = @_;
+sub evt_accounts ($self, $tree, $path, $column) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
     my $shf = $cli->shf;
@@ -46,8 +45,7 @@ sub evt_accounts {
     return TRUE;
 }
 
-sub evt_activate_systray_statusicon {
-    my ($self, $widget, $data, $tray) = @_;
+sub evt_activate_systray_statusicon ($self, $widget, $data, $tray) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
 
@@ -63,8 +61,7 @@ sub evt_activate_systray_statusicon {
     return TRUE;
 }
 
-sub evt_iconview_button_press {
-    my ($self, $ev_box, $ev, $view) = @_;
+sub evt_iconview_button_press ($self, $ev_box, $ev, $view) {
     my $cli = $self->cli;
     my $sm = $cli->{_sm};
 
@@ -89,8 +86,7 @@ sub evt_iconview_button_press {
     return TRUE;
 }
 
-sub evt_iconview_item_activated {
-    my ($self, $view, $path, $data) = @_;
+sub evt_iconview_item_activated ($self, $view, $path, $data) {
     my $cli = $self->cli;
     my $notebook = $cli->{_notebook};
     my $session_screens = $cli->{_session_screens};
@@ -105,8 +101,7 @@ sub evt_iconview_item_activated {
     return TRUE;
 }
 
-sub evt_iconview_sel_changed {
-    my ($self, $view, $data) = @_;
+sub evt_iconview_sel_changed ($self, $view, $data) {
     
     #we don't handle selection changes
     #if we are not in the session tab
@@ -140,8 +135,7 @@ sub evt_iconview_sel_changed {
     return TRUE;
 }
 
-sub evt_show_systray {
-    my ($self, $widget, $data) = @_;
+sub evt_show_systray ($self, $widget, $data) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $window = $cli->window;
@@ -174,8 +168,7 @@ sub evt_show_systray {
     return TRUE;
 }
 
-sub evt_show_systray_statusicon {
-    my ($self, $widget, $button, $time, $tray) = @_;
+sub evt_show_systray_statusicon ($self, $widget, $button, $time, $tray) {
     my $sc = $self->cli->sc;
     my $tray_menu = $self->cli->{_tray_menu};
 
@@ -197,8 +190,7 @@ sub evt_show_systray_statusicon {
     return TRUE;
 }
 
-sub evt_tab_button_press {
-    my ($self, $ev_box, $ev, $key) = @_;
+sub evt_tab_button_press ($self, $ev_box, $ev, $key) {
     my $sm = $self->cli->{_sm};
 
     #right click

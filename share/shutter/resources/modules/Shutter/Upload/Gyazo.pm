@@ -5,9 +5,7 @@ use v5.40;
 use Moo;
 with 'Shutter::Upload::Role::Uploader';
 
-sub upload {
-    my ($self, $file) = @_;
-
+sub upload ($self, $file) {
     return (success => 0, error => "File not found") unless -e $file;
 
     require WebService::Gyazo::B;

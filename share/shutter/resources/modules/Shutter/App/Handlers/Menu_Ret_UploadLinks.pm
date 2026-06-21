@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_ret_upload_links_menu {
-    my ($self, $key, $menu_links) = @_;
+sub fct_ret_upload_links_menu ($self, $key, $menu_links) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $session_screens = $cli->{_session_screens};

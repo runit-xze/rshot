@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_update_actions {
-    my ($self, $n_items, $key) = @_;
+sub fct_update_actions ($self, $n_items, $key) {
     my $cli = $self->cli;
     my $session_screens = $cli->{_session_screens};
     my $notebook = $cli->{_notebook};

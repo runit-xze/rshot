@@ -33,8 +33,7 @@ use Shutter::App::Constants qw(SHUTTER_NAME SHUTTER_VERSION);
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_check_installed_plugins {
-    my ($self) = @_;
+sub fct_check_installed_plugins ($self) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $d = $sc->get_gettext;
@@ -177,8 +176,7 @@ sub fct_check_installed_plugins {
     return TRUE;
 }
 
-sub fct_check_installed_programs {
-    my ($self) = @_;
+sub fct_check_installed_programs ($self) {
     my $cli = $self->cli;
     my $progname = $cli->{_progname};
 
@@ -216,8 +214,7 @@ sub fct_check_installed_programs {
     return TRUE;
 }
 
-sub fct_check_installed_upload_plugins {
-    my ($self) = @_;
+sub fct_check_installed_upload_plugins ($self) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $d = $sc->get_gettext;
@@ -389,8 +386,7 @@ sub fct_check_installed_upload_plugins {
     return TRUE;
 }
 
-sub fct_imagemagick_perform {
-    my ($self, $function, $file, $data) = @_;
+sub fct_imagemagick_perform ($self, $function, $file, $data) {
     my $cli = $self->cli;
     my $shf = $cli->shf;
     my $lp = $cli->{_lp};
@@ -407,8 +403,7 @@ sub fct_imagemagick_perform {
     return $pixbuf;
 }
 
-sub fct_parse_filename_wildcards {
-    my ($self, $filename_value, $screenshooter, $screenshot) = @_;
+sub fct_parse_filename_wildcards ($self, $filename_value, $screenshooter, $screenshot) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $combobox_settings_profiles = $cli->{_combobox_settings_profiles};
@@ -499,8 +494,7 @@ sub fct_parse_filename_wildcards {
     return $screenshot_name;
 }
 
-sub fct_unlink_tempfiles {
-    my ($self, $key) = @_;
+sub fct_unlink_tempfiles ($self, $key) {
     my $session_screens = $self->cli->{_session_screens};
 
     if ($session_screens->{$key}) {
@@ -516,8 +510,7 @@ sub fct_unlink_tempfiles {
     return TRUE;
 }
 
-sub fct_validate_filename {
-    my ($self, $myfilename, $myfilename_hint) = @_;
+sub fct_validate_filename ($self, $myfilename, $myfilename_hint) {
     my $d = $self->cli->sc->get_gettext;
     my @invalid_codes = (47, 92);
     $myfilename->signal_connect(

@@ -31,8 +31,7 @@ use Shutter::Draw::DrawingTool;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_draw {
-    my ($self) = @_;
+sub fct_draw ($self) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $session_start_screen = $cli->{_session_start_screen};
@@ -100,8 +99,7 @@ sub fct_draw {
     return TRUE;
 }
 
-sub fct_plugin {
-    my ($self) = @_;
+sub fct_plugin ($self) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
     my $sd = $cli->sc->{_sd};
@@ -141,17 +139,14 @@ sub fct_plugin {
     return TRUE;
 }
 
-sub fct_plugin_get_info {
-    my ($self, $plugin, $info) = @_;
-
+sub fct_plugin_get_info ($self, $plugin, $info) {
     my $plugin_info = `$plugin $info`;
     utf8::decode $plugin_info;
 
     return $plugin_info;
 }
 
-sub fct_rename {
-    my ($self) = @_;
+sub fct_rename ($self) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $session_start_screen = $cli->{_session_start_screen};
@@ -190,8 +185,7 @@ sub fct_rename {
     return TRUE;
 }
 
-sub fct_show_in_folder {
-    my ($self) = @_;
+sub fct_show_in_folder ($self) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $shf = $cli->shf;

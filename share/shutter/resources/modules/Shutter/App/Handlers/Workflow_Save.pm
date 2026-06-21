@@ -34,8 +34,7 @@ use File::Copy qw(move);
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_load_settings {
-    my ($self, $data, $profilename) = @_;
+sub fct_load_settings ($self, $data, $profilename) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $shf = $cli->shf;
@@ -70,8 +69,7 @@ sub fct_load_settings {
     return $settings_xml;
 }
 
-sub fct_save_settings {
-    my ($self, $profilename) = @_;
+sub fct_save_settings ($self, $profilename) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $shf = $cli->shf;

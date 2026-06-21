@@ -34,8 +34,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub evt_value_changed {
-    my ($self, $widget, $reason) = @_;
+sub evt_value_changed ($self, $widget, $reason) {
     my $sc = $self->cli->sc;
     my $d = $sc->get_gettext;
     
@@ -46,8 +45,7 @@ sub evt_value_changed {
     }
 }
 
-sub evt_take_screenshot {
-    my ($self, $widget, $data, $folder_from_config, $extra) = @_;
+sub evt_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
     my $sc = $self->cli->sc;
     my $d = $sc->get_gettext;
     my $window = $self->cli->window;
@@ -127,33 +125,28 @@ sub evt_take_screenshot {
     return TRUE;
 }
 
-sub evt_notebook_switch {
-    my ($self, $widget, $page) = @_;
+sub evt_notebook_switch ($self, $widget, $page) {
     # Implementation for notebook tab switching
 }
 
-sub evt_delete_window {
-    my ($self, $widget, $reason) = @_;
+sub evt_delete_window ($self, $widget, $reason) {
     if ($reason eq 'quit') {
         $self->cli->sc->set_exit_after_capture(TRUE);
     }
     $self->cli->app->quit;
 }
 
-sub evt_about {
-    my ($self) = @_;
+sub evt_about ($self) {
     use Shutter::App::AboutDialog;
     my $about = Shutter::App::AboutDialog->new($self->cli->sc);
     $about->show;
 }
 
-sub evt_show_settings {
-    my ($self) = @_;
+sub evt_show_settings ($self) {
     $self->cli->handlers->get('Dialogs_Settings')->evt_show_settings();
 }
 
-sub fct_control_main_window {
-    my ($self, $action) = @_;
+sub fct_control_main_window ($self, $action) {
     my $window = $self->cli->window;
     if ($action eq 'show') {
         $window->show_all;
@@ -164,8 +157,7 @@ sub fct_control_main_window {
     }
 }
 
-sub fct_control_signals {
-    my ($self, $action) = @_;
+sub fct_control_signals ($self, $action) {
     if ($action eq 'block') {
         # Block signal handlers
     } elsif ($action eq 'unblock') {

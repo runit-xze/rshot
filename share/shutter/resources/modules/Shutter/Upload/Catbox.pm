@@ -9,9 +9,7 @@ use HTTP::Request::Common qw(POST);
 
 has userhash => (is => 'rw', default => sub { '' });
 
-sub upload {
-    my ($self, $file) = @_;
-
+sub upload ($self, $file) {
     return (success => 0, error => "File not found") unless -e $file;
 
     my $ua = LWP::UserAgent->new(timeout => 30);

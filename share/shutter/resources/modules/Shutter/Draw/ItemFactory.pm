@@ -6,8 +6,7 @@ use Glib qw/TRUE FALSE/;
 
 has drawing_tool => (is => 'ro', required => 1);
 
-sub create_polyline {
-	my $mgr = shift;
+sub create_polyline ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $ev        = shift;
 	my $copy_item = shift;
@@ -19,8 +18,7 @@ sub create_polyline {
 }
 
 
-sub create_censor {
-	my $mgr = shift;
+sub create_censor ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $ev        = shift;
 	my $copy_item = shift;
@@ -31,8 +29,7 @@ sub create_censor {
 }
 
 
-sub create_pixel_image {
-	my $mgr = shift;
+sub create_pixel_image ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $ev        = shift;
 	my $copy_item = shift;
@@ -43,8 +40,7 @@ sub create_pixel_image {
 }
 
 
-sub create_image {
-	my $mgr = shift;
+sub create_image ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $ev                   = shift;
 	my $copy_item            = shift;
@@ -140,8 +136,7 @@ sub create_image {
 }
 
 
-sub create_text {
-	my $mgr = shift;
+sub create_text ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $ev        = shift;
 	my $copy_item = shift;
@@ -152,8 +147,7 @@ sub create_text {
 }
 
 
-sub create_line {
-	my $mgr = shift;
+sub create_line ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $ev          = shift;
 	my $copy_item   = shift;
@@ -166,8 +160,7 @@ sub create_line {
 }
 
 
-sub create_ellipse {
-	my $mgr = shift;
+sub create_ellipse ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $ev        = shift;
 	my $copy_item = shift;
@@ -179,8 +172,7 @@ sub create_ellipse {
 }
 
 
-sub create_rectangle {
-	my $mgr = shift;
+sub create_rectangle ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $ev        = shift;
 	my $copy_item = shift;
@@ -194,8 +186,7 @@ sub create_rectangle {
 # getters and setters
 
 
-sub paste_item {
-	my $mgr = shift;
+sub paste_item ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $item = shift;
 
@@ -302,8 +293,7 @@ sub paste_item {
 }
 
 
-sub get_opposite_rect {
-	my $mgr = shift;
+sub get_opposite_rect ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $rect   = shift;
 	my $item   = shift;
@@ -363,8 +353,7 @@ sub get_opposite_rect {
 }
 
 
-sub get_parent_item {
-	my ($mgr, $item) = @_;
+sub get_parent_item ($mgr, $item) {
 	my $self = $mgr->drawing_tool;
 
 	return FALSE unless $item;
@@ -392,9 +381,7 @@ sub get_parent_item {
 }
 
 
-sub get_highest_auto_digit {
-	my ($self) = @_;
-
+sub get_highest_auto_digit ($self) {
 	my $number = 0;
 	foreach (keys %{$self->{_items}}) {
 
@@ -415,8 +402,7 @@ sub get_highest_auto_digit {
 }
 
 
-sub get_pixelated_pixbuf_from_canvas {
-	my ($mgr, $item) = @_;
+sub get_pixelated_pixbuf_from_canvas ($mgr, $item) {
 	my $self = $mgr->drawing_tool;
 
 	my $bounds = $item->get_bounds;
@@ -524,8 +510,7 @@ sub get_pixelated_pixbuf_from_canvas {
 }
 
 
-sub get_child_item {
-	my ($mgr, $item) = @_;
+sub get_child_item ($mgr, $item) {
 	my $self = $mgr->drawing_tool;
 
 	return FALSE unless $item;

@@ -744,15 +744,7 @@ sub apply_properties {
 	}
 
 }
-sub modify_text_in_properties {
-	my $self           = shift;
-	my $font_btn       = shift;
-	my $textview       = shift;
-	my $font_color     = shift;
-	my $item           = shift;
-	my $use_font       = shift;
-	my $use_font_color = shift;
-
+sub modify_text_in_properties ($self, $font_btn, $textview, $font_color, $item, $use_font, $use_font_color) {
 	my $font_descr = Pango::FontDescription::from_string($font_btn->get_font_name);
 	my $texttag    = Gtk3::TextTag->new;
 

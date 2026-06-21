@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_get_file_by_index {
-    my ($self, $index) = @_;
+sub fct_get_file_by_index ($self, $index) {
     my $cli = $self->cli;
     my $notebook = $cli->{_notebook};
     my $session_screens = $cli->{_session_screens};
@@ -57,8 +56,7 @@ sub fct_get_file_by_index {
     return $key;
 }
 
-sub fct_get_key_by_filename {
-    my ($self, $filename) = @_;
+sub fct_get_key_by_filename ($self, $filename) {
     my $session_screens = $self->cli->{_session_screens};
 
     return unless $filename;
@@ -78,8 +76,7 @@ sub fct_get_key_by_filename {
     return $key;
 }
 
-sub fct_get_key_by_pubfile {
-    my ($self, $filename) = @_;
+sub fct_get_key_by_pubfile ($self, $filename) {
     my $session_screens = $self->cli->{_session_screens};
 
     return unless $filename;
@@ -103,8 +100,7 @@ sub fct_get_key_by_pubfile {
     return $key;
 }
 
-sub fct_get_total_size_of_session {
-    my ($self) = @_;
+sub fct_get_total_size_of_session ($self) {
     my $session_screens = $self->cli->{_session_screens};
     
     my $total_size = 0;
@@ -115,8 +111,7 @@ sub fct_get_total_size_of_session {
     return $total_size;
 }
 
-sub fct_update_profile_selectors {
-    my ($self, $combobox_settings_profiles, $current_profiles_ref, $recur_widget) = @_;
+sub fct_update_profile_selectors ($self, $combobox_settings_profiles, $current_profiles_ref, $recur_widget) {
     my $cli = $self->cli;
     my $tray_menu = $cli->{_tray_menu};
     my $sm = $cli->{_sm};

@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_ret_program_menu {
-    my ($self, $menu_programs) = @_;
+sub fct_ret_program_menu ($self, $menu_programs) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $session_screens = $cli->{_session_screens};
@@ -137,8 +136,7 @@ sub fct_ret_program_menu {
     return $menu_programs;
 }
 
-sub fct_ret_tray_menu {
-    my ($self) = @_;
+sub fct_ret_tray_menu ($self) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $d = $cli->sc->get_gettext;

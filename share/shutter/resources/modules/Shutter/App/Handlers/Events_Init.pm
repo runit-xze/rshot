@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_add_file_monitor {
-    my ($self, $key) = @_;
+sub fct_add_file_monitor ($self, $key) {
     my $cli = $self->cli;
     my $session_screens = $cli->{_session_screens};
     my $sc = $cli->sc;
@@ -93,8 +92,7 @@ sub fct_add_file_monitor {
     return TRUE;
 }
 
-sub fct_iter_programs {
-    my ($self, $model, $path, $iter, $search_for) = @_;
+sub fct_iter_programs ($self, $model, $path, $iter, $search_for) {
     my $progname = $self->cli->{_progname};
     
     my $progname_value = $model->get_value($iter, 1);
@@ -103,8 +101,7 @@ sub fct_iter_programs {
     return TRUE;
 }
 
-sub fct_navigation_toolbar {
-    my ($self, $widget) = @_;
+sub fct_navigation_toolbar ($self, $widget) {
     my $nav_toolbar = $self->cli->{_nav_toolbar};
     
     return unless $nav_toolbar;

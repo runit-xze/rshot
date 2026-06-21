@@ -1,73 +1,58 @@
 package Shutter::Draw::LegacyDelegators;
 
-sub load_settings {
-	my $self = shift;
+sub load_settings ($self) {
 	return $self->{_settings_manager}->load_settings(@_);
 }
 
-sub save_settings {
-	my $self = shift;
+sub save_settings ($self) {
 	return $self->{_settings_manager}->save_settings(@_);
 }
 
-sub import_from_dnd {
-	my $self = shift;
+sub import_from_dnd ($self) {
 	return $self->{_io_manager}->import_from_dnd(@_);
 }
 
-sub import_from_filesystem {
-	my $self = shift;
+sub import_from_filesystem ($self) {
 	return $self->{_io_manager}->import_from_filesystem(@_);
 }
 
-sub import_from_utheme {
-	my $self = shift;
+sub import_from_utheme ($self) {
 	return $self->{_io_manager}->import_from_utheme(@_);
 }
 
-sub import_from_utheme_ctxt {
-	my $self = shift;
+sub import_from_utheme_ctxt ($self) {
 	return $self->{_io_manager}->import_from_utheme_ctxt(@_);
 }
 
-sub import_from_session {
-	my $self = shift;
+sub import_from_session ($self) {
 	return $self->{_io_manager}->import_from_session(@_);
 }
 
-sub get_pixelated_pixbuf_from_canvas {
-	my $self = shift;
+sub get_pixelated_pixbuf_from_canvas ($self) {
 	return $self->{_item_factory}->get_pixelated_pixbuf_from_canvas(@_);
 }
 
-sub export_to_file {
-	my $self = shift;
+sub export_to_file ($self) {
 	return $self->{_io_manager}->export_to_file(@_);
 }
 
-sub export_to_svg {
-	my $self = shift;
+sub export_to_svg ($self) {
 	return $self->{_io_manager}->export_to_svg(@_);
 }
 
-sub export_to_ps {
-	my $self = shift;
+sub export_to_ps ($self) {
 	return $self->{_io_manager}->export_to_ps(@_);
 }
 
-sub export_to_pdf {
-	my $self = shift;
+sub export_to_pdf ($self) {
 	return $self->{_io_manager}->export_to_pdf(@_);
 }
 
-sub save {
-	my $self = shift;
+sub save ($self) {
 	return $self->{_io_manager}->save(@_);
 }
 
-sub setup_item_signals {
-	my ($self, $item) = @_;
-
+sub setup_item_signals ($self, $item) {
 	$item->signal_connect(
 		'motion_notify_event',
 		sub {
@@ -96,9 +81,7 @@ sub setup_item_signals {
 	return TRUE;
 }
 
-sub setup_item_signals_extra {
-	my ($self, $item) = @_;
-
+sub setup_item_signals_extra ($self, $item) {
 	$item->signal_connect(
 		'enter_notify_event',
 		sub {
@@ -116,34 +99,27 @@ sub setup_item_signals_extra {
 	return TRUE;
 }
 
-sub event_item_on_motion_notify {
-	my $self = shift;
+sub event_item_on_motion_notify ($self) {
 	return $self->{_mouse_manager}->event_item_on_motion_notify(@_);
 }
 
-sub get_opposite_rect {
-	my $self = shift;
+sub get_opposite_rect ($self) {
 	return $self->{_item_factory}->get_opposite_rect(@_);
 }
 
-sub get_parent_item {
-	my $self = shift;
+sub get_parent_item ($self) {
 	return $self->{_item_factory}->get_parent_item(@_);
 }
 
-sub get_highest_auto_digit {
-	my $self = shift;
+sub get_highest_auto_digit ($self) {
 	return $self->{_item_factory}->get_highest_auto_digit(@_);
 }
 
-sub get_child_item {
-	my $self = shift;
+sub get_child_item ($self) {
 	return $self->{_item_factory}->get_child_item(@_);
 }
 
-sub abort_current_mode {
-	my ($self) = @_;
-
+sub abort_current_mode ($self) {
 	if ($self->{_current_item}) {
 		$self->{_canvas}->pointer_ungrab($self->{_current_item}, Gtk3::get_current_event_time());
 		$self->{_canvas}->keyboard_ungrab($self->{_current_item}, Gtk3::get_current_event_time());
@@ -156,11 +132,9 @@ sub abort_current_mode {
 	return TRUE;
 }
 
-sub clear_item_from_canvas {
-	my ($self, $item) = @_;
+sub clear_item_from_canvas ($self, $item) {
 
 	#~ print "clear_item_from_canvas\n";
-
 	$self->{_current_item}     = undef;
 	$self->{_current_new_item} = undef;
 
@@ -191,74 +165,59 @@ sub clear_item_from_canvas {
 	return TRUE;
 }
 
-sub store_to_xdo_stack {
-	my $self = shift;
+sub store_to_xdo_stack ($self) {
 	return $self->{_macro_manager}->store_to_xdo_stack(@_);
 }
 
-sub xdo_remove {
-	my $self = shift;
+sub xdo_remove ($self) {
 	return $self->{_macro_manager}->xdo_remove(@_);
 }
 
-sub xdo {
-	my $self = shift;
+sub xdo ($self) {
 	return $self->{_macro_manager}->xdo(@_);
 }
 
-sub set_and_save_drawing_properties {
-	my $self = shift;
+sub set_and_save_drawing_properties ($self) {
 	return $self->{_settings_manager}->set_and_save_drawing_properties(@_);
 }
 
-sub restore_fixed_properties {
-	my $self = shift;
+sub restore_fixed_properties ($self) {
 	return $self->{_settings_manager}->restore_fixed_properties(@_);
 }
 
-sub restore_drawing_properties {
-	my $self = shift;
+sub restore_drawing_properties ($self) {
 	return $self->{_settings_manager}->restore_drawing_properties(@_);
 }
 
-sub event_item_on_key_press {
-	my $self = shift;
+sub event_item_on_key_press ($self) {
 	return $self->{_mouse_manager}->event_item_on_key_press(@_);
 }
 
-sub event_item_on_button_press {
-	my $self = shift;
+sub event_item_on_button_press ($self) {
 	return $self->{_mouse_manager}->event_item_on_button_press(@_);
 }
 
-sub ret_background_menu {
-	my $self = shift;
+sub ret_background_menu ($self) {
 	return $self->{_context_menu_manager}->ret_background_menu(@_);
 }
 
-sub ret_item_menu {
-	my $self = shift;
+sub ret_item_menu ($self) {
 	return $self->{_context_menu_manager}->ret_item_menu(@_);
 }
 
-sub show_item_properties {
-	my $self = shift;
+sub show_item_properties ($self) {
 	return $self->{_property_manager}->show_item_properties(@_);
 }
 
-sub apply_properties {
-	my $self = shift;
+sub apply_properties ($self) {
 	return $self->{_property_manager}->apply_properties(@_);
 }
 
-sub modify_text_in_properties {
-	my $self = shift;
+sub modify_text_in_properties ($self) {
 	return $self->{_property_manager}->modify_text_in_properties(@_);
 }
 
-sub move_all {
-	my ($self, $x, $y) = @_;
-
+sub move_all ($self, $x, $y) {
 	foreach (keys %{$self->{_items}}) {
 
 		my $item = $self->{_items}{$_};
@@ -340,8 +299,7 @@ sub move_all {
 	return TRUE;
 }
 
-sub deactivate_all {
-	my $self    = shift;
+sub deactivate_all ($self) {
 	my $exclude = shift || 0;
 
 	#~ print "deactivate_all\n";
@@ -369,42 +327,31 @@ sub deactivate_all {
 	return TRUE;
 }
 
-sub handle_embedded {
-	my $self = shift;
+sub handle_embedded ($self) {
 	return $self->{_canvas_overlays}->handle_embedded(@_);
 }
 
-sub handle_bg_rects {
-	my $self = shift;
+sub handle_bg_rects ($self) {
 	return $self->{_canvas_overlays}->handle_bg_rects(@_);
 }
 
-sub handle_rects {
-	my $self = shift;
+sub handle_rects ($self) {
 	return $self->{_canvas_overlays}->handle_item_handles(@_);
 }
 
-sub event_item_on_button_release {
-	my $self = shift;
+sub event_item_on_button_release ($self) {
 	return $self->{_mouse_manager}->event_item_on_button_release(@_);
 }
 
-sub event_item_on_enter_notify {
-	my $self = shift;
+sub event_item_on_enter_notify ($self) {
 	return $self->{_mouse_manager}->event_item_on_enter_notify(@_);
 }
 
-sub event_item_on_leave_notify {
-	my $self = shift;
+sub event_item_on_leave_notify ($self) {
 	return $self->{_mouse_manager}->event_item_on_leave_notify(@_);
 }
 
-sub gen_thumbnail_on_idle {
-	my $self       = shift;
-	my $stock      = shift;
-	my $parent     = shift;
-	my $button     = shift;
-	my $no_init    = shift;
+sub gen_thumbnail_on_idle ($self, $stock, $parent, $button, $no_init) {
 	my @menu_items = @_;
 
 	my $shutter_hfunct = Shutter::App::HelperFunctions->new($self->{_sc});
@@ -491,12 +438,9 @@ sub gen_thumbnail_on_idle {
 
 }
 
-sub set_drawing_action {
-	my $self  = shift;
-	my $index = shift;
+sub set_drawing_action ($self, $index) {
 
 	#~ print "set_drawing_action\n";
-
 	my $item_index = 0;
 	my $toolbar    = $self->{_uimanager}->get_widget("/ToolBarDrawing");
 	for (my $i = 0 ; $i < $toolbar->get_n_items ; $i++) {
@@ -521,11 +465,9 @@ sub set_drawing_action {
 
 }
 
-sub change_cursor_to_current_pixbuf {
-	my $self = shift;
+sub change_cursor_to_current_pixbuf ($self) {
 
 	#~ print "change_cursor_to_current_pixbuf\n";
-
 	$self->{_current_mode_descr} = "image";
 
 	my $cursor = undef;
@@ -571,48 +513,39 @@ sub change_cursor_to_current_pixbuf {
 	return $cursor;
 }
 
-sub paste_item {
-	my $self = shift;
+sub paste_item ($self) {
 	return $self->{_item_factory}->paste_item(@_);
 }
 
-sub create_polyline {
-	my $self = shift;
+sub create_polyline ($self) {
 	return $self->{_item_factory}->create_polyline(@_);
 }
 
-sub create_censor {
-	my $self = shift;
+sub create_censor ($self) {
 	return $self->{_item_factory}->create_censor(@_);
 }
 
-sub create_pixel_image {
-	my $self = shift;
+sub create_pixel_image ($self) {
 	return $self->{_item_factory}->create_pixel_image(@_);
 }
 
-sub create_image {
-	my $self = shift;
+sub create_image ($self) {
 	return $self->{_item_factory}->create_image(@_);
 }
 
-sub create_text {
-	my $self = shift;
+sub create_text ($self) {
 	return $self->{_item_factory}->create_text(@_);
 }
 
-sub create_line {
-	my $self = shift;
+sub create_line ($self) {
 	return $self->{_item_factory}->create_line(@_);
 }
 
-sub create_ellipse {
-	my $self = shift;
+sub create_ellipse ($self) {
 	return $self->{_item_factory}->create_ellipse(@_);
 }
 
-sub create_rectangle {
-	my $self = shift;
+sub create_rectangle ($self) {
 	return $self->{_item_factory}->create_rectangle(@_);
 }
 

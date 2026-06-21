@@ -34,8 +34,7 @@ my $log = Log::Any->get_logger;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_control_wm_settings {
-    my ($self, $mode, $restore_value) = @_;
+sub fct_control_wm_settings ($self, $mode, $restore_value) {
 
     #compiz via dbus
     my $bus    = undef;

@@ -14,8 +14,7 @@ has drawing_tool => (
 	required => 1,
 );
 
-sub load_settings {
-	my $self = shift;
+sub load_settings ($self) {
 	my $dt   = $self->drawing_tool;
 
 	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->sc);
@@ -74,8 +73,7 @@ sub load_settings {
 	return TRUE;
 }
 
-sub save_settings {
-	my $self = shift;
+sub save_settings ($self) {
 	my $dt   = $self->drawing_tool;
 
 	#to avoid saving the properties of the highlighter
@@ -143,10 +141,7 @@ sub save_settings {
 	return TRUE;
 }
 
-sub set_and_save_drawing_properties {
-	my $self      = shift;
-	my $item      = shift;
-	my $save_only = shift;
+sub set_and_save_drawing_properties ($self, $item, $save_only) {
 	my $dt        = $self->drawing_tool;
 
 	return FALSE unless $item;
@@ -253,9 +248,7 @@ sub set_and_save_drawing_properties {
 
 }
 
-sub restore_fixed_properties {
-	my $self = shift;
-	my $mode = shift;
+sub restore_fixed_properties ($self, $mode) {
 	my $dt   = $self->drawing_tool;
 
 	#block 'value-change' handlers for widgets
@@ -294,8 +287,7 @@ sub restore_fixed_properties {
 
 }
 
-sub restore_drawing_properties {
-	my $self = shift;
+sub restore_drawing_properties ($self) {
 	my $dt   = $self->drawing_tool;
 
 	#saved properties available?

@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_try_init_tray {
-    my ($self) = @_;
+sub fct_try_init_tray ($self) {
     my $cli = $self->cli;
     
     $cli->{_tray_legacy} = Gtk3::StatusIcon->new();

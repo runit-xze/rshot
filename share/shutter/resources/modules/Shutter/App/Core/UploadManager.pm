@@ -34,8 +34,7 @@ use Glib qw/TRUE FALSE/;
 
 has '_common' => (is => 'ro', required => 1);
 
-sub upload_file {
-    my ($self, $key, $upload_type) = @_;
+sub upload_file ($self, $key, $upload_type) {
     my $sc = $self->_common;
     my $d = $sc->get_gettext;
     my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);

@@ -28,18 +28,15 @@ use Moo;
 
 my %_handlers;
 
-sub register_handler {
-    my ($name, $handler) = @_;
+sub register_handler ($name, $handler) {
     $_handlers{$name} = $handler;
 }
 
-sub get_handler {
-    my ($name) = @_;
+sub get_handler ($name) {
     return $_handlers{$name};
 }
 
-sub call {
-    my ($name, @args) = @_;
+sub call ($name, @args) {
     my $handler = $_handlers{$name};
     die "No handler registered for '$name'" unless $handler;
     return $handler->($name, @args);

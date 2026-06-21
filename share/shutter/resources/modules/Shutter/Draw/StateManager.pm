@@ -6,8 +6,7 @@ use Glib qw/TRUE FALSE/;
 
 has drawing_tool => (is => 'ro', required => 1);
 
-sub quit {
-	my ($mgr, $show_warning) = @_;
+sub quit ($mgr, $show_warning) {
 	my $self = $mgr->drawing_tool;
 
 	my ($name, $folder, $type) = fileparse($self->{_filename}, qr/\.[^.]*/);
@@ -99,8 +98,7 @@ sub quit {
 	return FALSE;
 }
 
-sub update_warning_text {
-	my ($mgr, $warn_dialog) = @_;
+sub update_warning_text ($mgr, $warn_dialog) {
 	my $self = $mgr->drawing_tool;
 
 	my $minutes = int((time - $self->{_start_time}) / 60);
@@ -121,8 +119,7 @@ sub update_warning_text {
 	return TRUE;
 }
 
-sub abort_current_mode {
-	my ($mgr) = @_;
+sub abort_current_mode ($mgr) {
 	my $self = $mgr->drawing_tool;
 
 	if ($self->{_current_item}) {
@@ -137,8 +134,7 @@ sub abort_current_mode {
 	return TRUE;
 }
 
-sub clear_item_from_canvas {
-	my ($mgr, $item) = @_;
+sub clear_item_from_canvas ($mgr, $item) {
 	my $self = $mgr->drawing_tool;
 
 	#~ print "clear_item_from_canvas\n";
@@ -173,8 +169,7 @@ sub clear_item_from_canvas {
 	return TRUE;
 }
 
-sub move_all {
-	my ($mgr, $x, $y) = @_;
+sub move_all ($mgr, $x, $y) {
 	my $self = $mgr->drawing_tool;
 
 	foreach (keys %{$self->{_items}}) {
@@ -258,8 +253,7 @@ sub move_all {
 	return TRUE;
 }
 
-sub deactivate_all {
-	my $mgr = shift;
+sub deactivate_all ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $exclude = shift || 0;
 
@@ -288,8 +282,7 @@ sub deactivate_all {
 	return TRUE;
 }
 
-sub gen_thumbnail_on_idle {
-	my $mgr = shift;
+sub gen_thumbnail_on_idle ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $stock      = shift;
 	my $parent     = shift;
@@ -381,8 +374,7 @@ sub gen_thumbnail_on_idle {
 
 }
 
-sub set_drawing_action {
-	my $mgr = shift;
+sub set_drawing_action ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $index = shift;
 
@@ -412,8 +404,7 @@ sub set_drawing_action {
 
 }
 
-sub change_cursor_to_current_pixbuf {
-	my $mgr = shift;
+sub change_cursor_to_current_pixbuf ($mgr) {
 	my $self = $mgr->drawing_tool;
 
 	#~ print "change_cursor_to_current_pixbuf\n";
@@ -463,8 +454,7 @@ sub change_cursor_to_current_pixbuf {
 	return $cursor;
 }
 
-sub setup_item_signals {
-	my ($mgr, $item) = @_;
+sub setup_item_signals ($mgr, $item) {
 	my $self = $mgr->drawing_tool;
 
 	$item->signal_connect(
@@ -495,8 +485,7 @@ sub setup_item_signals {
 	return TRUE;
 }
 
-sub push_tool_help_to_statusbar {
-	my ($mgr, $x, $y, $action) = @_;
+sub push_tool_help_to_statusbar ($mgr, $x, $y, $action) {
 	my $self = $mgr->drawing_tool;
 
 	#init $action if not defined
@@ -562,8 +551,7 @@ sub push_tool_help_to_statusbar {
 
 }
 
-sub show_status_message {
-	my $mgr = shift;
+sub show_status_message ($mgr) {
 	my $self = $mgr->drawing_tool;
 	my $index        = shift;
 	my $status_text  = shift;

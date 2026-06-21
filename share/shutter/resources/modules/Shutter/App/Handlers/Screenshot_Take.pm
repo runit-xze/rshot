@@ -43,8 +43,7 @@ use Shutter::Pixbuf::Border;
 
 has cli => (is => 'ro', required => 1);
 
-sub evt_take_screenshot {
-    my ($self, $widget, $data, $folder_from_config, $extra) = @_;
+sub evt_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $window = $cli->window;
@@ -198,8 +197,7 @@ sub evt_take_screenshot {
     return TRUE;
 }
 
-sub fct_take_screenshot {
-    my ($self, $widget, $data, $folder_from_config, $extra) = @_;
+sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $shf = $cli->shf;

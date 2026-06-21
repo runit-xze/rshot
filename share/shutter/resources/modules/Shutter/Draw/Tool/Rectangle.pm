@@ -22,8 +22,7 @@ sub on_drag ($self, $event) {
 }
 
 
-sub on_drag_creation_shape {
-	my ($self, $item, $target, $ev) = @_;
+sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	$dt->deactivate_all($item);
 	$dt->{_current_item} = $item;
@@ -37,8 +36,7 @@ sub on_drag_creation_shape {
 }
 
 
-sub on_click_creation {
-	my ($self, $item, $target, $ev, $copy_item) = @_;
+sub on_click_creation ($self, $item, $target, $ev, $copy_item) {
 	require Shutter::Draw::Rectangle;
 	my $rect = Shutter::Draw::Rectangle->new( app => $self->drawing_tool );
 	return $rect->setup($ev, $copy_item);

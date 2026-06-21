@@ -31,8 +31,7 @@ use Shutter::App::Directories;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_post_settings {
-    my ($self, $settings_dialog) = @_;
+sub fct_post_settings ($self, $settings_dialog) {
     my $cli = $self->cli;
     my $combobox_settings_profiles = $cli->{_combobox_settings_profiles};
     my $sas = $cli->sc->{_sas};

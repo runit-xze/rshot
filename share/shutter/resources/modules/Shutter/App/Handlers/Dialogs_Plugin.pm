@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub dlg_plugin {
-    my ($self, @file_to_plugin_keys) = @_;
+sub dlg_plugin ($self, @file_to_plugin_keys) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
     my $window = $cli->window;

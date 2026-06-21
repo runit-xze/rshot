@@ -184,9 +184,7 @@ sub get_start_with ($self) {
     return ( $self->_start_with, $self->_start_with_extra );
 }
 
-sub set_start_with {
-    my $self = shift;
-
+sub set_start_with ($self) {
     if (@_) {
         $self->_start_with(shift);
         $self->_start_with_extra(shift);

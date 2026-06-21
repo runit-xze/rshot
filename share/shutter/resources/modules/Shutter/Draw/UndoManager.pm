@@ -10,9 +10,7 @@ has 'redo_stack' => (is => 'rw', default => sub { [] });
 has 'uimanager'  => (is => 'ro');
 
 # Store action info; $do_info must be built externally (requires DrawingTool's _items hash)
-sub store_action {
-    my ($self, $do_info, $stack, $source) = @_;
-
+sub store_action ($self, $do_info, $stack, $source) {
     return FALSE unless $do_info && $do_info->{item};
 
     # Reset redo stack unless source is 'ui'
@@ -32,9 +30,7 @@ sub store_action {
 }
 
 # Remove all actions for an item from the specified stack
-sub remove_item {
-    my ($self, $stack, $item) = @_;
-
+sub remove_item ($self, $stack, $item) {
     my @indices;
     my $counter = 0;
 
@@ -54,9 +50,7 @@ sub remove_item {
 }
 
 # Get the reverse action for undo/redo
-sub get_reverse_action {
-    my ($self, $action) = @_;
-
+sub get_reverse_action ($self, $action) {
     return 'delete_xdo' if $action eq 'create';
     return 'create_xdo' if $action eq 'delete';
     return 'lower_xdo'  if $action eq 'raise';
@@ -65,8 +59,7 @@ sub get_reverse_action {
 }
 
 # Update UI widget sensitivity based on stack state
-sub update_ui_sensitivity {
-    my $self = shift;
+sub update_ui_sensitivity ($self) {
     return TRUE unless $self->uimanager;
 
     my $ui = $self->uimanager;
@@ -86,8 +79,7 @@ sub update_ui_sensitivity {
 }
 
 # Get and pop from appropriate stack (used by xdo in DrawingTool)
-sub pop_stack {
-    my ($self, $stack) = @_;
+sub pop_stack ($self, $stack) {
     if ($stack eq 'undo') {
         return pop @{$self->undo_stack};
     } elsif ($stack eq 'redo') {

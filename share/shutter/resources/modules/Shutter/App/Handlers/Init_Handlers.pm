@@ -46,8 +46,7 @@ sub fct_check_valid_mime_type {
     return FALSE;
 }
 
-sub fct_drop_handler {
-    my ($self, $widget, $context, $x, $y, $selection, $info, $time) = @_;
+sub fct_drop_handler ($self, $widget, $context, $x, $y, $selection, $info, $time) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
     
@@ -100,8 +99,7 @@ sub fct_drop_handler {
     }
 }
 
-sub fct_is_uri_in_session {
-    my ($self, $giofile, $jump) = @_;
+sub fct_is_uri_in_session ($self, $giofile, $jump) {
     my $cli = $self->cli;
     my $session_screens = $cli->{_session_screens};
     my $notebook = $cli->{_notebook};
@@ -124,8 +122,7 @@ sub fct_is_uri_in_session {
     return FALSE;
 }
 
-sub fct_load_session {
-    my ($self) = @_;
+sub fct_load_session ($self) {
     my $cli = $self->cli;
     my $shf = $cli->shf;
     my $d = $cli->sc->get_gettext;
@@ -184,8 +181,7 @@ sub fct_load_session {
     return TRUE;
 }
 
-sub fct_open_files {
-    my ($self, @new_files) = @_;
+sub fct_open_files ($self, @new_files) {
     my $cli = $self->cli;
     my $shf = $cli->shf;
     my $d = $cli->sc->get_gettext;
@@ -216,8 +212,7 @@ sub fct_open_files {
     return TRUE;
 }
 
-sub fct_toggle_status_throbber {
-    my ($self, $status, $throbber, $sep) = @_;
+sub fct_toggle_status_throbber ($self, $status, $throbber, $sep) {
     my $shutter_root = $self->cli->shutter_root;
     return FALSE unless $status;
 

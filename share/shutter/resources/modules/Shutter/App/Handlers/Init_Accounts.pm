@@ -32,8 +32,7 @@ use IO::File;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_load_accounts {
-    my ($self, $profilename) = @_;
+sub fct_load_accounts ($self, $profilename) {
     my $cli = $self->cli;
     my $shf = $cli->shf;
     my $sc = $cli->sc;
@@ -86,8 +85,7 @@ sub fct_load_accounts {
     return TRUE;
 }
 
-sub fct_load_accounts_tree {
-    my ($self) = @_;
+sub fct_load_accounts_tree ($self) {
     my $accounts = $self->cli->{_accounts};
 
     my $accounts_model = Gtk3::ListStore->new(
@@ -112,8 +110,7 @@ sub fct_load_accounts_tree {
     return $accounts_model;
 }
 
-sub fct_load_plugin_tree {
-    my ($self) = @_;
+sub fct_load_plugin_tree ($self) {
     my $cli = $self->cli;
     my $shutter_root = $cli->shutter_root;
     my $shf = $cli->shf;

@@ -37,8 +37,7 @@ has '_window' => (is => 'rw');
 has '_notebook' => (is => 'rw');
 has '_status' => (is => 'rw');
 
-sub create_main_window {
-    my ($self, $app) = @_;
+sub create_main_window ($self, $app) {
     my $window = Gtk3::ApplicationWindow->new($app);
     $self->_window($window);
     return $window;

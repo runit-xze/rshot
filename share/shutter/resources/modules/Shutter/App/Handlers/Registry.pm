@@ -34,8 +34,7 @@ has _handlers => (
     default => sub { {} },
 );
 
-sub get {
-    my ($self, $name) = @_;
+sub get ($self, $name) {
     
     return $self->_handlers->{$name} if exists $self->_handlers->{$name};
     

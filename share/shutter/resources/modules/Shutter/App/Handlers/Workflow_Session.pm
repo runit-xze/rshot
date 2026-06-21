@@ -31,8 +31,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_create_session_notebook {
-    my ($self) = @_;
+sub fct_create_session_notebook ($self) {
     my $cli = $self->cli;
     my $notebook = $cli->{_notebook};
     my $session_start_screen = $cli->{_session_start_screen};
@@ -76,8 +75,7 @@ sub fct_create_session_notebook {
     return $notebook;
 }
 
-sub fct_create_tab {
-    my ($self, $key, $is_all) = @_;
+sub fct_create_tab ($self, $key, $is_all) {
     my $cli = $self->cli;
     my $session_screens = $cli->{_session_screens};
     my $session_start_screen = $cli->{_session_start_screen};

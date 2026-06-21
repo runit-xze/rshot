@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_ret_profile_menu {
-    my ($self, $combobox_settings_profiles, $current_profiles_ref, $menu_profile) = @_;
+sub fct_ret_profile_menu ($self, $combobox_settings_profiles, $current_profiles_ref, $menu_profile) {
     my $cli = $self->cli;
     my $current_profile_indx = $cli->{_current_profile_indx};
 
@@ -67,8 +66,7 @@ sub fct_ret_profile_menu {
     return $menu_profile;
 }
 
-sub fct_ret_web_menu {
-    my ($self) = @_;
+sub fct_ret_web_menu ($self) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
     my $settings_xml = $cli->{_settings_xml};

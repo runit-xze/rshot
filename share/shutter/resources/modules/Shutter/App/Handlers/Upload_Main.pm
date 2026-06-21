@@ -32,8 +32,7 @@ use Shutter::App::Constants qw(SHUTTER_NAME SHUTTER_VERSION);
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_email {
-    my ($self) = @_;
+sub fct_email ($self) {
     my $cli = $self->cli;
     my $shf = $cli->shf;
     my $session_start_screen = $cli->{_session_start_screen};
@@ -66,8 +65,7 @@ sub fct_email {
     return TRUE;
 }
 
-sub fct_open_with_program {
-    my ($self, $app) = @_;
+sub fct_open_with_program ($self, $app) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
     my $session_start_screen = $cli->{_session_start_screen};
@@ -136,8 +134,7 @@ sub fct_open_with_program {
     return TRUE;
 }
 
-sub fct_print {
-    my ($self) = @_;
+sub fct_print ($self) {
     my $cli = $self->cli;
     my $shf = $cli->shf;
     my $window = $cli->window;
@@ -225,8 +222,7 @@ sub fct_print {
     return TRUE;
 }
 
-sub fct_send {
-    my ($self) = @_;
+sub fct_send ($self) {
     my $cli = $self->cli;
     my $shf = $cli->shf;
     my $session_start_screen = $cli->{_session_start_screen};
@@ -262,8 +258,7 @@ sub fct_send {
     return TRUE;
 }
 
-sub fct_upload {
-    my ($self) = @_;
+sub fct_upload ($self) {
     my $cli = $self->cli;
     my $session_start_screen = $cli->{_session_start_screen};
     
@@ -307,9 +302,7 @@ sub fct_upload {
     return TRUE;
 }
 
-sub fct_upload_plugin_get_info {
-    my ($self, $upload_plugin, $info) = @_;
-
+sub fct_upload_plugin_get_info ($self, $upload_plugin, $info) {
     my $upload_plugin_info = `$upload_plugin $info`;
     utf8::decode $upload_plugin_info;
 

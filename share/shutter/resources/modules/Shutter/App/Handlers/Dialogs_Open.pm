@@ -32,8 +32,7 @@ use Shutter::App::SimpleDialogs;
 
 has cli => (is => 'ro', required => 1);
 
-sub dlg_open {
-    my ($self, $widget, $data) = @_;
+sub dlg_open ($self, $widget, $data) {
     my $cli = $self->cli;
     my $sc = $cli->sc;
     my $window = $cli->window;
@@ -148,8 +147,7 @@ sub dlg_open {
     return TRUE;
 }
 
-sub dlg_save_as {
-    my ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) = @_;
+sub dlg_save_as ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) {
     
     my $cli = $self->cli;
     my $sc = $cli->sc;

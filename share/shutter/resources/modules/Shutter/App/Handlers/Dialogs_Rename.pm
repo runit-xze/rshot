@@ -32,8 +32,7 @@ use Shutter::App::SimpleDialogs;
 
 has cli => (is => 'ro', required => 1);
 
-sub dlg_rename {
-    my ($self, @file_to_rename_keys) = @_;
+sub dlg_rename ($self, @file_to_rename_keys) {
     my $cli = $self->cli;
     my $window = $cli->window;
     my $d = $cli->sc->get_gettext;

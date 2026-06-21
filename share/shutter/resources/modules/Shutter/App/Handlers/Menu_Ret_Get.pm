@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_get_current_file {
-    my ($self) = @_;
+sub fct_get_current_file ($self) {
     my $cli = $self->cli;
     my $notebook = $cli->{_notebook};
     my $session_screens = $cli->{_session_screens};
@@ -55,8 +54,7 @@ sub fct_get_current_file {
     return $key;
 }
 
-sub fct_get_latest_tab_key {
-    my ($self) = @_;
+sub fct_get_latest_tab_key ($self) {
     my $session_screens = $self->cli->{_session_screens};
 
     my $max_key = 0;

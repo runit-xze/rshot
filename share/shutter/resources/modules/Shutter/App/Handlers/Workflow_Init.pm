@@ -35,8 +35,7 @@ use Shutter::App::Constants qw(SHUTTER_VERSION SHUTTER_REV);
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_init_debug_output {
-    my ($self) = @_;
+sub fct_init_debug_output ($self) {
     my $log = Log::Any->get_logger;
 
     $log->debug("gathering system information...");
@@ -76,8 +75,7 @@ sub fct_init_debug_output {
     return TRUE;
 }
 
-sub fct_init_depend {
-    my ($self) = @_;
+sub fct_init_depend ($self) {
     my $cli = $self->cli;
     my $log = Log::Any->get_logger;
     
@@ -137,8 +135,7 @@ sub fct_init_depend {
     return TRUE;
 }
 
-sub fct_init_unsaved_files {
-    my ($self) = @_;
+sub fct_init_unsaved_files ($self) {
 
     #delete all files in this folder
     #except the ones that are in the current session

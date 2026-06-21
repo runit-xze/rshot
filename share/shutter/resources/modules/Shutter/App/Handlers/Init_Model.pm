@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_set_model_accounts {
-    my ($self, $accounts_tree, $accounts_model) = @_;
+sub fct_set_model_accounts ($self, $accounts_tree, $accounts_model) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
     my $accounts = $cli->{_accounts};
@@ -153,8 +152,7 @@ sub fct_set_model_accounts {
     return TRUE;
 }
 
-sub fct_set_model_plugins {
-    my ($self, $effects_tree) = @_;
+sub fct_set_model_plugins ($self, $effects_tree) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
 

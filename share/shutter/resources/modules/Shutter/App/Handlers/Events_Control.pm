@@ -30,8 +30,7 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_control_main_window {
-    my ($self, $mode, $present) = @_;
+sub fct_control_main_window ($self, $mode, $present) {
     
     #default value for present is TRUE
     $present = TRUE unless defined $present;
@@ -86,8 +85,7 @@ sub fct_control_main_window {
     return TRUE;
 }
 
-sub fct_control_signals {
-    my ($self, $action) = @_;
+sub fct_control_signals ($self, $action) {
     
     my $cli = $self->cli;
     my $app = $cli->app;
