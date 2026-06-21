@@ -214,7 +214,6 @@ sub get_window_size ($self, $wnck_window, $gdk_window, $border, $no_resize = und
 
 	return ($xp, $yp, $wp, $hp);
 }
-
 sub find_active_window ($self) {
 
 	my $gdk_window = $self->{_gdk_screen}->get_active_window;
@@ -289,6 +288,5 @@ sub find_region_for_window_type ($self, $xwindow, $type_hint = undef) {
 
 	return TRUE;
 }
-
 
 1;
