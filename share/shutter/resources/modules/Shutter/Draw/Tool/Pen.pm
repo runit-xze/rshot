@@ -25,4 +25,17 @@ sub on_drag ($self, $event) {
 1;
 
 
+
+sub on_drag_creation_points {
+	my ($self, $item, $target, $ev) = @_;
+	my $dt = $self->drawing_tool;
+	$dt->{_items}{$item}->set('points' => Shutter::Draw::Utils::points_to_canvas_points(@{$dt->{_items}{$item}{'points'}}));
+}
+
+
+sub on_click_creation {
+	my ($self, $item, $target, $ev) = @_;
+	$self->drawing_tool->create_polyline($ev, undef, FALSE);
+}
+
 1;

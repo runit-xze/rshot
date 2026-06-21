@@ -222,8 +222,10 @@ sub workspace ($self, $no_active_check = undef, $no_finishing = undef) {
 
 		#compiz
 	} else {
-		$self->{_wnck_screen}->move_viewport($self->{_vpx}, $self->{_vpy});
-		$wrksp_changed = TRUE;
+		if (defined $self->{_vpx} && defined $self->{_vpy}) {
+			$self->{_wnck_screen}->move_viewport($self->{_vpx}, $self->{_vpy});
+			$wrksp_changed = TRUE;
+		}
 	}
 
 	#we need a minimum delay of 1 second

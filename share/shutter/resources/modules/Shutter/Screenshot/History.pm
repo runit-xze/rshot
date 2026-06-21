@@ -33,7 +33,7 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new ($class, $sc, $drawable, $x, $y, $w, $h, $region = undef, $wxid = undef, $gxid = undef) {
+sub new ($class, $sc, $drawable = undef, $x = 0, $y = 0, $w = 0, $h = 0, $region = undef, $wxid = undef, $gxid = undef) {
 
 	my $self = {_sc => $sc};
 

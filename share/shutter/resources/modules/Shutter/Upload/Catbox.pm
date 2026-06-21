@@ -3,6 +3,7 @@ package Shutter::Upload::Catbox;
 use utf8;
 use v5.40;
 use Moo;
+with 'Shutter::Upload::Role::Uploader';
 use LWP::UserAgent;
 use HTTP::Request::Common qw(POST);
 

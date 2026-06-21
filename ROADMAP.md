@@ -29,7 +29,7 @@ The primary goal is to break down the remaining large modules that still carry l
 - [ ] **Modernize Rendering:** Ensure drawing tools are fully compatible with Cairo and GTK3 drawing signals.
 
 ### 4.2 Screenshot Engines
-- [ ] **Advanced Selector:** Modernize `SelectorAdvanced.pm` to use Cairo-based overlays instead of legacy X11 primitives.
+- [x] **Advanced Selector:** Modernize `SelectorAdvanced.pm` to use Cairo-based overlays instead of legacy X11 primitives.
 - [ ] **Wayland Parity:** Improve Wayland support via XDG Desktop Portals for improved security and compatibility.
 
 ### 4.3 Upload System

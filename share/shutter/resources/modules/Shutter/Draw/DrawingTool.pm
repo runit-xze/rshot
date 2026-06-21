@@ -191,7 +191,7 @@ sub new {
 	print "DrawingTool initialized\n" if $self->{_sc}->get_debug;
 
 	require Shutter::Draw::ToolbarManager;
-	$self->{_toolbar_manager} = Shutter::Draw::ToolbarManager->new(app => $self);
+	$self->{_toolbar_manager} = Shutter::Draw::ToolbarManager->new(drawing_tool => $self);
 
 	bless $self, $class;
 
@@ -5660,7 +5660,7 @@ sub event_item_on_leave_notify {
 sub setup_uimanager {
 	my $self = shift;
 
-	return Shutter::Draw::UIManager->new( app => $self )->setup;
+	return Shutter::Draw::UIManager->new( drawing_tool => $self )->setup;
 }
 
 sub import_from_dnd {
@@ -6379,7 +6379,7 @@ sub create_polyline {
 	my $highlighter = shift;
 
 	require Shutter::Draw::Polyline;
-	my $poly = Shutter::Draw::Polyline->new( app => $self );
+	my $poly = Shutter::Draw::Polyline->new( drawing_tool => $self );
 	return $poly->setup($ev, $copy_item, $highlighter);
 }
 
@@ -6389,7 +6389,7 @@ sub create_censor {
 	my $copy_item = shift;
 
 	require Shutter::Draw::Censor;
-	my $censor = Shutter::Draw::Censor->new( app => $self );
+	my $censor = Shutter::Draw::Censor->new( drawing_tool => $self );
 	return $censor->setup($ev, $copy_item);
 }
 
@@ -6399,7 +6399,7 @@ sub create_pixel_image {
 	my $copy_item = shift;
 
 	require Shutter::Draw::Blur;
-	my $blur = Shutter::Draw::Blur->new( app => $self );
+	my $blur = Shutter::Draw::Blur->new( drawing_tool => $self );
 	return $blur->setup($ev, $copy_item);
 }
 
@@ -6504,7 +6504,7 @@ sub create_text {
 	my $copy_item = shift;
 
 	require Shutter::Draw::Text;
-	my $text = Shutter::Draw::Text->new( app => $self );
+	my $text = Shutter::Draw::Text->new( drawing_tool => $self );
 	return $text->setup($ev, $copy_item);
 }
 
@@ -6516,7 +6516,7 @@ sub create_line {
 	my $start_arrow = shift;
 
 	require Shutter::Draw::Arrow;
-	my $arrow = Shutter::Draw::Arrow->new( app => $self );
+	my $arrow = Shutter::Draw::Arrow->new( drawing_tool => $self );
 	return $arrow->setup($ev, $copy_item, $end_arrow, $start_arrow);
 }
 
@@ -6527,7 +6527,7 @@ sub create_ellipse {
 	my $numbered  = shift;
 
 	require Shutter::Draw::Ellipse;
-	my $ellipse = Shutter::Draw::Ellipse->new( app => $self );
+	my $ellipse = Shutter::Draw::Ellipse->new( drawing_tool => $self );
 	return $ellipse->setup($ev, $copy_item, $numbered);
 }
 
@@ -6537,7 +6537,7 @@ sub create_rectangle {
 	my $copy_item = shift;
 
 	require Shutter::Draw::Rectangle;
-	my $rect = Shutter::Draw::Rectangle->new( app => $self );
+	my $rect = Shutter::Draw::Rectangle->new( drawing_tool => $self );
 	return $rect->setup($ev, $copy_item);
 }
 
