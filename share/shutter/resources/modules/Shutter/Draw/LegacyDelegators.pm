@@ -1,5 +1,12 @@
 package Shutter::Draw::LegacyDelegators;
 
+use v5.40;
+use feature "try";
+no warnings "experimental::try";
+no warnings "experimental::args_array_with_signatures";
+
+use Glib qw(TRUE FALSE);
+
 sub load_settings ($self) {
 	return $self->{_settings_manager}->load_settings(@_);
 }

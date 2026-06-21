@@ -23,9 +23,11 @@
 
 package Shutter::App::Directories;
 
-use 5.010;
-use strict;
-use warnings;
+use v5.40;
+use feature "try";
+no warnings "experimental::try";
+
+
 
 use Glib qw/ TRUE /;
 
@@ -38,9 +40,7 @@ use constant {
     PROFILES_DIR       => "profiles"
 };
 
-sub create_if_not_exists {
-    my $dir = shift;
-
+sub create_if_not_exists ($dir) {
     mkdir $dir unless -d $dir && -r $dir;
 
     return $dir;

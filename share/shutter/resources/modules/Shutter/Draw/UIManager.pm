@@ -22,6 +22,10 @@
 
 package Shutter::Draw::UIManager;
 
+use v5.40;
+use feature "try";
+no warnings "experimental::try";
+
 use Moo;
 use Gtk3;
 use Glib qw/ TRUE FALSE /;
@@ -31,9 +35,7 @@ has app => ( is => "ro", required => 1 );
 has dicons  => ( is => "ro", lazy => 1, default => sub { shift->app->dicons } );
 has gettext => ( is => "ro", lazy => 1, default => sub { shift->app->gettext } );
 
-sub setup {
-    my $self = shift;
-
+sub setup ($self) {
     $self->app->factory( $self->_create_factory );
 
     my $uimanager = Gtk3::UIManager->new;
@@ -56,9 +58,7 @@ sub setup {
     return $uimanager;
 }
 
-sub _create_factory {
-    my $self = shift;
-
+sub _create_factory ($self) {
     my $factory = Gtk3::IconFactory->new;
 
     $factory->add( 'shutter-ellipse',
@@ -102,8 +102,7 @@ sub _create_factory {
     return $factory;
 }
 
-sub _create_main_group {
-    my $self = shift;
+sub _create_main_group ($self) {
 
     # Setup the main group.
     my $main_group = Gtk3::ActionGroup->new("main");
@@ -112,9 +111,7 @@ sub _create_main_group {
     return $main_group;
 }
 
-sub _create_main_actions {
-    my $self = shift;
-
+sub _create_main_actions ($self) {
     my @main_actions = (
         [ "File",  undef, $self->gettext->get("_File") ],
         [ "Edit",  undef, $self->gettext->get("_Edit") ],
@@ -291,8 +288,7 @@ sub _create_main_actions {
     return \@main_actions;
 }
 
-sub _create_toggle_group {
-    my $self = shift;
+sub _create_toggle_group ($self) {
 
     #setup the menu toggle group
     my $toggle_group = Gtk3::ActionGroup->new("toggle");
@@ -301,9 +297,7 @@ sub _create_toggle_group {
     return $toggle_group;
 }
 
-sub _create_toggle_actions {
-    my $self = shift;
-
+sub _create_toggle_actions ($self) {
     my @toggle_actions = (
         [   "Autoscroll",
             undef,
@@ -346,8 +340,7 @@ sub _create_toggle_actions {
     return \@toggle_actions;
 }
 
-sub _create_drawing_group {
-    my $self = shift;
+sub _create_drawing_group ($self) {
 
     # Setup the drawing group.
     my $drawing_actions = $self->_create_drawing_actions;
@@ -363,9 +356,7 @@ sub _create_drawing_group {
     return $drawing_group;
 }
 
-sub _create_drawing_actions {
-    my $self = shift;
-
+sub _create_drawing_actions ($self) {
     my @drawing_actions = (
         [   "Select", 'shutter-pointer',                                       $self->gettext->get("Select"),
             "<alt>0", $self->gettext->get("Select item to move or resize it"), 10
@@ -412,9 +403,7 @@ sub _create_drawing_actions {
     return \@drawing_actions;
 }
 
-sub _get_ui_info {
-    my $self = shift;
-
+sub _get_ui_info ($self) {
     return "
     <ui>
       <menubar name = 'MenuBar'>

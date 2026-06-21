@@ -1,5 +1,9 @@
 package Shutter::Draw::IOManager;
 
+use v5.40;
+use feature "try";
+no warnings "experimental::try";
+
 use utf8;
 use strict;
 use warnings;
@@ -17,8 +21,7 @@ has drawing_tool => (
     required => 1,
 );
 
-sub export_to_file {
-	my $self      = shift;
+sub export_to_file ($self) {
 	my $dt = $self->drawing_tool;
 	my $rfiletype = shift;
 
@@ -215,8 +218,7 @@ sub export_to_file {
 
 }
 
-sub export_to_svg {
-	my $self = shift;
+sub export_to_svg ($self) {
 	my $dt = $self->drawing_tool;
 
 	#here might be some more features in future releases of Shutter
@@ -227,8 +229,7 @@ sub export_to_svg {
 	return TRUE;
 }
 
-sub export_to_ps {
-	my $self = shift;
+sub export_to_ps ($self) {
 	my $dt = $self->drawing_tool;
 
 	#here might be some more features in future releases of Shutter
@@ -239,8 +240,7 @@ sub export_to_ps {
 	return TRUE;
 }
 
-sub export_to_pdf {
-	my $self = shift;
+sub export_to_pdf ($self) {
 	my $dt = $self->drawing_tool;
 
 	#here might be some more features in future releases of Shutter
@@ -251,8 +251,7 @@ sub export_to_pdf {
 	return TRUE;
 }
 
-sub save {
-	my $self        = shift;
+sub save ($self) {
 	my $dt = $self->drawing_tool;
 	my $save_to_mem = shift;
 	my $filename    = shift || $dt->filename();
@@ -381,8 +380,7 @@ sub save {
 
 }
 
-sub import_from_dnd {
-	my ($self, $widget, $context, $x, $y, $selection, $info, $time) = @_;
+sub import_from_dnd ($self, $widget, $context, $x, $y, $selection, $info, $time) {
 	my $dt = $self->drawing_tool;
 	my $type = $selection->get_target->name;
 	return unless $type eq 'text/uri-list';
@@ -452,8 +450,7 @@ sub import_from_dnd {
 	return TRUE;
 }
 
-sub import_from_filesystem {
-	my $self   = shift;
+sub import_from_filesystem ($self) {
 	my $dt = $self->drawing_tool;
 	my $button = shift;
 
@@ -665,8 +662,7 @@ sub import_from_filesystem {
 	return $menu_objects;
 }
 
-sub import_from_utheme {
-	my $self      = shift;
+sub import_from_utheme ($self) {
 	my $dt = $self->drawing_tool;
 	my $icontheme = shift;
 	my $button    = shift;
@@ -726,8 +722,7 @@ sub import_from_utheme {
 	return $menu_ctxt;
 }
 
-sub import_from_utheme_ctxt {
-	my $self      = shift;
+sub import_from_utheme_ctxt ($self) {
 	my $dt = $self->drawing_tool;
 	my $icontheme = shift;
 	my $context   = shift;
@@ -756,8 +751,7 @@ sub import_from_utheme_ctxt {
 	return $menu_ctxt_items;
 }
 
-sub import_from_session {
-	my $self   = shift;
+sub import_from_session ($self) {
 	my $dt = $self->drawing_tool;
 	my $button = shift;
 
@@ -792,8 +786,7 @@ sub import_from_session {
 
 	return $menu_session_objects;
 }
-sub get_pixelated_pixbuf_from_canvas {
-	my ($self, $item) = @_;
+sub get_pixelated_pixbuf_from_canvas ($self, $item) {
 	my $dt = $self->drawing_tool;
 
 	my $bounds = $item->get_bounds;

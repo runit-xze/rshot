@@ -25,11 +25,13 @@
 # Native Gtk3::IconSize doesn't work for some reason
 # FIXME This package should be cleaned up when fixing DrawingTool
 package Gtk3::IconSize;
+
+use v5.40;
+use feature "try";
+no warnings "experimental::try";
 {
 	no warnings 'redefine';
-	sub lookup {
-		my $self = shift;
-		my $size = shift;
+sub lookup ($self, $size) {
 		Shutter::App::HelperFunctions->icon_size($size);
 	}
 }
@@ -37,6 +39,10 @@ package Gtk3::IconSize;
 1;
 
 package Shutter::Draw::DrawingTool;
+
+use v5.40;
+use feature "try";
+no warnings "experimental::try";
 use parent 'Shutter::Draw::LegacyDelegators';
 
 #modules
@@ -73,9 +79,7 @@ require Shutter::Draw::UIManager;
 
 #--------------------------------------
 
-sub new {
-	my $class = shift;
-
+sub new ($class) {
 	my $self = {_sc => shift};
 	$self->{_shf} = Shutter::App::HelperFunctions->new($self->{_sc});
 
@@ -243,8 +247,7 @@ sub new {
 
 	# Workaround for broken xpm parsing in glycin:
 	# https://gitlab.gnome.org/GNOME/glycin/-/work_items/291
-	sub parse_xpm_hotspot {
-	my ($xpm_path) = @_;
+sub parse_xpm_hotspot ($xpm_path) {
 	my ($x_hot, $y_hot);
 
 	open my $fh, '<', $xpm_path or do {
@@ -276,64 +279,52 @@ sub new {
 	return ($x_hot, $y_hot);
 	}
 
-sub show {
-	my $self = shift;
+sub show ($self) {
 	return $self->{_toolbar_manager}->setup_main_window(@_);
 }
 
 
-sub setup_right_vbox_c {
-	my $self = shift;
+sub setup_right_vbox_c ($self) {
 	return $self->{_toolbar_manager}->setup_right_vbox_c(@_);
 }
 
-sub adjust_crop_values {
-	my $self = shift;
+sub adjust_crop_values ($self) {
 	return $self->{_toolbar_manager}->adjust_crop_values(@_);
 }
 
-sub push_tool_help_to_statusbar {
-	my $self = shift;
+sub push_tool_help_to_statusbar ($self) {
 	return $self->{_toolbar_manager}->push_tool_help_to_statusbar(@_);
 }
 
-sub show_status_message {
-	my $self = shift;
+sub show_status_message ($self) {
 	return $self->{_toolbar_manager}->show_status_message(@_);
 }
 
-sub change_drawing_tool_cb {
-	my $self = shift;
+sub change_drawing_tool_cb ($self) {
 	return $self->{_toolbar_manager}->change_drawing_tool_cb(@_);
 }
 
-sub zoom_in_cb {
-	my $self = shift;
+sub zoom_in_cb ($self) {
 	return $self->{_toolbar_manager}->zoom_in_cb(@_);
 }
 
-sub zoom_out_cb {
-	my $self = shift;
+sub zoom_out_cb ($self) {
 	return $self->{_toolbar_manager}->zoom_out_cb(@_);
 }
 
-sub zoom_normal_cb {
-	my $self = shift;
+sub zoom_normal_cb ($self) {
 	return $self->{_toolbar_manager}->zoom_normal_cb(@_);
 }
 
-sub adjust_rulers {
-	my $self = shift;
+sub adjust_rulers ($self) {
 	return $self->{_toolbar_manager}->adjust_rulers(@_);
 }
 
-sub quit {
-	my $self = shift;
+sub quit ($self) {
 	return $self->{_state_manager}->quit(@_);
 }
 
-sub update_warning_text {
-	my $self = shift;
+sub update_warning_text ($self) {
 	return $self->{_state_manager}->update_warning_text(@_);
 }
 
@@ -360,8 +351,7 @@ sub update_warning_text {
 
 
 
-sub get_item_key {
-	my ($self, $item, $parent) = @_;
+sub get_item_key ($self, $item, $parent) {
 	if (exists $self->{_items}{$item}) {
 		return $item;
 	} else {
@@ -376,17 +366,13 @@ sub get_item_key {
 
 
 
-sub setup_uimanager {
-	my $self = shift;
-
+sub setup_uimanager ($self) {
 	return Shutter::Draw::UIManager->new( app => $self )->setup;
 }
 
 
 
-sub utf8_decode {
-	my $self   = shift;
-	my $string = shift;
+sub utf8_decode ($self, $string) {
 
 	#see https://bugs.launchpad.net/shutter/+bug/347821
 	utf8::decode $string;
@@ -394,10 +380,7 @@ sub utf8_decode {
 	return $string;
 }
 
-sub check_valid_mime_type {
-	my $self      = shift;
-	my $mime_type = shift;
-
+sub check_valid_mime_type ($self, $mime_type) {
 	foreach my $format (Gtk3::Gdk::Pixbuf::get_formats()) {
 		foreach my $mime (@{$format->get_mime_types}) {
 			return TRUE if $mime_type eq $mime_type;
@@ -422,67 +405,56 @@ sub drawing_window { shift->{_drawing_window} }
 sub canvas { shift->{_canvas} }
 sub stipple_pixbuf { shift->{_stipple_pixbuf} }
 
-sub cut {
-	my $self = shift;
+sub cut ($self) {
 	$self->{_cut} = shift if scalar @_;
 	return $self->{_cut};
 }
-sub current_copy_item {
-	my $self = shift;
+sub current_copy_item ($self) {
 	$self->{_current_copy_item} = shift if scalar @_;
 	return $self->{_current_copy_item};
 }
 
-sub current_item {
-	my $self = shift;
+sub current_item ($self) {
 	$self->{_current_item} = shift if scalar @_;
 	return $self->{_current_item};
 }
 
-sub current_new_item {
-	my $self = shift;
+sub current_new_item ($self) {
 	$self->{_current_new_item} = shift if scalar @_;
 	return $self->{_current_new_item};
 }
 
-sub canvas_bg {
-	my $self = shift;
+sub canvas_bg ($self) {
 	$self->{_canvas_bg} = shift if scalar @_;
 	return $self->{_canvas_bg};
 }
 
-sub factory {
-	my $self = shift;
+sub factory ($self) {
 	$self->{_factory} = shift if scalar @_;
 	return $self->{_factory};
 }
 
-sub autoscroll {
-	my $self = shift;
+sub autoscroll ($self) {
 	$self->{_autoscroll} = shift if scalar @_;
 	return $self->{_autoscroll};
 }
 
-sub stroke_color {
-	my $self = shift;
+sub stroke_color ($self) {
 	$self->{_stroke_color} = shift if scalar @_;
 	return $self->{_stroke_color};
 }
 
-sub fill_color {
-	my $self = shift;
+sub fill_color ($self) {
 	$self->{_fill_color} = shift if scalar @_;
 	return $self->{_fill_color};
 }
 
-sub line_width {
-	my $self = shift;
+sub line_width ($self) {
 	$self->{_line_width} = shift if scalar @_;
 	return $self->{_line_width};
 }
 
-sub font {
-	my $self = shift;
+sub font ($self) {
 	$self->{_font} = shift if scalar @_;
 	return $self->{_font};
 }
@@ -496,4 +468,3 @@ sub uimanager { shift->{_uimanager} }
 sub toolbar_manager { shift->{_toolbar_manager} }
 
 1;
-

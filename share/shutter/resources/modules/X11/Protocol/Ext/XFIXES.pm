@@ -18,6 +18,10 @@
 BEGIN { require 5 }
 
 package X11::Protocol::Ext::XFIXES;
+
+use v5.40;
+use feature "try";
+no warnings "experimental::try";
 use X11::Protocol 'padded';
 use strict;
 use warnings;
@@ -65,8 +69,7 @@ use constant constants_list => (
 	# XFixesCursorEventMask     => [ 'DisplayCursor' ],
 );
 
-sub _ext_constants_install {
-	my ($X, $constants_arrayref) = @_;
+sub _ext_constants_install ($X, $constants_arrayref) {
 	foreach (my $i = 0 ; $i <= $#$constants_arrayref ; $i += 2) {
 		my $name = $constants_arrayref->[$i];
 		my $aref = $constants_arrayref->[$i + 1];
@@ -120,8 +123,7 @@ my $events_arrayref = [
 	],
 ];
 
-sub _ext_events_install {
-	my ($X, $event_num, $events_arrayref) = @_;
+sub _ext_events_install ($X, $event_num, $events_arrayref) {
 	foreach (my $i = 0 ; $i <= $#$events_arrayref ; $i += 2) {
 		my $name = $events_arrayref->[$i];
 		if (defined(my $already = $X->{'ext_const'}->{'Events'}->[$event_num])) {
@@ -414,9 +416,7 @@ my $requests_arrayref = [[
 	],                                    # ($X, $barrier)  single barrier to destroy
 ];
 
-sub _ext_requests_install {
-	my ($X, $request_num, $requests_arrayref) = @_;
-
+sub _ext_requests_install ($X, $request_num, $requests_arrayref) {
 	$X->{'ext_request'}->{$request_num} = $requests_arrayref;
 	my $href = $X->{'ext_request_num'};
 	my $i;
@@ -427,10 +427,8 @@ sub _ext_requests_install {
 
 #------------------------------------------------------------------------------
 
-sub new {
-	my ($class, $X, $request_num, $event_num, $error_num) = @_;
+sub new ($class, $X, $request_num, $event_num, $error_num) {
 	### XFIXES new()
-
 	my $self = bless {}, $class;
 	_ext_constants_install($X, [$self->constants_list]);
 	_ext_requests_install($X, $request_num, $requests_arrayref);
@@ -463,8 +461,7 @@ sub _request_empty {
 	return '';
 }
 
-sub _request_xids {
-	my $X = shift;
+sub _request_xids ($X) {
 	### _request_xids(): @_
 	return _request_card32s($X, map { _num_none($_) } @_);
 }
@@ -475,8 +472,7 @@ sub _request_card32s {
 	return pack 'L*', @_;
 }
 
-sub _request_xid_xy_region {
-	my ($X, $xid, $x, $y, $region) = @_;
+sub _request_xid_xy_region ($X, $xid, $x, $y, $region) {
 	return pack('LLss', $xid, _num_none($region), $x, $y);
 }
 
@@ -492,8 +488,7 @@ sub _pack_rectangles {
 	return join('', map { pack 'ssSS', @$_ } @_);
 }
 
-sub _num_none {
-	my ($xid) = @_;
+sub _num_none ($xid) {
 	if (defined $xid && $xid eq 'None') {
 		return 0;
 	} else {
@@ -501,8 +496,7 @@ sub _num_none {
 	}
 }
 
-sub _interp_none {
-	my ($X, $xid) = @_;
+sub _interp_none ($X, $xid) {
 	if ($X->{'do_interp'} && $xid == 0) {
 		return 'None';
 	} else {
@@ -510,8 +504,7 @@ sub _interp_none {
 	}
 }
 
-sub _interp_time {
-	my ($time) = @_;
+sub _interp_time ($time) {
 	if ($time == 0) {
 		return 'CurrentTime';
 	} else {
@@ -519,8 +512,7 @@ sub _interp_time {
 	}
 }
 
-sub _num_time {
-	my ($time) = @_;
+sub _num_time ($time) {
 	if ($time eq 'CurrentTime') {
 		return 0;
 	} else {
@@ -528,17 +520,14 @@ sub _num_time {
 	}
 }
 
-sub _num_xinputdevice {
-	my ($device) = @_;
+sub _num_xinputdevice ($device) {
 	if ($device eq 'AllDevices')       { return 0; }
 	if ($device eq 'AllMasterDevices') { return 1; }
 	return $device;
 }
 
-sub _ext_error_install {
-	my $X = shift;    # ($X, $errname1,$errname2,...)
+sub _ext_error_install ($X, $error_num) {
 	### _ext_error_install: @_
-	my $error_num = shift;
 	my $aref      = $X->{'ext_const'}{'Error'}    # copy
 		= [@{$X->{'ext_const'}{'Error'} || []}];
 	my $href = $X->{'ext_const_num'}{'Error'}     # copy

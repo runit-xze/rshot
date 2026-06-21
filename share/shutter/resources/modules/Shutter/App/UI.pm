@@ -23,10 +23,14 @@
 
 package Shutter::App::UI;
 
+use v5.40;
+use feature "try";
+no warnings "experimental::try";
+
 use utf8;
 use v5.40;
 use feature 'try';
-no my $log = Log::Any->get_logger; $log->debugings 'experimental::try';
+no warnings 'experimental::try';
 
 use Moo;
 use Gtk3 '-init';
@@ -39,8 +43,7 @@ my $log = Log::Any->get_logger;
 # and provides UI setup methods that were previously in bin/shutter
 has common => (is => 'ro', required => 1);
 
-sub create_main_window {
-    my ($self, $app) = @_;
+sub create_main_window ($self, $app) {
     my $sc = $self->common;
     my $window = Gtk3::ApplicationWindow->new($app);
     $sc->set_mainwindow($window);
@@ -52,8 +55,7 @@ sub create_main_window {
     return $window;
 }
 
-sub setup_app_objects {
-    my ($self) = @_;
+sub setup_app_objects ($self) {
     my $sc = $self->common;
 
     my $sas = Shutter::App::Autostart->new();
@@ -67,8 +69,8 @@ sub setup_app_objects {
     my $menu = $sm->create_menu;
     my $toolbar = $st->create_toolbar;
     
-    my $log = Log::Any->get_logger; $log->debug "Packing menu: " . (defined $menu ? ref($menu) : "undef"));;
-    my $log = Log::Any->get_logger; $log->debug "Packing toolbar: " . (defined $toolbar ? ref($toolbar) : "undef"));;
+    $log->debug("Packing menu: " . (defined $menu ? ref($menu) : "undef"));
+    $log->debug("Packing toolbar: " . (defined $toolbar ? ref($toolbar) : "undef"));
     
     $vbox->pack_start($menu, FALSE, TRUE, 0);
     $vbox->pack_start($toolbar, FALSE, TRUE, 0);
