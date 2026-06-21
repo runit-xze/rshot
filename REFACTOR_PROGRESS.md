@@ -6,8 +6,8 @@ This document tracks the second wave of modularization, focusing on decomposing 
 
 | Module | Purpose | Current LOC | Refactor Status | Target |
 |--------|---------|-------------|-----------------|--------|
-| `Shutter::Draw::DrawingTool` | Drawing Editor | 6,630 | 🔴 Planning | Break into Tool/UI classes |
-| `Shutter::Screenshot::SelectorAdvanced` | Advanced Region Selection | 1,081 | 🟡 Initial Assessment | Port to Cairo overlays |
+| `Shutter::Draw::DrawingTool` | Drawing Editor | 499 | 🟢 Completed | Break into Tool/UI classes |
+| `Shutter::Screenshot::SelectorAdvanced` | Advanced Region Selection | 626 | 🟡 Initial Assessment | Port to Cairo overlays |
 | `Shutter::Screenshot::Main` | Main Capture Logic | 495 | 🟡 In Progress | Modernize via `ScreenshotHandler` |
 
 ## Completed Items (FTP removed - deprecated)
