@@ -32,6 +32,8 @@ no warnings 'experimental::try';
 use Shutter::Screenshot::Main;
 use Shutter::Screenshot::History;
 use Shutter::Screenshot::Selector::ZoomOverlay;
+use Shutter::Screenshot::Selector::SelectionModel;
+use Shutter::Screenshot::Selector::InputManager;
 
 use Data::Dumper;
 use Gtk3;
@@ -72,6 +74,17 @@ sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $zoom_active, $h
 	$self->{_mouse_x} = $init_x;
 	$self->{_mouse_y} = $init_y;
 	$self->{_zoom_overlay} = Shutter::Screenshot::Selector::ZoomOverlay->new(app => $self);
+
+	$self->{_model} = Shutter::Screenshot::Selector::SelectionModel->new(
+		max_w => $self->{_root}->{w},
+		max_h => $self->{_root}->{h},
+		on_changed => sub ($model) {
+			$self->{_selection} = $model->get_hash;
+			$self->{_draw_area}->queue_draw if $self->{_draw_area};
+			$self->adjust_prop_values if $self->can('adjust_prop_values');
+		}
+	);
+	$self->{_input} = Shutter::Screenshot::Selector::InputManager->new(app => $self, model => $self->{_model});
 
 	return $self;
 }
@@ -156,13 +169,12 @@ sub select_advanced ($self) {
 			my $ex = $event->x;
 			my $ey = $event->y;
 			
-			$self->{_selection}->{x} = int($sx < $ex ? $sx : $ex);
-			$self->{_selection}->{y} = int($sy < $ey ? $sy : $ey);
-			$self->{_selection}->{width} = int(abs($ex - $sx));
-			$self->{_selection}->{height} = int(abs($ey - $sy));
+			my $x = int($sx < $ex ? $sx : $ex);
+			my $y = int($sy < $ey ? $sy : $ey);
+			my $w = int(abs($ex - $sx));
+			my $h = int(abs($ey - $sy));
 			
-			$widget->queue_draw;
-			$self->adjust_prop_values();
+			$self->{_model}->set_rect($x, $y, $w, $h);
 		}
 		return TRUE;
 	});
@@ -176,7 +188,7 @@ sub select_advanced ($self) {
 				$self->{_prop_window}->hide;
 				Glib::Timeout->add($self->{_hide_time}, sub { Gtk3->main_quit; return FALSE; });
 				Gtk3->main();
-				$output = $self->take_screenshot($self->{_selection});
+				$self->{_final_output} = $self->take_screenshot($self->{_selection});
 				$self->quit;
 			}
 		} elsif ($event->button == 3) {
@@ -283,125 +295,15 @@ sub select_advanced ($self) {
 			my ($window, $event) = @_;
 			return FALSE unless defined $event;
 
-			my $s = $self->{_selection};
 			my ($window_at_pointer, $x, $y, $mask) = $self->{_root}->get_pointer;
-
-			if ($event->keyval == Gtk3::Gdk::keyval_from_name('space')) {
-				$self->{_zoom_active} = !$self->{_zoom_active};
-				$self->{_draw_area}->queue_draw;
-				return TRUE;
-			}
-
-			if ($event->keyval == Gtk3::Gdk::keyval_from_name('Shift_L') || $event->keyval == Gtk3::Gdk::keyval_from_name('Shift_R')) {
-
-				if ($self->{_prop_active}) {
-					Gtk3::Gdk::keyboard_ungrab(Gtk3::get_current_event_time());
-					$self->{_prop_window}->hide;
-					$self->{_prop_active} = FALSE;
-					Gtk3::Gdk::keyboard_grab($self->{_select_window}->get_window, 0, Gtk3::get_current_event_time());
-				} else {
-					Gtk3::Gdk::keyboard_ungrab(Gtk3::get_current_event_time());
-					my ($window_at_pointer, $x, $y, $mask) = $self->{_root}->get_pointer;
-					$self->{_prop_window}->move($x, $y);
-					$self->{_prop_window}->show_all;
-					$self->{_prop_active} = TRUE;
-					Gtk3::Gdk::keyboard_grab($self->{_prop_window}->get_window, 0, Gtk3::get_current_event_time());
-				}
-
-			} elsif ($event->keyval == Gtk3::Gdk::keyval_from_name('Escape')) {
-
-				$self->quit;
-
-			} elsif ($event->keyval == Gtk3::Gdk::keyval_from_name('Up')) {
-
-				if ($event->state >= 'control-mask' && $s) {
-					$s->{height} -= 1;
-					$s->{height} = 0 if $s->{height} < 0;
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $s->{width} + $s->{x}, $s->{height} + $s->{y});
-				} elsif ($event->state >= 'mod1-mask' && $s) {
-					$s->{y} -= 1;
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $s->{x}, $s->{y});
-				} else {
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $x, $y - 1);
-				}
-
-			} elsif ($event->keyval == Gtk3::Gdk::keyval_from_name('Down')) {
-
-				if ($event->state >= 'control-mask' && $s) {
-					$s->{height} += 1;
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $s->{width} + $s->{x}, $s->{height} + $s->{y});
-				} elsif ($event->state >= 'control-mask') {
-					$self->{_selection} = {x=>$x, y=>$y, width=>1, height=>2};
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $x + 1, $y + 2);
-				} elsif ($event->state >= 'mod1-mask' && $s) {
-					$s->{y} += 1;
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $s->{x}, $s->{y});
-				} else {
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $x, $y + 1);
-				}
-
-			} elsif ($event->keyval == Gtk3::Gdk::keyval_from_name('Left')) {
-
-				if ($event->state >= 'control-mask' && $s) {
-					$s->{width} -= 1;
-					$s->{width} = 0 if $s->{width} < 0;
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $s->{width} + $s->{x}, $s->{height} + $s->{y});
-				} elsif ($event->state >= 'mod1-mask' && $s) {
-					$s->{x} -= 1;
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $s->{x}, $s->{y});
-				} else {
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $x - 1, $y);
-				}
-
-			} elsif ($event->keyval == Gtk3::Gdk::keyval_from_name('Right')) {
-
-				if ($event->state >= 'control-mask' && $s) {
-					$s->{width} += 1;
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $s->{width} + $s->{x}, $s->{height} + $s->{y});
-				} elsif ($event->state >= 'control-mask') {
-					$self->{_selection} = {x=>$x, y=>$y, width=>2, height=>1};
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $x + 2, $y + 1);
-				} elsif ($event->state >= 'mod1-mask' && $s) {
-					$s->{x} += 1;
-					$self->{_draw_area}->queue_draw;
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $s->{x}, $s->{y});
-				} else {
-					$self->{_gdk_display}->warp_pointer($self->{_gdk_screen}, $x + 1, $y);
-				}
-
-			} elsif ($event->keyval == Gtk3::Gdk::keyval_from_name('Return') || $event->keyval == Gtk3::Gdk::keyval_from_name('KP_Enter')) {
-
-				$self->{_select_window}->hide;
-				$self->{_prop_window}->hide;
-
-				Glib::Timeout->add(
-					$self->{_hide_time},
-					sub {
-						Gtk3->main_quit;
-						return FALSE;
-					});
-				Gtk3->main();
-
-				$output = $self->take_screenshot($s);
-				$self->quit;
-
-			}
+			return $self->{_input}->handle_key_press($event, $x, $y);
 		});
 
 	my $status = Gtk3::Gdk::keyboard_grab($self->{_select_window}->get_window, 0, Gtk3::get_current_event_time());
 
 	Gtk3->main();
 
-	return $output;
+	return $self->{_final_output} // $output;
 }
 
 sub adjust_prop_values ($self) {

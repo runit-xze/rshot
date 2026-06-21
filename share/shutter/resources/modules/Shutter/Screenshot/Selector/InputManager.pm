@@ -51,9 +51,8 @@ sub handle_key_press ($self, $event, $x, $y) {
         Glib::Timeout->add($app->{_hide_time}, sub { Gtk3->main_quit; return FALSE; });
         Gtk3->main();
         my $s = $model->get_hash;
-        my $output;
         if ($s) {
-            $output = $app->take_screenshot($s);
+            $app->{_final_output} = $app->take_screenshot($s);
         }
         $app->quit;
         return TRUE;
