@@ -17,6 +17,7 @@ requires "JSON::MaybeXS";
 requires "LWP::UserAgent";
 requires "URI";
 requires "X11::Protocol";
+requires "Future";
 
 test_requires "Test::MockModule";
 test_requires "Test::Strict";

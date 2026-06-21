@@ -260,9 +260,10 @@ sub ungrab_pointer_and_keyboard ($self, $ungrab_server, $quit_event_handler, $qu
 #~
 #~ }
 
-sub get_pixbuf_from_drawable ($self, $drawable, $x = undef, $y = undef, $width = undef, $height = undef, $region = undef) {
+sub get_pixbuf_from_drawable_async ($self, $drawable, $x = undef, $y = undef, $width = undef, $height = undef, $region = undef) {
 
 	my ($pixbuf, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = (0, 0, 0, 0, 0);
+	my $f = Future->new;
 
 	#show notification messages displaying the countdown
 	if ($self->{_delay} && $self->{_notify_timeout}) {
@@ -359,8 +360,7 @@ sub get_pixbuf_from_drawable ($self, $drawable, $x = undef, $y = undef, $width =
 				}
 			}
 			catch ($e) {
-				$pixbuf = 5;
-				Gtk3->main_quit;
+				$f->fail("Failed to get pixbuf from window: $e");
 				return FALSE;
 			}
 
@@ -375,10 +375,7 @@ sub get_pixbuf_from_drawable ($self, $drawable, $x = undef, $y = undef, $width =
 			if ($region) {
 
 				#get clipbox
-				#~ my $clipbox = $region->get_clipbox;
 				my $clipbox = $self->get_clipbox($region);
-
-				#print "Clipbox: ", Dumper($region, $clipbox);
 
 				#create target pixbuf with dimension of clipbox
 				my $target = Gtk3::Gdk::Pixbuf->new($pixbuf->get_colorspace, TRUE, 8, $clipbox->{width}, $clipbox->{height});
@@ -400,19 +397,21 @@ sub get_pixbuf_from_drawable ($self, $drawable, $x = undef, $y = undef, $width =
 				for my $i (0..$len) {
 					my $r = $region->get_rectangle($i);
 
-					#~ print $r->x, " - ", $r->y, " - ", $r->width, " - ", $r->height, "\n";
 					$pixbuf->copy_area($r->{x} - $small_x, $r->{y} - $small_y, $r->{width}, $r->{height}, $target, $r->{x} - $small_x, $r->{y} - $small_y);
 				}
 				$pixbuf = $target->copy;
 			}
 
-			Gtk3->main_quit;
+			$f->done($pixbuf, $l_cropped, $r_cropped, $t_cropped, $b_cropped);
 			return FALSE;
 		});
 
-	Gtk3->main();
+	# Enable future cancellation!
+	$f->on_cancel(sub {
+	    # Could potentially disable the timeouts here if we stored their IDs
+	});
 
-	return ($pixbuf, $l_cropped, $r_cropped, $t_cropped, $b_cropped);
+	return $f;
 }
 
 #code ported and partially borrowed from gnome-screenshot and Gimp
