@@ -792,5 +792,111 @@ sub import_from_session {
 
 	return $menu_session_objects;
 }
+sub get_pixelated_pixbuf_from_canvas {
+	my ($self, $item) = @_;
+	my $dt = $self->drawing_tool;
+
+	my $bounds = $item->get_bounds;
+	my $sw     = $item->get('width');
+	my $sh     = $item->get('height');
+
+	#create surface and cairo context
+	my $surface = Cairo::ImageSurface->create('rgb24', $bounds->x1 + $sw, $bounds->y1 + $sh);
+	my $cr      = Cairo::Context->create($surface);
+
+	#hide rects and image
+	$dt->handle_rects('hide', $item);
+	$dt->handle_embedded('hide', $item);
+
+	#render the content and load it via Gtk3::Gdk::PixbufLoader
+	$dt->{_canvas}->render($cr, $bounds, 1);
+
+	#show rects again
+	$dt->handle_rects('update', $item);
+
+	#~ print "start loader\n";
+	my $loader = Gtk3::Gdk::PixbufLoader->new;
+	$surface->write_to_png_stream(
+		sub {
+			my ($closure, $data) = @_;
+			$loader->write([map ord, split //, $data]);
+			return TRUE;
+		});
+	$loader->close;
+
+	#create vars
+	my ($pixbuf, $target) = (undef, undef);
+
+	#error icon
+	my $error = Gtk3::Widget::render_icon(Gtk3::Invisible->new, "gtk-dialog-error", 'menu');
+
+	eval {
+
+		$pixbuf = $loader->get_pixbuf;
+
+		#create target pixbuf
+		$target = Gtk3::Gdk::Pixbuf->new($pixbuf->get_colorspace, TRUE, 8, $sw, $sh);
+
+	};
+	unless ($@) {
+
+		#maybe rect is only partially on canvas
+		my ($sx, $sy) = ($bounds->x1, $bounds->y1);
+		my ($dx, $dy) = (0, 0);
+		if ($bounds->x1 < 0) {
+			$sx = 0;
+			$dx = abs $bounds->x1;
+			$sw += $bounds->x1;
+		}
+		if ($bounds->y1 < 0) {
+			$sy = 0;
+			$dy = abs $bounds->y1;
+			$sh += $bounds->y1;
+		}
+
+		#valid pixbuf?
+		if ($pixbuf) {
+
+			#copy area
+			$pixbuf->copy_area($sx, $sy, $sw, $sh, $target, $dx, $dy);
+
+			if ($target->get_width > 10 && $target->get_height > 10) {
+
+				eval {
+
+					#pixelate the pixbuf - simply scale it down and scale it up afterwards
+					$target = $target->scale_simple($target->get_width * 0.1, $target->get_height * 0.1, 'tiles');
+					$target = $target->scale_simple($item->get('width'),      $item->get('height'),      'tiles');
+
+				};
+				unless ($@) {
+
+					return $target;
+
+				}
+
+			} elsif ($target->get_width > 5 && $target->get_height > 5) {
+
+				eval {
+
+					#pixelate the pixbuf - simply scale it down and scale it up afterwards
+					$target = $target->scale_simple($target->get_width * 0.2, $target->get_height * 0.2, 'tiles');
+					$target = $target->scale_simple($item->get('width'),      $item->get('height'),      'tiles');
+
+				};
+				unless ($@) {
+
+					return $target;
+
+				}
+
+			}
+
+		}
+
+	}
+
+	return $error;
+}
 
 1;
