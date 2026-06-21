@@ -32,7 +32,8 @@ no warnings 'experimental::try';
 use Shutter::Screenshot::Main;
 use Shutter::Screenshot::History;
 use Data::Dumper;
-use parent 'Shutter::Screenshot::Main';
+use Moo;
+extends 'Shutter::Screenshot::Main';
 
 #Glib
 use Glib qw/TRUE FALSE/;
@@ -49,7 +50,6 @@ sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $selected_worksp
 	$self->{_vpy}                  = $vpy;
 	$self->{_current_monitor_only} = $current_monitor_only;
 
-	bless $self, $class;
 	return $self;
 }
 

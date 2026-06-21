@@ -32,7 +32,8 @@ use Shutter::Screenshot::Main;
 use Shutter::Screenshot::History;
 
 use Data::Dumper;
-use parent 'Shutter::Screenshot::Main';
+use Moo;
+extends 'Shutter::Screenshot::Main';
 
 #Glib
 use Glib qw/TRUE FALSE/;
@@ -44,7 +45,6 @@ sub new ($class, $shutter_common, $include_cursor, $delay, $notify_timeout) {
 	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout)
 	my $self = $class->SUPER::new($shutter_common, $include_cursor, $delay, $notify_timeout);
 
-	bless $self, $class;
 	return $self;
 }
 

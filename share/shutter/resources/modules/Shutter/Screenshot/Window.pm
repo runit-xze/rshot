@@ -35,7 +35,8 @@ use IO::File();
 use Shutter::Screenshot::Main;
 use Shutter::Screenshot::History;
 use Data::Dumper;
-use parent 'Shutter::Screenshot::Main';
+use Moo;
+extends 'Shutter::Screenshot::Main';
 
 #Glib
 use Gtk3;
@@ -273,7 +274,6 @@ sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $include_border,
 
 	}
 
-	bless $self, $class;
 	return $self;
 }
 
