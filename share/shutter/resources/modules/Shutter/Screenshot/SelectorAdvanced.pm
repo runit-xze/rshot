@@ -31,6 +31,7 @@ no warnings 'experimental::try';
 
 use Shutter::Screenshot::Main;
 use Shutter::Screenshot::History;
+use Shutter::Screenshot::Selector::ZoomOverlay;
 
 use Data::Dumper;
 use Gtk3;
@@ -68,6 +69,10 @@ sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $zoom_active, $h
 	$self->{_draw_area}->set_events(['button-press-mask', 'button-release-mask', 'pointer-motion-mask', 'key-press-mask']);
 
 	bless $self, $class;
+	$self->{_mouse_x} = $init_x;
+	$self->{_mouse_y} = $init_y;
+	$self->{_zoom_overlay} = Shutter::Screenshot::Selector::ZoomOverlay->new(app => $self);
+
 	return $self;
 }
 
@@ -137,6 +142,14 @@ sub select_advanced ($self) {
 
 	$self->{_draw_area}->signal_connect('motion-notify-event' => sub {
 		my ($widget, $event) = @_;
+		
+		$self->{_mouse_x} = $event->x;
+		$self->{_mouse_y} = $event->y;
+		
+		if ($self->{_zoom_active}) {
+			$widget->queue_draw;
+		}
+		
 		if ($self->{_drag_start}) {
 			my $sx = $self->{_drag_start}->{x};
 			my $sy = $self->{_drag_start}->{y};
@@ -207,6 +220,10 @@ sub select_advanced ($self) {
 			$cr->stroke;
 		}
 
+		if (defined $self->{_mouse_x} && defined $self->{_mouse_y}) {
+			$self->{_zoom_overlay}->draw($cr, $self->{_mouse_x}, $self->{_mouse_y});
+		}
+
 		if ($self->{_show_help} && $self->{_selector_init}) {
 			my $mon1 = $self->get_current_monitor;
 			my $style     = $self->{_sc}->get_mainwindow->get_style_context;
@@ -268,6 +285,12 @@ sub select_advanced ($self) {
 
 			my $s = $self->{_selection};
 			my ($window_at_pointer, $x, $y, $mask) = $self->{_root}->get_pointer;
+
+			if ($event->keyval == Gtk3::Gdk::keyval_from_name('space')) {
+				$self->{_zoom_active} = !$self->{_zoom_active};
+				$self->{_draw_area}->queue_draw;
+				return TRUE;
+			}
 
 			if ($event->keyval == Gtk3::Gdk::keyval_from_name('Shift_L') || $event->keyval == Gtk3::Gdk::keyval_from_name('Shift_R')) {
 
