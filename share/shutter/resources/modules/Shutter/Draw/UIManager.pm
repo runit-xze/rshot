@@ -126,8 +126,8 @@ sub _create_main_actions {
             "<control>Z",
             $self->gettext->get("Undo last action"),
             sub {
-                $self->app->abort_current_mode;
-                $self->app->xdo( 'undo', 'ui' );
+                $self->app->{_state_manager}->abort_current_mode;
+                $self->app->{_macro_manager}->xdo( 'undo', 'ui' );
             }
         ],
         [   "Redo",
@@ -164,7 +164,7 @@ sub _create_main_actions {
                 $self->app->clipboard->set_text("");
                 $self->app->cut(TRUE);
                 $self->app->current_copy_item( $self->app->current_item );
-                $self->app->clear_item_from_canvas( $self->app->current_copy_item );
+                $self->app->{_state_manager}->clear_item_from_canvas( $self->app->current_copy_item );
             }
         ],
         [   "Paste",
@@ -179,7 +179,7 @@ sub _create_main_actions {
         ],
         [   "Delete", 'gtk-delete', undef, "Delete",
             $self->gettext->get("Delete current object"),
-            sub { $self->app->clear_item_from_canvas( $self->app->current_item ) }
+            sub { $self->app->{_state_manager}->clear_item_from_canvas( $self->app->current_item ) }
         ],
         [   "Clear",
             'gtk-clear',
@@ -198,17 +198,17 @@ sub _create_main_actions {
 
                 #delete items
                 for my $key ( sort keys %time_hash ) {
-                    $self->app->clear_item_from_canvas( $time_hash{$key} );
+                    $self->app->{_state_manager}->clear_item_from_canvas( $time_hash{$key} );
                 }
             }
         ],
         [   "Stop", 'gtk-stop', undef, "Escape",
             $self->gettext->get("Abort current mode"),
-            sub { $self->app->abort_current_mode }
+            sub { $self->app->{_state_manager}->abort_current_mode }
         ],
         [   "Close", 'gtk-close', undef, "<control>Q",
             $self->gettext->get("Close this window"),
-            sub { $self->app->quit(TRUE) }
+            sub { $self->app->{_state_manager}->quit(TRUE) }
         ],
         [   "Save",
             'gtk-save',
@@ -216,8 +216,8 @@ sub _create_main_actions {
             "<control>S",
             $self->gettext->get("Save image"),
             sub {
-                $self->app->save();
-                $self->app->quit(FALSE);
+                $self->app->{_io_manager}->save();
+                $self->app->{_state_manager}->quit(FALSE);
             }
         ],
         [   "ExportTo",
@@ -226,7 +226,7 @@ sub _create_main_actions {
             "<Shift><Control>E",
             $self->gettext->get("Export to File..."),
             sub {
-                $self->app->export_to_file();
+                $self->app->{_io_manager}->export_to_file();
             }
         ],
         [   "ExportToSvg",
@@ -235,7 +235,7 @@ sub _create_main_actions {
             "<Shift><Alt>V",
             $self->gettext->get("Export to SVG..."),
             sub {
-                $self->app->export_to_svg();
+                $self->app->{_io_manager}->export_to_svg();
             }
         ],
         [   "ExportToPdf",
@@ -244,7 +244,7 @@ sub _create_main_actions {
             "<Shift><Alt>P",
             $self->gettext->get("Export to PDF..."),
             sub {
-                $self->app->export_to_pdf();
+                $self->app->{_io_manager}->export_to_pdf();
             }
         ],
         [   "ExportToPS",
@@ -253,28 +253,28 @@ sub _create_main_actions {
             "<Shift><Alt>S",
             $self->gettext->get("Export to PostScript..."),
             sub {
-                $self->app->export_to_ps();
+                $self->app->{_io_manager}->export_to_ps();
             }
         ],
-        [ "ZoomIn",       'gtk-zoom-in', undef, "<control>plus",  undef, sub { $self->app->zoom_in_cb( $self->app ) } ],
-        [ "ControlEqual", 'gtk-zoom-in', undef, "<control>equal", undef, sub { $self->app->zoom_in_cb( $self->app ) } ],
+        [ "ZoomIn",       'gtk-zoom-in', undef, "<control>plus",  undef, sub { $self->app->{_toolbar_manager}->zoom_in_cb( $self->app ) } ],
+        [ "ControlEqual", 'gtk-zoom-in', undef, "<control>equal", undef, sub { $self->app->{_toolbar_manager}->zoom_in_cb( $self->app ) } ],
         [   "ControlKpAdd",
             'gtk-zoom-in',
             undef,
             "<control>KP_Add",
             undef,
             sub {
-                $self->app->zoom_in_cb( $self->app );
+                $self->app->{_toolbar_manager}->zoom_in_cb( $self->app );
             }
         ],
-        [ "ZoomOut", 'gtk-zoom-out', undef, "<control>minus", undef, sub { $self->app->zoom_out_cb( $self->app ) } ],
+        [ "ZoomOut", 'gtk-zoom-out', undef, "<control>minus", undef, sub { $self->app->{_toolbar_manager}->zoom_out_cb( $self->app ) } ],
         [   "ControlKpSub",
             'gtk-zoom-out',
             undef,
             "<control>KP_Subtract",
             undef,
             sub {
-                $self->app->zoom_out_cb( $self->app );
+                $self->app->{_toolbar_manager}->zoom_out_cb( $self->app );
             }
         ],
         [   "ZoomNormal",
@@ -283,7 +283,7 @@ sub _create_main_actions {
             "<control>0",
             undef,
             sub {
-                $self->app->zoom_normal_cb( $self->app );
+                $self->app->{_toolbar_manager}->zoom_normal_cb( $self->app );
             }
         ],
     );
@@ -357,7 +357,7 @@ sub _create_drawing_group {
         10,
         sub {
             my $action = shift;
-            $self->app->change_drawing_tool_cb($action);
+            $self->app->{_toolbar_manager}->change_drawing_tool_cb($action);
         } );
 
     return $drawing_group;

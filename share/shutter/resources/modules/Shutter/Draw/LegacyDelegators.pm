@@ -1,129 +1,148 @@
-package Shutter::Draw::StateManager;
-use Moo;
-use utf8;
-use v5.40;
-use Glib qw/TRUE FALSE/;
+package Shutter::Draw::LegacyDelegators;
 
-has drawing_tool => (is => 'ro', required => 1);
-
-sub quit {
-	my ($mgr, $show_warning) = @_;
-	my $self = $mgr->drawing_tool;
-
-	my ($name, $folder, $type) = fileparse($self->{_filename}, qr/\.[^.]*/);
-
-	#save settings to a file in the shutter folder
-	#is there already a .shutter folder?
-	mkdir("$ENV{ 'HOME' }/.shutter")
-		unless (-d "$ENV{ 'HOME' }/.shutter");
-
-	if ($show_warning && (defined $self->{_undo} && scalar(@{$self->{_undo}}) > 0)) {
-
-		#warn the user if there are any unsaved changes
-		my $warn_dialog = Gtk3::MessageDialog->new($self->{_drawing_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
-
-		#set question text
-		$warn_dialog->set('text' => sprintf($self->{_d}->get("Save the changes to image %s before closing?"), "'$name$type'"));
-
-		#set text...
-		$self->update_warning_text($warn_dialog);
-
-		#...and update it
-		my $id = Glib::Timeout->add(
-			1000,
-			sub {
-				$self->update_warning_text($warn_dialog);
-				return TRUE;
-			});
-
-		$warn_dialog->set('image' => Gtk3::Image->new_from_stock('gtk-save', 'dialog'));
-
-		$warn_dialog->set('title' => $self->{_d}->get("Close") . " " . $name . $type);
-
-		#don't save button
-		my $dsave_btn = Gtk3::Button->new_with_mnemonic($self->{_d}->get("Do_n't save"));
-		$dsave_btn->set_image(Gtk3::Image->new_from_stock('gtk-delete', 'button'));
-
-		#cancel button
-		my $cancel_btn = Gtk3::Button->new_from_stock('gtk-cancel');
-		$cancel_btn->set_can_default(TRUE);
-
-		#save button
-		my $save_btn = Gtk3::Button->new_from_stock('gtk-save');
-
-		$warn_dialog->add_action_widget($dsave_btn,  10);
-		$warn_dialog->add_action_widget($cancel_btn, 20);
-		$warn_dialog->add_action_widget($save_btn,   30);
-
-		$warn_dialog->set_default_response(20);
-
-		$warn_dialog->get_child->show_all;
-		my $response = $warn_dialog->run;
-		Glib::Source->remove($id);
-		if ($response == 20) {
-			$warn_dialog->destroy;
-			return TRUE;
-		} elsif ($response == 30) {
-			$self->save();
-		}
-
-		$self->{_drawing_window}->hide if $self->{_drawing_window};
-		$warn_dialog->hide;
-		$warn_dialog->destroy;
-
-	}
-
-	$self->save_settings;
-
-	if ($self->{_selector_handler}) {
-		$self->{_selector}->signal_handler_disconnect($self->{_selector_handler});
-	}
-
-	$self->{_drawing_window}->hide if $self->{_drawing_window};
-
-	$self->{_drawing_window}->destroy if $self->{_drawing_window};
-
-	#remove statusbar timer
-	#Glib::Source->remove($self->{_drawing_statusbar}->{statusbar_timer}) if defined $self->{_drawing_statusbar}->{statusbar_timer};
-
-	#delete hash entries to avoid any
-	#possible circularity
-	#
-	#this would lead to a memory leak
-	foreach (keys %{$self}) {
-		delete $self->{$_};
-	}
-
-	Gtk3->main_quit();
-
-	return FALSE;
+sub load_settings {
+	my $self = shift;
+	return $self->{_settings_manager}->load_settings(@_);
 }
 
-sub update_warning_text {
-	my ($mgr, $warn_dialog) = @_;
-	my $self = $mgr->drawing_tool;
+sub save_settings {
+	my $self = shift;
+	return $self->{_settings_manager}->save_settings(@_);
+}
 
-	my $minutes = int((time - $self->{_start_time}) / 60);
-	$minutes = 1 if $minutes == 0;
+sub import_from_dnd {
+	my $self = shift;
+	return $self->{_io_manager}->import_from_dnd(@_);
+}
 
-	my $txt = $self->{_d}->nget(
-		"If you don't save the image, changes from the last minute will be lost",
-		"If you don't save the image, changes from the last %d minutes will be lost",
-		$minutes
-	);
+sub import_from_filesystem {
+	my $self = shift;
+	return $self->{_io_manager}->import_from_filesystem(@_);
+}
 
-	$txt = sprintf($txt, $minutes) if $minutes > 1;
+sub import_from_utheme {
+	my $self = shift;
+	return $self->{_io_manager}->import_from_utheme(@_);
+}
 
-	$warn_dialog->set(
-		'secondary-text' => "$txt."
-	);
+sub import_from_utheme_ctxt {
+	my $self = shift;
+	return $self->{_io_manager}->import_from_utheme_ctxt(@_);
+}
+
+sub import_from_session {
+	my $self = shift;
+	return $self->{_io_manager}->import_from_session(@_);
+}
+
+sub get_pixelated_pixbuf_from_canvas {
+	my $self = shift;
+	return $self->{_item_factory}->get_pixelated_pixbuf_from_canvas(@_);
+}
+
+sub export_to_file {
+	my $self = shift;
+	return $self->{_io_manager}->export_to_file(@_);
+}
+
+sub export_to_svg {
+	my $self = shift;
+	return $self->{_io_manager}->export_to_svg(@_);
+}
+
+sub export_to_ps {
+	my $self = shift;
+	return $self->{_io_manager}->export_to_ps(@_);
+}
+
+sub export_to_pdf {
+	my $self = shift;
+	return $self->{_io_manager}->export_to_pdf(@_);
+}
+
+sub save {
+	my $self = shift;
+	return $self->{_io_manager}->save(@_);
+}
+
+sub setup_item_signals {
+	my ($self, $item) = @_;
+
+	$item->signal_connect(
+		'motion_notify_event',
+		sub {
+			my ($item, $target, $ev) = @_;
+			$self->event_item_on_motion_notify($item, $target, $ev);
+		});
+	$item->signal_connect(
+		'key_press_event',
+		sub {
+			my ($item, $target, $ev) = @_;
+			$self->event_item_on_key_press($item, $target, $ev);
+		});
+	$item->signal_connect(
+		'button_press_event',
+		sub {
+			my ($item, $target, $ev) = @_;
+			$self->event_item_on_button_press($item, $target, $ev);
+		});
+	$item->signal_connect(
+		'button_release_event',
+		sub {
+			my ($item, $target, $ev) = @_;
+			$self->event_item_on_button_release($item, $target, $ev);
+		});
 
 	return TRUE;
 }
 
+sub setup_item_signals_extra {
+	my ($self, $item) = @_;
+
+	$item->signal_connect(
+		'enter_notify_event',
+		sub {
+			my ($item, $target, $ev) = @_;
+			$self->event_item_on_enter_notify($item, $target, $ev);
+		});
+
+	$item->signal_connect(
+		'leave_notify_event',
+		sub {
+			my ($item, $target, $ev) = @_;
+			$self->event_item_on_leave_notify($item, $target, $ev);
+		});
+
+	return TRUE;
+}
+
+sub event_item_on_motion_notify {
+	my $self = shift;
+	return $self->{_mouse_manager}->event_item_on_motion_notify(@_);
+}
+
+sub get_opposite_rect {
+	my $self = shift;
+	return $self->{_item_factory}->get_opposite_rect(@_);
+}
+
+sub get_parent_item {
+	my $self = shift;
+	return $self->{_item_factory}->get_parent_item(@_);
+}
+
+sub get_highest_auto_digit {
+	my $self = shift;
+	return $self->{_item_factory}->get_highest_auto_digit(@_);
+}
+
+sub get_child_item {
+	my $self = shift;
+	return $self->{_item_factory}->get_child_item(@_);
+}
+
 sub abort_current_mode {
-	my ($mgr) = @_;
-	my $self = $mgr->drawing_tool;
+	my ($self) = @_;
 
 	if ($self->{_current_item}) {
 		$self->{_canvas}->pointer_ungrab($self->{_current_item}, Gtk3::get_current_event_time());
@@ -138,8 +157,7 @@ sub abort_current_mode {
 }
 
 sub clear_item_from_canvas {
-	my ($mgr, $item) = @_;
-	my $self = $mgr->drawing_tool;
+	my ($self, $item) = @_;
 
 	#~ print "clear_item_from_canvas\n";
 
@@ -173,9 +191,73 @@ sub clear_item_from_canvas {
 	return TRUE;
 }
 
+sub store_to_xdo_stack {
+	my $self = shift;
+	return $self->{_macro_manager}->store_to_xdo_stack(@_);
+}
+
+sub xdo_remove {
+	my $self = shift;
+	return $self->{_macro_manager}->xdo_remove(@_);
+}
+
+sub xdo {
+	my $self = shift;
+	return $self->{_macro_manager}->xdo(@_);
+}
+
+sub set_and_save_drawing_properties {
+	my $self = shift;
+	return $self->{_settings_manager}->set_and_save_drawing_properties(@_);
+}
+
+sub restore_fixed_properties {
+	my $self = shift;
+	return $self->{_settings_manager}->restore_fixed_properties(@_);
+}
+
+sub restore_drawing_properties {
+	my $self = shift;
+	return $self->{_settings_manager}->restore_drawing_properties(@_);
+}
+
+sub event_item_on_key_press {
+	my $self = shift;
+	return $self->{_mouse_manager}->event_item_on_key_press(@_);
+}
+
+sub event_item_on_button_press {
+	my $self = shift;
+	return $self->{_mouse_manager}->event_item_on_button_press(@_);
+}
+
+sub ret_background_menu {
+	my $self = shift;
+	return $self->{_context_menu_manager}->ret_background_menu(@_);
+}
+
+sub ret_item_menu {
+	my $self = shift;
+	return $self->{_context_menu_manager}->ret_item_menu(@_);
+}
+
+sub show_item_properties {
+	my $self = shift;
+	return $self->{_property_manager}->show_item_properties(@_);
+}
+
+sub apply_properties {
+	my $self = shift;
+	return $self->{_property_manager}->apply_properties(@_);
+}
+
+sub modify_text_in_properties {
+	my $self = shift;
+	return $self->{_property_manager}->modify_text_in_properties(@_);
+}
+
 sub move_all {
-	my ($mgr, $x, $y) = @_;
-	my $self = $mgr->drawing_tool;
+	my ($self, $x, $y) = @_;
 
 	foreach (keys %{$self->{_items}}) {
 
@@ -259,8 +341,7 @@ sub move_all {
 }
 
 sub deactivate_all {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $self    = shift;
 	my $exclude = shift || 0;
 
 	#~ print "deactivate_all\n";
@@ -288,9 +369,38 @@ sub deactivate_all {
 	return TRUE;
 }
 
+sub handle_embedded {
+	my $self = shift;
+	return $self->{_canvas_overlays}->handle_embedded(@_);
+}
+
+sub handle_bg_rects {
+	my $self = shift;
+	return $self->{_canvas_overlays}->handle_bg_rects(@_);
+}
+
+sub handle_rects {
+	my $self = shift;
+	return $self->{_canvas_overlays}->handle_item_handles(@_);
+}
+
+sub event_item_on_button_release {
+	my $self = shift;
+	return $self->{_mouse_manager}->event_item_on_button_release(@_);
+}
+
+sub event_item_on_enter_notify {
+	my $self = shift;
+	return $self->{_mouse_manager}->event_item_on_enter_notify(@_);
+}
+
+sub event_item_on_leave_notify {
+	my $self = shift;
+	return $self->{_mouse_manager}->event_item_on_leave_notify(@_);
+}
+
 sub gen_thumbnail_on_idle {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $self       = shift;
 	my $stock      = shift;
 	my $parent     = shift;
 	my $button     = shift;
@@ -382,8 +492,7 @@ sub gen_thumbnail_on_idle {
 }
 
 sub set_drawing_action {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $self  = shift;
 	my $index = shift;
 
 	#~ print "set_drawing_action\n";
@@ -413,8 +522,7 @@ sub set_drawing_action {
 }
 
 sub change_cursor_to_current_pixbuf {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $self = shift;
 
 	#~ print "change_cursor_to_current_pixbuf\n";
 
@@ -463,133 +571,49 @@ sub change_cursor_to_current_pixbuf {
 	return $cursor;
 }
 
-sub setup_item_signals {
-	my ($mgr, $item) = @_;
-	my $self = $mgr->drawing_tool;
-
-	$item->signal_connect(
-		'motion_notify_event',
-		sub {
-			my ($item, $target, $ev) = @_;
-			$self->event_item_on_motion_notify($item, $target, $ev);
-		});
-	$item->signal_connect(
-		'key_press_event',
-		sub {
-			my ($item, $target, $ev) = @_;
-			$self->event_item_on_key_press($item, $target, $ev);
-		});
-	$item->signal_connect(
-		'button_press_event',
-		sub {
-			my ($item, $target, $ev) = @_;
-			$self->event_item_on_button_press($item, $target, $ev);
-		});
-	$item->signal_connect(
-		'button_release_event',
-		sub {
-			my ($item, $target, $ev) = @_;
-			$self->event_item_on_button_release($item, $target, $ev);
-		});
-
-	return TRUE;
+sub paste_item {
+	my $self = shift;
+	return $self->{_item_factory}->paste_item(@_);
 }
 
-sub push_tool_help_to_statusbar {
-	my ($mgr, $x, $y, $action) = @_;
-	my $self = $mgr->drawing_tool;
-
-	#init $action if not defined
-	$action = 'none' unless defined $action;
-
-	#current event coordinates
-	my $status_text = int($x) . " x " . int($y);
-
-	if ($self->{_current_mode} == 10) {
-
-		if ($action eq 'resize') {
-			$status_text .= " " . $self->{_d}->get("Click-Drag to scale (try Control to scale uniformly)");
-		} elsif ($action eq 'canvas_resize') {
-			$status_text .= " " . $self->{_d}->get("Click-Drag to resize the canvas");
-		}
-
-	} elsif ($self->{_current_mode} == 20 || $self->{_current_mode} == 30) {
-
-		$status_text .= " " . $self->{_d}->get("Click to paint (try Control or Shift for a straight line)");
-
-	} elsif ($self->{_current_mode} == 40) {
-
-		$status_text .= " " . $self->{_d}->get("Click-Drag to create a new straight line");
-
-	} elsif ($self->{_current_mode} == 50) {
-
-		$status_text .= " " . $self->{_d}->get("Click-Drag to create a new arrow");
-
-	} elsif ($self->{_current_mode} == 60) {
-
-		$status_text .= " " . $self->{_d}->get("Click-Drag to create a new rectangle");
-
-	} elsif ($self->{_current_mode} == 70) {
-
-		$status_text .= " " . $self->{_d}->get("Click-Drag to create a new ellipse");
-
-	} elsif ($self->{_current_mode} == 80) {
-
-		$status_text .= " " . $self->{_d}->get("Click-Drag to add a new text area");
-
-	} elsif ($self->{_current_mode} == 90) {
-
-		$status_text .= " " . $self->{_d}->get("Click to censor (try Control or Shift for a straight line)");
-
-	} elsif ($self->{_current_mode} == 100) {
-
-		$status_text .= " " . $self->{_d}->get("Click-Drag to create a pixelized region");
-
-	} elsif ($self->{_current_mode} == 110) {
-
-		$status_text .= " " . $self->{_d}->get("Click to add an auto-increment shape");
-
-	} elsif ($self->{_current_mode} == 120) {
-
-		#nothing to do here....
-
-	}
-
-	#update statusbar
-	$self->show_status_message(1, $status_text);
-
-	return TRUE;
-
+sub create_polyline {
+	my $self = shift;
+	return $self->{_item_factory}->create_polyline(@_);
 }
 
-sub show_status_message {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
-	my $index        = shift;
-	my $status_text  = shift;
-	my $status_image = shift;    #this is a stock-id
-
-	#~ #remove old message and timer
-	#~ $self->{_drawing_statusbar}->pop($index);
-	#~ Glib::Source->remove ($self->{_drawing_statusbar}->{statusbar_timer}) if defined $self->{_drawing_statusbar}->{statusbar_timer};
-
-	#new message and image
-	if (defined $status_image) {
-		$self->{_drawing_statusbar_image}->set_from_stock($status_image, 'menu');
-	} else {
-		$self->{_drawing_statusbar_image}->clear;
-	}
-	$self->{_drawing_statusbar}->push($index, $status_text);
-
-	#~ #...and remove it
-	#~ $self->{_drawing_statusbar}->{statusbar_timer} = Glib::Timeout->add(
-	#~ 3000,
-	#~ sub {
-	#~ $self->{_drawing_statusbar}->pop($index) if defined $self->{_drawing_statusbar};
-	#~ return FALSE;
-	#~ }
-	#~ );
-
-	return TRUE;
+sub create_censor {
+	my $self = shift;
+	return $self->{_item_factory}->create_censor(@_);
 }
+
+sub create_pixel_image {
+	my $self = shift;
+	return $self->{_item_factory}->create_pixel_image(@_);
+}
+
+sub create_image {
+	my $self = shift;
+	return $self->{_item_factory}->create_image(@_);
+}
+
+sub create_text {
+	my $self = shift;
+	return $self->{_item_factory}->create_text(@_);
+}
+
+sub create_line {
+	my $self = shift;
+	return $self->{_item_factory}->create_line(@_);
+}
+
+sub create_ellipse {
+	my $self = shift;
+	return $self->{_item_factory}->create_ellipse(@_);
+}
+
+sub create_rectangle {
+	my $self = shift;
+	return $self->{_item_factory}->create_rectangle(@_);
+}
+
 1;
