@@ -31,25 +31,38 @@ use feature 'try'; no warnings 'experimental::try';
 #Glib
 use Glib qw/TRUE FALSE/;
 
+use Moo;
+
+has '_sc' => (is => 'rw');
+has '_drawable' => (is => 'rw');
+has '_x' => (is => 'rw', default => sub { 0 });
+has '_y' => (is => 'rw', default => sub { 0 });
+has '_w' => (is => 'rw', default => sub { 0 });
+has '_h' => (is => 'rw', default => sub { 0 });
+has '_region' => (is => 'rw');
+has '_wxid' => (is => 'rw');
+has '_gxid' => (is => 'rw');
+
+around BUILDARGS => sub {
+	my ($orig, $class, @args) = @_;
+	if (@args >= 1 && @args <= 9 && (ref($args[0]) || !defined($args[0]) || $args[0] !~ /^_/)) {
+		my ($sc, $drawable, $x, $y, $w, $h, $region, $wxid, $gxid) = @args;
+		return $class->$orig(
+			_sc => $sc,
+			_drawable => $drawable,
+			_x => defined $x ? $x : 0,
+			_y => defined $y ? $y : 0,
+			_w => defined $w ? $w : 0,
+			_h => defined $h ? $h : 0,
+			_region => $region,
+			_wxid => $wxid,
+			_gxid => $gxid,
+		);
+	}
+	return $class->$orig(@args);
+};
+
 #--------------------------------------
-
-sub new ($class, $sc, $drawable = undef, $x = 0, $y = 0, $w = 0, $h = 0, $region = undef, $wxid = undef, $gxid = undef) {
-
-	my $self = {_sc => $sc};
-
-	#last capture
-	$self->{_drawable} = $drawable;
-	$self->{_x}        = $x;
-	$self->{_y}        = $y;
-	$self->{_w}        = $w;
-	$self->{_h}        = $h;
-	$self->{_region}   = $region;
-	$self->{_wxid}     = $wxid;
-	$self->{_gxid}     = $gxid;
-
-	bless $self, $class;
-	return $self;
-}
 
 sub get_last_capture ($self) {
 	return ($self->{_drawable}, $self->{_x}, $self->{_y}, $self->{_w}, $self->{_h}, $self->{_region}, $self->{_wxid}, $self->{_gxid});

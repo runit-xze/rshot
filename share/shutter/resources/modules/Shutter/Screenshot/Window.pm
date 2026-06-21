@@ -48,23 +48,42 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize, $windowresize_w, $windowresize_h, $hide_time, $mode, $auto_shape, $is_hidden, $show_visible, $ignore_type) {
+has '_include_border' => (is => 'rw');
+has '_windowresize'   => (is => 'rw');
+has '_windowresize_w' => (is => 'rw');
+has '_windowresize_h' => (is => 'rw');
+has '_hide_time'      => (is => 'rw');
+has '_mode'           => (is => 'rw');
+has '_auto_shape'     => (is => 'rw');
+has '_is_hidden'      => (is => 'rw');
+has '_show_visible'   => (is => 'rw');
+has '_ignore_type'    => (is => 'rw');
 
-	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout)
-	my $self = $class->SUPER::new($sc, $include_cursor, $delay, $notify_timeout);
+around BUILDARGS => sub {
+	my ($orig, $class, @args) = @_;
+	if (@args >= 14 && @args <= 15) {
+		my ($sc, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize, $windowresize_w, $windowresize_h, $hide_time, $mode, $auto_shape, $is_hidden, $show_visible, $ignore_type) = @args;
+		return $class->$orig(
+			_sc             => $sc,
+			_include_cursor => $include_cursor,
+			_delay          => $delay,
+			_notify_timeout => $notify_timeout,
+			_include_border => $include_border,
+			_windowresize   => $windowresize,
+			_windowresize_w => $windowresize_w,
+			_windowresize_h => $windowresize_h,
+			_hide_time      => $hide_time,
+			_mode           => $mode,
+			_auto_shape     => $auto_shape,
+			_is_hidden      => $is_hidden,
+			_show_visible   => $show_visible,
+			_ignore_type    => $ignore_type,
+		);
+	}
+	return $class->$orig(@args);
+};
 
-	#get params
-	$self->{_include_border} = $include_border;
-	$self->{_windowresize}   = $windowresize;
-	$self->{_windowresize_w} = $windowresize_w;
-	$self->{_windowresize_h} = $windowresize_h;
-	$self->{_hide_time}      = $hide_time;    #a short timeout to give the server a chance to redraw the area that was obscured
-	$self->{_mode}           = $mode;
-	$self->{_auto_shape}     = $auto_shape;    #shape the window without XShape support
-	$self->{_is_hidden}      = $is_hidden;
-	$self->{_show_visible}   = $show_visible;    #show user-visible windows only when selecting a window
-	$self->{_ignore_type}    = $ignore_type;    #Ignore possibly wrong type hints
-
+sub BUILD ($self, $args) {
 	#X11 protocol and XSHAPE ext
 	require X11::Protocol;
 
@@ -72,11 +91,11 @@ sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $include_border,
 	$self->{_x11}{ext_shape} = $self->{_x11}->init_extension('SHAPE');
 
 	#main window
-	$self->{_main_gtk_window} = $self->{_sc}->get_mainwindow;
+	$self->{_main_gtk_window} = $self->_sc->get_mainwindow;
 	$self->{_dpi_scale} = $self->{_main_gtk_window}->get('scale-factor');
 
 	#only used when selecting a window
-	if (defined $self->{_mode} && $self->{_mode} =~ m/(window|section)/ig) {
+	if (defined $self->_mode && $self->_mode =~ m/(window|section)/ig) {
 
 		#check if compositing is available
 		my $compos = $self->{_main_gtk_window}->get_screen->is_composited;
@@ -277,8 +296,6 @@ sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $include_border,
 			});
 
 	}
-
-	return $self;
 }
 
 #~ sub DESTROY {

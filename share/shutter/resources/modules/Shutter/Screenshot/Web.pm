@@ -39,19 +39,32 @@ use Shutter::Screenshot::History;
 use Gtk3;
 use Glib qw/TRUE FALSE/;
 
-#--------------------------------------
+use Moo;
 
-sub new ($class, $sc, $timeout, $width) {
-	my $self = {
-		_sc      => $sc,
-		_timeout => $timeout,
-		_width   => $width,
-		_shf => Shutter::App::HelperFunctions->new($sc),
-	};
+has '_sc' => (is => 'rw');
+has '_timeout' => (is => 'rw');
+has '_width' => (is => 'rw');
+has '_shf' => (is => 'lazy', builder => 1);
 
-	bless $self, $class;
-	return $self;
+sub _build__shf {
+	my $self = shift;
+	return Shutter::App::HelperFunctions->new($self->_sc);
 }
+
+around BUILDARGS => sub {
+	my ($orig, $class, @args) = @_;
+	if (@args == 3) {
+		my ($sc, $timeout, $width) = @args;
+		return $class->$orig(
+			_sc => $sc,
+			_timeout => $timeout,
+			_width => $width,
+		);
+	}
+	return $class->$orig(@args);
+};
+
+#--------------------------------------
 
 sub web ($self) {
 	return FALSE;

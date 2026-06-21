@@ -41,18 +41,28 @@ use Future::Utils qw(repeat);
 
 #--------------------------------------
 
-sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $selected_workspace, $vpx, $vpy, $current_monitor_only) {
+has '_selected_workspace' => (is => 'rw');
+has '_vpx' => (is => 'rw');
+has '_vpy' => (is => 'rw');
+has '_current_monitor_only' => (is => 'rw');
 
-	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout)
-	my $self = $class->SUPER::new($sc, $include_cursor, $delay, $notify_timeout);
-
-	$self->{_selected_workspace}   = $selected_workspace;
-	$self->{_vpx}                  = $vpx;
-	$self->{_vpy}                  = $vpy;
-	$self->{_current_monitor_only} = $current_monitor_only;
-
-	return $self;
-}
+around BUILDARGS => sub {
+	my ($orig, $class, @args) = @_;
+	if (@args == 8) {
+		my ($sc, $include_cursor, $delay, $notify_timeout, $selected_workspace, $vpx, $vpy, $current_monitor_only) = @args;
+		return $class->$orig(
+			_sc => $sc,
+			_include_cursor => $include_cursor,
+			_delay => $delay,
+			_notify_timeout => $notify_timeout,
+			_selected_workspace => $selected_workspace,
+			_vpx => $vpx,
+			_vpy => $vpy,
+			_current_monitor_only => $current_monitor_only,
+		);
+	}
+	return $class->$orig(@args);
+};
 
 #~ sub DESTROY {
 #~ my $self = shift;

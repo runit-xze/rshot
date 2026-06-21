@@ -30,22 +30,14 @@ use feature 'try'; no warnings 'experimental::try';
 
 use Shutter::Screenshot::Window;
 use Data::Dumper;
-use parent 'Shutter::Screenshot::Window';
+use Moo;
+extends 'Shutter::Screenshot::Window';
 
 #Glib and Gtk3
 use Gtk3;
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
-
-sub new ($class, $shutter_common, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize_active, $windowresize_w, $windowresize_h, $hide_time, $mode, $autoshape) {
-
-	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout, include_border, windowresize_active, windowresize_w, windowresize_h, hide_time, mode, autoshape)
-	my $self = $class->SUPER::new($shutter_common, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize_active, $windowresize_w, $windowresize_h, $hide_time, $mode, $autoshape);
-
-	bless $self, $class;
-	return $self;
-}
 
 #~ sub DESTROY {
 #~ my $self = shift;

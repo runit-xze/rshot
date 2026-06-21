@@ -31,28 +31,28 @@ use feature 'try'; no warnings 'experimental::try';
 #Glib
 use Glib qw/TRUE FALSE/;
 
+use Moo;
+
+has '_sc' => (is => 'rw');
+has '_code' => (is => 'rw');
+has '_data' => (is => 'rw');
+has '_extra' => (is => 'rw');
+
+around BUILDARGS => sub {
+	my ($orig, $class, @args) = @_;
+	if (@args == 4) {
+		my ($sc, $code, $data, $extra) = @args;
+		return $class->$orig(
+			_sc => $sc,
+			_code => $code,
+			_data => $data,
+			_extra => $extra,
+		);
+	}
+	return $class->$orig(@args);
+};
+
 #--------------------------------------
-
-sub new ($class, $sc, $code, $data, $extra) {
-
-	my $self = {_sc => $sc, _code => $code, _data => $data, _extra => $extra};
-
-	#############
-	# code = 0 - pointer could not be grabbed - or invalid region
-	# code = 1 - keyboard could not be grabbed
-	# code = 2 - no window with type xy detected
-	# code = 3 - no history object stored
-	# code = 4 - window no longer available
-	# code = 5 - user aborted
-	# code = 6 - gnome-web-photo failed
-	# code = 7 - no window with name xy detected
-	# code = 8 - invalid pattern
-	# code = 9 - other error
-	#############
-
-	bless $self, $class;
-	return $self;
-}
 
 sub get_error ($self) {
 	return ($self->{_code}, $self->{_data}, $self->{_extra});
