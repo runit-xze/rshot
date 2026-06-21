@@ -7,7 +7,7 @@ This document tracks the second wave of modularization, focusing on decomposing 
 | Module | Purpose | Current LOC | Refactor Status | Target |
 |--------|---------|-------------|-----------------|--------|
 | `Shutter::Draw::DrawingTool` | Drawing Editor | 499 | 🟢 Completed | Break into Tool/UI classes |
-| `Shutter::Screenshot::SelectorAdvanced` | Advanced Region Selection | 626 | 🟡 Initial Assessment | Port to Cairo overlays |
+| `Shutter::Screenshot::SelectorAdvanced` | Advanced Region Selection | 425 | 🟢 Completed | Ported to Cairo overlays & Moo Managers |
 | `Shutter::Screenshot::Main` | Main Capture Logic | 495 | 🟡 In Progress | Modernize via `ScreenshotHandler` |
 
 ## Completed Items (FTP removed - deprecated)
@@ -38,4 +38,10 @@ This document tracks the second wave of modularization, focusing on decomposing 
 ### Next Steps
 - [x] Integrate `UndoManager` into DrawingTool (delegates stack management/UI updates)
 - [x] Integrate `CanvasOverlays` into DrawingTool (replace handle_* methods)
-- [ ] Implement SelectorAdvanced zoom window with direct Cairo drawing (remove GooCanvas2 dependency)
+- [x] Implement SelectorAdvanced zoom window with direct Cairo drawing (remove GooCanvas2 dependency)
+- [x] Extract SelectorAdvanced input handling into InputManager and SelectionModel
+
+### Phase 9 Candidates (Next Up)
+- [ ] Modernize `Shutter::Screenshot::Main` to `Moo` (base class for all captures)
+- [ ] Decompose `Shutter::Screenshot::Window` (the largest remaining monolith at ~1000 lines)
+- [ ] Implement Asynchronous Capture Pipeline (non-blocking delays and captures)
