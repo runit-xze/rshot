@@ -39,58 +39,112 @@ use Data::Dumper;
 
 #--------------------------------------
 
-sub new ($class, $sc, $include_cursor, $delay, $notify_timeout) {
+use Moo;
 
-	my $self = {
-		_sc             => $sc,
-		_include_cursor => $include_cursor,
-		_delay          => $delay,
-		_notify_timeout => $notify_timeout,
-	};
+# Core arguments
+has '_sc'             => (is => 'rw');
+has '_include_cursor' => (is => 'rw');
+has '_delay'          => (is => 'rw');
+has '_notify_timeout' => (is => 'rw');
 
-	#gdk screen
-	$self->{_gdk_screen} = Gtk3::Gdk::Screen::get_default();
+# GDK properties
+has '_gdk_screen' => (
+	is => 'lazy',
+	default => sub { Gtk3::Gdk::Screen::get_default() }
+);
 
-	#gdk display
-	$self->{_gdk_display} = $self->{_gdk_screen}->get_display;
+has '_gdk_display' => (
+	is => 'lazy',
+	default => sub { shift->_gdk_screen->get_display }
+);
 
+has '_root' => (
+	is => 'lazy',
+	builder => 1,
+);
+
+sub _build__root ($self) {
 	my $window = Gtk3::Window->new('toplevel');
-	#root window
+	my $root;
 	try {
-		$self->{_root} = Gtk3::GdkX11::X11Window::lookup_for_display(
+		$root = Gtk3::GdkX11::X11Window::lookup_for_display(
 			$window->get_display,
-			Gtk3::GdkX11::x11_get_default_root_xwindow());
-		($self->{_root}->{x}, $self->{_root}->{y}, $self->{_root}->{w}, $self->{_root}->{h}) = $self->{_root}->get_geometry;
-		($self->{_root}->{x}, $self->{_root}->{y}) = $self->{_root}->get_origin;
-
-		#wnck screen
-		$self->{_wnck_screen} = Wnck::Screen::get_default();
-		$self->{_wnck_screen}->force_update();
-
-		#we determine the wm name but on older
-		#version of libwnck (or the bindings)
-		#the needed method is not available
-		#in this case we use gdk to do it
-		#
-		#this leads to a known problem when switching
-		#the wm => wm_name will still remain the old one
-		$self->{_wm_manager_name} = $self->{_gdk_screen}->get_window_manager_name;
-		if ($self->{_wnck_screen}->can('get_window_manager_name')) {
-			$self->{_wm_manager_name} = $self->{_wnck_screen}->get_window_manager_name;
-		}
-
-		#workspaces
-		$self->{_workspaces} = ();
-		for (my $wcount = 0 ; $wcount < $self->{_wnck_screen}->get_workspace_count ; $wcount++) {
-			push(@{$self->{_workspaces}}, $self->{_wnck_screen}->get_workspace($wcount));
-		}
-	}
-	catch ($e) {
+			Gtk3::GdkX11::x11_get_default_root_xwindow()
+		);
+		($root->{x}, $root->{y}, $root->{w}, $root->{h}) = $root->get_geometry;
+		($root->{x}, $root->{y}) = $root->get_origin;
+	} catch ($e) {
 		# it's wayland
+		return undef;
 	}
+	return $root;
+}
 
-	bless $self, $class;
-	return $self;
+# Wnck properties
+has '_wnck_screen' => (
+	is => 'lazy',
+	builder => 1,
+);
+
+sub _build__wnck_screen ($self) {
+	return undef unless $self->_root;
+	my $scr = Wnck::Screen::get_default();
+	$scr->force_update();
+	return $scr;
+}
+
+has '_wm_manager_name' => (
+	is => 'lazy',
+	builder => 1,
+);
+
+sub _build__wm_manager_name ($self) {
+	return undef unless $self->_root;
+	my $wm = $self->_gdk_screen->get_window_manager_name;
+	if ($self->_wnck_screen->can('get_window_manager_name')) {
+		$wm = $self->_wnck_screen->get_window_manager_name;
+	}
+	return $wm;
+}
+
+has '_workspaces' => (
+	is => 'lazy',
+	builder => 1,
+);
+
+sub _build__workspaces ($self) {
+	return [] unless $self->_root;
+	my @ws;
+	for (my $wcount = 0 ; $wcount < $self->_wnck_screen->get_workspace_count ; $wcount++) {
+		push(@ws, $self->_wnck_screen->get_workspace($wcount));
+	}
+	return \@ws;
+}
+
+# Intercept old positional arguments
+around BUILDARGS => sub {
+	my ($orig, $class, @args) = @_;
+	if (@args == 4) {
+		my ($sc, $include_cursor, $delay, $notify_timeout) = @args;
+		return $class->$orig(
+			_sc             => $sc,
+			_include_cursor => $include_cursor,
+			_delay          => $delay,
+			_notify_timeout => $notify_timeout,
+		);
+	}
+	return $class->$orig(@args);
+};
+
+sub BUILD ($self, $args) {
+	# Force evaluation of lazy attributes so that legacy child classes 
+	# accessing the underlying hash keys directly won't get undef!
+	$self->_gdk_screen;
+	$self->_gdk_display;
+	$self->_root;
+	$self->_wnck_screen;
+	$self->_wm_manager_name;
+	$self->_workspaces;
 }
 
 sub get_clipbox ($self, $region) {
