@@ -42,6 +42,8 @@ with 'Shutter::Screenshot::Window::Selector';
 
 #Glib
 use Gtk3;
+use Future;
+use Pango;
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
@@ -289,7 +291,9 @@ sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $include_border,
 
 
 
-sub window ($self) {
+sub window_async ($self) {
+
+	my $f = Future->new;
 
 	#return value
 
@@ -381,6 +385,7 @@ sub window ($self) {
 						$self->quit;
 
 						$output = 5;
+						$f->done($output);
 					}
 
 					#BUTTON-PRESS
@@ -419,7 +424,8 @@ sub window ($self) {
 
 						$output = 0;
 						$self->quit;
-						return $output;
+						$f->done($output);
+						return FALSE;
 
 					}
 
@@ -448,16 +454,9 @@ sub window ($self) {
 
 					#A short timeout to give the server a chance to
 					#redraw the area
-					Glib::Timeout->add(
-						$self->{_hide_time},
-						sub {
-							Gtk3->main_quit;
-							return FALSE;
-						});
-					Gtk3->main();
-
-					my ($output_new, $l_cropped, $r_cropped, $t_cropped, $b_cropped) =
-						$self->get_pixbuf_from_drawable($self->{_root}, $self->{_c}{'cw'}{'x'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'y'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'width'}/$self->{_dpi_scale}, $self->{_c}{'cw'}{'height'}/$self->{_dpi_scale}, undef);
+					Glib::Timeout->add($self->{_hide_time}, sub {
+						$self->get_pixbuf_from_drawable_async($self->{_root}, $self->{_c}{'cw'}{'x'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'y'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'width'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'height'} / $self->{_dpi_scale}, undef)->then(sub {
+							my ($output_new, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = @_;
 
 					#save return value to current $output variable
 					#-> ugly but fastest and safest solution now
@@ -503,6 +502,11 @@ sub window ($self) {
 					);
 
 					$self->quit;
+							$f->done($output);
+							return Future->done();
+						});
+						return FALSE;
+					});
 
 					#MOTION-NOTIFY
 				} elsif ($event->type eq 'motion-notify') {
@@ -516,8 +520,6 @@ sub window ($self) {
 					Gtk3::main_do_event($event);
 				}
 			});
-
-		Gtk3->main;
 
 		#pointer not grabbed
 	} else {
@@ -589,9 +591,9 @@ sub window ($self) {
 
 		}
 
-		my ($output_new, $l_cropped, $r_cropped, $t_cropped, $b_cropped) =
-			$self->get_pixbuf_from_drawable($self->{_root}, $self->{_c}{'cw'}{'x'}, $self->{_c}{'cw'}{'y'}, $self->{_c}{'cw'}{'width'}, $self->{_c}{'cw'}{'height'},
-			$self->{_c}{'cw'}{'window_region'});
+		$self->get_pixbuf_from_drawable_async($self->{_root}, $self->{_c}{'cw'}{'x'}, $self->{_c}{'cw'}{'y'}, $self->{_c}{'cw'}{'width'}, $self->{_c}{'cw'}{'height'},
+			$self->{_c}{'cw'}{'window_region'})->then(sub {
+			my ($output_new, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = @_;
 
 		#save return value to current $output variable
 		#-> ugly but fastest and safest solution now
@@ -679,16 +681,20 @@ sub window ($self) {
 			);
 
 		}
+		$f->done($output);
+		return Future->done();
+	});
 
 	}
-	return $output;
+	return $f;
 }
 
 sub get_mode ($self) {
 	return $self->{_mode};
 }
 
-sub redo_capture ($self) {
+sub redo_capture_async ($self) {
+	my $f = Future->new;
 	my $output = 3;
 
 	if (defined $self->{_history}) {
@@ -734,15 +740,9 @@ sub redo_capture ($self) {
 
 				#A short timeout to give the server a chance to
 				#redraw the area
-				Glib::Timeout->add(
-					$self->{_hide_time},
-					sub {
-						Gtk3->main_quit;
-						return FALSE;
-					});
-				Gtk3->main();
-
-				my ($output_new, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = $self->get_pixbuf_from_drawable($self->{_root}, $xp, $yp, $wp, $hp);
+				Glib::Timeout->add($self->{_hide_time}, sub {
+					$self->get_pixbuf_from_drawable_async($self->{_root}, $xp, $yp, $wp, $hp)->then(sub {
+						my ($output_new, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = @_;
 
 				#save return value to current $output variable
 				#-> ugly but fastest and safest solution now
@@ -768,20 +768,33 @@ sub redo_capture ($self) {
 				}
 
 				$self->quit_eventh_only;
+						$f->done($output);
+						return Future->done();
+					});
+					return FALSE;
+				});
 
 			} else {
 				warn "WARNING: Could not get window with id $gxid\n";
 				$output = 4;
+				$f->done($output);
 			}
 
 			#no xid
 		} else {
-			($output) = $self->get_pixbuf_from_drawable($self->{_history}->get_last_capture);
+			$self->get_pixbuf_from_drawable_async($self->{_history}->get_last_capture)->then(sub {
+				my ($output_new) = @_;
+				$output = $output_new;
+				$f->done($output);
+				return Future->done();
+			});
 		}
 
+	} else {
+		$f->done($output);
 	}
 
-	return $output;
+	return $f;
 }
 
 sub get_history ($self) {
