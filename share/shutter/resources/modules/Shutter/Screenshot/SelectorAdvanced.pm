@@ -39,45 +39,60 @@ use Data::Dumper;
 use Gtk3;
 use Pango;
 use Cairo;
-use parent 'Shutter::Screenshot::Main';
-
+use Moo;
+extends 'Shutter::Screenshot::Main';
 #Glib
 use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $zoom_active, $hide_time, $show_help, $init_x, $init_y, $init_w, $init_h, $confirmation_necessary) {
+has '_zoom_active' => (is => 'rw');
+has '_hide_time'   => (is => 'rw');
+has '_show_help'   => (is => 'rw');
+has '_init_x'      => (is => 'rw');
+has '_init_y'      => (is => 'rw');
+has '_init_w'      => (is => 'rw');
+has '_init_h'      => (is => 'rw');
+has '_confirmation_necessary' => (is => 'rw');
 
-	#call constructor of super class (shutter_common, include_cursor, delay, notify_timeout)
-	my $self = $class->SUPER::new($sc, $include_cursor, $delay, $notify_timeout);
+around BUILDARGS => sub {
+	my ($orig, $class, @args) = @_;
+	if (@args == 12) {
+		my ($sc, $include_cursor, $delay, $notify_timeout, $zoom_active, $hide_time, $show_help, $init_x, $init_y, $init_w, $init_h, $confirmation_necessary) = @args;
+		return $class->$orig(
+			_sc             => $sc,
+			_include_cursor => $include_cursor,
+			_delay          => $delay,
+			_notify_timeout => $notify_timeout,
+			_zoom_active    => $zoom_active,
+			_hide_time      => $hide_time,
+			_show_help      => $show_help,
+			_init_x         => $init_x,
+			_init_y         => $init_y,
+			_init_w         => $init_w,
+			_init_h         => $init_h,
+			_confirmation_necessary => $confirmation_necessary,
+		);
+	}
+	return $class->$orig(@args);
+};
 
-	$self->{_zoom_active} = $zoom_active;
-	$self->{_hide_time}   = $hide_time;    #a short timeout to give the server a chance to redraw the area that was obscured
-	$self->{_show_help}   = $show_help;    #hide help text?
-
-	#initial selection size
-	$self->{_init_x} = $init_x;
-	$self->{_init_y} = $init_y;
-	$self->{_init_w} = $init_w;
-	$self->{_init_h} = $init_h;
-	$self->{_confirmation_necessary} = $confirmation_necessary;
-
+sub BUILD ($self, $args) {
 	$self->{_dpi_scale} = Gtk3::Window->new('toplevel')->get('scale-factor');
 
-	$self->{_selection} = { x => $init_x || 0, y => $init_y || 0, width => $init_w || 0, height => $init_h || 0 };
+	$self->{_selection} = { x => $self->_init_x || 0, y => $self->_init_y || 0, width => $self->_init_w || 0, height => $self->_init_h || 0 };
 	$self->{_drag_start} = undef;
 
 	$self->{_draw_area} = Gtk3::DrawingArea->new();
 	$self->{_draw_area}->set_events(['button-press-mask', 'button-release-mask', 'pointer-motion-mask', 'key-press-mask']);
 
-	bless $self, $class;
-	$self->{_mouse_x} = $init_x;
-	$self->{_mouse_y} = $init_y;
+	$self->{_mouse_x} = $self->_init_x;
+	$self->{_mouse_y} = $self->_init_y;
 	$self->{_zoom_overlay} = Shutter::Screenshot::Selector::ZoomOverlay->new(app => $self);
 
 	$self->{_model} = Shutter::Screenshot::Selector::SelectionModel->new(
-		max_w => $self->{_root}->{w},
-		max_h => $self->{_root}->{h},
+		max_w => $self->_root->{w},
+		max_h => $self->_root->{h},
 		on_changed => sub ($model) {
 			$self->{_selection} = $model->get_hash;
 			$self->{_draw_area}->queue_draw if $self->{_draw_area};
@@ -85,8 +100,6 @@ sub new ($class, $sc, $include_cursor, $delay, $notify_timeout, $zoom_active, $h
 		}
 	);
 	$self->{_input} = Shutter::Screenshot::Selector::InputManager->new(app => $self, model => $self->{_model});
-
-	return $self;
 }
 
 sub select_advanced ($self) {

@@ -135,50 +135,50 @@ sub get_current_monitor ($self) {
 
 # Methods that were used in the old implementation and needed for backward compatibility
 
-sub get_root                  { shift->shutter_root }
-sub get_appname               { shift->appname }
-sub get_version               { shift->version }
-sub get_rev                   { shift->rev }
-sub get_gettext               { shift->gettext_object }
-sub get_theme                 { shift->icontheme }
-sub get_helper_functions      { shift->cli->shf }
-sub get_notification_object   { shift->notification }
-sub set_notification_object   { shift->notification(shift) if @_ }
-sub get_globalsettings_object { shift->global_settings }
-sub set_globalsettings_object { shift->global_settings(shift) if @_ }
-sub get_rusf                  { shift->rusf }
-sub set_rusf                  { shift->rusf(shift) if @_ }
-sub get_ruof                  { shift->ruof }
-sub set_ruof                  { shift->ruof(shift) if @_ }
-sub get_ruu_tab               { shift->ruu_tab }
-sub set_ruu_tab               { shift->ruu_tab(shift) if @_ }
-sub get_ruu_hosting           { shift->ruu_hosting }
-sub set_ruu_hosting           { shift->ruu_hosting(shift) if @_ }
-sub get_ruu_places            { shift->ruu_places }
-sub set_ruu_places            { shift->ruu_places(shift) if @_ }
-sub get_debug                 { shift->debug }
-sub set_debug                 { shift->debug(shift) if @_ }
-sub get_clear_cache           { shift->clear_cache }
-sub set_clear_cache           { shift->clear_cache(shift) if @_ }
-sub get_mainwindow            { shift->main_window }
-sub set_mainwindow            { shift->main_window(shift) if @_ }
-sub get_min                   { shift->min }
-sub set_min                   { shift->min(shift) if @_ }
-sub get_disable_systray       { shift->disable_systray }
-sub set_disable_systray       { shift->disable_systray(shift) if @_ }
-sub get_exit_after_capture    { shift->exit_after_capture }
-sub set_exit_after_capture    { shift->exit_after_capture(shift) if @_ }
-sub get_no_session            { shift->no_session }
-sub set_no_session            { shift->no_session(shift) if @_ }
-sub get_mock_capture          { shift->mock_capture }
-sub set_mock_capture          { shift->mock_capture(shift) if @_ }
+sub get_root ($self) { $self->shutter_root  }
+sub get_appname ($self) { $self->appname  }
+sub get_version ($self) { $self->version  }
+sub get_rev ($self) { $self->rev  }
+sub get_gettext ($self) { $self->gettext_object  }
+sub get_theme ($self) { $self->icontheme  }
+sub get_helper_functions ($self) { $self->cli->shf  }
+sub get_notification_object ($self) { $self->notification  }
+sub set_notification_object ($self) { $self->notification(shift) if @_  }
+sub get_globalsettings_object ($self) { $self->global_settings  }
+sub set_globalsettings_object ($self) { $self->global_settings(shift) if @_  }
+sub get_rusf ($self) { $self->rusf  }
+sub set_rusf ($self) { $self->rusf(shift) if @_  }
+sub get_ruof ($self) { $self->ruof  }
+sub set_ruof ($self) { $self->ruof(shift) if @_  }
+sub get_ruu_tab ($self) { $self->ruu_tab  }
+sub set_ruu_tab ($self) { $self->ruu_tab(shift) if @_  }
+sub get_ruu_hosting ($self) { $self->ruu_hosting  }
+sub set_ruu_hosting ($self) { $self->ruu_hosting(shift) if @_  }
+sub get_ruu_places ($self) { $self->ruu_places  }
+sub set_ruu_places ($self) { $self->ruu_places(shift) if @_  }
+sub get_debug ($self) { $self->debug  }
+sub set_debug ($self) { $self->debug(shift) if @_  }
+sub get_clear_cache ($self) { $self->clear_cache  }
+sub set_clear_cache ($self) { $self->clear_cache(shift) if @_  }
+sub get_mainwindow ($self) { $self->main_window  }
+sub set_mainwindow ($self) { $self->main_window(shift) if @_  }
+sub get_min ($self) { $self->min  }
+sub set_min ($self) { $self->min(shift) if @_  }
+sub get_disable_systray ($self) { $self->disable_systray  }
+sub set_disable_systray ($self) { $self->disable_systray(shift) if @_  }
+sub get_exit_after_capture ($self) { $self->exit_after_capture  }
+sub set_exit_after_capture ($self) { $self->exit_after_capture(shift) if @_  }
+sub get_no_session ($self) { $self->no_session  }
+sub set_no_session ($self) { $self->no_session(shift) if @_  }
+sub get_mock_capture ($self) { $self->mock_capture  }
+sub set_mock_capture ($self) { $self->mock_capture(shift) if @_  }
 
-sub get_log_file              { shift->log_file }
-sub set_log_file              { shift->log_file(shift) if @_ }
-sub get_log_json              { shift->log_json }
-sub set_log_json              { shift->log_json(shift) if @_ }
-sub get_log_level             { shift->log_level }
-sub set_log_level             { shift->log_level(shift) if @_ }
+sub get_log_file ($self) { $self->log_file  }
+sub set_log_file ($self) { $self->log_file(shift) if @_  }
+sub get_log_json ($self) { $self->log_json  }
+sub set_log_json ($self) { $self->log_json(shift) if @_  }
+sub get_log_level ($self) { $self->log_level  }
+sub set_log_level ($self) { $self->log_level(shift) if @_  }
 
 sub get_start_with ($self) {
     return ( $self->_start_with, $self->_start_with_extra );
@@ -193,15 +193,15 @@ sub set_start_with ($self) {
     return ( $self->_start_with, $self->_start_with_extra );
 }
 
-sub get_profile_to_start_with { shift->profile_to_start_with }
-sub set_profile_to_start_with { shift->profile_to_start_with(shift) if @_ }
-sub get_export_filename       { shift->export_filename }
-sub set_export_filename       { shift->export_filename(shift) if @_ }
-sub get_include_cursor        { shift->include_cursor }
-sub set_include_cursor        { shift->include_cursor(shift) if @_ }
-sub get_remove_cursor         { shift->remove_cursor }
-sub set_remove_cursor         { shift->remove_cursor(shift) if @_ }
-sub get_delay                 { shift->delay }
-sub set_delay                 { shift->delay(shift) if @_ }
+sub get_profile_to_start_with ($self) { $self->profile_to_start_with  }
+sub set_profile_to_start_with ($self) { $self->profile_to_start_with(shift) if @_  }
+sub get_export_filename ($self) { $self->export_filename  }
+sub set_export_filename ($self) { $self->export_filename(shift) if @_  }
+sub get_include_cursor ($self) { $self->include_cursor  }
+sub set_include_cursor ($self) { $self->include_cursor(shift) if @_  }
+sub get_remove_cursor ($self) { $self->remove_cursor  }
+sub set_remove_cursor ($self) { $self->remove_cursor(shift) if @_  }
+sub get_delay ($self) { $self->delay  }
+sub set_delay ($self) { $self->delay(shift) if @_  }
 
 1;

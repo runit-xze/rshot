@@ -165,21 +165,21 @@ sub fct_control_signals ($self, $action) {
     }
 }
 
-sub fct_zoom_in { shift->cli->handlers->get('Edit_Nav')->fct_zoom_in() }
-sub fct_zoom_out { shift->cli->handlers->get('Edit_Nav')->fct_zoom_out() }
-sub fct_zoom_100 { shift->cli->handlers->get('Edit_Nav')->fct_zoom_100() }
-sub fct_zoom_best { shift->cli->handlers->get('Edit_Nav')->fct_zoom_best() }
-sub fct_fullscreen { shift->cli->handlers->get('Edit_Nav')->fct_fullscreen(@_) }
-sub fct_undo { shift->cli->handlers->get('Edit_Nav')->fct_undo() }
-sub fct_redo { shift->cli->handlers->get('Edit_Nav')->fct_redo() }
+sub fct_zoom_in ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_in()  }
+sub fct_zoom_out ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_out()  }
+sub fct_zoom_100 ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_100()  }
+sub fct_zoom_best ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_best()  }
+sub fct_fullscreen ($self) { $self->cli->handlers->get('Edit_Nav')->fct_fullscreen(@_)  }
+sub fct_undo ($self) { $self->cli->handlers->get('Edit_Nav')->fct_undo()  }
+sub fct_redo ($self) { $self->cli->handlers->get('Edit_Nav')->fct_redo()  }
 sub fct_clipboard { my $self = shift; $self->cli->handlers->get('Edit_Nav')->fct_clipboard(@_) }
-sub fct_delete { shift->cli->handlers->get('Edit_Delete')->fct_delete() }
-sub fct_select_all { shift->cli->handlers->get('Edit_Delete')->fct_select_all() }
-sub fct_trash { shift->cli->handlers->get('Edit_Delete')->fct_trash() }
-sub fct_draw { shift->cli->handlers->get('Edit_Draw')->fct_draw() }
-sub fct_plugin { shift->cli->handlers->get('Edit_Draw')->fct_plugin() }
-sub fct_send { shift->cli->handlers->get('Upload_Main')->fct_send() }
-sub fct_upload { shift->cli->handlers->get('Upload_Main')->fct_upload() }
+sub fct_delete ($self) { $self->cli->handlers->get('Edit_Delete')->fct_delete()  }
+sub fct_select_all ($self) { $self->cli->handlers->get('Edit_Delete')->fct_select_all()  }
+sub fct_trash ($self) { $self->cli->handlers->get('Edit_Delete')->fct_trash()  }
+sub fct_draw ($self) { $self->cli->handlers->get('Edit_Draw')->fct_draw()  }
+sub fct_plugin ($self) { $self->cli->handlers->get('Edit_Draw')->fct_plugin()  }
+sub fct_send ($self) { $self->cli->handlers->get('Upload_Main')->fct_send()  }
+sub fct_upload ($self) { $self->cli->handlers->get('Upload_Main')->fct_upload()  }
 sub fct_email { my $self = shift; $self->cli->handlers->get('Util_File')->fct_email(@_) }
 sub fct_print { my $self = shift; $self->cli->handlers->get('Util_File')->fct_print(@_) }
 
