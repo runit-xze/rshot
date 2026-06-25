@@ -44,21 +44,30 @@ Establish a provable quality baseline and prevent regression during active refac
 - [x] **Fix syntax.t:** Restored `all_perl_files` using `Perl::Critic::Utils`.
 
 **Baseline stats (perlcritic --brutal, all modules):**
-- Total violations: ~5,824
-- Top issues: `ProhibitInterpolationOfLiterals` (1,475), `ProhibitMagicNumbers` (551), `RequirePodSections` (539), `ProhibitTrailingWhitespace` (338), `RequireFinalReturn` (321)
-- Severity-5 ("bugs"): 7 remaining
+- Total violations: 1,429 (progressive baseline)
+- Top issues: `ProhibitInterpolationOfLiterals` (1,475), `ProhibitMagicNumbers` (551), `RequirePodSections` (539), `ProhibitTrailingWhitespace` (338), `RequireFinalReturn` (415)
+- Severity-5 ("bugs"): 0 — all `ProhibitExplicitReturnUndef` eliminated
 
 ---
 
-## Phase 2: Window.pm Decomposition
+## Phase 2: Window.pm Decomposition (In Progress)
 
 The roadmap's top structural priority — break up the largest remaining Shutter capture monolith.
 
-**Current state:** 645 lines, already uses Moo, has 3 extracted roles (Geometry, Selector, Highlighter). Two high-complexity subs remain.
+**Progress:**
+- 645 → **229 lines** (64% reduction — under the 300-line target 🎉)
+- `window_async` method: ~397 → **66 lines** (6x reduction)
+- `redo_capture_async` → extracted to `Window::CaptureManager` role
+- `_capture_interactive` → extracted to `Window::Interaction` role (173 lines)
+- `_capture_noninteractive` → moved to `Window::CaptureManager` role
+- Bugfix: capture chain now always resolves future (shape loop no-match path hung)
 
-- [ ] Extract `_capture_window` / `_hide_window` / `_restore_window` → `Window::CaptureManager` role
-- [ ] Extract `redo_capture_async` + `quit` / `quit_eventh_only` → `Window::Lifecycle` role or move to `Main.pm`
-- [ ] Target: `Window.pm` under 300 lines of orchestration glue
+- [x] Extract `redo_capture_async` → `Window::CaptureManager` role
+- [x] Extract `_capture_interactive` → `Window::Interaction` role (new)
+- [x] Extract `_capture_noninteractive` → `Window::CaptureManager`
+- [x] Target: `Window.pm` under 300 lines ✔️
+- [ ] Extract grab/setup preamble from `window_async`
+- [ ] Extract `quit` / `quit_eventh_only` → `Window::Lifecycle` role or move to `Main.pm`
 - [ ] Each extracted role written clean (zero new --brutal violations)
 
 ---
@@ -88,16 +97,16 @@ Rachet down the violation count module-by-module until `--brutal` passes clean.
 - The progressive baseline drops automatically after each passing test run
 - Periodically add per-policy step sizes to force targeted cleanup
 
-| Priority | Policy | Count | Effort |
-|----------|--------|-------|--------|
-| P0 | `ProhibitExplicitReturnUndef` (sev 5) | 7 | Trivial — mechanical fix |
-| P1 | `ProhibitNoWarnings` (sev 4) | 109 | Tighten `no warnings` scopes |
-| P1 | `RequireFinalReturn` (sev 4) | 321 | Mechanical — add `return` |
-| P1 | `RequireArgUnpacking` (sev 4) | 71 | Already fixed in modern code |
-| P2 | `ProhibitExcessComplexity` (sev 3) | 47 | Fixed by decomposition |
-| P2 | `ProhibitDeepNests` (sev 3) | 43 | Fixed by decomposition |
-| P3 | `ProhibitInterpolationOfLiterals` (sev 3) | 1,475 | Cosmetic — string quoting |
-| P3 | `ProhibitMagicNumbers` (sev 3) | 551 | Named constants |
+| Priority | Policy | Count | Effort | Status |
+|----------|--------|-------|--------|--------|
+| P0 | `ProhibitExplicitReturnUndef` (sev 5) | 7 | Trivial — mechanical fix | ✅ Done |
+| P1 | `ProhibitNoWarnings` (sev 4) | 109 | Tighten `no warnings` scopes | |
+| P1 | `RequireFinalReturn` (sev 4) | 321 | Mechanical — add `return` | |
+| P1 | `RequireArgUnpacking` (sev 4) | 71 | Already fixed in modern code | |
+| P2 | `ProhibitExcessComplexity` (sev 3) | 47 | Fixed by decomposition | |
+| P2 | `ProhibitDeepNests` (sev 3) | 43 | Fixed by decomposition | |
+| P3 | `ProhibitInterpolationOfLiterals` (sev 3) | 1,475 | Cosmetic — string quoting | |
+| P3 | `ProhibitMagicNumbers` (sev 3) | 551 | Named constants | |
 | P3 | `RequirePodSections` (sev 3) | 539 | Documentation |
 
 **Target:** Zero violations under `--brutal` across `bin/`, `share/shutter/resources/modules/`, and `t/`.
