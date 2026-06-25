@@ -28,7 +28,8 @@ use feature 'try'; no warnings 'experimental::try';
 use Gtk3;
 use GooCanvas2;
 
-sub points_to_canvas_points (@points) {
+sub points_to_canvas_points {
+	my (@points) = @_;
 
     my $num_points = scalar(@points) / 2;
     my $result     = GooCanvas2::CanvasPoints::new( num_points => $num_points );

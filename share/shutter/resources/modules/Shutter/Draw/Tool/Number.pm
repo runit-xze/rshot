@@ -1,10 +1,11 @@
 package Shutter::Draw::Tool::Number;
+
 use Moo;
 use utf8;
 use v5.40;
 use Glib qw/TRUE FALSE/;
+
 with 'Shutter::Draw::Tool::Base';
-has drawing_tool => (is => 'ro', required => 1);
 
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
@@ -19,10 +20,13 @@ sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	return TRUE;
 }
 
-sub on_click_creation ($self, $item, $target, $ev, $copy_item) {
-	require Shutter::Draw::Ellipse;
-	my $ellipse = Shutter::Draw::Ellipse->new( app => $self->drawing_tool );
-	return $ellipse->setup($ev, $copy_item, TRUE);
+sub on_click_creation ($self, $item, $target, $ev, $copy_item = undef) {
+	return $self->setup($ev, $copy_item);
+}
+
+sub setup ($self, $event, $copy_item) {
+	return Shutter::Draw::Tool::Ellipse->new(drawing_tool => $self->drawing_tool)
+		->setup($event, $copy_item, TRUE);
 }
 
 sub is_text_tool {

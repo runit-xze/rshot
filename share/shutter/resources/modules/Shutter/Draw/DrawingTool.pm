@@ -31,7 +31,8 @@ use feature "try";
 no warnings "experimental::try";
 {
 	no warnings 'redefine';
-sub lookup ($self, $size) {
+sub lookup {
+	my ($self, $size) = @_;
 		Shutter::App::HelperFunctions->icon_size($size);
 	}
 }
@@ -79,8 +80,9 @@ require Shutter::Draw::UIManager;
 
 #--------------------------------------
 
-sub new ($class) {
-	my $self = {_sc => shift};
+sub new {
+	my ($class, $sc) = @_;
+	my $self = {_sc => $sc};
 	$self->{_shf} = Shutter::App::HelperFunctions->new($self->{_sc});
 
 	#view, selector, dragger
@@ -217,13 +219,14 @@ sub new ($class) {
 
 	require Shutter::Draw::Tool::Registry;
 	my $registry = Shutter::Draw::Tool::Registry->new;
+	$registry->register_tool('select', 'Shutter::Draw::Tool::Select');
+	$registry->register_tool('freehand', 'Shutter::Draw::Tool::Pen');
+	$registry->register_tool('highlighter', 'Shutter::Draw::Tool::Highlighter');
+	$registry->register_tool('line', 'Shutter::Draw::Tool::Line');
+	$registry->register_tool('arrow', 'Shutter::Draw::Tool::Arrow');
 	$registry->register_tool('rect', 'Shutter::Draw::Tool::Rectangle');
 	$registry->register_tool('ellipse', 'Shutter::Draw::Tool::Ellipse');
 	$registry->register_tool('text', 'Shutter::Draw::Tool::Text');
-	$registry->register_tool('line', 'Shutter::Draw::Tool::Line');
-	$registry->register_tool('arrow', 'Shutter::Draw::Tool::Arrow');
-	$registry->register_tool('highlighter', 'Shutter::Draw::Tool::Highlighter');
-	$registry->register_tool('freehand', 'Shutter::Draw::Tool::Pen');
 	$registry->register_tool('censor', 'Shutter::Draw::Tool::Censor');
 	$registry->register_tool('pixelize', 'Shutter::Draw::Tool::Blur');
 	$registry->register_tool('number', 'Shutter::Draw::Tool::Number');
@@ -237,95 +240,108 @@ sub new ($class) {
 	require Shutter::Draw::IOManager;
 	$self->{_io_manager} = Shutter::Draw::IOManager->new(drawing_tool => $self);
 
+	require Shutter::Draw::StateManager;
+	$self->{_state_manager} = Shutter::Draw::StateManager->new(drawing_tool => $self);
+
+	require Shutter::Draw::UndoManager;
+	$self->{_undo_manager} = Shutter::Draw::UndoManager->new(drawing_tool => $self);
+
 	return $self;
-	}
+}
+
+sub current_tool {
+	my $self = shift;
+	return $self->{_canvas_manager}->active_tool;
+}
+
+sub acquire_focus {
+    my ($self, $item, $ev, $cursor) = @_;
+    $self->{_canvas_manager}->acquire_focus($item, $ev, $cursor);
+}
+
+sub release_focus {
+    my ($self, $item, $ev) = @_;
+    $self->{_canvas_manager}->release_focus($item, $ev);
+}
+
+our $AUTOLOAD;
+sub AUTOLOAD {
+    my $self = shift;
+    my $name = $AUTOLOAD;
+    $name =~ s/.*://;
+    return if $name eq 'DESTROY';
+
+    if (@_) {
+        $self->{"_$name"} = shift;
+    }
+    return $self->{"_$name"};
+}
 
 	#~ sub DESTROY {
 	#~ my $self = shift;
 	#~ print "$self dying at\n";
 	#~ }
 
-	# Workaround for broken xpm parsing in glycin:
-	# https://gitlab.gnome.org/GNOME/glycin/-/work_items/291
-sub parse_xpm_hotspot ($xpm_path) {
-	my ($x_hot, $y_hot);
 
-	open my $fh, '<', $xpm_path or do {
-	    print "ERROR: Cannot open $xpm_path: $!\n";
-	    return (undef, undef);
-	};
-
-	while (my $line = <$fh>) {
-	    chomp($line);
-
-	    # Look for the XPM header line with format:
-	    # "width height ncolors chars_per_pixel [x_hot y_hot]"
-	    # Example: "32 32 3 1 4 4"
-	    if ($line =~ /"(\d+)\s+(\d+)\s+(\d+)\s+(\d+)(?:\s+(\d+)\s+(\d+))?/) {
-	        my ($width, $height, $ncolors, $cpp, $xh, $yh) = ($1, $2, $3, $4, $5, $6);
-
-	        if (defined($xh) && defined($yh)) {
-	            $x_hot = $xh;
-	            $y_hot = $yh;
-	        } else {
-	            print "DEBUG: No hotspot in header in $xpm_path\n";
-	        }
-
-	        last;  # Header is on the first data line
-	    }
-	}
-	close $fh;
-
-	return ($x_hot, $y_hot);
-	}
-
-sub show ($self) {
-	return $self->{_toolbar_manager}->setup_main_window(@_);
+sub show {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->setup_main_window(@args);
 }
 
 
-sub setup_right_vbox_c ($self) {
-	return $self->{_toolbar_manager}->setup_right_vbox_c(@_);
+sub setup_right_vbox_c {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->setup_right_vbox_c(@args);
 }
 
-sub adjust_crop_values ($self) {
-	return $self->{_toolbar_manager}->adjust_crop_values(@_);
+sub adjust_crop_values {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->adjust_crop_values(@args);
 }
 
-sub push_tool_help_to_statusbar ($self) {
-	return $self->{_toolbar_manager}->push_tool_help_to_statusbar(@_);
+sub push_tool_help_to_statusbar {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->push_tool_help_to_statusbar(@args);
 }
 
-sub show_status_message ($self) {
-	return $self->{_toolbar_manager}->show_status_message(@_);
+sub show_status_message {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->show_status_message(@args);
 }
 
-sub change_drawing_tool_cb ($self) {
-	return $self->{_toolbar_manager}->change_drawing_tool_cb(@_);
+sub change_drawing_tool_cb {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->change_drawing_tool_cb(@args);
 }
 
-sub zoom_in_cb ($self) {
-	return $self->{_toolbar_manager}->zoom_in_cb(@_);
+sub zoom_in_cb {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->zoom_in_cb(@args);
 }
 
-sub zoom_out_cb ($self) {
-	return $self->{_toolbar_manager}->zoom_out_cb(@_);
+sub zoom_out_cb {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->zoom_out_cb(@args);
 }
 
-sub zoom_normal_cb ($self) {
-	return $self->{_toolbar_manager}->zoom_normal_cb(@_);
+sub zoom_normal_cb {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->zoom_normal_cb(@args);
 }
 
-sub adjust_rulers ($self) {
-	return $self->{_toolbar_manager}->adjust_rulers(@_);
+sub adjust_rulers {
+	my ($self, @args) = @_;
+	return $self->{_toolbar_manager}->adjust_rulers(@args);
 }
 
-sub quit ($self) {
-	return $self->{_state_manager}->quit(@_);
+sub quit {
+	my ($self, @args) = @_;
+	return $self->{_state_manager}->quit(@args);
 }
 
-sub update_warning_text ($self) {
-	return $self->{_state_manager}->update_warning_text(@_);
+sub update_warning_text {
+	my ($self, @args) = @_;
+	return $self->{_state_manager}->update_warning_text(@args);
 }
 
 
@@ -351,7 +367,8 @@ sub update_warning_text ($self) {
 
 
 
-sub get_item_key ($self, $item, $parent) {
+sub get_item_key {
+	my ($self, $item, $parent) = @_;
 	if (exists $self->{_items}{$item}) {
 		return $item;
 	} else {
@@ -366,13 +383,15 @@ sub get_item_key ($self, $item, $parent) {
 
 
 
-sub setup_uimanager ($self) {
+sub setup_uimanager {
+	my $self = shift;
 	return Shutter::Draw::UIManager->new( app => $self )->setup;
 }
 
 
 
-sub utf8_decode ($self, $string) {
+sub utf8_decode {
+	my ($self, $string) = @_;
 
 	#see https://bugs.launchpad.net/shutter/+bug/347821
 	utf8::decode $string;
@@ -380,7 +399,8 @@ sub utf8_decode ($self, $string) {
 	return $string;
 }
 
-sub check_valid_mime_type ($self, $mime_type) {
+sub check_valid_mime_type {
+	my ($self, $mime_type) = @_;
 	foreach my $format (Gtk3::Gdk::Pixbuf::get_formats()) {
 		foreach my $mime (@{$format->get_mime_types}) {
 			return TRUE if $mime_type eq $mime_type;
@@ -398,6 +418,15 @@ sub check_valid_mime_type ($self, $mime_type) {
 
 sub gettext { shift->{_d} }
 sub dicons { shift->{_dicons} }
+sub line_spin_w { shift->{_line_spin_w} }
+sub line_spin_wh { shift->{_line_spin_wh} }
+sub stroke_color_w { shift->{_stroke_color_w} }
+sub stroke_color_wh { shift->{_stroke_color_wh} }
+sub fill_color_w { shift->{_fill_color_w} }
+sub fill_color_wh { shift->{_fill_color_wh} }
+sub font_btn_w { shift->{_font_btn_w} }
+sub font_btn_wh { shift->{_font_btn_wh} }
+
 sub icons { shift->{_icons} }
 sub clipboard { shift->{_clipboard} }
 sub items { shift->{_items} }
@@ -405,57 +434,68 @@ sub drawing_window { shift->{_drawing_window} }
 sub canvas { shift->{_canvas} }
 sub stipple_pixbuf { shift->{_stipple_pixbuf} }
 
-sub cut ($self) {
-	$self->{_cut} = shift if scalar @_;
+sub cut {
+	my ($self, @args) = @_;
+	$self->{_cut} = $args[0] if @args;
 	return $self->{_cut};
 }
-sub current_copy_item ($self) {
-	$self->{_current_copy_item} = shift if scalar @_;
+sub current_copy_item {
+	my ($self, @args) = @_;
+	$self->{_current_copy_item} = $args[0] if @args;
 	return $self->{_current_copy_item};
 }
 
-sub current_item ($self) {
-	$self->{_current_item} = shift if scalar @_;
+sub current_item {
+	my ($self, @args) = @_;
+	$self->{_current_item} = $args[0] if @args;
 	return $self->{_current_item};
 }
 
-sub current_new_item ($self) {
-	$self->{_current_new_item} = shift if scalar @_;
+sub current_new_item {
+	my ($self, @args) = @_;
+	$self->{_current_new_item} = $args[0] if @args;
 	return $self->{_current_new_item};
 }
 
-sub canvas_bg ($self) {
-	$self->{_canvas_bg} = shift if scalar @_;
+sub canvas_bg {
+	my ($self, @args) = @_;
+	$self->{_canvas_bg} = $args[0] if @args;
 	return $self->{_canvas_bg};
 }
 
-sub factory ($self) {
-	$self->{_factory} = shift if scalar @_;
+sub factory {
+	my ($self, @args) = @_;
+	$self->{_factory} = $args[0] if @args;
 	return $self->{_factory};
 }
 
-sub autoscroll ($self) {
-	$self->{_autoscroll} = shift if scalar @_;
+sub autoscroll {
+	my ($self, @args) = @_;
+	$self->{_autoscroll} = $args[0] if @args;
 	return $self->{_autoscroll};
 }
 
-sub stroke_color ($self) {
-	$self->{_stroke_color} = shift if scalar @_;
+sub stroke_color {
+	my ($self, @args) = @_;
+	$self->{_stroke_color} = $args[0] if @args;
 	return $self->{_stroke_color};
 }
 
-sub fill_color ($self) {
-	$self->{_fill_color} = shift if scalar @_;
+sub fill_color {
+	my ($self, @args) = @_;
+	$self->{_fill_color} = $args[0] if @args;
 	return $self->{_fill_color};
 }
 
-sub line_width ($self) {
-	$self->{_line_width} = shift if scalar @_;
+sub line_width {
+	my ($self, @args) = @_;
+	$self->{_line_width} = $args[0] if @args;
 	return $self->{_line_width};
 }
 
-sub font ($self) {
-	$self->{_font} = shift if scalar @_;
+sub font {
+	my ($self, @args) = @_;
+	$self->{_font} = $args[0] if @args;
 	return $self->{_font};
 }
 

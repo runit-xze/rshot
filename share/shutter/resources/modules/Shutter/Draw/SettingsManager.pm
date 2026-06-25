@@ -14,10 +14,11 @@ has drawing_tool => (
 	required => 1,
 );
 
-sub load_settings ($self) {
+sub load_settings {
+	my $self = shift;
 	my $dt   = $self->drawing_tool;
 
-	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->sc);
+	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->{_sc});
 
 	#settings file
 	my $settingsfile = "$ENV{ HOME }/.shutter/drawingtool.xml";
@@ -73,7 +74,8 @@ sub load_settings ($self) {
 	return TRUE;
 }
 
-sub save_settings ($self) {
+sub save_settings {
+	my $self = shift;
 	my $dt   = $self->drawing_tool;
 
 	#to avoid saving the properties of the highlighter
@@ -141,7 +143,8 @@ sub save_settings ($self) {
 	return TRUE;
 }
 
-sub set_and_save_drawing_properties ($self, $item, $save_only) {
+sub set_and_save_drawing_properties {
+	my ($self, $item, $save_only) = @_;
 	my $dt        = $self->drawing_tool;
 
 	return FALSE unless $item;
@@ -237,7 +240,7 @@ sub set_and_save_drawing_properties ($self, $item, $save_only) {
 	$dt->line_width($dt->line_spin_w->get_value);
 	$dt->stroke_color($dt->stroke_color_w->get_rgba);
 	$dt->fill_color($dt->fill_color_w->get_rgba);
-	my $font_descr = Pango::FontDescription::from_string($dt->font_btn_w->get_font_name);
+	my $font_descr = Pango::FontDescription->from_string($dt->font_btn_w->get_font_name);
 	$dt->font($dt->font_btn_w->get_font_name);
 
 	#unblock 'value-change' handlers for widgets
@@ -248,7 +251,8 @@ sub set_and_save_drawing_properties ($self, $item, $save_only) {
 
 }
 
-sub restore_fixed_properties ($self, $mode) {
+sub restore_fixed_properties {
+	my ($self, $mode) = @_;
 	my $dt   = $self->drawing_tool;
 
 	#block 'value-change' handlers for widgets
@@ -287,7 +291,8 @@ sub restore_fixed_properties ($self, $mode) {
 
 }
 
-sub restore_drawing_properties ($self) {
+sub restore_drawing_properties {
+	my $self = shift;
 	my $dt   = $self->drawing_tool;
 
 	#saved properties available?
@@ -313,8 +318,9 @@ sub restore_drawing_properties ($self) {
 	$dt->line_width($dt->line_spin_w->get_value);
 	$dt->stroke_color($dt->stroke_color_w->get_rgba);
 	$dt->fill_color($dt->fill_color_w->get_rgba);
-	my $font_descr = Pango::FontDescription::from_string($dt->font_btn_w->get_font_name);
-	$dt->font($dt->font_btn_w->get_font_name);
+	my $font_name = $dt->font_btn_w->get_font_name // 'Sans 10';
+	my $font_descr = Pango::FontDescription->from_string($font_name);
+	$dt->font($font_name);
 
 	#unblock 'value-change' handlers for widgets
 	$dt->line_spin_w->signal_handler_unblock($dt->line_spin_wh);

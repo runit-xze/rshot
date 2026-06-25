@@ -17,7 +17,8 @@ has transform    => ( is => "rw" );
 has stroke_color => ( is => "rw", lazy => 1, default => sub { shift->app->stroke_color } );
 has line_width   => ( is => "rw", lazy => 1, default => sub { shift->app->line_width } );
 
-sub setup ($self, $event, $copy_item, $highlighter) {
+sub setup {
+	my ($self, $event, $copy_item, $highlighter) = @_;
     $self->event($event);
     $self->copy_item($copy_item);
     $self->highlighter($highlighter // FALSE);
@@ -56,7 +57,8 @@ sub setup ($self, $event, $copy_item, $highlighter) {
     return $item;
 }
 
-sub _check_event_and_copy_item ($self) {
+sub _check_event_and_copy_item {
+	my $self = shift;
     if ( $self->event ) {
         $self->points( [ $self->event->x, $self->event->y, $self->event->x, $self->event->y ] );
     } elsif ( $self->copy_item ) {
@@ -72,7 +74,8 @@ sub _check_event_and_copy_item ($self) {
     }
 }
 
-sub _create_item ($self) {
+sub _create_item {
+	my $self = shift;
     my $item;
     if ( $self->highlighter ) {
         my $hl_color = Gtk3::Gdk::RGBA::parse('#FFFF00');

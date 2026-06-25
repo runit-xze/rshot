@@ -4,10 +4,13 @@ use Moo;
 use utf8;
 use v5.40;
 use Glib qw/TRUE FALSE/;
+use File::Glob qw/bsd_glob/;
+use File::Basename qw/fileparse/;
 
 has drawing_tool => (is => 'ro', required => 1);
 
-sub setup_bottom_hbox ($self) {
+sub setup_bottom_hbox {
+	my $self = shift;
     my $app  = $self->drawing_tool;
 
     my $drawing_bottom_hbox = Gtk3::HBox->new(FALSE, 5);
@@ -146,11 +149,17 @@ sub setup_bottom_hbox ($self) {
     return $drawing_bottom_hbox;
 }
 
-sub change_drawing_tool_cb ($self, $action) {
+sub add_radio_actions {
+    my ($self, $entries) = @_;
+    $self->{_actiongroup_tools}->add_radio_actions($entries, 10, sub { my ($action, $current, $manager) = @_; $manager->change_drawing_tool_cb($action) }, $self);
+}
+
+sub change_drawing_tool_cb { warn "change_drawing_tool_cb called with action: \n";
+	my ($self, $action) = @_; warn "action is: $action\n";
     my $app    = $self->drawing_tool;
 
     eval { $app->{_current_mode} = $action->get_current_value; };
-    if ($@) {
+    if ($@) { warn "get_current_value failed: $@\n";
         $app->{_current_mode} = $action;
     }
 
@@ -254,9 +263,12 @@ sub change_drawing_tool_cb ($self, $action) {
     if (defined $app->{_canvas} && $app->{_current_mode} == 120) {
         $app->{_view}->get_window->set_cursor($cursor);
     }
+
+    $app->{_canvas_manager}->set_tool($app->{_current_mode_descr});
 }
 
-sub setup_right_vbox_c ($self) {
+sub setup_right_vbox_c {
+	my $self = shift;
 	my $app = $self->drawing_tool;
 
 	my $cropping_bottom_vbox = Gtk3::VBox->new(FALSE, 5);
@@ -420,7 +432,8 @@ sub setup_right_vbox_c ($self) {
 
 	return ($crop_frame, $crop_ok);
 }
-sub zoom_in_cb ($self) {
+sub zoom_in_cb {
+	my $self = shift;
 	my $app = $self->drawing_tool;
 
 	if ($app->{_current_mode_descr} ne "crop") {
@@ -434,7 +447,8 @@ sub zoom_in_cb ($self) {
 	return TRUE;
 }
 
-sub zoom_out_cb ($self) {
+sub zoom_out_cb {
+	my $self = shift;
 	my $app = $self->drawing_tool;
 
 	if ($app->{_current_mode_descr} ne "crop") {
@@ -453,7 +467,8 @@ sub zoom_out_cb ($self) {
 	return TRUE;
 }
 
-sub zoom_normal_cb ($self) {
+sub zoom_normal_cb {
+	my $self = shift;
 	my $app = $self->drawing_tool;
 
 	if ($app->{_current_mode_descr} ne "crop") {
@@ -466,7 +481,8 @@ sub zoom_normal_cb ($self) {
 
 	return TRUE;
 }
-sub setup_view ($self) {
+sub setup_view {
+	my $self = shift;
 	my $app = $self->drawing_tool;
 	#view, selector, dragger
 	$app->{_view}     = Gtk3::ImageView->new;
@@ -509,7 +525,40 @@ sub setup_view ($self) {
 }
 
 
-sub setup_main_window ($mgr) {
+# Workaround for broken xpm parsing in glycin:
+# https://gitlab.gnome.org/GNOME/glycin/-/work_items/291
+sub parse_xpm_hotspot {
+	my $xpm_path = shift;
+	my ($x_hot, $y_hot);
+
+	open my $fh, '<', $xpm_path or do {
+	    print "ERROR: Cannot open $xpm_path: $!\n";
+	    return (undef, undef);
+	};
+
+	while (my $line = <$fh>) {
+	    chomp($line);
+
+	    if ($line =~ /"(\d+)\s+(\d+)\s+(\d+)\s+(\d+)(?:\s+(\d+)\s+(\d+))?/) {
+	        my ($width, $height, $ncolors, $cpp, $xh, $yh) = ($1, $2, $3, $4, $5, $6);
+
+	        if (defined($xh) && defined($yh)) {
+	            $x_hot = $xh;
+	            $y_hot = $yh;
+	        } else {
+	            print "DEBUG: No hotspot in header in $xpm_path\n";
+	        }
+
+	        last;
+	    }
+	}
+	close $fh;
+
+	return ($x_hot, $y_hot);
+}
+
+sub setup_main_window {
+	my $mgr = shift;
 	my $self = $mgr->drawing_tool;
 	print "DrawingTool show called\n" if $self->{_sc}->get_debug;
 	$self->{_filename}    = shift;
@@ -677,7 +726,7 @@ sub setup_main_window ($mgr) {
 		canvas        => $self->{_canvas},
 		items         => $self->{_items},
 		setup_signals => sub { $self->setup_item_signals_extra(@_) },
-		style_bg      => $self->{_drawing_window}->get_style_context->get_background_color(Gtk3::StateFlags::lookup('normal')),
+		style_bg      => $self->{_drawing_window}->get_style_context->get_background_color('normal'),
 	);
 
 	#create rectangle to resize the background
@@ -823,6 +872,7 @@ sub setup_main_window ($mgr) {
 
 	$self->adjust_rulers;
 
+
 	#save start time to show in close dialog
 	$self->{_start_time} = time;
 
@@ -853,4 +903,17 @@ sub setup_main_window ($mgr) {
 
 	return TRUE;
 }
+
+sub adjust_rulers {
+	my $self = shift;
+}
+
+sub push_tool_help_to_statusbar {
+	my $self = shift;
+}
+
+sub adjust_crop_values {
+	my $self = shift;
+}
+
 1;

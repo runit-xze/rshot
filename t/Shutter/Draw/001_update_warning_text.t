@@ -20,9 +20,15 @@ $mock->mock(
     sub {
         my $cls = shift;
 
-        return bless {
+        my $draw = bless {
             _start_time => time(),
-            _d          => Locale::gettext->domain("shutter") }, $cls;
+            _d          => Locale::gettext->domain("shutter"),
+        }, $cls;
+
+        require Shutter::Draw::StateManager;
+        $draw->{_state_manager} = Shutter::Draw::StateManager->new(drawing_tool => $draw);
+
+        return $draw;
     } );
 
 subtest "Singular minute" => sub {

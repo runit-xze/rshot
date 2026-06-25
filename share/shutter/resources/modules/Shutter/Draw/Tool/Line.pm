@@ -1,10 +1,11 @@
 package Shutter::Draw::Tool::Line;
+
 use Moo;
 use utf8;
 use v5.40;
 use Glib qw/TRUE FALSE/;
+
 with 'Shutter::Draw::Tool::Base';
-has drawing_tool => (is => 'ro', required => 1);
 
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
@@ -19,10 +20,13 @@ sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	return TRUE;
 }
 
-sub on_click_creation ($self, $item, $target, $ev, $copy_item) {
-	require Shutter::Draw::Arrow;
-	my $arrow = Shutter::Draw::Arrow->new( app => $self->drawing_tool );
-	return $arrow->setup($ev, $copy_item, FALSE, FALSE);
+sub on_click_creation ($self, $item, $target, $ev, $copy_item = undef) {
+	return $self->setup($ev, $copy_item, FALSE, FALSE);
+}
+
+sub setup ($self, $event, $copy_item, $end_arrow = FALSE, $start_arrow = FALSE) {
+	return Shutter::Draw::Tool::Arrow->new(drawing_tool => $self->drawing_tool)
+		->setup($event, $copy_item, $end_arrow, $start_arrow);
 }
 
 1;

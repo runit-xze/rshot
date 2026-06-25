@@ -6,7 +6,17 @@ use Glib qw/TRUE FALSE/;
 
 has drawing_tool => (is => 'ro', required => 1);
 
-sub create_polyline ($mgr) {
+sub _tool_setup {
+	my ($mgr, $tool_name, @setup_args) = @_;
+	my $dt = $mgr->drawing_tool;
+	my $tool_class = $dt->{_canvas_manager}->registry->get_tool($tool_name)
+		or die "Unknown drawing tool: $tool_name";
+	eval "require $tool_class; 1" or die "Could not load $tool_class: $@";
+	return $tool_class->new(drawing_tool => $dt)->setup(@setup_args);
+}
+
+sub create_polyline {
+	my $mgr = shift;
 	my $self = $mgr->drawing_tool;
 	my $ev        = shift;
 	my $copy_item = shift;
@@ -18,29 +28,20 @@ sub create_polyline ($mgr) {
 }
 
 
-sub create_censor ($mgr) {
-	my $self = $mgr->drawing_tool;
-	my $ev        = shift;
-	my $copy_item = shift;
-
-	require Shutter::Draw::Censor;
-	my $censor = Shutter::Draw::Censor->new( app => $self );
-	return $censor->setup($ev, $copy_item);
+sub create_censor {
+	my $mgr = shift;
+	return $mgr->_tool_setup('censor', @_);
 }
 
 
-sub create_pixel_image ($mgr) {
-	my $self = $mgr->drawing_tool;
-	my $ev        = shift;
-	my $copy_item = shift;
-
-	require Shutter::Draw::Blur;
-	my $blur = Shutter::Draw::Blur->new( app => $self );
-	return $blur->setup($ev, $copy_item);
+sub create_pixel_image {
+	my $mgr = shift;
+	return $mgr->_tool_setup('pixelize', @_);
 }
 
 
-sub create_image ($mgr) {
+sub create_image {
+	my $mgr = shift;
 	my $self = $mgr->drawing_tool;
 	my $ev                   = shift;
 	my $copy_item            = shift;
@@ -136,57 +137,38 @@ sub create_image ($mgr) {
 }
 
 
-sub create_text ($mgr) {
-	my $self = $mgr->drawing_tool;
-	my $ev        = shift;
-	my $copy_item = shift;
-
-	require Shutter::Draw::Text;
-	my $text = Shutter::Draw::Text->new( app => $self );
-	return $text->setup($ev, $copy_item);
+sub create_text {
+	my $mgr = shift;
+	return $mgr->_tool_setup('text', @_);
 }
 
 
-sub create_line ($mgr) {
-	my $self = $mgr->drawing_tool;
-	my $ev          = shift;
-	my $copy_item   = shift;
-	my $end_arrow   = shift;
-	my $start_arrow = shift;
-
-	require Shutter::Draw::Arrow;
-	my $arrow = Shutter::Draw::Arrow->new( app => $self );
-	return $arrow->setup($ev, $copy_item, $end_arrow, $start_arrow);
+sub create_line {
+	my $mgr = shift;
+	return $mgr->_tool_setup('line', @_);
 }
 
 
-sub create_ellipse ($mgr) {
-	my $self = $mgr->drawing_tool;
-	my $ev        = shift;
-	my $copy_item = shift;
-	my $numbered  = shift;
-
-	require Shutter::Draw::Ellipse;
-	my $ellipse = Shutter::Draw::Ellipse->new( app => $self );
-	return $ellipse->setup($ev, $copy_item, $numbered);
+sub create_ellipse {
+	my ($mgr, $ev, $copy_item, $numbered) = @_;
+	if ($numbered) {
+		return $mgr->_tool_setup('number', $ev, $copy_item);
+	}
+	return $mgr->_tool_setup('ellipse', $ev, $copy_item, $numbered);
 }
 
 
-sub create_rectangle ($mgr) {
-	my $self = $mgr->drawing_tool;
-	my $ev        = shift;
-	my $copy_item = shift;
-
-	require Shutter::Draw::Rectangle;
-	my $rect = Shutter::Draw::Rectangle->new( app => $self );
-	return $rect->setup($ev, $copy_item);
+sub create_rectangle {
+	my $mgr = shift;
+	return $mgr->_tool_setup('rect', @_);
 }
 
 
 # getters and setters
 
 
-sub paste_item ($mgr) {
+sub paste_item {
+	my $mgr = shift;
 	my $self = $mgr->drawing_tool;
 	my $item = shift;
 
@@ -293,7 +275,8 @@ sub paste_item ($mgr) {
 }
 
 
-sub get_opposite_rect ($mgr) {
+sub get_opposite_rect {
+	my $mgr = shift;
 	my $self = $mgr->drawing_tool;
 	my $rect   = shift;
 	my $item   = shift;
@@ -353,7 +336,8 @@ sub get_opposite_rect ($mgr) {
 }
 
 
-sub get_parent_item ($mgr, $item) {
+sub get_parent_item {
+	my ($mgr, $item) = @_;
 	my $self = $mgr->drawing_tool;
 
 	return FALSE unless $item;
@@ -381,7 +365,8 @@ sub get_parent_item ($mgr, $item) {
 }
 
 
-sub get_highest_auto_digit ($self) {
+sub get_highest_auto_digit {
+	my $self = shift;
 	my $number = 0;
 	foreach (keys %{$self->{_items}}) {
 
@@ -402,7 +387,8 @@ sub get_highest_auto_digit ($self) {
 }
 
 
-sub get_pixelated_pixbuf_from_canvas ($mgr, $item) {
+sub get_pixelated_pixbuf_from_canvas {
+	my ($mgr, $item) = @_;
 	my $self = $mgr->drawing_tool;
 
 	my $bounds = $item->get_bounds;
@@ -510,7 +496,8 @@ sub get_pixelated_pixbuf_from_canvas ($mgr, $item) {
 }
 
 
-sub get_child_item ($mgr, $item) {
+sub get_child_item {
+	my ($mgr, $item) = @_;
 	my $self = $mgr->drawing_tool;
 
 	return FALSE unless $item;

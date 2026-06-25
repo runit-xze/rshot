@@ -6,7 +6,8 @@ use Glib qw/TRUE FALSE/;
 
 has drawing_tool => (is => 'ro', required => 1);
 
-sub store_to_xdo_stack ($mgr, $item, $action, $xdo, $opt1, $source) {
+sub store_to_xdo_stack {
+	my ($mgr, $item, $action, $xdo, $opt1, $source) = @_;
 
 	#opt1 is currently only used when cropping the image
 	#it stores the selection
@@ -170,7 +171,8 @@ sub store_to_xdo_stack ($mgr, $item, $action, $xdo, $opt1, $source) {
 }
 
 
-sub xdo_remove ($mgr) {
+sub xdo_remove {
+	my $mgr = shift;
 	my $self = $mgr->drawing_tool;
 	my $xdo  = shift;
 	my $item = shift;
@@ -210,7 +212,8 @@ sub xdo_remove ($mgr) {
 }
 
 
-sub xdo ($mgr) {
+sub xdo {
+	my $mgr = shift;
 	my $self = $mgr->drawing_tool;
 	my $xdo           = shift;
 	my $source        = shift;

@@ -19,6 +19,7 @@ ok(eval { require Shutter::Draw::IOManager; 1 }, "Loaded IOManager") or diag $@;
     sub gettext { shift->_d }
     
     has sc => (is => 'rw', default => sub { bless {}, 'MockSC' });
+    has _sc => (is => 'rw', default => sub { bless {}, 'MockSC' });
     has filename => (is => 'rw', default => sub { '/tmp/test.png' });
     has is_unsaved => (is => 'rw', default => sub { 1 });
     has mimetype => (is => 'rw', default => sub { 'image/png' });
@@ -63,6 +64,7 @@ ok(eval { require Shutter::Draw::IOManager; 1 }, "Loaded IOManager") or diag $@;
 
 subtest 'IOManager creation' => sub {
     my $dt = MockDrawingToolIO->new;
+    $dt->{_sc} = $dt->sc;
     my $iom = Shutter::Draw::IOManager->new(drawing_tool => $dt);
     
     ok(defined $iom, 'IOManager instantiated');
@@ -70,6 +72,7 @@ subtest 'IOManager creation' => sub {
 
 subtest 'save to memory' => sub {
     my $dt = MockDrawingToolIO->new;
+    $dt->{_sc} = $dt->sc;
     my $iom = Shutter::Draw::IOManager->new(drawing_tool => $dt);
     
     my $surface_mock = mock 'Cairo::ImageSurface' => (

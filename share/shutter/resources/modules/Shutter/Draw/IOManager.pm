@@ -21,7 +21,8 @@ has drawing_tool => (
     required => 1,
 );
 
-sub export_to_file ($self) {
+sub export_to_file {
+	my $self = shift;
 	my $dt = $self->drawing_tool;
 	my $rfiletype = shift;
 
@@ -32,14 +33,14 @@ sub export_to_file ($self) {
 		'gtk-save'   => 'accept'
 	);
 
-	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->sc());
+	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->{_sc});
 
 	#parse filename
 	my ($short, $folder, $ext) = fileparse($dt->filename(), qr/\.[^.]*/);
 
 	#go to recently used folder
-	if (defined $dt->sc()->get_rusf && $shutter_hfunct->folder_exists($dt->sc()->get_rusf)) {
-		$fs->set_current_folder($dt->sc()->get_rusf);
+	if (defined $dt->{_sc}->get_rusf && $shutter_hfunct->folder_exists($dt->{_sc}->get_rusf)) {
+		$fs->set_current_folder($dt->{_sc}->get_rusf);
 		$fs->set_current_name($short . $ext);
 	} elsif (defined $dt->is_unsaved() && $dt->is_unsaved()) {
 		$fs->set_current_folder(Shutter::App::Directories::get_home_dir());
@@ -175,7 +176,7 @@ sub export_to_file ($self) {
 		my ($short, $folder, $ext) = fileparse($filename, qr/\.[^.]*/);
 
 		#keep selected folder in mind
-		$dt->sc()->set_rusf($folder);
+		$dt->{_sc}->set_rusf($folder);
 
 		#handle file format
 		my $choosen_format = $combobox_save_as_type->get_active_text;
@@ -183,7 +184,7 @@ sub export_to_file ($self) {
 
 		$filename = $folder . $short . "." . $choosen_format;
 
-		my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->sc());
+		my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->{_sc});
 
 		unless ($shutter_hfunct->file_exists($filename)) {
 
@@ -218,7 +219,8 @@ sub export_to_file ($self) {
 
 }
 
-sub export_to_svg ($self) {
+sub export_to_svg {
+	my $self = shift;
 	my $dt = $self->drawing_tool;
 
 	#here might be some more features in future releases of Shutter
@@ -229,7 +231,8 @@ sub export_to_svg ($self) {
 	return TRUE;
 }
 
-sub export_to_ps ($self) {
+sub export_to_ps {
+	my $self = shift;
 	my $dt = $self->drawing_tool;
 
 	#here might be some more features in future releases of Shutter
@@ -240,7 +243,8 @@ sub export_to_ps ($self) {
 	return TRUE;
 }
 
-sub export_to_pdf ($self) {
+sub export_to_pdf {
+	my $self = shift;
 	my $dt = $self->drawing_tool;
 
 	#here might be some more features in future releases of Shutter
@@ -251,7 +255,8 @@ sub export_to_pdf ($self) {
 	return TRUE;
 }
 
-sub save ($self) {
+sub save {
+	my $self = shift;
 	my $dt = $self->drawing_tool;
 	my $save_to_mem = shift;
 	my $filename    = shift || $dt->filename();
@@ -373,14 +378,15 @@ sub save ($self) {
 			return $pixbuf;
 		}
 		#save pixbuf to file
-		my $pixbuf_save = Shutter::Pixbuf::Save->new($dt->sc(), $dt->drawing_window());
+		my $pixbuf_save = Shutter::Pixbuf::Save->new($dt->{_sc}, $dt->drawing_window());
 		return $pixbuf_save->save_pixbuf_to_file($pixbuf, $filename, $filetype, undef);
 
 	}
 
 }
 
-sub import_from_dnd ($self, $widget, $context, $x, $y, $selection, $info, $time) {
+sub import_from_dnd {
+	my ($self, $widget, $context, $x, $y, $selection, $info, $time) = @_;
 	my $dt = $self->drawing_tool;
 	my $type = $selection->get_target->name;
 	return unless $type eq 'text/uri-list';
@@ -450,7 +456,8 @@ sub import_from_dnd ($self, $widget, $context, $x, $y, $selection, $info, $time)
 	return TRUE;
 }
 
-sub import_from_filesystem ($self) {
+sub import_from_filesystem {
+	my $self = shift;
 	my $dt = $self->drawing_tool;
 	my $button = shift;
 
@@ -460,7 +467,7 @@ sub import_from_filesystem ($self) {
 
 	my $menu_objects = Gtk3::Menu->new;
 
-	my $dobjects = $directory || $dt->sc()->get_root . "/share/shutter/resources/icons/drawing_tool/objects";
+	my $dobjects = $directory || $dt->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool/objects";
 
 	#first directory flag (see description above)
 	my $fd = TRUE;
@@ -662,7 +669,8 @@ sub import_from_filesystem ($self) {
 	return $menu_objects;
 }
 
-sub import_from_utheme ($self) {
+sub import_from_utheme {
+	my $self = shift;
 	my $dt = $self->drawing_tool;
 	my $icontheme = shift;
 	my $button    = shift;
@@ -722,7 +730,8 @@ sub import_from_utheme ($self) {
 	return $menu_ctxt;
 }
 
-sub import_from_utheme_ctxt ($self) {
+sub import_from_utheme_ctxt {
+	my $self = shift;
 	my $dt = $self->drawing_tool;
 	my $icontheme = shift;
 	my $context   = shift;
@@ -751,13 +760,14 @@ sub import_from_utheme_ctxt ($self) {
 	return $menu_ctxt_items;
 }
 
-sub import_from_session ($self) {
+sub import_from_session {
+	my $self = shift;
 	my $dt = $self->drawing_tool;
 	my $button = shift;
 
 	my $menu_session_objects = Gtk3::Menu->new;
 
-	my %import_hash = %{$dt->import_hash()};
+	my %import_hash = %{$dt->import_hash() || {}};
 
 	foreach my $key ($dt->shf()->nsort(keys %import_hash)) {
 
@@ -786,7 +796,8 @@ sub import_from_session ($self) {
 
 	return $menu_session_objects;
 }
-sub get_pixelated_pixbuf_from_canvas ($self, $item) {
+sub get_pixelated_pixbuf_from_canvas {
+	my ($self, $item) = @_;
 	my $dt = $self->drawing_tool;
 
 	my $bounds = $item->get_bounds;

@@ -4,7 +4,7 @@ use utf8;
 use v5.40;
 use Glib qw/TRUE FALSE/;
 with 'Shutter::Draw::Tool::Base';
-has drawing_tool => (is => 'ro', required => 1);
+
 
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;

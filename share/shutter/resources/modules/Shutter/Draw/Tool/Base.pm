@@ -5,7 +5,10 @@ use utf8;
 use v5.40;
 use Glib qw/TRUE FALSE/;
 
-requires 'drawing_tool';
+has 'drawing_tool' => (is => 'ro', required => 1);
+with 'Shutter::Draw::Tool::Role::Resizable';
+with 'Shutter::Draw::Tool::Role::Movable';
+with 'Shutter::Draw::Tool::Role::Selectable';
 
 
 sub on_motion_notify ($self, $item, $target, $ev) {
@@ -42,293 +45,17 @@ sub on_motion_notify ($self, $item, $target, $ev) {
 
 	#move
 	if ($item->{dragging} && ($ev->state >= 'button1-mask' || $ev->state >= 'button2-mask')) {
-
-		if ($item->isa('GooCanvas2::CanvasRect')) {
-
-			my $new_x = $dt->{_items}{$item}->get('x') + $ev->x - $item->{drag_x};
-			my $new_y = $dt->{_items}{$item}->get('y') + $ev->y - $item->{drag_y};
-
-			$dt->{_items}{$item}->set(
-				'x' => $new_x,
-				'y' => $new_y,
-			);
-
-			$item->{drag_x} = $ev->x;
-			$item->{drag_y} = $ev->y;
-
-			$dt->handle_rects('update', $item);
-			$dt->handle_embedded('update', $item);
-
-		} else {
-
-			$item->translate($ev->x - $item->{drag_x}, $ev->y - $item->{drag_y});
-
-		}
-
-		#add to undo stack
-		if ($item->{dragging_start}) {
-			$dt->store_to_xdo_stack($item, 'modify', 'undo');
-			$item->{dragging_start} = FALSE;
-		}
+		$self->handle_moving($item, $target, $ev) if $self->can('handle_moving');
 
 		#freehand line
 	} elsif ($self->can('on_drag_creation_points') && $ev->state >= 'button1-mask') {
-		$self->on_drag_creation_points($item, $target, $ev);
+		$self->on_drag_creation_points($dt->{_current_new_item} || $item, $target, $ev);
 #new item is already on the canvas with small initial size
 		#drawing is like resizing, so set up for resizing
 	} elsif ($self->can('on_drag_creation_shape') && $ev->state >= 'button1-mask' && !$item->{resizing}) {
-		return FALSE unless $self->on_drag_creation_shape($item, $target, $ev);
-#item is resizing mode already
+		return FALSE unless $self->on_drag_creation_shape($dt->{_current_new_item} || $item, $target, $ev);
 	} elsif ($item->{resizing} && $ev->state >= 'button1-mask') {
-
-		#~ print "resizing\n";
-
-		$dt->{_current_mode_descr} = "resize";
-
-		#canvas resizing shape
-		if ($dt->{_canvas_bg_rect}{'right-side'} == $item) {
-
-			my $new_width = $dt->{_canvas_bg_rect}->get('width') + ($ev->x - $item->{res_x});
-
-			unless ($new_width < 0) {
-
-				$dt->{_canvas_bg_rect}->set('width' => $new_width,);
-
-				$dt->handle_bg_rects('update');
-
-			}
-
-		} elsif ($dt->{_canvas_bg_rect}{'bottom-side'} == $item) {
-
-			my $new_height = $dt->{_canvas_bg_rect}->get('height') + ($ev->y - $item->{res_y});
-
-			unless ($new_height < 0) {
-
-				$dt->{_canvas_bg_rect}->set('height' => $new_height,);
-
-				$dt->handle_bg_rects('update');
-
-			}
-
-		} elsif ($dt->{_canvas_bg_rect}{'bottom-right-corner'} == $item) {
-
-			my $new_width  = $dt->{_canvas_bg_rect}->get('width') + ($ev->x - $item->{res_x});
-			my $new_height = $dt->{_canvas_bg_rect}->get('height') + ($ev->y - $item->{res_y});
-
-			unless ($new_width < 0 || $new_height < 0) {
-
-				$dt->{_canvas_bg_rect}->set(
-					'width'  => $new_width,
-					'height' => $new_height,
-				);
-
-				$dt->handle_bg_rects('update');
-
-			}
-
-			#item resizing shape
-		} else {
-
-			my $curr_item = $dt->{_current_item};
-
-			#~ my $cursor = undef;
-
-			return FALSE unless $curr_item;
-
-			#calculate aspect ratio (resizing when control is pressed)
-			my $ratio = 1;
-			$ratio = $dt->{_items}{$curr_item}->get('width') / $dt->{_items}{$curr_item}->get('height') if $dt->{_items}{$curr_item}->get('height') != 0;
-
-			my $new_x      = 0;
-			my $new_y      = 0;
-			my $new_width  = 0;
-			my $new_height = 0;
-
-			foreach (keys %{$dt->{_items}{$curr_item}}) {
-
-				next unless $_ =~ m/(corner|side)/;
-
-				#fancy resizing using our little resize boxes
-				if ($item == $dt->{_items}{$curr_item}{$_}) {
-
-					#~ $cursor = $_;
-
-					if ($_ eq 'bottom-side') {
-
-						$new_x = $dt->{_items}{$curr_item}->get('x');
-						$new_y = $dt->{_items}{$curr_item}->get('y');
-
-						$new_width  = $dt->{_items}{$curr_item}->get('width');
-						$new_height = $dt->{_items}{$curr_item}->get('height') + ($ev->y - $item->{res_y});
-
-						last;
-
-					} elsif ($_ eq 'bottom-right-corner') {
-
-						$new_x = $dt->{_items}{$curr_item}->get('x');
-						$new_y = $dt->{_items}{$curr_item}->get('y');
-
-						if ($ev->state >= 'control-mask') {
-							$new_width  = $dt->{_items}{$curr_item}->get('width') + ($ev->y - $item->{res_y}) * $ratio;
-							$new_height = $dt->{_items}{$curr_item}->get('height') + ($ev->y - $item->{res_y});
-						} else {
-							$new_width  = $dt->{_items}{$curr_item}->get('width') + ($ev->x - $item->{res_x});
-							$new_height = $dt->{_items}{$curr_item}->get('height') + ($ev->y - $item->{res_y});
-						}
-
-						last;
-
-					} elsif ($_ eq 'top-left-corner') {
-
-						if ($ev->state >= 'control-mask') {
-							$new_x      = $dt->{_items}{$curr_item}->get('x') + ($ev->y - $item->{res_y}) * $ratio;
-							$new_y      = $dt->{_items}{$curr_item}->get('y') + ($ev->y - $item->{res_y});
-							$new_width  = $dt->{_items}{$curr_item}->get('width') + ($dt->{_items}{$curr_item}->get('x') - $new_x);
-							$new_height = $dt->{_items}{$curr_item}->get('height') + ($dt->{_items}{$curr_item}->get('y') - $new_y);
-						} else {
-							$new_x      = $dt->{_items}{$curr_item}->get('x') + $ev->x - $item->{res_x};
-							$new_y      = $dt->{_items}{$curr_item}->get('y') + $ev->y - $item->{res_y};
-							$new_width  = $dt->{_items}{$curr_item}->get('width') + ($dt->{_items}{$curr_item}->get('x') - $new_x);
-							$new_height = $dt->{_items}{$curr_item}->get('height') + ($dt->{_items}{$curr_item}->get('y') - $new_y);
-						}
-
-						last;
-
-					} elsif ($_ eq 'top-side') {
-
-						$new_x = $dt->{_items}{$curr_item}->get('x');
-						$new_y = $dt->{_items}{$curr_item}->get('y') + $ev->y - $item->{res_y};
-
-						$new_width  = $dt->{_items}{$curr_item}->get('width');
-						$new_height = $dt->{_items}{$curr_item}->get('height') + ($dt->{_items}{$curr_item}->get('y') - $new_y);
-
-						last;
-
-					} elsif ($_ eq 'top-right-corner') {
-
-						$new_x = $dt->{_items}{$curr_item}->get('x');
-						$new_y = $dt->{_items}{$curr_item}->get('y') + $ev->y - $item->{res_y};
-
-						if ($ev->state >= 'control-mask') {
-							$new_width  = $dt->{_items}{$curr_item}->get('width') - ($ev->y - $item->{res_y}) * $ratio;
-							$new_height = $dt->{_items}{$curr_item}->get('height') + ($dt->{_items}{$curr_item}->get('y') - $new_y);
-						} else {
-							$new_width  = $dt->{_items}{$curr_item}->get('width') + ($ev->x - $item->{res_x});
-							$new_height = $dt->{_items}{$curr_item}->get('height') + ($dt->{_items}{$curr_item}->get('y') - $new_y);
-						}
-
-						last;
-
-					} elsif ($_ eq 'left-side') {
-
-						$new_x = $dt->{_items}{$curr_item}->get('x') + $ev->x - $item->{res_x};
-						$new_y = $dt->{_items}{$curr_item}->get('y');
-
-						$new_width  = $dt->{_items}{$curr_item}->get('width') + ($dt->{_items}{$curr_item}->get('x') - $new_x);
-						$new_height = $dt->{_items}{$curr_item}->get('height');
-
-						last;
-
-					} elsif ($_ eq 'right-side') {
-
-						$new_x = $dt->{_items}{$curr_item}->get('x');
-						$new_y = $dt->{_items}{$curr_item}->get('y');
-
-						$new_width  = $dt->{_items}{$curr_item}->get('width') + ($ev->x - $item->{res_x});
-						$new_height = $dt->{_items}{$curr_item}->get('height');
-
-						last;
-
-					} elsif ($_ eq 'bottom-left-corner') {
-
-						if ($ev->state >= 'control-mask') {
-							$new_x = $dt->{_items}{$curr_item}->get('x') - $ev->y + $item->{res_y};
-							$new_y = $dt->{_items}{$curr_item}->get('y');
-
-							$new_width  = $dt->{_items}{$curr_item}->get('width') + ($dt->{_items}{$curr_item}->get('x') - $new_x);
-							$new_height = $dt->{_items}{$curr_item}->get('height') + ($ev->y - $item->{res_y}) / $ratio;
-						} else {
-							$new_x = $dt->{_items}{$curr_item}->get('x') + $ev->x - $item->{res_x};
-							$new_y = $dt->{_items}{$curr_item}->get('y');
-
-							$new_width  = $dt->{_items}{$curr_item}->get('width') + ($dt->{_items}{$curr_item}->get('x') - $new_x);
-							$new_height = $dt->{_items}{$curr_item}->get('height') + ($ev->y - $item->{res_y});
-						}
-
-						last;
-
-					}
-				}
-			}
-
-			#set cursor
-
-			#~ $dt->{_canvas}->window->set_cursor( Gtk3::Gdk::Cursor->new($cursor) );
-
-			#when width or height are too small we switch to opposite rectangle and do the resizing in this way
-			if ($ev->state >= 'control-mask' && $new_width < 1 && $new_height < 1) {
-
-				$new_x      = $dt->{_items}{$curr_item}->get('x');
-				$new_y      = $dt->{_items}{$curr_item}->get('y');
-				$new_width  = $dt->{_items}{$curr_item}->get('width');
-				$new_height = $dt->{_items}{$curr_item}->get('height');
-
-			} elsif ($new_width < 0 || $new_height < 0) {
-
-				$dt->{_canvas}->pointer_ungrab($item, $ev->time);
-				$dt->{_canvas}->keyboard_ungrab($item, $ev->time);
-
-				my $oppo = $dt->get_opposite_rect($item, $curr_item, $new_width, $new_height);
-
-				$dt->{_items}{$curr_item}{$oppo}->{res_x}    = $ev->x;
-				$dt->{_items}{$curr_item}{$oppo}->{res_y}    = $ev->y;
-				$dt->{_items}{$curr_item}{$oppo}->{resizing} = TRUE;
-
-				#~ #don'change cursor if this item was just started
-				#~ if($dt->{_last_item} && $dt->{_current_item} && $dt->{_last_item} == $dt->{_current_item}){
-				#~ $dt->{_canvas}->pointer_grab( $dt->{_items}{$curr_item}{$oppo}, [ 'pointer-motion-mask', 'button-release-mask' ], undef, $ev->time );
-				#~ }else{
-				#~ $dt->{_canvas}->pointer_grab( $dt->{_items}{$curr_item}{$oppo}, [ 'pointer-motion-mask', 'button-release-mask' ], Gtk3::Gdk::Cursor->new($oppo), $ev->time );
-				#~ }
-
-				eval {
-					$dt->{_canvas}->pointer_grab($dt->{_items}{$curr_item}{$oppo}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time);
-				};
-				if ($@) {
-					# workaround for https://gitlab.gnome.org/GNOME/goocanvas/-/merge_requests/8
-					$dt->{_canvas}->pointer_grab($dt->{_items}{$curr_item}{$oppo}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time);
-				}
-
-				$dt->handle_embedded('mirror', $curr_item, $new_width, $new_height);
-
-				#adjust new values
-				if ($new_width < 0) {
-					$new_x += $new_width;
-					$new_width = abs($new_width);
-				}
-				if ($new_height < 0) {
-					$new_y += $new_height;
-					$new_height = abs($new_height);
-				}
-
-			}
-
-			#apply new values...
-			$dt->{_items}{$curr_item}->set(
-				'x'      => $new_x,
-				'y'      => $new_y,
-				'width'  => $new_width,
-				'height' => $new_height,
-			);
-
-			#and update rectangles and embedded items
-			$dt->handle_rects('update', $curr_item);
-			$dt->handle_embedded('update', $curr_item);
-
-		}
-
-		$item->{res_x} = $ev->x;
-		$item->{res_y} = $ev->y;
+		$self->handle_resizing($item, $target, $ev) if $self->can('handle_resizing');
 
 	} else {
 
@@ -639,14 +366,7 @@ sub on_button_press ($self, $item, $target, $ev, $select) {
 				#~ print "grab keyboard and pointer focus for $item\n";
 
 				#grab keyboard and pointer focus
-				eval {
-					$dt->{_canvas}->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], $cursor, $ev->time);
-				};
-				if ($@) {
-					# workaround for https://gitlab.gnome.org/GNOME/goocanvas/-/merge_requests/8
-					$dt->{_canvas}->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time);
-				}
-				$dt->{_canvas}->grab_focus($item);
+				$dt->acquire_focus($item, $ev, $cursor);
 
 				#create new item
 			} else {
@@ -658,7 +378,7 @@ sub on_button_press ($self, $item, $target, $ev, $select) {
 
 				#grab keyboard focus
 				if (my $nitem = $dt->{_current_new_item}) {
-
+					$dt->handle_rects('update', $nitem);
 					#~ print "grab keyboard focus for new item $nitem\n";
 					$dt->{_canvas}->grab_focus($nitem);
 				}
@@ -669,65 +389,7 @@ sub on_button_press ($self, $item, $target, $ev, $select) {
 
 		#right click => show context menu, double-click => show properties directly
 	} elsif ($ev->type eq '2button-press' || $ev->button == 3) {
-
-		$dt->{_canvas}->pointer_ungrab($item, $ev->time);
-		$dt->{_canvas}->keyboard_ungrab($item, $ev->time);
-
-		#determine key for item hash
-		if (my $child = $dt->get_child_item($item)) {
-			$item = $child;
-		}
-		my $parent = $dt->get_parent_item($item);
-		my $key    = $dt->get_item_key($item, $parent);
-
-		#real shape
-		if (defined $key && exists $dt->{_items}{$key}) {
-			if (   $ev->type eq '2button-press'
-				&& $ev->button == 1
-				&& !$self->can('on_drag_creation_points') && !$self->can('is_text_tool'))
-			{
-
-				#some items do not have properties, e.g. images or censor
-				return FALSE if $item->isa('GooCanvas2::CanvasImage') || !exists($dt->{_items}{$key}{stroke_color});
-
-				#~ print $item, $parent, $key, "\n";
-
-				$dt->show_item_properties($item, $parent, $key);
-
-			} elsif ($ev->type eq 'button-press' && $ev->button == 3) {
-
-				my $item_menu = $dt->ret_item_menu($item, $parent, $key);
-
-				$item_menu->popup(
-					undef,    # parent menu shell
-					undef,    # parent menu item
-					undef,    # menu pos func
-					undef,    # data
-					$ev->button,
-					$ev->time
-				);
-			}
-
-		} else {
-
-			#background rectangle
-			if ($item == $dt->{_canvas_bg_rect}) {
-				my $bg_menu = $dt->ret_background_menu($item);
-
-				$bg_menu->popup(
-					undef,    # parent menu shell
-					undef,    # parent menu item
-					undef,    # menu pos func
-					undef,    # data
-					$ev->button,
-					$ev->time
-				);
-			}
-		}
-
-		#canvas idle now
-		$dt->{_busy} = FALSE;
-
+		$self->handle_item_selection_events($item, $target, $ev) if $self->can('handle_item_selection_events');
 	}
 
 	return TRUE;
@@ -737,8 +399,7 @@ sub on_button_press ($self, $item, $target, $ev, $select) {
 sub on_button_release ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 
-	$dt->{_canvas}->pointer_ungrab($item, $ev->time);
-	$dt->{_canvas}->keyboard_ungrab($item, $ev->time);
+	$dt->release_focus($item, $ev);
 
 	#canvas is idle now...
 	$dt->{_busy} = FALSE;

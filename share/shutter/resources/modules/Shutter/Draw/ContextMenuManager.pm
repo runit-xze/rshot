@@ -7,7 +7,8 @@ use Glib qw/TRUE FALSE/;
 
 has drawing_tool => (is => 'ro', required => 1);
 
-sub ret_background_menu ($self, $item) {
+sub ret_background_menu {
+	my ($self, $item) = @_;
 	my $app = $self->drawing_tool;
 
 	my $menu_bg = Gtk3::Menu->new;
@@ -56,7 +57,8 @@ sub ret_background_menu ($self, $item) {
 	return $menu_bg;
 }
 
-sub ret_item_menu ($self, $item, $parent, $key) {
+sub ret_item_menu {
+	my ($self, $item, $parent, $key) = @_;
 	my $app    = $self->drawing_tool;
 
 	my $menu_item = Gtk3::Menu->new;

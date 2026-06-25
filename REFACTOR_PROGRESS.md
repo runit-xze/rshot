@@ -23,13 +23,13 @@ This document tracks the second wave of modularization, focusing on decomposing 
 - [x] `Shutter::Draw::Tool::Registry` - Moo registry for tool lookup
 - [x] `Shutter::Draw::Tool::Base` - Moo role defining tool interface
 - [x] `Shutter::Draw::Tool::Pen` (calls `Shutter::Draw::Polyline->setup`)
-- [x] `Shutter::Draw::Tool::Ellipse` (calls `Shutter::Draw::Ellipse->setup`)
-- [x] `Shutter::Draw::Tool::Rectangle` (calls `Shutter::Draw::Rectangle->setup`)
-- [x] `Shutter::Draw::Tool::Blur` (calls `Shutter::Draw::Blur->setup`)
-- [x] `Shutter::Draw::Tool::Censor` (calls `Shutter::Draw::Censor->setup`)
+- [x] `Shutter::Draw::Tool::Ellipse` (item setup inlined)
+- [x] `Shutter::Draw::Tool::Rectangle` (item setup inlined)
+- [x] `Shutter::Draw::Tool::Blur` (item setup inlined)
+- [x] `Shutter::Draw::Tool::Censor` (item setup inlined)
 - [x] `Shutter::Draw::Tool::Highlighter` (calls `Shutter::Draw::Polyline->setup`)
-- [x] `Shutter::Draw::Tool::Arrow` (calls `Shutter::Draw::Arrow->setup`)
-- [x] `Shutter::Draw::Tool::Text` (calls `Shutter::Draw::Text->setup`)
+- [x] `Shutter::Draw::Tool::Arrow` (item setup inlined)
+- [x] `Shutter::Draw::Tool::Text` (item setup inlined)
 
 ### Manager Classes
 - [x] `Shutter::Draw::CanvasManager` - Delegates to active tool
@@ -42,6 +42,6 @@ This document tracks the second wave of modularization, focusing on decomposing 
 - [x] Extract SelectorAdvanced input handling into InputManager and SelectionModel
 
 ### Phase 9 Candidates (Next Up)
-- [ ] Modernize `Shutter::Screenshot::Main` to `Moo` (base class for all captures)
+- [x] Modernize `Shutter::Screenshot::Main` to `Moo` (base class for all captures)
 - [ ] Decompose `Shutter::Screenshot::Window` (the largest remaining monolith at ~1000 lines)
 - [ ] Implement Asynchronous Capture Pipeline (non-blocking delays and captures)

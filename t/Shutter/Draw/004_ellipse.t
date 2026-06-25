@@ -15,16 +15,16 @@ require Test::SimpleApp;
 require Shutter::App::SimpleDialogs;
 require Shutter::App::HelperFunctions;
 require Shutter::App::Common;
-require Shutter::Draw::DrawingTool;
+require Shutter::Draw::Tool::Ellipse;
 
-require_ok("Shutter::Draw::Ellipse");
+require_ok("Shutter::Draw::Tool::Ellipse");
 
 subtest "simply create ellipse" => sub {
     my $app     = Test::SimpleApp->new;
-    my $ellipse = Shutter::Draw::Ellipse->new( app => $app );
+    my $ellipse = Shutter::Draw::Tool::Ellipse->new( drawing_tool => $app );
 
     ok( defined $ellipse, "ellipse defined" );
-    is( $ellipse->app, $app, "check ellipse's app" );
+    is( $ellipse->drawing_tool, $app, "check ellipse's app" );
 };
 
 subtest "internal methods" => sub {
@@ -37,7 +37,7 @@ subtest "internal methods" => sub {
     my $dt = Shutter::Draw::DrawingTool->new($sc);
     $dt->{_canvas} = GooCanvas2::Canvas->new;
 
-    my $ellipse = Shutter::Draw::Ellipse->new( app => $dt );
+    my $ellipse = Shutter::Draw::Tool::Ellipse->new( drawing_tool => $dt );
 
     subtest "attributes" => sub {
         ok( !defined $ellipse->event,     "event is null" );
