@@ -44,4 +44,5 @@ This document tracks the second wave of modularization, focusing on decomposing 
 ### Phase 9 Candidates (Next Up)
 - [x] Modernize `Shutter::Screenshot::Main` to `Moo` (base class for all captures)
 - [ ] Decompose `Shutter::Screenshot::Window` (the largest remaining monolith at ~1000 lines)
+  - [x] Extract `Window::Highlighter` role (selection overlay UI)
 - [ ] Implement Asynchronous Capture Pipeline (non-blocking delays and captures)
