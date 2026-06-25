@@ -55,19 +55,21 @@ Establish a provable quality baseline and prevent regression during active refac
 The roadmap's top structural priority — break up the largest remaining Shutter capture monolith.
 
 **Progress:**
-- 645 → **229 lines** (64% reduction — under the 300-line target 🎉)
-- `window_async` method: ~397 → **66 lines** (6x reduction)
+- 645 → **176 lines** (73% reduction — well under the 300-line target 🎉)
+- `window_async` method: ~397 → **~30 lines** (13x reduction)
 - `redo_capture_async` → extracted to `Window::CaptureManager` role
-- `_capture_interactive` → extracted to `Window::Interaction` role (173 lines)
+- `_capture_interactive` → extracted to `Window::Interaction` role
 - `_capture_noninteractive` → moved to `Window::CaptureManager` role
+- `_init_capture_state` → extracted to `Window::CaptureManager`
+- `quit` / `quit_eventh_only` → moved to `Main.pm` (where `ungrab_pointer_and_keyboard` lives)
 - Bugfix: capture chain now always resolves future (shape loop no-match path hung)
 
 - [x] Extract `redo_capture_async` → `Window::CaptureManager` role
 - [x] Extract `_capture_interactive` → `Window::Interaction` role (new)
 - [x] Extract `_capture_noninteractive` → `Window::CaptureManager`
+- [x] Extract `_init_capture_state` → `Window::CaptureManager`
+- [x] Move `quit` / `quit_eventh_only` → `Main.pm`
 - [x] Target: `Window.pm` under 300 lines ✔️
-- [ ] Extract grab/setup preamble from `window_async`
-- [ ] Extract `quit` / `quit_eventh_only` → `Window::Lifecycle` role or move to `Main.pm`
 - [ ] Each extracted role written clean (zero new --brutal violations)
 
 ---
