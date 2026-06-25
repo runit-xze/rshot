@@ -9,6 +9,8 @@ use File::Basename qw/fileparse/;
 
 has drawing_tool => (is => 'ro', required => 1);
 
+with 'Shutter::Draw::Tool::ModeManager';
+
 sub setup_bottom_hbox {
 	my $self = shift;
     my $app  = $self->drawing_tool;
@@ -147,126 +149,6 @@ sub setup_bottom_hbox {
     $drawing_bottom_hbox->pack_start($image_btn,   FALSE, FALSE, 5);
 
     return $drawing_bottom_hbox;
-}
-
-sub add_radio_actions {
-    my ($self, $entries) = @_;
-    $self->{_actiongroup_tools}->add_radio_actions($entries, 10, sub { my ($action, $current, $manager) = @_; $manager->change_drawing_tool_cb($action) }, $self);
-    return;
-}
-
-sub change_drawing_tool_cb { warn "change_drawing_tool_cb called with action: \n";
-	my ($self, $action) = @_; warn "action is: $action\n";
-    my $app    = $self->drawing_tool;
-
-    eval { $app->{_current_mode} = $action->get_current_value; };
-    if ($@) { warn "get_current_value failed: $@\n";
-        $app->{_current_mode} = $action;
-    }
-
-    my $cursor = Gtk3::Gdk::Cursor->new('left-ptr');
-
-    if (   $app->{_current_mode} != $app->{_last_mode}
-        && $app->{_current_mode} != 10
-        && $app->{_current_mode} != 30
-        && $app->{_current_mode} != 90
-        && $app->{_current_mode} != 100
-        && $app->{_current_mode} != 120)
-    {
-        $app->restore_drawing_properties;
-    }
-
-    if ($app->{_current_mode} != 120) {
-        $app->{_table}->show_all;
-        $app->{_bhbox}->show_all;
-        $app->{_drawing_inner_vbox}->show_all;
-        $app->{_drawing_inner_vbox_c}->hide;
-    }
-
-    $app->{_fill_color_w}->set_sensitive(TRUE);
-    $app->{_stroke_color_w}->set_sensitive(TRUE);
-    $app->{_line_spin_w}->set_sensitive(TRUE);
-    $app->{_font_btn_w}->set_sensitive(TRUE);
-
-    if ($app->{_current_mode} == 10) {
-        $app->{_current_mode_descr} = "select";
-    } elsif ($app->{_current_mode} == 20) {
-        $app->{_current_mode_descr} = "freehand";
-        $app->{_fill_color_w}->set_sensitive(FALSE);
-        $app->{_font_btn_w}->set_sensitive(FALSE);
-    } elsif ($app->{_current_mode} == 30) {
-        $app->{_current_mode_descr} = "highlighter";
-        $cursor = Gtk3::Gdk::Cursor->new('dotbox');
-        $app->{_fill_color_w}->set_sensitive(FALSE);
-        $app->{_font_btn_w}->set_sensitive(FALSE);
-        $app->restore_fixed_properties($app->{_current_mode_descr});
-    } elsif ($app->{_current_mode} == 40) {
-        $app->{_current_mode_descr} = "line";
-        $app->{_fill_color_w}->set_sensitive(FALSE);
-        $app->{_font_btn_w}->set_sensitive(FALSE);
-    } elsif ($app->{_current_mode} == 50) {
-        $app->{_current_mode_descr} = "arrow";
-        $app->{_fill_color_w}->set_sensitive(FALSE);
-        $app->{_font_btn_w}->set_sensitive(FALSE);
-    } elsif ($app->{_current_mode} == 60) {
-        $app->{_current_mode_descr} = "rect";
-        $app->{_font_btn_w}->set_sensitive(FALSE);
-    } elsif ($app->{_current_mode} == 70) {
-        $app->{_current_mode_descr} = "ellipse";
-        $app->{_font_btn_w}->set_sensitive(FALSE);
-    } elsif ($app->{_current_mode} == 80) {
-        $app->{_current_mode_descr} = "text";
-        $app->{_fill_color_w}->set_sensitive(FALSE);
-        $app->{_line_spin_w}->set_sensitive(FALSE);
-    } elsif ($app->{_current_mode} == 90) {
-        $app->{_current_mode_descr} = "censor";
-        $app->{_fill_color_w}->set_sensitive(FALSE);
-        $app->{_stroke_color_w}->set_sensitive(FALSE);
-        $app->{_line_spin_w}->set_sensitive(FALSE);
-        $app->{_font_btn_w}->set_sensitive(FALSE);
-        $app->restore_fixed_properties($app->{_current_mode_descr});
-    } elsif ($app->{_current_mode} == 100) {
-        $app->{_current_mode_descr} = "pixelize";
-        $app->{_fill_color_w}->set_sensitive(FALSE);
-        $app->{_stroke_color_w}->set_sensitive(FALSE);
-        $app->{_line_spin_w}->set_sensitive(FALSE);
-        $app->{_font_btn_w}->set_sensitive(FALSE);
-    } elsif ($app->{_current_mode} == 110) {
-        $app->{_current_mode_descr} = "number";
-    } elsif ($app->{_current_mode} == 120) {
-        $app->{_current_mode_descr} = "crop";
-        $app->{_view}->set_pixbuf($app->save(TRUE));
-        $app->{_view}->set_zoom(1);
-        my $color_string = $app->{_canvas_bg_rect}{fill_color}->to_string;
-        $app->{_view_css_provider_alpha}->load_from_data("
-            GtkImageView {
-                background-color: $color_string;
-            }
-        ");
-        $cursor = Gtk3::Gdk::Cursor->new('crosshair');
-        $app->{_drawing_inner_vbox_c}->show_all;
-        $app->{_table}->hide;
-        $app->{_bhbox}->hide;
-    }
-
-    if (defined $app->{_current_item}) {
-        if ($app->{_current_mode_descr} ne "select" || $app->{_last_mode} == 120) {
-            $app->deactivate_all;
-        }
-    }
-
-    $app->{_last_mode} = $app->{_current_mode};
-
-    if (defined $app->{_canvas} && $app->{_current_mode} != 120) {
-        $app->{_canvas}->get_window->set_cursor($cursor);
-    }
-
-    if (defined $app->{_canvas} && $app->{_current_mode} == 120) {
-        $app->{_view}->get_window->set_cursor($cursor);
-    }
-
-    $app->{_canvas_manager}->set_tool($app->{_current_mode_descr});
-    return;
 }
 
 sub setup_right_vbox_c {
