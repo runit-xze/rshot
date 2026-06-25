@@ -1,0 +1,23 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "skills": {
+    "perl-module-generator": "allow",
+    "lint-test-runner": "allow",
+    "refactoring-assistant": "allow",
+    "screenshot-tester": "allow",
+    "flatpak-builder": "allow"
+  },
+  "agent": {
+    "general": {
+      "permission": {
+        "skill": {
+          "perl-module-generator": "allow",
+          "lint-test-runner": "allow",
+          "refactoring-assistant": "allow",
+          "screenshot-tester": "allow",
+          "flatpak-builder": "allow"
+        }
+      }
+    }
+  }
+}

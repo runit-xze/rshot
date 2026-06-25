@@ -10,4 +10,13 @@ The central knowledge base for this project is located at [docs/README.md](../do
 4. **Tooling**: Ensure code changes are formatted according to `.perltidyrc` and pass `.perlcriticrc` checks.
 5. **Testing**: Add tests in the `t/` directory using `Test::More` for any new modules.
 
+## Skills
+This project defines reusable opencode skills in `.opencode/skills/`. Load them via the `skill` tool when the task matches:
+
+- **perl-module-generator** — Scaffold new Moo-based Perl modules
+- **lint-test-runner** — Run perlcritic and prove test suite
+- **refactoring-assistant** — Apply mechanical code transformations for the refactoring effort
+- **screenshot-tester** — Test capture pipeline with `--mock-capture`
+- **flatpak-builder** — Build and test the Flatpak package
+
 Refer to [CONTRIBUTING.md](../CONTRIBUTING.md) for more details.
