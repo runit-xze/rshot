@@ -90,7 +90,7 @@ sub pop_stack {
     } elsif ($stack eq 'redo') {
         return pop @{$self->redo_stack};
     }
-    return undef;
+    return;
 }
 
 1;

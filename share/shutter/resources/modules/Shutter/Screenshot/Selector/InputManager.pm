@@ -96,7 +96,7 @@ sub _get_nav_action ($keyval, $state) {
     elsif ($keyval == Gtk3::Gdk::keyval_from_name('Down')) { $dir = 'down'; }
     elsif ($keyval == Gtk3::Gdk::keyval_from_name('Left')) { $dir = 'left'; }
     elsif ($keyval == Gtk3::Gdk::keyval_from_name('Right')) { $dir = 'right'; }
-    return undef unless $dir;
+    return unless $dir;
 
     if ($state >= 'control-mask') {
         return { dir => $dir, type => 'resize' };

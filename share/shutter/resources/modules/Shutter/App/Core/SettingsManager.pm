@@ -91,7 +91,7 @@ sub load_settings ($self, $profilename = undef) {
 
 sub get_setting ($self, $section, $key) {
     return $self->_settings->{$section}->{$key} if exists $self->_settings->{$section} && exists $self->_settings->{$section}->{$key};
-    return undef;
+    return;
 }
 
 sub set_setting ($self, $section, $key, $value) {

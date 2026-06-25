@@ -14,7 +14,7 @@ sub find_wm_window ($self, $xid) {
 
 	do {
 		my ($qroot, $qparent, @qkids) = $self->{_x11}->QueryTree($xid);
-		return undef unless ($qroot || $qparent);
+		return unless ($qroot || $qparent);
 		return $xid if ($qroot == $qparent);
 		$xid = $qparent;
 	} while (TRUE);
