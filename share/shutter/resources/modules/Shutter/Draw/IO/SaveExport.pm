@@ -16,9 +16,8 @@ requires qw(
     drawing_tool
 );
 
-sub export_to_file ($self) {
+sub export_to_file ($self, $rfiletype = undef) {
     my $dt = $self->drawing_tool;
-    my $rfiletype = shift;
 
     my $fs = Gtk3::FileChooserDialog->new(
         $dt->gettext()->get("Choose a location to save to"),
@@ -247,7 +246,8 @@ sub export_to_pdf ($self) {
     return TRUE;
 }
 
-sub save ($self) {
+sub save {
+    my $self = shift;
     my $dt = $self->drawing_tool;
     my $save_to_mem = shift;
     my $filename    = shift || $dt->filename();

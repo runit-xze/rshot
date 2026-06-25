@@ -12,7 +12,8 @@ requires qw(
     drawing_tool
 );
 
-sub apply_properties ($self) {
+sub apply_properties {
+    my $self = shift;
     my $dt = $self->drawing_tool;
     my (
 

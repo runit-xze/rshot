@@ -86,12 +86,8 @@ sub import_from_dnd ($self, $widget, $context, $x, $y, $selection, $info, $time)
     return TRUE;
 }
 
-sub import_from_filesystem ($self, $button) {
+sub import_from_filesystem ($self, $button, $parent = undef, $directory = undef) {
     my $dt = $self->drawing_tool;
-
-    #used when called recursively
-    my $parent    = shift;
-    my $directory = shift;
 
     my $menu_objects = Gtk3::Menu->new;
 

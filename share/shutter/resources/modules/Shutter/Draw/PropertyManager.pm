@@ -8,18 +8,19 @@ use Moo;
 use Glib qw(TRUE FALSE);
 use Gtk3;
 
+has drawing_tool => (
+    is       => 'ro',
+    required => 1,
+);
+
 use Shutter::Draw::Properties::Applier;
 
 with qw(
     Shutter::Draw::Properties::Applier
 );
 
-has drawing_tool => (
-    is       => 'ro',
-    required => 1,
-);
-
-sub show_item_properties ($self) {
+sub show_item_properties {
+    my $self = shift;
     my $dt = $self->drawing_tool;
     my ($item, $parent, $key) = @_;
 

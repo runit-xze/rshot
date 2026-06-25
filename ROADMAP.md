@@ -34,7 +34,7 @@
 
 ---
 
-## Phase 1: Quality Gate (Current)
+## Phase 1: Quality Gate
 
 Establish a provable quality baseline and prevent regression during active refactoring.
 
@@ -43,11 +43,12 @@ Establish a provable quality baseline and prevent regression during active refac
 - [x] **Makefile:** `make lint` and `make test` work without `carton`.
 - [x] **Fix syntax.t:** Restored `all_perl_files` using `Perl::Critic::Utils`.
 
-**Baseline stats (perlcritic --brutal, all modules):**
-- Total violations: ~1,110 (progressive baseline)
-- Top issues: `ProhibitInterpolationOfLiterals` (1,475), `ProhibitMagicNumbers` (551), `RequirePodSections` (539), `ProhibitTrailingWhitespace` (338), `RequireFinalReturn` (0 in modules)
-- Severity-4 ("must fix"): `RequireFinalReturn` eliminated from all modules
-- Severity-5 ("bugs"): 0 — all `ProhibitExplicitReturnUndef` eliminated
+**Current stats (perlcritic --severity 3, progressive baseline):**
+- Total violations: **1,113**
+- Severity-5 ("bugs"): **39** — all from `ProhibitPunctuationVars` / legacy code
+- Severity-4 ("must fix"): **398**
+- Severity-3: **676**
+- Key decomposition wins: `RequireFinalReturn` eliminated from all modules (0); `ProhibitExplicitReturnUndef` eliminated
 
 ---
 
@@ -98,26 +99,31 @@ Each extraction writes clean Moo-based code with full signatures, `try`/`catch`,
 
 ## Phase 4: perlcritic --brutal Compliance
 
-Rachet down the violation count module-by-module until `--brutal` passes clean.
+Rachet down the violation count module-by-module until `--brutal` (severity >= 3) passes clean.
 
 **Mechanics:**
 - As each module is touched for refactoring, clean up ALL its violations
 - The progressive baseline drops automatically after each passing test run
 - Periodically add per-policy step sizes to force targeted cleanup
 
-| Priority | Policy | Count | Effort | Status |
+| Priority | Policy | Current Count | Effort | Status |
 |----------|--------|-------|--------|--------|
-| P0 | `ProhibitExplicitReturnUndef` (sev 5) | 7 | Trivial — mechanical fix | ✅ Done |
-| P1 | `ProhibitNoWarnings` (sev 4) | 109 | Tighten `no warnings` scopes | |
-| P1 | `RequireFinalReturn` (sev 4) | 0 (modules), 92 (bin + t) | Mechanical — add `return` | ✅ Done |
-| P1 | `RequireArgUnpacking` (sev 4) | 71 | Already fixed in modern code | |
+| P0 | `ProhibitExplicitReturnUndef` (sev 5) | 0 | Trivial — mechanical fix | ✅ Done |
+| P0 | `RequireFinalReturn` (sev 4) | 0 (modules), 92 (bin + t) | Mechanical — add `return` | ✅ Done |
+| P1 | `ProhibitNoWarnings` (sev 4) | 116 | Tighten `no warnings` scopes | ✅ In progress |
 | P2 | `ProhibitExcessComplexity` (sev 3) | 47 | Fixed by decomposition | |
-| P2 | `ProhibitDeepNests` (sev 3) | 43 | Fixed by decomposition | |
-| P3 | `ProhibitInterpolationOfLiterals` (sev 3) | 1,475 | Cosmetic — string quoting | |
-| P3 | `ProhibitMagicNumbers` (sev 3) | 551 | Named constants | |
-| P3 | `RequirePodSections` (sev 3) | 539 | Documentation |
+| P2 | `ProhibitDeepNests` (sev 3) | 42 | Fixed by decomposition | |
+| P2 | `Modules::ProhibitMultiplePackages` (sev 3) | 38 | Split multi-package files | |
+| P2 | `ProtectPrivateSubs` (sev 3) | 37 | Add `## no critic` or rename | |
+| P3 | `RequireArgUnpacking` (sev 4) | 77 | Migrate legacy subs to signatures | |
+| P3 | `Variables::ProhibitConditionalDeclarations` (sev 3) | 14 | Hoist declarations | |
+| P3 | `ProhibitInterpolationOfLiterals` (sev 1) | 1,951 | Cosmetic — string quoting | |
+| P3 | `ProhibitMagicNumbers` (sev 1) | 603 | Named constants | |
+| P3 | `RequirePodSections` (sev 1) | not tracked | Documentation |
 
-**Target:** Zero violations under `--brutal` across `bin/`, `share/shutter/resources/modules/`, and `t/`.
+**Target:** Zero violations at `--severity 3` across `bin/`, `share/shutter/resources/modules/`, and `t/`.
+
+**Note:** Full `--brutal` (all severities) includes 2,393 severity-2 and 2,884 severity-1 violations — mostly cosmetic (`ProhibitInterpolationOfLiterals`, `ProhibitMagicNumbers`, `ProhibitTrailingWhitespace`). Eliminating those is best done as a final formatting pass, not mixed with structural refactoring.
 
 ---
 
