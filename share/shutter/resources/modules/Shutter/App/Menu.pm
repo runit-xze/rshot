@@ -506,188 +506,130 @@ sub fct_ret_new_menu ($self, $accel_group, $d, $shutter_root) {
 }
 
 sub fct_ret_actions_menu ($self, $accel_group, $d, $shutter_root) {
-
-	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
-
-	$self->{_menu_actions} = Gtk3::Menu->new();
-
-	$self->{_menuitem_reopen} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Open wit_h'));
-	$self->{_menuitem_reopen}->set_image(Gtk3::Image->new_from_stock('gtk-open', 'menu'));
-	$self->{_menuitem_reopen}->set_sensitive(FALSE);
-	$self->{_menuitem_reopen}->set_name('item-reopen-list');
-	$self->{_menu_actions}->append($self->{_menuitem_reopen});
-
-	$self->{_menuitem_show_in_folder} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Show in _folder'));
-	$self->{_menuitem_show_in_folder}->set_image(Gtk3::Image->new_from_stock('gtk-open', 'menu'));
-	$self->{_menuitem_show_in_folder}->set_sensitive(FALSE);
-	$self->{_menuitem_show_in_folder}->set_name('item-reopen-default');
-	$self->{_menu_actions}->append($self->{_menuitem_show_in_folder});
-
-	$self->{_menuitem_rename} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('_Rename...'));
-	$self->{_menuitem_rename}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('F2'), qw/visible/) if $accel_group;
-	$self->{_menuitem_rename}->set_image(Gtk3::Image->new_from_stock('gtk-edit', 'menu'));
-	$self->{_menuitem_rename}->set_sensitive(FALSE);
-	$self->{_menuitem_rename}->set_name('item-rename');
-	$self->{_menu_actions}->append($self->{_menuitem_rename});
-
-	$self->{_menu_actions}->append(Gtk3::SeparatorMenuItem->new);
-
-	$self->{_menuitem_send} = Gtk3::ImageMenuItem->new($d->get('_Send To...'));
-	$self->{_menuitem_send}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control>S'), qw/visible/);
-	$self->{_menuitem_send}->set_image(Gtk3::Image->new_from_icon_name('document-send', 'menu'));
-	$self->{_menuitem_send}->set_sensitive(FALSE);
-	$self->{_menuitem_send}->set_name('item-send');
-	$self->{_menu_actions}->append($self->{_menuitem_send});
-
-	$self->{_menuitem_upload} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('E_xport...'));
-	$self->{_menuitem_upload}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control>U'), qw/visible/) if $accel_group;
-	$self->{_menuitem_upload}->set_image(Gtk3::Image->new_from_stock('gtk-network', 'menu'));
-	$self->{_menuitem_upload}->set_sensitive(FALSE);
-	$self->{_menuitem_upload}->set_name('item-upload');
-	$self->{_menu_actions}->append($self->{_menuitem_upload});
-
-	$self->{_menuitem_links} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Public URLs'));
-	$self->{_menuitem_links}->set_image(Gtk3::Image->new_from_stock('gtk-network', 'menu'));
-	$self->{_menuitem_links}->set_sensitive(FALSE);
-	$self->{_menuitem_links}->set_name('item-links');
-	$self->{_menu_actions}->append($self->{_menuitem_links});
-
-	$self->{_menu_actions}->append(Gtk3::SeparatorMenuItem->new);
-
-	$self->{_menuitem_draw} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('_Edit...'));
-	$self->{_menuitem_draw}->set_image(Gtk3::Image->new_from_stock('gtk-edit', 'menu'));
-	$self->{_menuitem_draw}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control>E'), qw/visible/) if $accel_group;
-	if ($icontheme->has_icon('applications-graphics')) {
-		$self->{_menuitem_draw}->set_image(Gtk3::Image->new_from_icon_name('applications-graphics', 'menu'));
-	} else {
-		$self->{_menuitem_draw}
-			->set_image(Gtk3::Image->new_from_pixbuf(Gtk3::Gdk::Pixbuf->new_from_file_at_size("$shutter_root/share/shutter/resources/icons/draw.svg", $self->{_shf}->icon_size('menu'))));
-	}
-
-	$self->{_menuitem_draw}->set_sensitive(FALSE);
-	$self->{_menuitem_draw}->set_name('item-draw');
-	$self->{_menu_actions}->append($self->{_menuitem_draw});
-
-	$self->{_menuitem_plugin} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Run a _plugin...'));
-	$self->{_menuitem_plugin}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control><Shift>P'), qw/visible/) if $accel_group;
-	$self->{_menuitem_plugin}->set_image(Gtk3::Image->new_from_stock('gtk-execute', 'menu'));
-	$self->{_menuitem_plugin}->set_sensitive(FALSE);
-	$self->{_menuitem_plugin}->set_name('item-plugin');
-	$self->{_menu_actions}->append($self->{_menuitem_plugin});
-
-	$self->{_menu_actions}->append(Gtk3::SeparatorMenuItem->new);
-
-	$self->{_menuitem_redoshot_this} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Redo _this screenshot'));
-	$self->{_menuitem_redoshot_this}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control>F5'), qw/visible/) if $accel_group;
-	$self->{_menuitem_redoshot_this}->set_image(Gtk3::Image->new_from_stock('gtk-refresh', 'menu'));
-	$self->{_menuitem_redoshot_this}->set_sensitive(FALSE);
-	$self->{_menuitem_redoshot_this}->set_name('item-redoshot');
-	$self->{_menu_actions}->append($self->{_menuitem_redoshot_this});
-
-	$self->{_menu_actions}->show_all;
-
-	return $self->{_menu_actions};
-
+    return $self->_build_actions_menu($accel_group, $d, $shutter_root, '');
 }
 
 sub fct_ret_actions_menu_large ($self, $accel_group, $d, $shutter_root) {
+    return $self->_build_actions_menu($accel_group, $d, $shutter_root, 'large_');
+}
 
-	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
+sub _build_actions_menu ($self, $accel_group, $d, $shutter_root, $prefix) {
+    my $icontheme = $self->{_common}->get_theme;
+    my $with_accel = !$prefix;
 
-	$self->{_menu_large_actions} = Gtk3::Menu->new();
+    my $menu_key    = $prefix ? "_menu_${prefix}actions"   : '_menu_actions';
+    my $item_prefix = $prefix ? "_menuitem_${prefix}"      : '_menuitem_';
+    my $nm_prefix   = $prefix ? 'item-large-'              : 'item-';
 
-	$self->{_menuitem_large_reopen} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Open wit_h'));
-	$self->{_menuitem_large_reopen}->set_image(Gtk3::Image->new_from_stock('gtk-open', 'menu'));
-	$self->{_menuitem_large_reopen}->set_sensitive(FALSE);
-	$self->{_menuitem_large_reopen}->set_name('item-large-reopen-list');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_reopen});
+    $self->{$menu_key} = Gtk3::Menu->new();
 
-	$self->{_menuitem_large_show_in_folder} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Show in _folder'));
-	$self->{_menuitem_large_show_in_folder}->set_image(Gtk3::Image->new_from_stock('gtk-open', 'menu'));
-	$self->{_menuitem_large_show_in_folder}->set_sensitive(FALSE);
-	$self->{_menuitem_large_show_in_folder}->set_name('item-reopen-default');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_show_in_folder});
+    # --- reopen ---
+    $self->{"${item_prefix}reopen"} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Open wit_h'));
+    $self->{"${item_prefix}reopen"}->set_image(Gtk3::Image->new_from_stock('gtk-open', 'menu'));
+    $self->{"${item_prefix}reopen"}->set_sensitive(FALSE);
+    $self->{"${item_prefix}reopen"}->set_name($prefix ? 'item-large-reopen-list' : 'item-reopen-list');
+    $self->{$menu_key}->append($self->{"${item_prefix}reopen"});
 
-	$self->{_menuitem_large_rename} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('_Rename...'));
-	$self->{_menuitem_large_rename}->set_image(Gtk3::Image->new_from_stock('gtk-edit', 'menu'));
-	$self->{_menuitem_large_rename}->set_sensitive(FALSE);
-	$self->{_menuitem_large_rename}->set_name('item-large-rename');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_rename});
+    # --- show_in_folder ---
+    $self->{"${item_prefix}show_in_folder"} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Show in _folder'));
+    $self->{"${item_prefix}show_in_folder"}->set_image(Gtk3::Image->new_from_stock('gtk-open', 'menu'));
+    $self->{"${item_prefix}show_in_folder"}->set_sensitive(FALSE);
+    $self->{"${item_prefix}show_in_folder"}->set_name('item-reopen-default');
+    $self->{$menu_key}->append($self->{"${item_prefix}show_in_folder"});
 
-	$self->{_menu_large_actions}->append(Gtk3::SeparatorMenuItem->new);
+    # --- rename ---
+    $self->{"${item_prefix}rename"} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('_Rename...'));
+    $self->{"${item_prefix}rename"}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('F2'), qw/visible/) if $with_accel && $accel_group;
+    $self->{"${item_prefix}rename"}->set_image(Gtk3::Image->new_from_stock('gtk-edit', 'menu'));
+    $self->{"${item_prefix}rename"}->set_sensitive(FALSE);
+    $self->{"${item_prefix}rename"}->set_name("${nm_prefix}rename");
+    $self->{$menu_key}->append($self->{"${item_prefix}rename"});
 
-	$self->{_menuitem_large_send} = Gtk3::ImageMenuItem->new($d->get('_Send To...'));
-	$self->{_menuitem_large_send}->set_image(Gtk3::Image->new_from_icon_name('document-send', 'menu'));
-	$self->{_menuitem_large_send}->set_sensitive(FALSE);
-	$self->{_menuitem_large_send}->set_name('item-large-send');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_send});
+    $self->{$menu_key}->append(Gtk3::SeparatorMenuItem->new);
 
-	$self->{_menuitem_large_upload} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('E_xport...'));
-	$self->{_menuitem_large_upload}->set_image(Gtk3::Image->new_from_stock('gtk-network', 'menu'));
-	$self->{_menuitem_large_upload}->set_sensitive(FALSE);
-	$self->{_menuitem_large_upload}->set_name('item-large-upload');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_upload});
+    # --- send ---
+    $self->{"${item_prefix}send"} = Gtk3::ImageMenuItem->new($d->get('_Send To...'));
+    $self->{"${item_prefix}send"}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control>S'), qw/visible/) if $with_accel;
+    $self->{"${item_prefix}send"}->set_image(Gtk3::Image->new_from_icon_name('document-send', 'menu'));
+    $self->{"${item_prefix}send"}->set_sensitive(FALSE);
+    $self->{"${item_prefix}send"}->set_name("${nm_prefix}send");
+    $self->{$menu_key}->append($self->{"${item_prefix}send"});
 
-	$self->{_menuitem_large_links} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Public URLs'));
-	$self->{_menuitem_large_links}->set_image(Gtk3::Image->new_from_stock('gtk-network', 'menu'));
-	$self->{_menuitem_large_links}->set_sensitive(FALSE);
-	$self->{_menuitem_large_links}->set_name('item-large-links');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_links});
+    # --- upload ---
+    $self->{"${item_prefix}upload"} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('E_xport...'));
+    $self->{"${item_prefix}upload"}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control>U'), qw/visible/) if $with_accel && $accel_group;
+    $self->{"${item_prefix}upload"}->set_image(Gtk3::Image->new_from_stock('gtk-network', 'menu'));
+    $self->{"${item_prefix}upload"}->set_sensitive(FALSE);
+    $self->{"${item_prefix}upload"}->set_name("${nm_prefix}upload");
+    $self->{$menu_key}->append($self->{"${item_prefix}upload"});
 
-	$self->{_menu_large_actions}->append(Gtk3::SeparatorMenuItem->new);
+    # --- links ---
+    $self->{"${item_prefix}links"} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Public URLs'));
+    $self->{"${item_prefix}links"}->set_image(Gtk3::Image->new_from_stock('gtk-network', 'menu'));
+    $self->{"${item_prefix}links"}->set_sensitive(FALSE);
+    $self->{"${item_prefix}links"}->set_name("${nm_prefix}links");
+    $self->{$menu_key}->append($self->{"${item_prefix}links"});
 
-	$self->{_menuitem_large_copy} = Gtk3::ImageMenuItem->new_from_stock('gtk-copy');
-	$self->{_menuitem_large_copy}->set_sensitive(FALSE);
-	$self->{_menuitem_large_copy}->set_name('item-large-copy');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_copy});
+    $self->{$menu_key}->append(Gtk3::SeparatorMenuItem->new);
 
-	$self->{_menuitem_large_copy_filename} = Gtk3::ImageMenuItem->new_from_stock('gtk-copy');
-	$self->{_menuitem_large_copy_filename}->get_child->set_text_with_mnemonic($d->get('Copy _Filename'));
-	$self->{_menuitem_large_copy_filename}->set_sensitive(FALSE);
-	$self->{_menuitem_large_copy_filename}->set_name('item-large-copy-filename');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_copy_filename});
+    # --- large-only items: copy, copy_filename, trash ---
+    if ($prefix) {
+        $self->{"${item_prefix}copy"} = Gtk3::ImageMenuItem->new_from_stock('gtk-copy');
+        $self->{"${item_prefix}copy"}->set_sensitive(FALSE);
+        $self->{"${item_prefix}copy"}->set_name("${nm_prefix}copy");
+        $self->{$menu_key}->append($self->{"${item_prefix}copy"});
 
-	$self->{_menuitem_large_trash} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Move to _Trash'));
-	$self->{_menuitem_large_trash}->set_image(Gtk3::Image->new_from_icon_name('gnome-stock-trash', 'menu'));
-	$self->{_menuitem_large_trash}->set_sensitive(FALSE);
-	$self->{_menuitem_large_trash}->set_name('item-large-trash');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_trash});
+        $self->{"${item_prefix}copy_filename"} = Gtk3::ImageMenuItem->new_from_stock('gtk-copy');
+        $self->{"${item_prefix}copy_filename"}->get_child->set_text_with_mnemonic($d->get('Copy _Filename'));
+        $self->{"${item_prefix}copy_filename"}->set_sensitive(FALSE);
+        $self->{"${item_prefix}copy_filename"}->set_name("${nm_prefix}copy-filename");
+        $self->{$menu_key}->append($self->{"${item_prefix}copy_filename"});
 
-	$self->{_menu_large_actions}->append(Gtk3::SeparatorMenuItem->new);
+        $self->{"${item_prefix}trash"} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Move to _Trash'));
+        $self->{"${item_prefix}trash"}->set_image(Gtk3::Image->new_from_icon_name('gnome-stock-trash', 'menu'));
+        $self->{"${item_prefix}trash"}->set_sensitive(FALSE);
+        $self->{"${item_prefix}trash"}->set_name("${nm_prefix}trash");
+        $self->{$menu_key}->append($self->{"${item_prefix}trash"});
 
-	$self->{_menuitem_large_draw} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('_Edit...'));
-	$self->{_menuitem_large_draw}->set_image(Gtk3::Image->new_from_stock('gtk-edit', 'menu'));
-	if ($icontheme->has_icon('applications-graphics')) {
-		$self->{_menuitem_large_draw}->set_image(Gtk3::Image->new_from_icon_name('applications-graphics', 'menu'));
-	} else {
-		$self->{_menuitem_large_draw}
-			->set_image(Gtk3::Image->new_from_pixbuf(Gtk3::Gdk::Pixbuf->new_from_file_at_size("$shutter_root/share/shutter/resources/icons/draw.svg", $self->{_shf}->icon_size('menu'))));
-	}
+        $self->{$menu_key}->append(Gtk3::SeparatorMenuItem->new);
+    }
 
-	$self->{_menuitem_large_draw}->set_sensitive(FALSE);
-	$self->{_menuitem_large_draw}->set_name('item-large-draw');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_draw});
+    # --- draw ---
+    $self->{"${item_prefix}draw"} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('_Edit...'));
+    $self->{"${item_prefix}draw"}->set_image(Gtk3::Image->new_from_stock('gtk-edit', 'menu'));
+    $self->{"${item_prefix}draw"}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control>E'), qw/visible/) if $with_accel && $accel_group;
+    if ($icontheme->has_icon('applications-graphics')) {
+        $self->{"${item_prefix}draw"}->set_image(Gtk3::Image->new_from_icon_name('applications-graphics', 'menu'));
+    } else {
+        $self->{"${item_prefix}draw"}
+            ->set_image(Gtk3::Image->new_from_pixbuf(Gtk3::Gdk::Pixbuf->new_from_file_at_size("$shutter_root/share/shutter/resources/icons/draw.svg", $self->{_shf}->icon_size('menu'))));
+    }
+    $self->{"${item_prefix}draw"}->set_sensitive(FALSE);
+    $self->{"${item_prefix}draw"}->set_name("${nm_prefix}draw");
+    $self->{$menu_key}->append($self->{"${item_prefix}draw"});
 
-	$self->{_menuitem_large_plugin} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Run a _Plugin...'));
-	$self->{_menuitem_large_plugin}->set_image(Gtk3::Image->new_from_stock('gtk-execute', 'menu'));
-	$self->{_menuitem_large_plugin}->set_sensitive(FALSE);
-	$self->{_menuitem_large_plugin}->set_name('item-large-plugin');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_plugin});
+    # --- plugin ---
+    my $plugin_label = $prefix ? 'Run a _Plugin...' : 'Run a _plugin...';
+    $self->{"${item_prefix}plugin"} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get($plugin_label));
+    $self->{"${item_prefix}plugin"}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control><Shift>P'), qw/visible/) if $with_accel && $accel_group;
+    $self->{"${item_prefix}plugin"}->set_image(Gtk3::Image->new_from_stock('gtk-execute', 'menu'));
+    $self->{"${item_prefix}plugin"}->set_sensitive(FALSE);
+    $self->{"${item_prefix}plugin"}->set_name("${nm_prefix}plugin");
+    $self->{$menu_key}->append($self->{"${item_prefix}plugin"});
 
-	$self->{_menu_large_actions}->append(Gtk3::SeparatorMenuItem->new);
+    $self->{$menu_key}->append(Gtk3::SeparatorMenuItem->new);
 
-	$self->{_menuitem_large_redoshot_this} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Redo _this screenshot'));
-	$self->{_menuitem_large_redoshot_this}->set_image(Gtk3::Image->new_from_stock('gtk-refresh', 'menu'));
-	$self->{_menuitem_large_redoshot_this}->set_sensitive(FALSE);
-	$self->{_menuitem_large_redoshot_this}->set_name('item-large-redoshot');
-	$self->{_menu_large_actions}->append($self->{_menuitem_large_redoshot_this});
+    # --- redoshot_this ---
+    $self->{"${item_prefix}redoshot_this"} = Gtk3::ImageMenuItem->new_with_mnemonic($d->get('Redo _this screenshot'));
+    $self->{"${item_prefix}redoshot_this"}->add_accelerator('activate', $accel_group, $self->{_shf}->accel('<Control>F5'), qw/visible/) if $with_accel && $accel_group;
+    $self->{"${item_prefix}redoshot_this"}->set_image(Gtk3::Image->new_from_stock('gtk-refresh', 'menu'));
+    $self->{"${item_prefix}redoshot_this"}->set_sensitive(FALSE);
+    $self->{"${item_prefix}redoshot_this"}->set_name("${nm_prefix}redoshot");
+    $self->{$menu_key}->append($self->{"${item_prefix}redoshot_this"});
 
-	$self->{_menu_large_actions}->show_all;
+    $self->{$menu_key}->show_all;
 
-	return $self->{_menu_large_actions};
-
+    return $self->{$menu_key};
 }
 
 1;

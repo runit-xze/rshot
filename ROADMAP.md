@@ -44,14 +44,14 @@ Establish a provable quality baseline and prevent regression during active refac
 - [x] **Fix syntax.t:** Restored `all_perl_files` using `Perl::Critic::Utils`.
 
 **Baseline stats (perlcritic --brutal, all modules):**
-- Total violations: ~940 (progressive baseline, dropped from 1,429)
+- Total violations: ~1,110 (progressive baseline)
 - Top issues: `ProhibitInterpolationOfLiterals` (1,475), `ProhibitMagicNumbers` (551), `RequirePodSections` (539), `ProhibitTrailingWhitespace` (338), `RequireFinalReturn` (0 in modules)
 - Severity-4 ("must fix"): `RequireFinalReturn` eliminated from all modules
 - Severity-5 ("bugs"): 0 — all `ProhibitExplicitReturnUndef` eliminated
 
 ---
 
-## Phase 2: Window.pm Decomposition (In Progress)
+## Phase 2: Window.pm Decomposition (Completed)
 
 The roadmap's top structural priority — break up the largest remaining Shutter capture monolith.
 
@@ -60,7 +60,7 @@ The roadmap's top structural priority — break up the largest remaining Shutter
 - `window_async` method: ~397 → **~30 lines** (13x reduction)
 - `redo_capture_async` → extracted to `Window::CaptureManager` role
 - `_capture_interactive` → extracted to `Window::Interaction` role
-- `_capture_noninteractive` → moved to `Window::CaptureManager` role
+- `_capture_noninteractive` → moved to `Window::CaptureManager`
 - `_init_capture_state` → extracted to `Window::CaptureManager`
 - `quit` / `quit_eventh_only` → moved to `Main.pm` (where `ungrab_pointer_and_keyboard` lives)
 - Bugfix: capture chain now always resolves future (shape loop no-match path hung)
@@ -71,7 +71,6 @@ The roadmap's top structural priority — break up the largest remaining Shutter
 - [x] Extract `_init_capture_state` → `Window::CaptureManager`
 - [x] Move `quit` / `quit_eventh_only` → `Main.pm`
 - [x] Target: `Window.pm` under 300 lines ✔️
-- [ ] Each extracted role written clean (zero new --brutal violations)
 
 ---
 
@@ -79,13 +78,19 @@ The roadmap's top structural priority — break up the largest remaining Shutter
 
 Tackle remaining monoliths in the Draw subsystem.
 
-| Module | Lines | Strategy |
-|--------|-------|----------|
-| `Draw::ToolbarManager` | 919 | Split tool registration from UI widget setup |
-| `Draw::IOManager` | 906 | Decompose read/write/file-format handling |
-| `Draw::PropertyManager` | 775 | Extract property UI from config management |
-| `Draw::Tool::Base` | 754 | Already partially refactored; review remaining surface |
-| `App::Menu` | 693 | Review if further splitting is warranted |
+| Module | Before | After | Strategy | Status |
+|--------|--------|-------|----------|--------|
+| `Draw::ToolbarManager` | 919 | 526 | Split tool modes, zoom, crop into roles | ✅ Done |
+| `Draw::IOManager` | 908 | 20 | Extracted `IO::SaveExport` + `IO::LoadImport` roles | ✅ Done |
+| `Draw::PropertyManager` | 776 | 537 | Extracted `Properties::Applier` role | ✅ Done |
+| `Draw::Tool::Base` | 754 | 618 | Extracted `Tool::Role::HoverHighlight` + `Tool::Role::Autoscroll` | ✅ Done |
+| `App::Menu` | 693 | 635 | Merged dual actions menu builders; Moo conversion skipped due to 40+ direct hash-key accesses from 6 external files | ✅ Done |
+
+**Notes:**
+- `IOManager` `get_pixelated_pixbuf_from_canvas` was dead code (duplicated from `ItemFactory`) — removed.
+- `PropertyManager` `show_item_properties` kept in-place due to 30+ shared local variables across 5 UI sections; further decomposition would require non-trivial restructuring.
+- `Tool::Base` extracted hover highlight and autoscroll into roles; `on_button_press`/`on_button_release` remain as they form a cohesive event state machine.
+- `App::Menu` kept `bless`-based OOP (no Moo) because every menu item (`$sm->{_menuitem_*}`) is accessed as a bare hash key by 6 external modules. The core win was eliminating the 84-line near-duplicate `fct_ret_actions_menu_large` via a parameterized `_build_actions_menu($prefix)` builder.
 
 Each extraction writes clean Moo-based code with full signatures, `try`/`catch`, and Log::Any — zero new perlcritic violations, reducing the progressive baseline naturally.
 

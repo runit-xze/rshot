@@ -9,6 +9,8 @@ has 'drawing_tool' => (is => 'ro', required => 1);
 with 'Shutter::Draw::Tool::Role::Resizable';
 with 'Shutter::Draw::Tool::Role::Movable';
 with 'Shutter::Draw::Tool::Role::Selectable';
+with 'Shutter::Draw::Tool::Role::HoverHighlight';
+with 'Shutter::Draw::Tool::Role::Autoscroll';
 
 
 sub on_motion_notify ($self, $item, $target, $ev) {
@@ -18,30 +20,7 @@ sub on_motion_notify ($self, $item, $target, $ev) {
 
 	#autoscroll if enabled
 	#as does not work when using the censor tool -> deactivate it
-	if ($dt->{_current_mode_descr} ne "censor" && $dt->{_autoscroll} && ($ev->state >= 'button1-mask' || $ev->state >= 'button2-mask')) {
-
-		my ($x, $y, $width, $height, $depth) = $dt->{_canvas}->get_window->get_geometry;
-		my $s  = $dt->{_canvas}->get_scale;
-		my $ha = $dt->{_scrolled_window}->get_hadjustment->get_value;
-		my $va = $dt->{_scrolled_window}->get_vadjustment->get_value;
-
-		#autoscroll
-		if (   $ev->x > ($ha / $s + $width / $s - 100 / $s)
-			&& $ev->y > ($va / $s + $height / $s - 100 / $s))
-		{
-			$dt->{_canvas}->scroll_to($ha / $s + 10 / $s, $va / $s + 10 / $s);
-		} elsif ($ev->x > ($ha / $s + $width / $s - 100 / $s)) {
-			$dt->{_canvas}->scroll_to($ha / $s + 10 / $s, $va / $s);
-		} elsif ($ev->y > ($va / $s + $height / $s - 100 / $s)) {
-			$dt->{_canvas}->scroll_to($ha / $s, $va / $s + 10 / $s);
-		} elsif ($ev->x < ($ha / $s + 100 / $s) && $ev->y < ($va / $s + 100 / $s)) {
-			$dt->{_canvas}->scroll_to($ha / $s - 10 / $s, $va / $s - 10 / $s);
-		} elsif ($ev->x < ($ha / $s + 100 / $s)) {
-			$dt->{_canvas}->scroll_to($ha / $s - 10 / $s, $va / $s);
-		} elsif ($ev->y < ($va / $s + 100 / $s)) {
-			$dt->{_canvas}->scroll_to($ha / $s, $va / $s - 10 / $s);
-		}
-	}
+	$self->_handle_autoscroll($item, $ev);
 
 	#move
 	if ($item->{dragging} && ($ev->state >= 'button1-mask' || $ev->state >= 'button2-mask')) {
@@ -663,92 +642,6 @@ sub on_button_release ($self, $item, $target, $ev) {
 
 	return TRUE;
 }
-
-
-sub on_enter_notify ($self, $item, $target, $ev) {
-	my $dt = $self->drawing_tool;
-
-	return TRUE if $dt->{_busy};
-
-	if (
-		($item->isa('GooCanvas2::CanvasRect') || $item->isa('GooCanvas2::CanvasEllipse') || $item->isa('GooCanvas2::CanvasText') || $item->isa('GooCanvas2::CanvasImage') || $item->isa('GooCanvas2::CanvasPolyline'))
-		&& !$self->can('on_drag_creation_points')
-
-		)
-	{
-
-		#embedded item?
-		my $parent = $dt->get_parent_item($item);
-		$item = $parent if $parent;
-
-		#real shape
-		if (exists $dt->{_items}{$item}) {
-
-			#nothing here yet
-
-			#canvas resizing shape
-		} elsif ($dt->{_canvas_bg_rect}{'right-side'} == $item
-			|| $dt->{_canvas_bg_rect}{'bottom-side'} == $item
-			|| $dt->{_canvas_bg_rect}{'bottom-right-corner'} == $item)
-		{
-
-			$item->set('fill-color' => 'red');
-
-			#resizing shape
-		} else {
-
-			$item->set('fill-color' => 'red');
-
-		}
-	}
-
-	return TRUE;
-}
-
-
-sub on_leave_notify ($self, $item, $target, $ev) {
-	my $dt = $self->drawing_tool;
-
-	return TRUE if $dt->{_busy};
-
-	if (
-		($item->isa('GooCanvas2::CanvasRect') || $item->isa('GooCanvas2::CanvasEllipse') || $item->isa('GooCanvas2::CanvasText') || $item->isa('GooCanvas2::CanvasImage') || $item->isa('GooCanvas2::CanvasPolyline'))
-		&& !$self->can('on_drag_creation_points')
-
-		)
-	{
-
-		#embedded item?
-		my $parent = $dt->get_parent_item($item);
-		$item = $parent if $parent;
-
-		#real shape
-		if (exists $dt->{_items}{$item}) {
-
-			#nothing here yet
-
-			#canvas resizing shape
-		} elsif ($dt->{_canvas_bg_rect}{'right-side'} == $item
-			|| $dt->{_canvas_bg_rect}{'bottom-side'} == $item
-			|| $dt->{_canvas_bg_rect}{'bottom-right-corner'} == $item)
-		{
-
-			$item->set('fill-color-gdk-rgba' => $dt->{_style_bg});
-
-			#resizing shape
-		} else {
-
-			$item->set('fill-color-gdk-rgba' => $dt->{_style_bg});
-
-		}
-	}
-
-	return TRUE;
-}
-
-#ui related stuff
-
-
 
 
 1;
