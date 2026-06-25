@@ -10,6 +10,7 @@ use File::Basename qw/fileparse/;
 has drawing_tool => (is => 'ro', required => 1);
 
 with 'Shutter::Draw::Tool::ModeManager';
+with 'Shutter::Draw::ZoomControl';
 
 sub setup_bottom_hbox {
 	my $self = shift;
@@ -315,55 +316,6 @@ sub setup_right_vbox_c {
 	$crop_frame->add($cropping_bottom_vbox);
 
 	return ($crop_frame, $crop_ok);
-}
-sub zoom_in_cb {
-	my $self = shift;
-	my $app = $self->drawing_tool;
-
-	if ($app->{_current_mode_descr} ne "crop") {
-		$app->{_canvas}->set_scale($app->{_canvas}->get_scale + 0.2);
-
-		#~ $app->adjust_rulers;
-	} else {
-		$app->{_view}->zoom_in;
-	}
-
-	return TRUE;
-}
-
-sub zoom_out_cb {
-	my $self = shift;
-	my $app = $self->drawing_tool;
-
-	if ($app->{_current_mode_descr} ne "crop") {
-		my $new_scale = $app->{_canvas}->get_scale - 0.2;
-		if ($new_scale < 0.2) {
-			$app->{_canvas}->set_scale(0.2);
-		} else {
-			$app->{_canvas}->set_scale($new_scale);
-		}
-
-		#~ $app->adjust_rulers;
-	} else {
-		$app->{_view}->zoom_out;
-	}
-
-	return TRUE;
-}
-
-sub zoom_normal_cb {
-	my $self = shift;
-	my $app = $self->drawing_tool;
-
-	if ($app->{_current_mode_descr} ne "crop") {
-		$app->{_canvas}->set_scale(1);
-
-		#~ $app->adjust_rulers;
-	} else {
-		$app->{_view}->set_zoom(1);
-	}
-
-	return TRUE;
 }
 sub setup_view {
 	my $self = shift;
