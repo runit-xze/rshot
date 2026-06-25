@@ -4,10 +4,10 @@ all:
 	./po2mo.sh
 
 lint:
-	carton exec perlcritic bin/ share/shutter/resources/modules/ t/
+	perlcritic --profile .perlcriticrc bin/ share/shutter/resources/modules/ t/
 
 test:
-	carton exec prove -Ishare/shutter/resources/modules -It/lib -r t/
+	prove -Ishare/shutter/resources/modules -It/lib -r t/
 
 map:
 	./scripts/map_dependencies.pl > DEPENDENCIES.md
