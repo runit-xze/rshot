@@ -44,8 +44,9 @@ Establish a provable quality baseline and prevent regression during active refac
 - [x] **Fix syntax.t:** Restored `all_perl_files` using `Perl::Critic::Utils`.
 
 **Baseline stats (perlcritic --brutal, all modules):**
-- Total violations: 1,429 (progressive baseline)
-- Top issues: `ProhibitInterpolationOfLiterals` (1,475), `ProhibitMagicNumbers` (551), `RequirePodSections` (539), `ProhibitTrailingWhitespace` (338), `RequireFinalReturn` (415)
+- Total violations: ~940 (progressive baseline, dropped from 1,429)
+- Top issues: `ProhibitInterpolationOfLiterals` (1,475), `ProhibitMagicNumbers` (551), `RequirePodSections` (539), `ProhibitTrailingWhitespace` (338), `RequireFinalReturn` (0 in modules)
+- Severity-4 ("must fix"): `RequireFinalReturn` eliminated from all modules
 - Severity-5 ("bugs"): 0 — all `ProhibitExplicitReturnUndef` eliminated
 
 ---
