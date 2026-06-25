@@ -50,6 +50,7 @@ sub handle_bg_rects {
         $bg_rect->{'bottom-right-corner'}->raise;
         $bg_rect->{'right-side'}->raise;
     }
+    return;
 }
 
 # Handle item resize handles (8 handles)
@@ -112,6 +113,7 @@ sub _create_bg_handle {
 	my ($self, $bg_rect, $name, $x, $y) = @_;
     $bg_rect->{$name} = $self->_make_handle_rect($x, $y);
     $self->setup_signals->($bg_rect->{$name});
+    return;
 }
 
 sub _make_handle_rect {
@@ -144,6 +146,7 @@ sub _create_item_handles {
 
     # Setup signals for all handles
     $self->_setup_all_handle_signals($self->items->{$item});
+    return;
 }
 
 sub _make_corner_handle {
@@ -173,6 +176,7 @@ sub _setup_all_handle_signals {
     for my $handle (@handles) {
         $self->setup_signals->($item_hash->{$handle});
     }
+    return;
 }
 
 sub _delete_item_handles {
@@ -188,6 +192,7 @@ sub _delete_item_handles {
             $self->canvas->get_root_item->remove_child($nint);
         }
     }
+    return;
 }
 
 sub _update_item_handle_positions {
@@ -226,6 +231,7 @@ sub _update_item_handle_positions {
     $self->items->{$item}{'bottom-right-corner'}->set('x' => $right, 'y' => $bottom, 'visibility' => $visibility);
     $self->items->{$item}{'left-side'}->set('x' => $left - 8, 'y' => $middle_v - 4, 'visibility' => $visibility);
     $self->items->{$item}{'right-side'}->set('x' => $right, 'y' => $middle_v - 4, 'visibility' => $visibility);
+    return;
 }
 
 sub _raise_item_handles {
@@ -239,6 +245,7 @@ sub _raise_item_handles {
     for my $handle (@handles) {
         $self->items->{$item}{$handle}->raise;
     }
+    return;
 }
 
 sub _lower_item_handles {
@@ -252,9 +259,9 @@ sub _lower_item_handles {
     for my $handle (@handles) {
         $self->items->{$item}{$handle}->lower;
     }
+    return;
 }
 
-# Actual embedded item logic
 require Shutter::Draw::Utils;
 
 sub _update_embedded {
@@ -372,6 +379,7 @@ sub _update_embedded {
 			}
 
 		}
+	return;
 	
 }
 
@@ -414,6 +422,7 @@ sub _delete_embedded {
 			}
 		}
 
+	return;
 	
 }
 
@@ -446,6 +455,7 @@ sub _hide_embedded {
 			$item_hash->{line}->set('visibility' => $visibility);
 		}
 
+	return;
 	
 }
 
@@ -467,6 +477,7 @@ sub _mirror_line {
 				$item_hash->{mirrored_h} = 0;
 			}
 		}
+	return;
 	
 }
 

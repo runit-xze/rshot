@@ -48,6 +48,7 @@ sub stop_moving {
 	my ($self, $item) = @_;
 	$item->{dragging}       = FALSE if exists $item->{dragging};
 	$item->{dragging_start} = FALSE if exists $item->{dragging_start};
+	return;
 }
 
 1;

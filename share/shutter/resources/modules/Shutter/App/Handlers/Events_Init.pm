@@ -117,6 +117,7 @@ sub fct_navigation_toolbar ($self, $widget) {
             $child->hide_all;
         }
     }
+    return;
 }
 
 1;

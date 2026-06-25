@@ -30,6 +30,7 @@ my %_handlers;
 
 sub register_handler ($name, $handler) {
     $_handlers{$name} = $handler;
+    return;
 }
 
 sub get_handler ($name) {

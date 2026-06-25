@@ -341,6 +341,7 @@ sub dlg_upload ($self, @files_to_upload) {
             return FALSE;
         }
     }
+    return;
 }
 
 sub dlg_upload_error_message_gnome_vfs ($self, $target_giofile, $result) {

@@ -50,6 +50,7 @@ sub BUILD ($self, $args) {
 
     $self->_vbox($vbox_main);
     $self->_catbox_userhash($catbox_userhash);
+    return;
 }
 
 sub get_widget ($self) {
@@ -59,6 +60,7 @@ sub get_widget ($self) {
 sub save ($self) {
     my $sm = $self->cli->{settings_manager};
     $sm->set_setting('general', 'catbox_userhash', $self->_catbox_userhash->get_text);
+    return;
 }
 
 1;

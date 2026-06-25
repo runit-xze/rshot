@@ -89,6 +89,7 @@ has _signal_connections => (is => 'rw', default => sub { [] });
 
 sub BUILD ($self, $args) {
     $self->handlers(Shutter::App::Handlers::Registry->new(cli => $self));
+    return;
 }
 
 sub run ($self) {
@@ -101,6 +102,7 @@ sub run ($self) {
     $self->log->debug("Calling app->run");
     $self->app->run;
     $self->log->debug("app->run finished");
+    return;
 }
 
 sub _setup_logging ($self) {
@@ -114,6 +116,7 @@ sub _setup_logging ($self) {
     }
     
     $self->log(Log::Any->get_logger);
+    return;
 }
 
 sub _setup_app ($self) {
@@ -144,6 +147,7 @@ sub _setup_app ($self) {
             $self->log->debug("App registered as primary instance");
         }
     });
+    return;
 }
 
 sub _create_core_objects ($self) {
@@ -161,6 +165,7 @@ sub _create_core_objects ($self) {
     
     $self->shf(Shutter::App::HelperFunctions->new($self->sc));
     $self->so(Shutter::App::Options->new($self->sc, $self->shf));
+    return;
 }
 
 sub _initialize_modules ($self) {
@@ -205,6 +210,7 @@ sub _initialize_modules ($self) {
     $self->handlers->get('Workflow_Session')->fct_create_session_notebook();
 
     $self->handlers->get('Init_Handlers')->fct_load_session();
+    return;
 }
 
 sub _register_actions ($self) {
@@ -241,6 +247,7 @@ sub _register_actions ($self) {
         $action->signal_connect('activate' => $callback);
         $app->add_action($action);
     }
+    return;
 }
 
 sub _handle_remote_activation ($self) {
@@ -271,6 +278,7 @@ sub _handle_remote_activation ($self) {
     } else {
         $self->app->activate_action('showmainwindow', undef);
     }
+    return;
 }
 
 1;

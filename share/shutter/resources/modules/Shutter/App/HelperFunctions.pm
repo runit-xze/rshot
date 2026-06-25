@@ -67,6 +67,7 @@ sub xdg_open ($self, $dialog, $link, $user_data) {
 			sprintf($self->{_d}->get("There was an error executing %s."), "'xdg-open'"),
 			undef, undef, undef, undef, undef, undef, $@);
 	}
+    return;
 }
 
 sub xdg_open_mail ($self, $dialog, $mail, @user_data) {
@@ -81,6 +82,7 @@ sub xdg_open_mail ($self, $dialog, $mail, @user_data) {
 			sprintf($self->{_d}->get("There was an error executing %s."), "'xdg-email'"),
 			undef, undef, undef, undef, undef, undef, sprintf($self->{_d}->get("Exit Code: %d."), $? >> 8));
 	}
+    return;
 }
 
 sub nautilus_sendto ($self, $user_data) {
@@ -91,6 +93,7 @@ sub nautilus_sendto ($self, $user_data) {
 			sprintf($self->{_d}->get("There was an error executing %s."), "'nautilus-sendto'"),
 			undef, undef, undef, undef, undef, undef, sprintf($self->{_d}->get("Exit Code: %d."), $? >> 8));
 	}
+    return;
 }
 
 sub file_exists ($self, $filename) {
@@ -188,7 +191,7 @@ sub icon_size ($self, $size) {
 
 # to help migration from Gtk2 to Gtk3
 sub accel ($self, $str) {
-	Glib::Object::Introspection->invoke('Gtk', undef, 'accelerator_parse', $str);
+	return Glib::Object::Introspection->invoke('Gtk', undef, 'accelerator_parse', $str);
 }
 
 sub format_bytes ($self, $bytes) {
@@ -224,6 +227,7 @@ sub validate_filename ($self, $myfilename, $myfilename_hint) {
 			}
 		}
 	);
+    return;
 }
 
 sub get_program_model ($self) {

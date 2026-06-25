@@ -168,6 +168,7 @@ sub BUILD ($self, $args) {
     $self->_save_auto($save_auto);
     $self->_save_ask($save_ask);
     $self->_save_no($save_no);
+    return;
 }
 
 sub get_widget ($self) {
@@ -184,6 +185,7 @@ sub save ($self) {
     $sm->set_setting('general', 'save_auto', $self->_save_auto->get_active);
     $sm->set_setting('general', 'save_ask', $self->_save_ask->get_active);
     $sm->set_setting('general', 'save_no', $self->_save_no->get_active);
+    return;
 }
 
 1;

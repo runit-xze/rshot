@@ -145,6 +145,7 @@ sub BUILD ($self, $args) {
 	$self->_wnck_screen;
 	$self->_wm_manager_name;
 	$self->_workspaces;
+	return;
 }
 
 sub get_clipbox ($self, $region) {
@@ -189,11 +190,13 @@ sub get_monitor_region ($self) {
 sub quit ($self) {
 	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, TRUE);
 	Gtk3::Gdk::flush();
+	return;
 }
 
 sub quit_eventh_only ($self) {
 	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, FALSE);
 	Gtk3::Gdk::flush();
+	return;
 }
 
 sub ungrab_pointer_and_keyboard ($self, $ungrab_server, $quit_event_handler, $quit_main) {

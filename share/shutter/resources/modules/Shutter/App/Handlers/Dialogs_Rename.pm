@@ -241,7 +241,7 @@ sub dlg_rename ($self, @file_to_rename_keys) {
         next;
 
     }
-
+    return;
 }
 
 1;

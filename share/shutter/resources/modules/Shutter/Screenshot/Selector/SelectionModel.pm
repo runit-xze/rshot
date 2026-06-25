@@ -36,11 +36,13 @@ sub set_rect ($self, $x, $y, $w, $h) {
     $self->height($h);
     
     $self->on_changed->($self);
+    return;
 }
 
 sub clear ($self) {
     $self->is_active(0);
     $self->on_changed->($self);
+    return;
 }
 
 sub move_by ($self, $dx, $dy) {
@@ -54,11 +56,13 @@ sub move_by ($self, $dx, $dy) {
     $ny = $self->max_h - $self->height if $ny + $self->height > $self->max_h;
 
     $self->set_rect($nx, $ny, $self->width, $self->height);
+    return;
 }
 
 sub resize_by ($self, $dw, $dh) {
     return unless $self->is_active;
     $self->set_rect($self->x, $self->y, $self->width + $dw, $self->height + $dh);
+    return;
 }
 
 sub get_hash ($self) {

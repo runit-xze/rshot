@@ -161,10 +161,10 @@ sub _mock_widget ($val) {
 }
 
 package MockWidget {
-    sub get_active { shift->{val} }
-    sub get_value  { shift->{val} }
-    sub get_text   { shift->{val} }
-    sub get_active_text { shift->{val} }
+    sub get_active { return shift->{val} }
+    sub get_value  { return shift->{val} }
+    sub get_text   { return shift->{val} }
+    sub get_active_text { return shift->{val} }
 }
 
 1;

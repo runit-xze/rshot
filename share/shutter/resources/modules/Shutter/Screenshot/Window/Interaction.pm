@@ -166,6 +166,7 @@ sub _capture_interactive ($self, $f, $active_workspace, $initevent) {
 					Gtk3::main_do_event($event);
 				}
 			});
+	return;
 }
 
 1;

@@ -18,6 +18,7 @@ sub find_wm_window ($self, $xid) {
 		return $xid if ($qroot == $qparent);
 		$xid = $qparent;
 	} while (TRUE);
+	return;
 }
 
 sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_cropped) {

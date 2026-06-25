@@ -36,38 +36,47 @@ has cli => (is => 'ro', required => 1);
 
 sub evt_take_screenshot ($self, $source, $mode, $window_name, $extra) {
     $self->cli->handlers->get('Core')->evt_take_screenshot(undef, $mode, undef, $extra);
+    return;
 }
 
 sub shortcut_select ($self) {
     $self->evt_take_screenshot('global_keybinding', 'select', undef, undef);
+    return;
 }
 
 sub shortcut_full ($self) {
     $self->evt_take_screenshot('global_keybinding', 'full', undef, undef);
+    return;
 }
 
 sub shortcut_window ($self, $pattern) {
     $self->evt_take_screenshot('global_keybinding', 'window', undef, $pattern);
+    return;
 }
 
 sub shortcut_awindow ($self) {
     $self->evt_take_screenshot('global_keybinding', 'awindow', undef, undef);
+    return;
 }
 
 sub shortcut_menu ($self) {
     $self->evt_take_screenshot('global_keybinding', 'menu', undef, undef);
+    return;
 }
 
 sub shortcut_tooltip ($self) {
     $self->evt_take_screenshot('global_keybinding', 'tooltip', undef, undef);
+    return;
 }
 
 sub shortcut_web ($self, $url) {
     $self->evt_take_screenshot('global_keybinding', 'web', undef, $url);
+    return;
 }
 
 sub shortcut_redoshot ($self) {
     $self->evt_take_screenshot('global_keybinding', 'redoshot', undef, undef);
+    return;
 }
 
 1;

@@ -25,7 +25,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-    $self->drawing_tool->create_rectangle($event, undef);
+    return $self->drawing_tool->create_rectangle($event, undef);
 }
 
 sub on_drag ($self, $event) {
@@ -90,6 +90,7 @@ sub _check_event_and_copy_item ($self) {
 		$self->fill_color($dt->{_items}{$self->copy_item}{fill_color});
 		$self->line_width($self->copy_item->get('line-width'));
 	}
+	return;
 }
 
 sub _create_item ($self) {

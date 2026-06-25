@@ -26,7 +26,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-    $self->drawing_tool->create_ellipse($event, undef);
+    return $self->drawing_tool->create_ellipse($event, undef);
 }
 
 sub on_drag ($self, $event) {
@@ -109,6 +109,7 @@ sub _setup_item_ellipse ($self, $item) {
 		'stroke-color-gdk-rgba' => $self->stroke_color,
 		'line-width'          => $self->line_width,
 	);
+	return;
 }
 
 sub _setup_ellipse_numbered ($self, $item) {
@@ -147,6 +148,7 @@ sub _setup_ellipse_numbered ($self, $item) {
 	);
 
 	$dt->handle_embedded('hide', $item);
+	return;
 }
 
 sub _check_event_and_copy_item ($self) {
@@ -165,6 +167,7 @@ sub _check_event_and_copy_item ($self) {
 		$self->line_width($dt->{_items}{$self->copy_item}{ellipse}->get('line-width'));
 		$self->numbered(TRUE) if exists $dt->{_items}{$self->copy_item}{text};
 	}
+	return;
 }
 
 sub _create_item ($self) {

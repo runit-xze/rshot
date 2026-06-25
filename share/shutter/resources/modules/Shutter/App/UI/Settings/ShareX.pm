@@ -99,6 +99,7 @@ sub BUILD ($self, $args) {
     $self->_vbox($vbox_main);
     
     $self->_refresh_list();
+    return;
 }
 
 sub get_widget ($self) {
@@ -114,6 +115,7 @@ sub _on_selection_changed ($self) {
     } else {
         $self->{_btn_delete}->set_sensitive(FALSE);
     }
+    return;
 }
 
 sub _refresh_list ($self) {
@@ -149,6 +151,7 @@ sub _refresh_list ($self) {
     }
     
     $self->_on_selection_changed();
+    return;
 }
 
 sub _add_uploader ($self) {
@@ -174,6 +177,7 @@ sub _add_uploader ($self) {
         $self->_refresh_list();
     }
     $dialog->destroy;
+    return;
 }
 
 sub _delete_uploader ($self) {
@@ -187,11 +191,13 @@ sub _delete_uploader ($self) {
             $self->_refresh_list();
         }
     }
+    return;
 }
 
 sub _view_folder ($self) {
     my $uri = "file://" . $self->_uploaders_dir;
     eval { Gtk3::show_uri_on_window(undef, $uri, Gtk3::Gdk::CURRENT_TIME); };
+    return;
 }
 
 sub save ($self) {

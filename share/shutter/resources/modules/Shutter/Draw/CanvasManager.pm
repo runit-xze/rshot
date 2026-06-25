@@ -17,21 +17,25 @@ sub set_tool {
     } else {
         $self->active_tool(undef);
     }
+    return;
 }
 
 sub on_draw {
 	my ($self, $cr) = @_;
     $self->active_tool->draw($cr) if $self->active_tool;
+    return;
 }
 
 sub on_click {
 	my ($self, $event) = @_;
     $self->active_tool->on_click($event) if $self->active_tool;
+    return;
 }
 
 sub on_drag {
 	my ($self, $event) = @_;
     $self->active_tool->on_drag($event) if $self->active_tool;
+    return;
 }
 
 sub acquire_focus {
@@ -45,6 +49,7 @@ sub acquire_focus {
         $dt->{_canvas}->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time);
     }
     $dt->{_canvas}->grab_focus($item);
+    return;
 }
 
 sub release_focus {
@@ -52,6 +57,7 @@ sub release_focus {
     my $dt = $self->drawing_tool;
     $dt->{_canvas}->pointer_ungrab($item, $ev->time);
     $dt->{_canvas}->keyboard_ungrab($item, $ev->time);
+    return;
 }
 
 1;

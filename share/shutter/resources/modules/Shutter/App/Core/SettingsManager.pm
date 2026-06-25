@@ -97,6 +97,7 @@ sub get_setting ($self, $section, $key) {
 sub set_setting ($self, $section, $key, $value) {
     $self->_settings->{$section} = {} unless exists $self->_settings->{$section};
     $self->_settings->{$section}->{$key} = $value;
+    return;
 }
 
 sub load_accounts ($self, $profilename = undef) {

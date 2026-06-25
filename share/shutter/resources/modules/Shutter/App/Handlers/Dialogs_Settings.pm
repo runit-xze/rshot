@@ -37,6 +37,7 @@ sub evt_show_settings ($self) {
     $sd->show;
     $sd->save;
     $sd->hide;
+    return;
 }
 
 1;

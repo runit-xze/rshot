@@ -248,6 +248,7 @@ sub set_and_save_drawing_properties {
 	$dt->stroke_color_w->signal_handler_unblock($dt->stroke_color_wh);
 	$dt->fill_color_w->signal_handler_unblock($dt->fill_color_wh);
 	$dt->font_btn_w->signal_handler_unblock($dt->font_btn_wh);
+	return;
 
 }
 
@@ -288,6 +289,7 @@ sub restore_fixed_properties {
 	$dt->stroke_color_w->signal_handler_unblock($dt->stroke_color_wh);
 	$dt->fill_color_w->signal_handler_unblock($dt->fill_color_wh);
 	$dt->font_btn_w->signal_handler_unblock($dt->font_btn_wh);
+	return;
 
 }
 
@@ -327,6 +329,7 @@ sub restore_drawing_properties {
 	$dt->stroke_color_w->signal_handler_unblock($dt->stroke_color_wh);
 	$dt->fill_color_w->signal_handler_unblock($dt->fill_color_wh);
 	$dt->font_btn_w->signal_handler_unblock($dt->font_btn_wh);
+	return;
 
 }
 

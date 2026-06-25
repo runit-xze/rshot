@@ -23,7 +23,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-    $self->drawing_tool->create_text($event, undef);
+    return $self->drawing_tool->create_text($event, undef);
 }
 
 sub on_drag ($self, $event) {
@@ -129,6 +129,7 @@ sub _check_event_and_copy_item ($self) {
 		$self->text_str($dt->{_items}{$self->copy_item}{text}->get('text'));
 		$self->line_width($dt->{_items}{$self->copy_item}{text}->get('line-width'));
 	}
+	return;
 }
 
 sub _create_item ($self) {

@@ -57,10 +57,11 @@ sub BUILD ($self, $args) {
     my $vbox = Gtk3::VBox->new(FALSE, 0);
     $self->_vbox($vbox);
     $window->add($vbox);
+    return;
 }
 
-sub get_window { $_[0]->_window }
-sub get_vbox { $_[0]->_vbox }
+sub get_window { return $_[0]->_window }
+sub get_vbox { return $_[0]->_vbox }
 
 1;
 

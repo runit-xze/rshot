@@ -51,6 +51,7 @@ sub start ($self) {
         
         return TRUE;
     }));
+    return;
 }
 
 sub stop ($self) {
@@ -63,6 +64,7 @@ sub stop ($self) {
     }
     
     $self->_assemble();
+    return;
 }
 
 sub _grab_frame ($self) {
@@ -87,6 +89,7 @@ sub _save_frame ($self, $pbuf, $n) {
     } catch ($e) {
         # Failed to save frame
     }
+    return;
 }
 
 sub _assemble ($self) {
@@ -110,9 +113,10 @@ sub _assemble ($self) {
     } else {
         $self->on_done->(undef);
     }
+    return;
 }
 
-sub get_mode ($self) { 'gif_select' }
-sub get_error_text ($self) { 'Failed to record GIF.' }
+sub get_mode ($self) { return 'gif_select' }
+sub get_error_text ($self) { return 'Failed to record GIF.' }
 
 1;

@@ -44,6 +44,7 @@ sub BUILD ($self, $args) {
     # Note: fct_create_session_notebook is called from CLI._initialize_modules
     # after handlers are ready. It creates the proper Session tab with IconView,
     # sets scrollable=TRUE, sets up DnD, and connects the switch-page signal.
+    return;
 }
 
 sub create_notebook ($self) {

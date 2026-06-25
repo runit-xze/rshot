@@ -61,6 +61,7 @@ sub load_from_json ($self, $json_str) {
         $log->warn("failed to parse steps JSON: $e");
         $self->{_steps} = [];
     }
+    return;
 }
 
 # Serialize pipeline steps to a JSON string for storage
@@ -74,6 +75,7 @@ sub get_steps ($self) {
 
 sub set_steps ($self, @steps) {
     $self->{_steps} = \@steps;
+    return;
 }
 
 # Execute the pipeline for a given screenshot filename.
@@ -121,6 +123,7 @@ sub execute ($self, $context) {
             system("$cmd &") if $cmd;
         }
     }
+    return;
 }
 
 # Build and return a GTK widget for configuring the pipeline (for embedding in Preferences)

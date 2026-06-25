@@ -187,6 +187,7 @@ sub fct_fullscreen ($self, $widget = undef) {
             $window->unfullscreen;
         }
     }
+    return;
 }
 
 sub fct_redo ($self) {
@@ -286,6 +287,7 @@ sub fct_zoom_100 ($self) {
     if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
         $session_screens->{$key}->{'image'}->set_zoom(1);
     }
+    return;
 }
 
 sub fct_zoom_best ($self) {
@@ -294,6 +296,7 @@ sub fct_zoom_best ($self) {
     if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
         $session_screens->{$key}->{'image'}->set_fitting(TRUE);
     }
+    return;
 }
 
 sub fct_zoom_in ($self) {
@@ -302,6 +305,7 @@ sub fct_zoom_in ($self) {
     if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
         $session_screens->{$key}->{'image'}->zoom_in;
     }
+    return;
 }
 
 sub fct_zoom_out ($self) {
@@ -310,6 +314,7 @@ sub fct_zoom_out ($self) {
     if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
         $session_screens->{$key}->{'image'}->zoom_out;
     }
+    return;
 }
 
 1;

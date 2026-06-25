@@ -73,6 +73,7 @@ sub BUILD ($self, $args) {
     $vbox_main->pack_start($frame_audio, FALSE, FALSE, 3);
 
     $self->_vbox($vbox_main);
+    return;
 }
 
 sub get_widget ($self) {

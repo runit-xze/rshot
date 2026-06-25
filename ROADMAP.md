@@ -103,7 +103,7 @@ Rachet down the violation count module-by-module until `--brutal` passes clean.
 |----------|--------|-------|--------|--------|
 | P0 | `ProhibitExplicitReturnUndef` (sev 5) | 7 | Trivial — mechanical fix | ✅ Done |
 | P1 | `ProhibitNoWarnings` (sev 4) | 109 | Tighten `no warnings` scopes | |
-| P1 | `RequireFinalReturn` (sev 4) | 321 | Mechanical — add `return` | |
+| P1 | `RequireFinalReturn` (sev 4) | 0 (modules), 92 (bin + t) | Mechanical — add `return` | ✅ Done |
 | P1 | `RequireArgUnpacking` (sev 4) | 71 | Already fixed in modern code | |
 | P2 | `ProhibitExcessComplexity` (sev 3) | 47 | Fixed by decomposition | |
 | P2 | `ProhibitDeepNests` (sev 3) | 43 | Fixed by decomposition | |

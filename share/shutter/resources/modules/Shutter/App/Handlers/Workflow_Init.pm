@@ -148,6 +148,7 @@ sub fct_init_unsaved_files ($self) {
             }
         }
     }
+    return;
 }
 
 

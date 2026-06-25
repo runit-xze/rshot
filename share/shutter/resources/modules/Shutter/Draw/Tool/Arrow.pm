@@ -29,7 +29,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-    $self->drawing_tool->create_line($event, undef, TRUE, FALSE);
+    return $self->drawing_tool->create_line($event, undef, TRUE, FALSE);
 }
 
 sub on_drag ($self, $event) {
@@ -140,6 +140,7 @@ sub _check_event_and_copy_item ($self) {
 		$self->arrow_length($dt->{_items}{$self->copy_item}{arrow_length});
 		$self->arrow_tip_length($dt->{_items}{$self->copy_item}{arrow_tip_length});
 	}
+	return;
 }
 
 sub _create_item ($self) {

@@ -76,6 +76,7 @@ sub _ext_constants_install ($X, $constants_arrayref) {
 		$X->{'ext_const'}->{$name}     = $aref;
 		$X->{'ext_const_num'}->{$name} = {X11::Protocol::make_num_hash($aref)};
 	}
+	return;
 }
 
 #------------------------------------------------------------------------------
@@ -133,6 +134,7 @@ sub _ext_events_install ($X, $event_num, $events_arrayref) {
 		$X->{'ext_events'}->[$event_num] = $events_arrayref->[$i + 1];    # pack/unpack
 		$event_num++;
 	}
+	return;
 }
 
 #------------------------------------------------------------------------------
@@ -423,6 +425,7 @@ sub _ext_requests_install ($X, $request_num, $requests_arrayref) {
 	foreach $i (0 .. $#$requests_arrayref) {
 		$href->{$requests_arrayref->[$i]->[0]} = [$request_num, $i];
 	}
+	return;
 }
 
 #------------------------------------------------------------------------------
@@ -537,6 +540,7 @@ sub _ext_error_install ($X, $error_num) {
 		$aref->[$error_num + $i] = $_[$i];
 		$href->{$_[$i]} = $error_num + $i;
 	}
+	return;
 }
 
 1;

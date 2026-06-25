@@ -86,6 +86,7 @@ sub BUILD ($self, $args) {
     $self->_autohide($autohide);
     $self->_notify_agent($notify_agent);
     $self->_thumbnail($thumbnail);
+    return;
 }
 
 sub get_widget ($self) {
@@ -98,6 +99,7 @@ sub save ($self) {
     $sm->set_setting('general', 'autohide', $self->_autohide->get_active);
     $sm->set_setting('general', 'notify_agent', $self->_notify_agent->get_active);
     $sm->set_setting('general', 'thumbnail', $self->_thumbnail->get_value);
+    return;
 }
 
 1;

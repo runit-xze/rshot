@@ -100,6 +100,7 @@ sub BUILD ($self, $args) {
 		}
 	);
 	$self->{_input} = Shutter::Screenshot::Selector::InputManager->new(app => $self, model => $self->{_model});
+	return;
 }
 
 sub select_advanced ($self) {
@@ -553,12 +554,14 @@ sub quit ($self) {
 
 	$self->ungrab_pointer_and_keyboard(FALSE, FALSE, TRUE);
 	$self->clean;
+	return;
 }
 
 sub clean ($self) {
 
 	$self->{_select_window}->destroy if $self->{_select_window};
 	$self->{_prop_window}->destroy if $self->{_prop_window};
+	return;
 }
 
 1;

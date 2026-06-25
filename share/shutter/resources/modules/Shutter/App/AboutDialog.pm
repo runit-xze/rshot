@@ -200,6 +200,7 @@ sub show ($self) {
 		Glib::Source->remove($timer);
 		$dialog->destroy;
 	});
+    return;
 }
 
 1;

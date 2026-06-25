@@ -178,6 +178,7 @@ sub fct_update_tray_menu ($self, $screen) {
             }
         }
     }
+    return;
 }
 
 1;

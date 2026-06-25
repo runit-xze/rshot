@@ -41,6 +41,7 @@ sub BUILD ($self, $args) {
     my $sc = $self->cli->sc;
     $self->acp(Shutter::App::AfterCapturePipeline->new($sc, $sc->get_gettext, $self->cli->window));
     $self->pins(Shutter::App::PinToScreen->new);
+    return;
 }
 
 sub get_workflow_widget ($self) {
@@ -55,6 +56,7 @@ sub save_settings ($self) {
         $self->acp->set_steps(@steps);
         # Logic to save to global settings would go here
     }
+    return;
 }
 
 1;

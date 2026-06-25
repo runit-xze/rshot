@@ -152,6 +152,7 @@ sub setup_bottom_hbox {
 sub add_radio_actions {
     my ($self, $entries) = @_;
     $self->{_actiongroup_tools}->add_radio_actions($entries, 10, sub { my ($action, $current, $manager) = @_; $manager->change_drawing_tool_cb($action) }, $self);
+    return;
 }
 
 sub change_drawing_tool_cb { warn "change_drawing_tool_cb called with action: \n";
@@ -265,6 +266,7 @@ sub change_drawing_tool_cb { warn "change_drawing_tool_cb called with action: \n
     }
 
     $app->{_canvas_manager}->set_tool($app->{_current_mode_descr});
+    return;
 }
 
 sub setup_right_vbox_c {
@@ -522,6 +524,7 @@ sub setup_view {
 				$view->set_interpolation('bilinear');
 			}
 		});
+    return;
 }
 
 
@@ -906,14 +909,17 @@ sub setup_main_window {
 
 sub adjust_rulers {
 	my $self = shift;
+    return;
 }
 
 sub push_tool_help_to_statusbar {
 	my $self = shift;
+    return;
 }
 
 sub adjust_crop_values {
 	my $self = shift;
+    return;
 }
 
 1;

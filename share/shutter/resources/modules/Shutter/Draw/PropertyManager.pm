@@ -742,6 +742,7 @@ sub apply_properties {
 		$dt->items->{$key}{stroke_color}       = $font_color->get_rgba;
 
 	}
+	return;
 
 }
 sub modify_text_in_properties {

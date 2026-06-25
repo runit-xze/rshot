@@ -488,6 +488,7 @@ sub gen_thumbnail_on_idle {
 			return TRUE;
 		});    #end idle callback
 
+	return;
 }
 
 sub set_drawing_action {
@@ -516,6 +517,7 @@ sub set_drawing_action {
 		}
 	}
 
+	return;
 }
 
 sub change_cursor_to_current_pixbuf {

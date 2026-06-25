@@ -150,12 +150,14 @@ sub start_resizing {
 	$item->{res_x}    = $ev->x;
 	$item->{res_y}    = $ev->y;
 	$item->{resizing} = TRUE;
+	return;
 }
 
 sub stop_resizing {
 	my ($self, $item) = @_;
 	$item->{resizing}       = FALSE if exists $item->{resizing};
 	$item->{resizing_start} = FALSE if exists $item->{resizing_start};
+	return;
 }
 
 1;

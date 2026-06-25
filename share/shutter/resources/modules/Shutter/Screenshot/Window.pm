@@ -100,6 +100,7 @@ sub BUILD ($self, $args) {
 	if (defined $self->_mode && $self->_mode =~ m/(window|section)/ig) {
 		$self->setup_highlighter;
 	}
+	return;
 }
 
 #~ sub DESTROY {

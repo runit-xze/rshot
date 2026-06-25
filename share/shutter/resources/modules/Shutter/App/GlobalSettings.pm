@@ -73,6 +73,7 @@ sub set_image_quality ($self, $format, $value = undef) {
 
 sub clear_quality_settings ($self) {
 	$self->_image_quality({ "png" => undef, "jpg" => undef, "webp" => undef, "avif" => undef });
+    return;
 }
 
 sub get_gif_setting ($self, $key) {
@@ -81,6 +82,7 @@ sub get_gif_setting ($self, $key) {
 
 sub set_gif_setting ($self, $key, $val) {
 	$self->_gif_settings->{$key} = $val;
+    return;
 }
 
 1;

@@ -91,7 +91,7 @@ sub setup_app_objects ($self) {
 }
 
 # Accessor for backward compatibility
-sub get_common { $_[0]->common }
+sub get_common { return $_[0]->common }
 
 1;
 

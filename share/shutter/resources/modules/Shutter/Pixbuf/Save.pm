@@ -71,6 +71,7 @@ sub set_quality_setting ($self, $filetype) {
 		} else {
 			$self->{_quality} = $default_image_quality->{$filetype};
 		}
+		return;
 }
 
 sub save_pdf_ps_svg ($self, $filename, $filetype, $pixbuf) {
@@ -91,6 +92,7 @@ sub save_pdf_ps_svg ($self, $filename, $filetype, $pixbuf) {
 
 	undef $surface;
 	undef $cr;
+	return;
 }
 
 sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {

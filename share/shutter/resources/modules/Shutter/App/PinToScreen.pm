@@ -109,6 +109,7 @@ sub unpin_all ($self) {
 		$w->destroy if Gtk3::widget_get_visible($w) // FALSE;
 	}
 	$self->_windows([]);
+    return;
 }
 
 sub has_pinned_windows ($self) {

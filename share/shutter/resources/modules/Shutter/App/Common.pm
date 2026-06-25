@@ -114,6 +114,8 @@ sub BUILD ($self, $args) {
     setlocale( LC_MESSAGES, "" );
 
     $ENV{'SHUTTER_INTL'} = $args->{shutter_root} . "/share/locale";
+
+    return;
 }
 
 sub _setup_icontheme ($self) {
@@ -135,50 +137,50 @@ sub get_current_monitor ($self) {
 
 # Methods that were used in the old implementation and needed for backward compatibility
 
-sub get_root ($self) { $self->shutter_root  }
-sub get_appname ($self) { $self->appname  }
-sub get_version ($self) { $self->version  }
-sub get_rev ($self) { $self->rev  }
-sub get_gettext ($self) { $self->gettext_object  }
-sub get_theme ($self) { $self->icontheme  }
-sub get_helper_functions ($self) { $self->cli->shf  }
-sub get_notification_object ($self) { $self->notification  }
-sub set_notification_object ($self, $val=undef) { $self->notification($val) if defined $val }
-sub get_globalsettings_object ($self) { $self->global_settings  }
-sub set_globalsettings_object ($self, $val=undef) { $self->global_settings($val) if defined $val }
-sub get_rusf ($self) { $self->rusf  }
-sub set_rusf ($self, $val=undef) { $self->rusf($val) if defined $val }
-sub get_ruof ($self) { $self->ruof  }
-sub set_ruof ($self, $val=undef) { $self->ruof($val) if defined $val }
-sub get_ruu_tab ($self) { $self->ruu_tab  }
-sub set_ruu_tab ($self, $val=undef) { $self->ruu_tab($val) if defined $val }
-sub get_ruu_hosting ($self) { $self->ruu_hosting  }
-sub set_ruu_hosting ($self, $val=undef) { $self->ruu_hosting($val) if defined $val }
-sub get_ruu_places ($self) { $self->ruu_places  }
-sub set_ruu_places ($self, $val=undef) { $self->ruu_places($val) if defined $val }
-sub get_debug ($self) { $self->debug  }
-sub set_debug ($self, $val=undef) { $self->debug($val) if defined $val }
-sub get_clear_cache ($self) { $self->clear_cache  }
-sub set_clear_cache ($self, $val=undef) { $self->clear_cache($val) if defined $val }
-sub get_mainwindow ($self) { $self->main_window  }
-sub set_mainwindow ($self, $val=undef) { $self->main_window($val) if defined $val }
-sub get_min ($self) { $self->min  }
-sub set_min ($self, $val=undef) { $self->min($val) if defined $val }
-sub get_disable_systray ($self) { $self->disable_systray  }
-sub set_disable_systray ($self, $val=undef) { $self->disable_systray($val) if defined $val }
-sub get_exit_after_capture ($self) { $self->exit_after_capture  }
-sub set_exit_after_capture ($self, $val=undef) { $self->exit_after_capture($val) if defined $val }
-sub get_no_session ($self) { $self->no_session  }
-sub set_no_session ($self, $val=undef) { $self->no_session($val) if defined $val }
-sub get_mock_capture ($self) { $self->mock_capture  }
-sub set_mock_capture ($self, $val=undef) { $self->mock_capture($val) if defined $val }
+sub get_root ($self) { return $self->shutter_root  }
+sub get_appname ($self) { return $self->appname  }
+sub get_version ($self) { return $self->version  }
+sub get_rev ($self) { return $self->rev  }
+sub get_gettext ($self) { return $self->gettext_object  }
+sub get_theme ($self) { return $self->icontheme  }
+sub get_helper_functions ($self) { return $self->cli->shf  }
+sub get_notification_object ($self) { return $self->notification  }
+sub set_notification_object ($self, $val=undef) { $self->notification($val) if defined $val; return }
+sub get_globalsettings_object ($self) { return $self->global_settings  }
+sub set_globalsettings_object ($self, $val=undef) { $self->global_settings($val) if defined $val; return }
+sub get_rusf ($self) { return $self->rusf  }
+sub set_rusf ($self, $val=undef) { $self->rusf($val) if defined $val; return }
+sub get_ruof ($self) { return $self->ruof  }
+sub set_ruof ($self, $val=undef) { $self->ruof($val) if defined $val; return }
+sub get_ruu_tab ($self) { return $self->ruu_tab  }
+sub set_ruu_tab ($self, $val=undef) { $self->ruu_tab($val) if defined $val; return }
+sub get_ruu_hosting ($self) { return $self->ruu_hosting  }
+sub set_ruu_hosting ($self, $val=undef) { $self->ruu_hosting($val) if defined $val; return }
+sub get_ruu_places ($self) { return $self->ruu_places  }
+sub set_ruu_places ($self, $val=undef) { $self->ruu_places($val) if defined $val; return }
+sub get_debug ($self) { return $self->debug  }
+sub set_debug ($self, $val=undef) { $self->debug($val) if defined $val; return }
+sub get_clear_cache ($self) { return $self->clear_cache  }
+sub set_clear_cache ($self, $val=undef) { $self->clear_cache($val) if defined $val; return }
+sub get_mainwindow ($self) { return $self->main_window  }
+sub set_mainwindow ($self, $val=undef) { $self->main_window($val) if defined $val; return }
+sub get_min ($self) { return $self->min  }
+sub set_min ($self, $val=undef) { $self->min($val) if defined $val; return }
+sub get_disable_systray ($self) { return $self->disable_systray  }
+sub set_disable_systray ($self, $val=undef) { $self->disable_systray($val) if defined $val; return }
+sub get_exit_after_capture ($self) { return $self->exit_after_capture  }
+sub set_exit_after_capture ($self, $val=undef) { $self->exit_after_capture($val) if defined $val; return }
+sub get_no_session ($self) { return $self->no_session  }
+sub set_no_session ($self, $val=undef) { $self->no_session($val) if defined $val; return }
+sub get_mock_capture ($self) { return $self->mock_capture  }
+sub set_mock_capture ($self, $val=undef) { $self->mock_capture($val) if defined $val; return }
 
-sub get_log_file ($self) { $self->log_file  }
-sub set_log_file ($self, $val=undef) { $self->log_file($val) if defined $val }
-sub get_log_json ($self) { $self->log_json  }
-sub set_log_json ($self, $val=undef) { $self->log_json($val) if defined $val }
-sub get_log_level ($self) { $self->log_level  }
-sub set_log_level ($self, $val=undef) { $self->log_level($val) if defined $val }
+sub get_log_file ($self) { return $self->log_file  }
+sub set_log_file ($self, $val=undef) { $self->log_file($val) if defined $val; return }
+sub get_log_json ($self) { return $self->log_json  }
+sub set_log_json ($self, $val=undef) { $self->log_json($val) if defined $val; return }
+sub get_log_level ($self) { return $self->log_level  }
+sub set_log_level ($self, $val=undef) { $self->log_level($val) if defined $val; return }
 
 sub get_start_with ($self) {
     return ( $self->_start_with, $self->_start_with_extra );
@@ -193,15 +195,15 @@ sub set_start_with ($self, @args) {
     return ( $self->_start_with, $self->_start_with_extra );
 }
 
-sub get_profile_to_start_with ($self) { $self->profile_to_start_with  }
-sub set_profile_to_start_with ($self, $val=undef) { $self->profile_to_start_with($val) if defined $val }
-sub get_export_filename ($self) { $self->export_filename  }
-sub set_export_filename ($self, $val=undef) { $self->export_filename($val) if defined $val }
-sub get_include_cursor ($self) { $self->include_cursor  }
-sub set_include_cursor ($self, $val=undef) { $self->include_cursor($val) if defined $val }
-sub get_remove_cursor ($self) { $self->remove_cursor  }
-sub set_remove_cursor ($self, $val=undef) { $self->remove_cursor($val) if defined $val }
-sub get_delay ($self) { $self->delay  }
-sub set_delay ($self, $val=undef) { $self->delay($val) if defined $val }
+sub get_profile_to_start_with ($self) { return $self->profile_to_start_with  }
+sub set_profile_to_start_with ($self, $val=undef) { $self->profile_to_start_with($val) if defined $val; return }
+sub get_export_filename ($self) { return $self->export_filename  }
+sub set_export_filename ($self, $val=undef) { $self->export_filename($val) if defined $val; return }
+sub get_include_cursor ($self) { return $self->include_cursor  }
+sub set_include_cursor ($self, $val=undef) { $self->include_cursor($val) if defined $val; return }
+sub get_remove_cursor ($self) { return $self->remove_cursor  }
+sub set_remove_cursor ($self, $val=undef) { $self->remove_cursor($val) if defined $val; return }
+sub get_delay ($self) { return $self->delay  }
+sub set_delay ($self, $val=undef) { $self->delay($val) if defined $val; return }
 
 1;

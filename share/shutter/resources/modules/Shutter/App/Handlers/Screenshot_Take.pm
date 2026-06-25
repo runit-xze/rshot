@@ -513,12 +513,12 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 
 
 package MockScreenshooter {
-    sub new { bless {}, shift }
-    sub get_mode { "mock" }
-    sub get_action_name { "mock_action" }
-    sub get_history { 1 }
-    sub get_error_text { "" }
-    sub can { 1 }
+    sub new { return bless {}, shift }
+    sub get_mode { return "mock" }
+    sub get_action_name { return "mock_action" }
+    sub get_history { return 1 }
+    sub get_error_text { return "" }
+    sub can { return 1 }
     sub redo_capture {
         return Gtk3::Gdk::Pixbuf->new_from_file($ENV{SHUTTER_ROOT} . "/share/shutter/resources/icons/web_image.svg");
     }

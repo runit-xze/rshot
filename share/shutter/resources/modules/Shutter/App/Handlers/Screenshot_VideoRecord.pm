@@ -97,6 +97,7 @@ sub _start_capture_flow ($self, $data, $folder_from_config, $extra) {
     $self->_show_countdown($region, sub {
         $self->_begin_recording($data, $region, $folder_from_config);
     });
+    return;
 }
 
 sub _show_countdown ($self, $region, $on_done) {
@@ -158,6 +159,7 @@ sub _show_countdown ($self, $region, $on_done) {
             return FALSE;
         }
     });
+    return;
 }
 
 sub _begin_recording ($self, $data, $region, $folder_from_config) {
@@ -210,6 +212,7 @@ sub _begin_recording ($self, $data, $region, $folder_from_config) {
     
     print STDERR "[DEBUG] Calling _show_stop_ui()\n";
     $self->_show_stop_ui();
+    return;
 }
 
 sub _show_stop_ui ($self) {
@@ -241,6 +244,7 @@ sub _show_stop_ui ($self) {
     
     $self->_stop_window($stop_win);
     print STDERR "[DEBUG] _show_stop_ui: done\n";
+    return;
 }
 
 sub _on_recording_done ($self, $video_path) {
@@ -301,6 +305,7 @@ sub _on_recording_done ($self, $video_path) {
     
     my $present_after_active = $cli->{_present_after_active} // Shutter::App::Init::_mock_widget(FALSE);
     $cli->handlers->get('Core')->fct_control_main_window('show', $present_after_active->get_active);
+    return;
 }
 
 1;

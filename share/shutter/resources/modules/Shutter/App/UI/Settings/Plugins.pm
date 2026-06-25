@@ -79,6 +79,7 @@ sub BUILD ($self, $args) {
     $vbox_main->pack_start($plugins_frame, TRUE, TRUE, 3);
 
     $self->_vbox($vbox_main);
+    return;
 }
 
 sub get_widget ($self) {

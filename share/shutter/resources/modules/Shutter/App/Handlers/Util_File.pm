@@ -531,6 +531,7 @@ sub fct_validate_filename ($self, $myfilename, $myfilename_hint) {
                 return FALSE;
             }
         });
+    return;
 }
 
 1;

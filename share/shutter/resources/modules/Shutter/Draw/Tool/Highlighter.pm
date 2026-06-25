@@ -14,7 +14,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-    $self->drawing_tool->create_polyline($event, undef, TRUE);
+    return $self->drawing_tool->create_polyline($event, undef, TRUE);
 }
 
 sub on_drag ($self, $event) {
@@ -26,6 +26,7 @@ sub on_drag_creation_points ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	push @{$dt->{_items}{$item}{'points'}}, $ev->x, $ev->y;
 	$dt->{_items}{$item}->set('points' => Shutter::Draw::Utils::points_to_canvas_points(@{$dt->{_items}{$item}{'points'}}));
+	return;
 }
 
 

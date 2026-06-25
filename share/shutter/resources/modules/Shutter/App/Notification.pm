@@ -51,6 +51,7 @@ sub BUILD ($self, $args) {
 	catch ($e) {
 		$log->warn("Warning: $e");
 	}
+    return;
 }
 
 sub show ($self, $summary, $body, $nid = undef) {

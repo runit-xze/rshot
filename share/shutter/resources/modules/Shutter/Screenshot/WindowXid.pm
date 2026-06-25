@@ -142,6 +142,7 @@ sub quit ($self) {
 
 	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, FALSE);
 	Gtk3::Gdk::flush();
+	return;
 
 }
 

@@ -489,6 +489,7 @@ sub dlg_save_as ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) {
     }
 
     $fs->destroy();
+    return;
 
 }
 

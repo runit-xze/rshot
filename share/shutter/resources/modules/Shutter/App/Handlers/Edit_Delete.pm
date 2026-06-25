@@ -302,6 +302,7 @@ sub fct_trash ($self, $key) {
     if ($session_screens->{$key}->{'giofile'}) {
         $session_screens->{$key}->{'giofile'}->trash;
     }
+    return;
 }
 
 1;

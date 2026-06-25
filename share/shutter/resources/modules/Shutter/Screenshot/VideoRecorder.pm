@@ -110,6 +110,7 @@ sub start ($self) {
     }
     
     $self->_pid($pid);
+    return;
 }
 
 sub stop ($self) {
@@ -127,10 +128,11 @@ sub stop ($self) {
     } else {
         $self->on_done->(undef);
     }
+    return;
 }
 
-sub get_mode ($self) { 'video_select' }
-sub get_error_text ($self) { 'Failed to record Video.' }
+sub get_mode ($self) { return 'video_select' }
+sub get_error_text ($self) { return 'Failed to record Video.' }
 
 1;
 

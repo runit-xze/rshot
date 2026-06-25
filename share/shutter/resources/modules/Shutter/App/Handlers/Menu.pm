@@ -32,6 +32,7 @@ has cli => (is => 'ro', required => 1);
 
 sub evt_about ($self) {
     Shutter::App::AboutDialog->new($self->cli->sc)->show;
+    return;
 }
 
 sub evt_apply_profile ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) {
@@ -54,6 +55,7 @@ sub evt_apply_profile ($self, $widget, $combobox_settings_profiles, $current_pro
 
 sub evt_bug ($self) {
     $self->cli->shf->xdg_open(undef, "https://github.com/shutter-project/shutter/issues/new?labels=bug&template=bug_report.md", undef);
+    return;
 }
 
 sub evt_delete_profile ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) {
@@ -186,6 +188,7 @@ sub evt_page_setup ($self, $widget, $data) {
 
 sub evt_question ($self) {
     $self->cli->shf->xdg_open(undef, "https://shutter-project.org/faq-help/", undef);
+    return;
 }
 
 sub evt_save_as ($self, $widget, $data) {
@@ -292,6 +295,7 @@ sub evt_show_settings ($self) {
 
 sub evt_translate ($self) {
     $self->cli->shf->xdg_open(undef, "https://translations.launchpad.net/shutter", undef);
+    return;
 }
 
 1;

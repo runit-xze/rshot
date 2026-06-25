@@ -72,6 +72,7 @@ sub _check_event_and_copy_item {
         $self->transform( $self->copy_item->get('transform') );
         $self->line_width( $self->copy_item->get('line-width') );
     }
+    return;
 }
 
 sub _create_item {

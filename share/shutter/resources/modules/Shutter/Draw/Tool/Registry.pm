@@ -8,6 +8,7 @@ has _tools => (is => 'ro', default => sub { {} });
 
 sub register_tool ($self, $name, $tool_class) {
     $self->_tools->{$name} = $tool_class;
+    return;
 }
 
 sub get_tool ($self, $name) {

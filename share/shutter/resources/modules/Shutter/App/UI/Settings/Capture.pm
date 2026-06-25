@@ -106,6 +106,7 @@ sub BUILD ($self, $args) {
     $self->_gif_max_duration($gif_duration);
     $self->_gif_countdown($gif_countdown);
     $self->_gif_cursor($gif_cursor);
+    return;
 }
 
 sub get_widget ($self) {
@@ -121,6 +122,7 @@ sub save ($self) {
     $sm->set_setting('gif', 'max_duration', $self->_gif_max_duration->get_value);
     $sm->set_setting('gif', 'countdown', $self->_gif_countdown->get_value);
     $sm->set_setting('gif', 'cursor', $self->_gif_cursor->get_active);
+    return;
 }
 
 1;

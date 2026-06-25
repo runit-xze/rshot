@@ -281,6 +281,7 @@ sub _capture_noninteractive ($self, $f, $initevent) {
 	$f->done($result);
 	return Future->done();
 })->retain;
+	return;
 }
 
 sub _init_capture_state ($self) {

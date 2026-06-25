@@ -23,7 +23,7 @@ sub update_highlighter ($self) {
 		$self->{_c}{'lw'}{'gdk_window'} = $self->{_c}{'cw'}{'gdk_window'};
 
 	}
-
+	return;
 }
 
 sub find_current_parent_window ($self, $event, $active_workspace) {

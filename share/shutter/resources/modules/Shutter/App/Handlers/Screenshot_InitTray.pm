@@ -75,6 +75,7 @@ sub fct_try_init_tray ($self) {
             $cli->{_tray} = undef;
         }
     }
+    return;
 }
 
 

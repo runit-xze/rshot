@@ -53,6 +53,7 @@ sub BUILD ($self, $args) {
 
     $self->_connect_menu_items;
     $self->_connect_toolbar_items;
+    return;
 }
 
 sub _connect_menu_items ($self) {
@@ -108,6 +109,7 @@ sub _connect_menu_items ($self) {
     $sm->{_menuitem_forward}->signal_connect('activate' => sub { $self->cli->notebook->next_page() }) if $sm->{_menuitem_forward};
     $sm->{_menuitem_first}->signal_connect('activate' => sub { $self->cli->notebook->set_current_page(0) }) if $sm->{_menuitem_first};
     $sm->{_menuitem_last}->signal_connect('activate' => sub { $self->cli->notebook->set_current_page(-1) }) if $sm->{_menuitem_last};
+    return;
 }
 
 sub _connect_toolbar_items ($self) {
@@ -130,6 +132,7 @@ sub _connect_toolbar_items ($self) {
     $st->{_forward}->signal_connect('clicked' => sub { $self->cli->notebook->next_page() }) if $st->{_forward};
     $st->{_first}->signal_connect('clicked' => sub { $self->cli->notebook->set_current_page(0) }) if $st->{_first};
     $st->{_last}->signal_connect('clicked' => sub { $self->cli->notebook->set_current_page(-1) }) if $st->{_last};
+    return;
 }
 
 1;

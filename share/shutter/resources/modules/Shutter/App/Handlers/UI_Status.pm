@@ -290,6 +290,7 @@ sub fct_show_status_message ($self, $timeout, $message) {
             return FALSE;
         }
     );
+    return;
 }
 
 sub fct_update_info_and_tray ($self, $key = undef) {

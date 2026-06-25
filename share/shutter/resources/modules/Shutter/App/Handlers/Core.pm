@@ -43,6 +43,7 @@ sub evt_value_changed ($self, $widget, $reason) {
         my $thumbnail_active = $self->cli->{_thumbnail_active};
         # ... rest of implementation
     }
+    return;
 }
 
 sub evt_take_screenshot ($self, $widget = undef, $data = undef, $folder_from_config = undef, $extra = undef) {
@@ -134,16 +135,19 @@ sub evt_delete_window ($self, $widget, $reason) {
         $self->cli->sc->set_exit_after_capture(TRUE);
     }
     $self->cli->app->quit;
+    return;
 }
 
 sub evt_about ($self) {
     use Shutter::App::AboutDialog;
     my $about = Shutter::App::AboutDialog->new($self->cli->sc);
     $about->show;
+    return;
 }
 
 sub evt_show_settings ($self) {
     $self->cli->handlers->get('Dialogs_Settings')->evt_show_settings();
+    return;
 }
 
 sub fct_control_main_window ($self, $action, $present = undef) {
@@ -155,6 +159,7 @@ sub fct_control_main_window ($self, $action, $present = undef) {
         $window->hide;
         $self->cli->{_is_hidden} = TRUE;
     }
+    return;
 }
 
 sub fct_control_signals ($self, $action) {
@@ -163,25 +168,26 @@ sub fct_control_signals ($self, $action) {
     } elsif ($action eq 'unblock') {
         # Unblock signal handlers
     }
+    return;
 }
 
-sub fct_zoom_in ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_in()  }
-sub fct_zoom_out ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_out()  }
-sub fct_zoom_100 ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_100()  }
-sub fct_zoom_best ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_best()  }
-sub fct_fullscreen ($self, @args) { $self->cli->handlers->get('Edit_Nav')->fct_fullscreen(@args)  }
-sub fct_undo ($self) { $self->cli->handlers->get('Edit_Nav')->fct_undo()  }
-sub fct_redo ($self) { $self->cli->handlers->get('Edit_Nav')->fct_redo()  }
-sub fct_clipboard { my $self = shift; $self->cli->handlers->get('Edit_Nav')->fct_clipboard(@_) }
-sub fct_delete ($self) { $self->cli->handlers->get('Edit_Delete')->fct_delete()  }
-sub fct_select_all ($self) { $self->cli->handlers->get('Edit_Delete')->fct_select_all()  }
-sub fct_trash ($self) { $self->cli->handlers->get('Edit_Delete')->fct_trash()  }
-sub fct_draw ($self) { $self->cli->handlers->get('Edit_Draw')->fct_draw()  }
-sub fct_plugin ($self) { $self->cli->handlers->get('Edit_Draw')->fct_plugin()  }
-sub fct_send ($self) { $self->cli->handlers->get('Upload_Main')->fct_send()  }
-sub fct_upload ($self) { $self->cli->handlers->get('Upload_Main')->fct_upload()  }
-sub fct_email { my $self = shift; $self->cli->handlers->get('Util_File')->fct_email(@_) }
-sub fct_print { my $self = shift; $self->cli->handlers->get('Util_File')->fct_print(@_) }
+sub fct_zoom_in ($self) { return $self->cli->handlers->get('Edit_Nav')->fct_zoom_in()  }
+sub fct_zoom_out ($self) { return $self->cli->handlers->get('Edit_Nav')->fct_zoom_out()  }
+sub fct_zoom_100 ($self) { return $self->cli->handlers->get('Edit_Nav')->fct_zoom_100()  }
+sub fct_zoom_best ($self) { return $self->cli->handlers->get('Edit_Nav')->fct_zoom_best()  }
+sub fct_fullscreen ($self, @args) { return $self->cli->handlers->get('Edit_Nav')->fct_fullscreen(@args)  }
+sub fct_undo ($self) { return $self->cli->handlers->get('Edit_Nav')->fct_undo()  }
+sub fct_redo ($self) { return $self->cli->handlers->get('Edit_Nav')->fct_redo()  }
+sub fct_clipboard { my $self = shift; return $self->cli->handlers->get('Edit_Nav')->fct_clipboard(@_) }
+sub fct_delete ($self) { return $self->cli->handlers->get('Edit_Delete')->fct_delete()  }
+sub fct_select_all ($self) { return $self->cli->handlers->get('Edit_Delete')->fct_select_all()  }
+sub fct_trash ($self) { return $self->cli->handlers->get('Edit_Delete')->fct_trash()  }
+sub fct_draw ($self) { return $self->cli->handlers->get('Edit_Draw')->fct_draw()  }
+sub fct_plugin ($self) { return $self->cli->handlers->get('Edit_Draw')->fct_plugin()  }
+sub fct_send ($self) { return $self->cli->handlers->get('Upload_Main')->fct_send()  }
+sub fct_upload ($self) { return $self->cli->handlers->get('Upload_Main')->fct_upload()  }
+sub fct_email { my $self = shift; return $self->cli->handlers->get('Util_File')->fct_email(@_) }
+sub fct_print { my $self = shift; return $self->cli->handlers->get('Util_File')->fct_print(@_) }
 
 1;
 

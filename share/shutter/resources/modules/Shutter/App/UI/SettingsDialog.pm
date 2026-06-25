@@ -112,15 +112,18 @@ sub save ($self) {
         $tab->save_settings if $tab->can('save_settings');
     }
     $self->cli->{settings_manager}->save_settings;
+    return;
 }
 
 sub show ($self) {
     $self->_dialog->show_all if $self->_dialog;
     return $self->_dialog->run if $self->_dialog;
+    return;
 }
 
 sub hide ($self) {
     $self->_dialog->hide() if $self->_dialog;
+    return;
 }
 
 1;

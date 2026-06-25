@@ -33,6 +33,7 @@ sub BUILD ($self) {
     if ($@) {
         print "Error parsing .sxcu file: $@\n" if $self->debug;
     }
+    return;
 }
 
 sub upload ($self, $upload_filename) {
@@ -187,6 +188,7 @@ sub _show_qr_dialog ($self, $qr_path, $url) {
     $dialog->show_all;
     $dialog->run;
     $dialog->destroy;
+    return;
 }
 
 1;

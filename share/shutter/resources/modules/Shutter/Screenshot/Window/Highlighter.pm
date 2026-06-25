@@ -152,6 +152,7 @@ sub setup_highlighter ($self) {
 			return TRUE;
 		}
 	);
+	return;
 }
 
 1;

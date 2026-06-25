@@ -216,6 +216,7 @@ sub export_to_file {
 	}
 
 	$fs->destroy();
+	return;
 
 }
 
@@ -382,6 +383,7 @@ sub save {
 		return $pixbuf_save->save_pixbuf_to_file($pixbuf, $filename, $filetype, undef);
 
 	}
+	return;
 
 }
 

@@ -83,6 +83,7 @@ sub draw ($self, $cr, $mouse_x, $mouse_y) {
     $cr->stroke;
 
     $cr->restore;
+    return;
 }
 
 1;
