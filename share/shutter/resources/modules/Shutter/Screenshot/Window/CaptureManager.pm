@@ -15,7 +15,6 @@ requires qw(
     get_pixbuf_from_drawable_async
     get_shape
     select_window
-    quit_eventh_only
 );
 
 sub redo_capture_async ($self) {
@@ -282,6 +281,31 @@ sub _capture_noninteractive ($self, $f, $initevent) {
 	$f->done($result);
 	return Future->done();
 })->retain;
+}
+
+sub _init_capture_state ($self) {
+
+	$self->{_c}                     = ();
+	$self->{_c}{'ws'}               = undef;
+	$self->{_c}{'ws_init'}          = FALSE;
+	$self->{_c}{'lw'}{'gdk_window'} = 0;
+
+	$self->{_min_size}              = $self->{_root}->{w} * $self->{_root}->{h} * $self->{_dpi_scale} * $self->{_dpi_scale};
+	$self->{_c}{'cw'}{'gdk_window'} = $self->{_root};
+	$self->{_c}{'cw'}{'x'}          = $self->{_root}->{x};
+	$self->{_c}{'cw'}{'y'}          = $self->{_root}->{y};
+	$self->{_c}{'cw'}{'width'}      = $self->{_root}->{w};
+	$self->{_c}{'cw'}{'height'}     = $self->{_root}->{h};
+
+	my ($window_at_pointer, $initx, $inity, $mask) = $self->{_root}->get_pointer;
+
+	my $initevent = Gtk3::Gdk::Event->new('motion-notify');
+	$initevent->time(Gtk3::get_current_event_time());
+	$initevent->window($self->{_root});
+	$initevent->x($initx);
+	$initevent->y($inity);
+
+	return $initevent;
 }
 
 1;

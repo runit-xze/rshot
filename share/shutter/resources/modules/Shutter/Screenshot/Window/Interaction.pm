@@ -12,8 +12,6 @@ requires qw(
     get_window_size
     get_pixbuf_from_drawable_async
     get_shape
-    quit
-    quit_eventh_only
 );
 
 sub _capture_interactive ($self, $f, $active_workspace, $initevent) {

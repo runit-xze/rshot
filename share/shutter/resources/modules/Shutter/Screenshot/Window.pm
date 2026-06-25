@@ -114,23 +114,15 @@ sub BUILD ($self, $args) {
 
 sub window_async ($self) {
 
-	my $f = Future->new;
-
-	#return value
-
+	my $f      = Future->new;
 	my $output = 5;
 
-	#current workspace
 	my $active_workspace = $self->{_wnck_screen}->get_active_workspace;
-
-	#something went wrong here, no active workspace detected
 	unless ($active_workspace) {
 		$output = 0;
 		return $output;
 	}
 
-	#grab pointer and keyboard
-	#when mode is section or window
 	unless ($self->{_mode} eq "menu"
 		|| $self->{_mode} eq "tray_menu"
 		|| $self->{_mode} eq "tooltip"
@@ -138,7 +130,6 @@ sub window_async ($self) {
 		|| $self->{_mode} eq "awindow"
 		|| $self->{_mode} eq "tray_awindow")
 	{
-
 		$self->{_highlighter}->realize;
 
 		my $grab_counter = 0;
@@ -147,51 +138,21 @@ sub window_async ($self) {
 			Gtk3::Gdk::keyboard_grab($self->{_highlighter}->get_window, 0, Gtk3::get_current_event_time());
 			$grab_counter++;
 		}
-
 	}
 
-	#init
-	$self->{_c}                     = ();
-	$self->{_c}{'ws'}               = undef;
-	$self->{_c}{'ws_init'}          = FALSE;
-	$self->{_c}{'lw'}{'gdk_window'} = 0;
+	my $initevent = $self->_init_capture_state;
 
-	#root window size is minimum at startup
-	$self->{_min_size}              = $self->{_root}->{w} * $self->{_root}->{h} * $self->{_dpi_scale} * $self->{_dpi_scale};
-	$self->{_c}{'cw'}{'gdk_window'} = $self->{_root};
-	$self->{_c}{'cw'}{'x'}          = $self->{_root}->{x};
-	$self->{_c}{'cw'}{'y'}          = $self->{_root}->{y};
-	$self->{_c}{'cw'}{'width'}      = $self->{_root}->{w};
-	$self->{_c}{'cw'}{'height'}     = $self->{_root}->{h};
-
-	#get initial window under cursor
-	my ($window_at_pointer, $initx, $inity, $mask) = $self->{_root}->get_pointer;
-
-	#create event for current coordinates
-	my $initevent = Gtk3::Gdk::Event->new('motion-notify');
-	$initevent->time(Gtk3::get_current_event_time());
-	$initevent->window($self->{_root});
-	$initevent->x($initx);
-	$initevent->y($inity);
-
-	if (
-		Gtk3::Gdk::pointer_is_grabbed()
-		&& !(
-			   $self->{_mode} eq "menu"
+	if (Gtk3::Gdk::pointer_is_grabbed()
+		&& !($self->{_mode} eq "menu"
 			|| $self->{_mode} eq "tray_menu"
 			|| $self->{_mode} eq "tooltip"
 			|| $self->{_mode} eq "tray_tooltip"
 			|| $self->{_mode} eq "awindow"
-			|| $self->{_mode} eq "tray_awindow"
-		))
+			|| $self->{_mode} eq "tray_awindow"))
 	{
-
 		$self->_capture_interactive($f, $active_workspace, $initevent);
-
 	} else {
-
 		$self->_capture_noninteractive($f, $initevent);
-
 	}
 	return $f;
 }
@@ -210,20 +171,6 @@ sub get_error_text ($self) {
 
 sub get_action_name ($self) {
 	return $self->{_action_name};
-}
-
-sub quit ($self) {
-
-	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, TRUE);
-	Gtk3::Gdk::flush();
-
-}
-
-sub quit_eventh_only ($self) {
-
-	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, FALSE);
-	Gtk3::Gdk::flush();
-
 }
 
 1;

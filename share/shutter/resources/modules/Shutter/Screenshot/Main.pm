@@ -75,7 +75,7 @@ sub _build__root ($self) {
 		($root->{x}, $root->{y}) = $root->get_origin;
 	} catch ($e) {
 		# it's wayland
-		return undef;
+		return;
 	}
 	return $root;
 }
@@ -87,7 +87,7 @@ has '_wnck_screen' => (
 );
 
 sub _build__wnck_screen ($self) {
-	return undef unless $self->_root;
+	return unless $self->_root;
 	my $scr = Wnck::Screen::get_default();
 	$scr->force_update();
 	return $scr;
@@ -99,7 +99,7 @@ has '_wm_manager_name' => (
 );
 
 sub _build__wm_manager_name ($self) {
-	return undef unless $self->_root;
+	return unless $self->_root;
 	my $wm = $self->_gdk_screen->get_window_manager_name;
 	if ($self->_wnck_screen->can('get_window_manager_name')) {
 		$wm = $self->_wnck_screen->get_window_manager_name;
@@ -184,6 +184,16 @@ sub get_monitor_region ($self) {
 		$region->union_rectangle($self->{_gdk_screen}->get_monitor_geometry($i));
 	}
 	return $region;
+}
+
+sub quit ($self) {
+	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, TRUE);
+	Gtk3::Gdk::flush();
+}
+
+sub quit_eventh_only ($self) {
+	$self->ungrab_pointer_and_keyboard(FALSE, TRUE, FALSE);
+	Gtk3::Gdk::flush();
 }
 
 sub ungrab_pointer_and_keyboard ($self, $ungrab_server, $quit_event_handler, $quit_main) {
