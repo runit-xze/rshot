@@ -101,7 +101,7 @@ sub evt_iconview_item_activated ($self, $view, $path, $data) {
     return TRUE;
 }
 
-sub evt_iconview_sel_changed ($self, $view, $data) {
+sub evt_iconview_sel_changed ($self, $view, $data = undef) {
     
     #we don't handle selection changes
     #if we are not in the session tab

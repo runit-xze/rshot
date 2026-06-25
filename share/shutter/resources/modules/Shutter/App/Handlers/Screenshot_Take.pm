@@ -504,7 +504,7 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
         $screenshot->then(sub {
             $post_capture_cb->($_[0]);
             return Future->done();
-        });
+        })->retain;
         return TRUE;
     } else {
         return $post_capture_cb->($screenshot);

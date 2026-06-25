@@ -40,7 +40,7 @@ use IO::File;
 has '_common' => (is => 'ro', required => 1);
 has '_settings' => (is => 'rw', default => sub { {} });
 
-sub save_settings ($self, $profilename) {
+sub save_settings ($self, $profilename = undef) {
     my $sc = $self->_common;
     my $shf = $sc->get_helper_functions;
     my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
@@ -66,7 +66,7 @@ sub save_settings ($self, $profilename) {
     return TRUE;
 }
 
-sub load_settings ($self, $profilename) {
+sub load_settings ($self, $profilename = undef) {
     my $sc = $self->_common;
     my $d = $sc->get_gettext;
     my $shf = $sc->get_helper_functions;
@@ -99,7 +99,7 @@ sub set_setting ($self, $section, $key, $value) {
     $self->_settings->{$section}->{$key} = $value;
 }
 
-sub load_accounts ($self, $profilename) {
+sub load_accounts ($self, $profilename = undef) {
     my $sc = $self->_common;
     my $d = $sc->get_gettext;
     my $shf = $sc->get_helper_functions;

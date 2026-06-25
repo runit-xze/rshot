@@ -31,7 +31,7 @@ use URI::Escape qw(uri_unescape);
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_integrate_screenshot_in_notebook ($self, $giofile, $pixbuf, $history, $count) {
+sub fct_integrate_screenshot_in_notebook ($self, $giofile, $pixbuf, $history = undef, $count = undef) {
     my $cli = $self->cli;
     my $d = $cli->sc->get_gettext;
     my $session_screens = $cli->{_session_screens};

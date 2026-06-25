@@ -521,7 +521,7 @@ sub window_async ($self) {
 					$self->quit;
 							$f->done($output);
 							return Future->done();
-						});
+						})->retain;
 						return FALSE;
 					});
 
@@ -700,7 +700,7 @@ sub window_async ($self) {
 		}
 		$f->done($output);
 		return Future->done();
-	});
+	})->retain;
 
 	}
 	return $f;
@@ -787,7 +787,7 @@ sub redo_capture_async ($self) {
 				$self->quit_eventh_only;
 						$f->done($output);
 						return Future->done();
-					});
+					})->retain;
 					return FALSE;
 				});
 
@@ -804,7 +804,7 @@ sub redo_capture_async ($self) {
 				$output = $output_new;
 				$f->done($output);
 				return Future->done();
-			});
+			})->retain;
 		}
 
 	} else {

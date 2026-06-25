@@ -260,6 +260,67 @@ sub ungrab_pointer_and_keyboard ($self, $ungrab_server, $quit_event_handler, $qu
 #~
 #~ }
 
+sub get_pixbuf_from_drawable ($self, $drawable, $x = undef, $y = undef, $width = undef, $height = undef, $region = undef) {
+	my ($pixbuf, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = (0, 0, 0, 0, 0);
+
+	#right
+	if ($x + $width > $self->{_root}->{w}) {
+		$r_cropped = $x + $width - $self->{_root}->{w};
+		$width -= $x + $width - $self->{_root}->{w};
+	}
+	#bottom
+	if ($y + $height > $self->{_root}->{h}) {
+		$b_cropped = $y + $height - $self->{_root}->{h};
+		$height -= $y + $height - $self->{_root}->{h};
+	}
+	#left
+	if ($x < $self->{_root}->{x}) {
+		$l_cropped = $self->{_root}->{x} - $x;
+		$width     = $width + $x;
+		$x         = 0;
+	}
+	#top
+	if ($y < $self->{_root}->{y}) {
+		$t_cropped = $self->{_root}->{y} - $y;
+		$height    = $height + $y;
+		$y         = 0;
+	}
+
+	try {
+		if ($width > 0 && $height > 0) {
+			$pixbuf = Gtk3::Gdk::pixbuf_get_from_window($drawable, $x, $y, $width, $height);
+		}
+	}
+	catch ($e) {
+		return (undef, 0, 0, 0, 0);
+	}
+
+	if ($self->_include_cursor) {
+		$pixbuf = $self->include_cursor($x, $y, $width, $height, $drawable, $pixbuf);
+	}
+
+	if ($region) {
+		my $clipbox = $self->get_clipbox($region);
+		my $target = Gtk3::Gdk::Pixbuf->new($pixbuf->get_colorspace, TRUE, 8, $clipbox->{width}, $clipbox->{height});
+		$target->fill(0x00000000);
+		my $small_x = $self->{_root}->{w};
+		my $small_y = $self->{_root}->{h};
+		my $len = $region->num_rectangles-1;
+		for my $i (0..$len) {
+			my $r = $region->get_rectangle($i);
+			$small_x = $r->{x} if $r->{x} < $small_x;
+			$small_y = $r->{y} if $r->{y} < $small_y;
+		}
+		for my $i (0..$len) {
+			my $r = $region->get_rectangle($i);
+			$pixbuf->copy_area($r->{x} - $small_x, $r->{y} - $small_y, $r->{width}, $r->{height}, $target, $r->{x} - $small_x, $r->{y} - $small_y);
+		}
+		$pixbuf = $target;
+	}
+
+	return ($pixbuf, $l_cropped, $r_cropped, $t_cropped, $b_cropped);
+}
+
 sub get_pixbuf_from_drawable_async ($self, $drawable, $x = undef, $y = undef, $width = undef, $height = undef, $region = undef) {
 
 	my ($pixbuf, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = (0, 0, 0, 0, 0);

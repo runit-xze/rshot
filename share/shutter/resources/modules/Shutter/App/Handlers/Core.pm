@@ -45,7 +45,7 @@ sub evt_value_changed ($self, $widget, $reason) {
     }
 }
 
-sub evt_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
+sub evt_take_screenshot ($self, $widget = undef, $data = undef, $folder_from_config = undef, $extra = undef) {
     my $sc = $self->cli->sc;
     my $d = $sc->get_gettext;
     my $window = $self->cli->window;
@@ -146,7 +146,7 @@ sub evt_show_settings ($self) {
     $self->cli->handlers->get('Dialogs_Settings')->evt_show_settings();
 }
 
-sub fct_control_main_window ($self, $action) {
+sub fct_control_main_window ($self, $action, $present = undef) {
     my $window = $self->cli->window;
     if ($action eq 'show') {
         $window->show_all;
@@ -169,7 +169,7 @@ sub fct_zoom_in ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_in()  
 sub fct_zoom_out ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_out()  }
 sub fct_zoom_100 ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_100()  }
 sub fct_zoom_best ($self) { $self->cli->handlers->get('Edit_Nav')->fct_zoom_best()  }
-sub fct_fullscreen ($self) { $self->cli->handlers->get('Edit_Nav')->fct_fullscreen(@_)  }
+sub fct_fullscreen ($self, @args) { $self->cli->handlers->get('Edit_Nav')->fct_fullscreen(@args)  }
 sub fct_undo ($self) { $self->cli->handlers->get('Edit_Nav')->fct_undo()  }
 sub fct_redo ($self) { $self->cli->handlers->get('Edit_Nav')->fct_redo()  }
 sub fct_clipboard { my $self = shift; $self->cli->handlers->get('Edit_Nav')->fct_clipboard(@_) }
