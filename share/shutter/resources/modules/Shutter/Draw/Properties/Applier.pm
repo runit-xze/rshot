@@ -53,11 +53,11 @@ sub apply_properties {
 		&& $dt->items->{$key}{type} ne "censor")
 	{
 
-		$dt->last_fill_color()   = $dt->fill_color_w()->get_rgba;
-		$dt->last_stroke_color() = $dt->stroke_color_w()->get_rgba;
-		$dt->last_line_width()   = $dt->line_spin_w()->get_value;
-		$dt->last_font()         = $dt->font_btn_w()->get_font_name;
-		$dt->last_mode()         = $dt->current_mode();
+		$dt->_last_fill_color($dt->fill_color_w->get_rgba);
+		$dt->_last_stroke_color($dt->stroke_color_w->get_rgba);
+		$dt->_last_line_width($dt->line_spin_w->get_value);
+		$dt->_last_font($dt->font_btn_w->get_font_name);
+		$dt->_last_mode($dt->current_mode);
 
 	}
 

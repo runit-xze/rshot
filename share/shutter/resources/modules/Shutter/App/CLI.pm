@@ -31,6 +31,10 @@ no warnings 'experimental::try';
 use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
+BEGIN {
+	my $level = Glib::LogLevelFlags->new("G_LOG_LEVEL_CRITICAL");
+	Glib::Log->set_handler("GLib-GObject", $level, sub { }, undef);
+}
 use Log::Any;
 use Log::Any::Adapter;
 

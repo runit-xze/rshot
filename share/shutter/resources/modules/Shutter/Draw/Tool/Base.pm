@@ -623,7 +623,7 @@ sub on_button_release ($self, $item, $target, $ev) {
 				);
 
 				#mark as active item
-				$dt->_current_item = $parent;
+				$dt->_current_item($parent);
 
 				$dt->handle_rects('update', $parent);
 				$dt->handle_embedded('update', $parent, undef, undef, TRUE);

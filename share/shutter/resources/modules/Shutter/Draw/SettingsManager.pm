@@ -169,13 +169,13 @@ sub set_and_save_drawing_properties {
 
 		#remember drawing colors, line width and font settings
 		#maybe we have to restore them
-		$dt->last_fill_color($dt->fill_color_w->get_rgba);
-		$dt->last_stroke_color($dt->stroke_color_w->get_rgba);
-		$dt->last_line_width($dt->line_spin_w->get_value);
-		$dt->last_font($dt->font_btn_w->get_font_name);
+		$dt->_last_fill_color($dt->fill_color_w->get_rgba);
+		$dt->_last_stroke_color($dt->stroke_color_w->get_rgba);
+		$dt->_last_line_width($dt->line_spin_w->get_value);
+		$dt->_last_font($dt->font_btn_w->get_font_name);
 
 		#remember the last mode as well
-		$dt->last_mode($dt->current_mode);
+		$dt->_last_mode($dt->current_mode);
 
 	}
 
@@ -298,10 +298,10 @@ sub restore_drawing_properties {
 	my $dt   = $self->drawing_tool;
 
 	#saved properties available?
-	return FALSE unless defined $dt->last_fill_color;
+	return FALSE unless defined $dt->_last_fill_color;
 
 	#anything done until now?
-	return FALSE unless defined $dt->last_mode;
+	return FALSE unless defined $dt->_last_mode;
 
 	#block 'value-change' handlers for widgets
 	#so we do not apply the changes twice
@@ -311,10 +311,10 @@ sub restore_drawing_properties {
 	$dt->font_btn_w->signal_handler_block($dt->font_btn_wh);
 
 	#restore them
-	$dt->fill_color_w->set_rgba($dt->last_fill_color);
-	$dt->stroke_color_w->set_rgba($dt->last_stroke_color);
-	$dt->line_spin_w->set_value($dt->last_line_width);
-	$dt->font_btn_w->set_font_name($dt->last_font);
+	$dt->fill_color_w->set_rgba($dt->_last_fill_color);
+	$dt->stroke_color_w->set_rgba($dt->_last_stroke_color);
+	$dt->line_spin_w->set_value($dt->_last_line_width);
+	$dt->font_btn_w->set_font_name($dt->_last_font);
 
 	#update global values
 	$dt->line_width($dt->line_spin_w->get_value);

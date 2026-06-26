@@ -29,7 +29,7 @@ sub _build__lp ($self) {
 
 around BUILDARGS => sub {
 	my ($orig, $class, $common, $window) = @_;
-	return { common => $common, window => $window };
+	return { _common => $common, _window => $window };
 };
 
 sub set_quality_setting ($self, $filetype) {

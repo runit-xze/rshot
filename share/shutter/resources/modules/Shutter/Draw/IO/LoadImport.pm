@@ -364,9 +364,9 @@ sub import_from_session ($self, $button) {
 
 	my $menu_session_objects = Gtk3::Menu->new;
 
-	my %import_hash = %{$dt->import_hash() || {}};
+	my %import_hash = %{$dt->_import_hash() || {}};
 
-	foreach my $key ($dt->shf()->nsort(keys %import_hash)) {
+	foreach my $key ($dt->_shf()->nsort(keys %import_hash)) {
 
 		next unless exists $import_hash{$key}->{'short'};
 		next unless defined $import_hash{$key}->{'short'};
@@ -377,7 +377,7 @@ sub import_from_session ($self, $button) {
 
 		#set sensitive == FALSE if image eq current file
 		$screen_menu_item->set_sensitive(FALSE)
-			if $import_hash{$key}->{'long'} eq $dt->filename();
+			if $import_hash{$key}->{'long'} eq $dt->_filename();
 
 		#save filename and attributes
 		$screen_menu_item->{'name'}         = $import_hash{$key}->{'long'};

@@ -32,7 +32,7 @@ sub on_drag ($self, $event) {
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	$dt->deactivate_all($item);
-	$dt->_current_item                                      = $item;
+	$dt->_current_item($item);
 	$dt->_items->{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
 	$dt->_items->{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
 	$dt->_items->{$item}{'bottom-right-corner'}->{resizing} = TRUE;

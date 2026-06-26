@@ -105,7 +105,8 @@ sub create_image {
 
 	#set type flag
 	$self->_items->{$item}{type} = 'image';
-	$self->_items->{$item}{uid}  = $self->_uid++;
+	$self->_items->{$item}{uid}  = $self->_uid;
+	$self->increase_uid;
 
 	#create rectangles
 	$self->handle_rects('create', $item);

@@ -149,7 +149,7 @@ sub ret_item_menu {
 	$paste_item->signal_connect(
 		'activate' => sub {
 			$app->paste_item($app->_current_copy_item, $app->_cut);
-			$app->_cut = FALSE;
+			$app->_cut(FALSE);
 		});
 
 	$menu_item->append($paste_item);

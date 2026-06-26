@@ -102,9 +102,6 @@ has _menuitem_first => (is => 'rwp', predicate => 1);
 has _menuitem_last => (is => 'rwp', predicate => 1);
 
 # fct_ret_help_menu items
-has _menuitem_question => (is => 'rwp', predicate => 1);
-has _menuitem_translate => (is => 'rwp', predicate => 1);
-has _menuitem_bug => (is => 'rwp', predicate => 1);
 has _menuitem_about => (is => 'rwp', predicate => 1);
 
 # fct_ret_new_menu items
@@ -399,41 +396,7 @@ sub fct_ret_session_menu ($self, $accel_group, $d, $shutter_root) {
 
 sub fct_ret_help_menu ($self, $accel_group, $d, $shutter_root) {
 
-	my $icontheme = $self->_common->icontheme;
-
 	$self->_set__menu_help(Gtk3::Menu->new());
-
-	$self->_set__menuitem_question(Gtk3::ImageMenuItem->new($d->get('Get Help Online...')));
-	if ($icontheme->has_icon('lpi-help')) {
-		$self->_menuitem_question->set_image(Gtk3::Image->new_from_icon_name('lpi-help', 'menu'));
-	} else {
-		$self->_menuitem_question
-			->set_image(Gtk3::Image->new_from_pixbuf(Gtk3::Gdk::Pixbuf->new_from_file_at_size("$shutter_root/share/shutter/resources/icons/lpi-help.png", $self->_shf->icon_size('menu'))));
-	}
-
-	$self->_menu_help->append($self->_menuitem_question);
-
-	$self->_set__menuitem_translate(Gtk3::ImageMenuItem->new($d->get('Translate this Application...')));
-	if ($icontheme->has_icon('lpi-translate')) {
-		$self->_menuitem_translate->set_image(Gtk3::Image->new_from_icon_name('lpi-translate', 'menu'));
-	} else {
-		$self->_menuitem_translate
-			->set_image(Gtk3::Image->new_from_pixbuf(Gtk3::Gdk::Pixbuf->new_from_file_at_size("$shutter_root/share/shutter/resources/icons/lpi-translate.png", $self->_shf->icon_size('menu'))));
-	}
-
-	$self->_menu_help->append($self->_menuitem_translate);
-
-	$self->_set__menuitem_bug(Gtk3::ImageMenuItem->new($d->get('Report a Problem')));
-	if ($icontheme->has_icon('lpi-bug')) {
-		$self->_menuitem_bug->set_image(Gtk3::Image->new_from_icon_name('lpi-bug', 'menu'));
-	} else {
-		$self->_menuitem_bug
-			->set_image(Gtk3::Image->new_from_pixbuf(Gtk3::Gdk::Pixbuf->new_from_file_at_size("$shutter_root/share/shutter/resources/icons/lpi-bug.png", $self->_shf->icon_size('menu'))));
-	}
-
-	$self->_menu_help->append($self->_menuitem_bug);
-
-	$self->_menu_help->append(Gtk3::SeparatorMenuItem->new);
 
 	$self->_set__menuitem_about(Gtk3::ImageMenuItem->new_from_stock('gtk-about'));
 	$self->_menuitem_about->add_accelerator('activate', $accel_group, $self->_shf->accel('<Control>I'), qw/visible/);

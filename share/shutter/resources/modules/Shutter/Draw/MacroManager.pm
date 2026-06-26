@@ -5,6 +5,8 @@ use v5.40;
 use Glib qw/TRUE FALSE/;
 
 has drawing_tool => (is => 'ro', required => 1);
+has '_undo'      => (is => 'rw', default => sub { [] });
+has '_redo'      => (is => 'rw', default => sub { [] });
 
 sub store_to_xdo_stack {
 	my ($mgr, $item, $action, $xdo, $opt1, $source) = @_;

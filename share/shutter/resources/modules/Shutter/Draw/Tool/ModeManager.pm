@@ -33,9 +33,9 @@ sub add_radio_actions ($self, $entries) {
 sub change_drawing_tool_cb ($self, $action) {
 	my $app = $self->drawing_tool;
 
-	eval { $app->_current_mode = $action->get_current_value; };
+	eval { $app->_current_mode($action->get_current_value); };
 	if ($@) {
-		$app->_current_mode = $action;
+		$app->_current_mode($action);
 	}
 
 	my $cursor = Gtk3::Gdk::Cursor->new('left-ptr');
@@ -63,52 +63,52 @@ sub change_drawing_tool_cb ($self, $action) {
 	$app->_font_btn_w->set_sensitive(TRUE);
 
 	if ($app->_current_mode == MODE_SELECT) {
-		$app->_current_mode_descr = "select";
+		$app->_current_mode_descr("select");
 	} elsif ($app->_current_mode == MODE_FREEHAND) {
-		$app->_current_mode_descr = "freehand";
+		$app->_current_mode_descr("freehand");
 		$app->_fill_color_w->set_sensitive(FALSE);
 		$app->_font_btn_w->set_sensitive(FALSE);
 	} elsif ($app->_current_mode == MODE_HIGHLIGHTER) {
-		$app->_current_mode_descr = "highlighter";
+		$app->_current_mode_descr("highlighter");
 		$cursor = Gtk3::Gdk::Cursor->new('dotbox');
 		$app->_fill_color_w->set_sensitive(FALSE);
 		$app->_font_btn_w->set_sensitive(FALSE);
 		$app->restore_fixed_properties($app->_current_mode_descr);
 	} elsif ($app->_current_mode == MODE_LINE) {
-		$app->_current_mode_descr = "line";
+		$app->_current_mode_descr("line");
 		$app->_fill_color_w->set_sensitive(FALSE);
 		$app->_font_btn_w->set_sensitive(FALSE);
 	} elsif ($app->_current_mode == MODE_ARROW) {
-		$app->_current_mode_descr = "arrow";
+		$app->_current_mode_descr("arrow");
 		$app->_fill_color_w->set_sensitive(FALSE);
 		$app->_font_btn_w->set_sensitive(FALSE);
 	} elsif ($app->_current_mode == MODE_RECT) {
-		$app->_current_mode_descr = "rect";
+		$app->_current_mode_descr("rect");
 		$app->_font_btn_w->set_sensitive(FALSE);
 	} elsif ($app->_current_mode == MODE_ELLIPSE) {
-		$app->_current_mode_descr = "ellipse";
+		$app->_current_mode_descr("ellipse");
 		$app->_font_btn_w->set_sensitive(FALSE);
 	} elsif ($app->_current_mode == MODE_TEXT) {
-		$app->_current_mode_descr = "text";
+		$app->_current_mode_descr("text");
 		$app->_fill_color_w->set_sensitive(FALSE);
 		$app->_line_spin_w->set_sensitive(FALSE);
 	} elsif ($app->_current_mode == MODE_CENSOR) {
-		$app->_current_mode_descr = "censor";
+		$app->_current_mode_descr("censor");
 		$app->_fill_color_w->set_sensitive(FALSE);
 		$app->_stroke_color_w->set_sensitive(FALSE);
 		$app->_line_spin_w->set_sensitive(FALSE);
 		$app->_font_btn_w->set_sensitive(FALSE);
 		$app->restore_fixed_properties($app->_current_mode_descr);
 	} elsif ($app->_current_mode == MODE_PIXELIZE) {
-		$app->_current_mode_descr = "pixelize";
+		$app->_current_mode_descr("pixelize");
 		$app->_fill_color_w->set_sensitive(FALSE);
 		$app->_stroke_color_w->set_sensitive(FALSE);
 		$app->_line_spin_w->set_sensitive(FALSE);
 		$app->_font_btn_w->set_sensitive(FALSE);
 	} elsif ($app->_current_mode == MODE_NUMBER) {
-		$app->_current_mode_descr = "number";
+		$app->_current_mode_descr("number");
 	} elsif ($app->_current_mode == MODE_CROP) {
-		$app->_current_mode_descr = "crop";
+		$app->_current_mode_descr("crop");
 		$app->_view->set_pixbuf($app->save(TRUE));
 		$app->_view->set_zoom(1);
 		my $color_string = $app->_canvas_bg_rect->{fill_color}->to_string;
@@ -129,7 +129,7 @@ sub change_drawing_tool_cb ($self, $action) {
 		}
 	}
 
-	$app->_last_mode = $app->_current_mode;
+	$app->_last_mode($app->_current_mode);
 
 	if (defined $app->_canvas && $app->_current_mode != MODE_CROP) {
 		$app->_canvas->get_window->set_cursor($cursor);

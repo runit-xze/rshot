@@ -253,7 +253,7 @@ sub BUILD {
 	$self->_import_hash(undef);
 
 	#custom cursors
-	$self->_cursors(undef);
+	$self->_cursors({});
 
 	#ui
 	$self->_uimanager(undef);
@@ -268,8 +268,8 @@ sub BUILD {
 	$self->_items_history(undef);
 
 	#undo and redo stacks
-	$self->_undo(undef);
-	$self->_redo(undef);
+	$self->_undo([]);
+	$self->_redo([]);
 
 	#autoscroll option, disabled by default
 	$self->_autoscroll(FALSE);
@@ -518,6 +518,12 @@ sub current_item {
 	return $self->_current_item;
 }
 
+sub current_mode {
+	my ($self, @args) = @_;
+	$self->_current_mode($args[0]) if @args;
+	return $self->_current_mode;
+}
+
 sub current_new_item {
 	my ($self, @args) = @_;
 	$self->_current_new_item($args[0]) if @args;
@@ -568,7 +574,10 @@ sub font {
 
 sub uid { return shift->_uid }
 
-sub increase_uid { return shift->_uid(shift->_uid + 1) }
+sub increase_uid {
+	my $self = shift;
+	return $self->_uid($self->_uid + 1);
+}
 
 sub uimanager { return shift->_uimanager }
 

@@ -135,7 +135,7 @@ sub export_to_file ($self, $rfiletype = undef) {
 
 	$combobox_save_as_type->signal_connect(
 		'changed' => sub {
-			my $filename = $dt->shf()->utf8_decode($fs->get_filename);
+			my $filename = $dt->_shf()->utf8_decode($fs->get_filename);
 
 			my $choosen_format = $combobox_save_as_type->get_active_text;
 			$choosen_format =~ s/ \-.*//;    #get png or jpeg (jpg) for example
@@ -163,7 +163,7 @@ sub export_to_file ($self, $rfiletype = undef) {
 	my $fs_resp = $fs->run;
 
 	if ($fs_resp eq "accept") {
-		my $filename = $dt->shf()->utf8_decode($fs->get_filename);
+		my $filename = $dt->_shf()->utf8_decode($fs->get_filename);
 
 		#parse filename
 		my ($short, $folder, $ext) = fileparse($filename, qr/\.[^.]*/);
