@@ -1,4 +1,4 @@
-# Contributing to Shutter
+# Contributing to RShot
 
 Welcome! We're glad you're interested in contributing to Shutter. This guide will help you get started with the project's new modern architecture.
 
