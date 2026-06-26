@@ -7,3 +7,12 @@ pm_to_blib
 Makefile.old
 MYMETA.*
 rshot_debug.log
+
+# Development tools and config
+*.pl
+.kilo/
+.opencode/
+.agents/
+GEMINI/
+generated-sources.json
+repomix-output.xml
