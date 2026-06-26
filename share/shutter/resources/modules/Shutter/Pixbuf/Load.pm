@@ -39,7 +39,7 @@ has '_no_error_dialog' => (is => 'rwp');
 
 around BUILDARGS => sub {
 	my ($orig, $class, $common, $window, $no_error_dialog) = @_;
-	return { common => $common, window => $window, no_error_dialog => $no_error_dialog };
+	return { _common => $common, _window => $window, _no_error_dialog => $no_error_dialog };
 };
 
 sub load ($self, $filename, $width = undef, $height = undef, $sratio = undef, $rotate = undef) {
