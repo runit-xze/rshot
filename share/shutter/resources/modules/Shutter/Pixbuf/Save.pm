@@ -42,12 +42,12 @@ sub set_quality_setting ($self, $filetype) {
 
 	if (my $settings = $self->_common->global_settings) {
 		if (defined $settings->get_image_quality($filetype)) {
-			$self->_quality($settings->get_image_quality($filetype));
+			$self->_set_quality($settings->get_image_quality($filetype));
 		} else {
-			$self->_quality($default_image_quality->{$filetype});
+			$self->_set_quality($default_image_quality->{$filetype});
 		}
 	} else {
-		$self->_quality($default_image_quality->{$filetype});
+		$self->_set_quality($default_image_quality->{$filetype});
 	}
 	return;
 }
@@ -74,7 +74,7 @@ sub save_pdf_ps_svg ($self, $filename, $filetype, $pixbuf) {
 
 sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 
-	$self->_quality($quality);
+	$self->_set_quality($quality);
 
 	my $d = $self->_common->gettext_object;
 
