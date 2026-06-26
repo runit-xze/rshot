@@ -22,6 +22,7 @@
 
 package Shutter::App::Options;
 
+use Moo;
 use utf8;
 use v5.40;
 use feature 'try';
@@ -41,56 +42,61 @@ use Pod::Usage;
 
 my $log = Log::Any->get_logger;
 
-sub new ($class, $sc, $shf) {
+has _sc => (
+	is       => 'rwp',
+	required => 1,
+);
+has _shf => (
+	is       => 'rwp',
+	required => 1,
+);
 
-	my $self = {_sc => $sc, _shf => $shf};
-
-	bless $self, $class;
-	return $self;
+sub BUILDARGS ($class, @args) {
+	return {_sc => $args[0], _shf => $args[1]};
 }
 
 sub get_options ($self) {
 
 	GetOptions(
-		's|select:s@' => sub { my ($select, $sel_ref) = @_;             $self->{_sc}->set_start_with("select", $sel_ref); $self->{_sc}->min(TRUE); },
-		'f|full'      => sub { $self->{_sc}->set_start_with("full");    $self->{_sc}->min(TRUE); },
-		'w|window:s'  => sub { my ($web, $name) = @_;                   $self->{_sc}->set_start_with("window", $name); $self->{_sc}->min(TRUE); },
-		'a|active'    => sub { $self->{_sc}->set_start_with("awindow"); $self->{_sc}->min(TRUE); },
+		's|select:s@' => sub { my ($select, $sel_ref) = @_;             $self->_sc->set_start_with("select", $sel_ref); $self->_sc->min(TRUE); },
+		'f|full'      => sub { $self->_sc->set_start_with("full");    $self->_sc->min(TRUE); },
+		'w|window:s'  => sub { my ($web, $name) = @_;                   $self->_sc->set_start_with("window", $name); $self->_sc->min(TRUE); },
+		'a|active'    => sub { $self->_sc->set_start_with("awindow"); $self->_sc->min(TRUE); },
 
 		# No sections for now: https://github.com/shutter-project/shutter/issues/25
-		#'section'    => sub { $self->{_sc}->set_start_with("section");  $self->{_sc}->min(TRUE); },
-		'm|menu'           => sub { $self->{_sc}->set_start_with("menu");    $self->{_sc}->min(TRUE); },
-		't|tooltip'        => sub { $self->{_sc}->set_start_with("tooltip"); $self->{_sc}->min(TRUE); },
-		'web:s'            => sub { my ($web, $url) = @_; $self->{_sc}->set_start_with("web", $url); },
-		'gif|gif-select:s' => sub { my ($opt, $coords) = @_; $self->{_sc}->set_start_with("gif_select", $coords); $self->{_sc}->min(TRUE); },
-		'gif-window'       => sub { $self->{_sc}->set_start_with("gif_window"); $self->{_sc}->min(TRUE); },
-		'r|redo'           => sub { $self->{_sc}->set_start_with("redoshot");   $self->{_sc}->min(TRUE); },
+		#'section'    => sub { $self->_sc->set_start_with("section");  $self->_sc->min(TRUE); },
+		'm|menu'           => sub { $self->_sc->set_start_with("menu");    $self->_sc->min(TRUE); },
+		't|tooltip'        => sub { $self->_sc->set_start_with("tooltip"); $self->_sc->min(TRUE); },
+		'web:s'            => sub { my ($web, $url) = @_; $self->_sc->set_start_with("web", $url); },
+		'gif|gif-select:s' => sub { my ($opt, $coords) = @_; $self->_sc->set_start_with("gif_select", $coords); $self->_sc->min(TRUE); },
+		'gif-window'       => sub { $self->_sc->set_start_with("gif_window"); $self->_sc->min(TRUE); },
+		'r|redo'           => sub { $self->_sc->set_start_with("redoshot");   $self->_sc->min(TRUE); },
 
-		'p|profile=s'      => sub { my ($p, $profile) = @_; $self->{_sc}->profile_to_start_with($profile); },
-		'o|output=s'       => sub { my ($o, $output) = @_; $self->{_sc}->export_filename($output); },
-		'c|include_cursor' => sub { $self->{_sc}->include_cursor(TRUE); },
-		'C|remove_cursor'  => sub { $self->{_sc}->remove_cursor(TRUE); },
-		'd|delay=s'        => sub { my ($d, $delay) = @_; $self->{_sc}->delay($delay); },
+		'p|profile=s'      => sub { my ($p, $profile) = @_; $self->_sc->profile_to_start_with($profile); },
+		'o|output=s'       => sub { my ($o, $output) = @_; $self->_sc->export_filename($output); },
+		'c|include_cursor' => sub { $self->_sc->include_cursor(TRUE); },
+		'C|remove_cursor'  => sub { $self->_sc->remove_cursor(TRUE); },
+		'd|delay=s'        => sub { my ($d, $delay) = @_; $self->_sc->delay($delay); },
 
 		'h|help'               => sub { pod2usage(-verbose => 1); },
-		'v|version'            => sub { print $self->{_sc}->version, " ", $self->{_sc}->rev, "\n"; exit; },
-		'debug'                => sub { $self->{_sc}->debug(TRUE);                                     $self->{_sc}->log_level("debug"); },
-		'log-file=s'           => sub { my ($l, $file) = @_;                                               $self->{_sc}->log_file($file); },
-		'log-json'             => sub { $self->{_sc}->log_json(TRUE); },
-		'log-level=s'          => sub { my ($l, $level) = @_; $self->{_sc}->log_level($level); },
-		'clear_cache'          => sub { $self->{_sc}->clear_cache(TRUE); },
-		'min_at_startup'       => sub { $self->{_sc}->min(TRUE); },
-		'disable_systray'      => sub { $self->{_sc}->disable_systray(TRUE); },
-		'e|exit_after_capture' => sub { $self->{_sc}->exit_after_capture(TRUE); },
-		'n|no_session'         => sub { $self->{_sc}->no_session(TRUE); },
-		'mock-capture'         => sub { $self->{_sc}->mock_capture(TRUE); },
+		'v|version'            => sub { print $self->_sc->version, " ", $self->_sc->rev, "\n"; exit; },
+		'debug'                => sub { $self->_sc->debug(TRUE);                                     $self->_sc->log_level("debug"); },
+		'log-file=s'           => sub { my ($l, $file) = @_;                                               $self->_sc->log_file($file); },
+		'log-json'             => sub { $self->_sc->log_json(TRUE); },
+		'log-level=s'          => sub { my ($l, $level) = @_; $self->_sc->log_level($level); },
+		'clear_cache'          => sub { $self->_sc->clear_cache(TRUE); },
+		'min_at_startup'       => sub { $self->_sc->min(TRUE); },
+		'disable_systray'      => sub { $self->_sc->disable_systray(TRUE); },
+		'e|exit_after_capture' => sub { $self->_sc->exit_after_capture(TRUE); },
+		'n|no_session'         => sub { $self->_sc->no_session(TRUE); },
+		'mock-capture'         => sub { $self->_sc->mock_capture(TRUE); },
 	);
 
 	#unknown value are passed through in @ARGV - might be filenames
 	my @init_files;
 	if (@ARGV > 0) {
 		foreach my $arg (map { decode(locale => $_, 1) } @ARGV) {
-			if ($self->{_shf}->file_exists($arg) || $self->{_shf}->uri_exists($arg)) {
+			if ($self->_shf->file_exists($arg) || $self->_shf->uri_exists($arg)) {
 
 				#push filename to array, open when GUI is initialized
 				push @init_files, $arg;

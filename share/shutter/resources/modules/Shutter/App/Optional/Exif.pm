@@ -22,8 +22,7 @@
 
 package Shutter::App::Optional::Exif;
 
-#modules
-#--------------------------------------
+use Moo;
 use utf8;
 use v5.40;
 use feature 'try';
@@ -31,27 +30,24 @@ no warnings 'experimental::try';
 
 use Glib qw/TRUE FALSE/;
 
-#--------------------------------------
+has _exiftool => (
+	is       => 'rwp',
+	init_arg => undef,
+	builder  => '_build__exiftool',
+	lazy     => 1,
+);
 
-sub new ($class) {
-
-	my $self = {};
-
-	#libimage-exiftool-perl
+sub _build__exiftool ($self) {
 	try {
 		require Image::ExifTool;
-		$self->{_exiftool} = Image::ExifTool->new;
+		return Image::ExifTool->new;
 	} catch ($e) {
-		$self->{_exiftool} = FALSE;
+		return FALSE;
 	}
-
-	bless $self, $class;
-	return $self;
 }
 
-#getter / setter
 sub get_exiftool ($self) {
-	return $self->{_exiftool};
+	return $self->_exiftool;
 }
 
 1;

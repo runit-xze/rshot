@@ -22,8 +22,7 @@
 
 package Shutter::App::SimpleDialogs;
 
-#modules
-#--------------------------------------
+use Moo;
 use utf8;
 use v5.40;
 use feature 'try';
@@ -31,19 +30,20 @@ no warnings 'experimental::try';
 
 use Gtk3;
 
-#Glib
 use Glib qw/TRUE FALSE/;
 
-#--------------------------------------
+has _window => (
+	is       => 'rwp',
+	required => 1,
+);
+has _gdk_window => (
+	is      => 'rwp',
+	lazy    => 1,
+	default => undef,
+);
 
-##################public subs##################
-sub new ($class, $window, $gdk_window = undef) {
-
-	#constructor
-	my $self = {_window => $window, _gdk_window => $gdk_window};
-
-	bless $self, $class;
-	return $self;
+sub BUILDARGS ($class, @args) {
+	return {_window => $args[0], _gdk_window => $args[1] // undef};
 }
 
 sub dlg_info_message (
@@ -63,7 +63,7 @@ sub dlg_info_message (
 	)
 {
 
-	my $info_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'info', 'none', undef);
+	my $info_dialog = Gtk3::MessageDialog->new($self->_window, [qw/modal destroy-with-parent/], 'info', 'none', undef);
 
 	$info_dialog->set_title("Shutter");
 
@@ -86,7 +86,6 @@ sub dlg_info_message (
 	$info_dialog->add_action_widget($button_widget_extra2, 50) if $button_widget_extra2;
 	$info_dialog->add_action_widget($button_widget_extra3, 60) if $button_widget_extra3;
 
-	#show a detailed message (use expander to show it)
 	if ($detail_message) {
 		my $expander     = Gtk3::Expander->new_with_mnemonic('Show more _details');
 		my $detail_label = Gtk3::Label->new($detail_message);
@@ -100,7 +99,6 @@ sub dlg_info_message (
 		$info_dialog->get_child->add($detail_hbox);
 	}
 
-	#show a detailed message with checkbox
 	my $dcheck = undef;
 	if ($detail_checkbox) {
 		$dcheck = Gtk3::CheckButton->new_with_mnemonic($detail_checkbox);
@@ -112,15 +110,14 @@ sub dlg_info_message (
 
 	$info_dialog->show_all;
 
-	if (defined $self->{_gdk_window} && $self->{_gdk_window} =~ /Gtk3::Gdk::Window|Gtk3::GdkX11::X11Window/) {
-		$info_dialog->get_window->set_transient_for($self->{_gdk_window});
+	if (defined $self->_gdk_window && $self->_gdk_window =~ /Gtk3::Gdk::Window|Gtk3::GdkX11::X11Window/) {
+		$info_dialog->get_window->set_transient_for($self->_gdk_window);
 	} else {
-		$info_dialog->set_transient_for($self->{_window});
+		$info_dialog->set_transient_for($self->_window);
 	}
 
 	my $info_response = $info_dialog->run;
 
-	#-1 when response is an event, e.g. delete-event
 	$info_response = -1 if $info_response =~ /event/;
 
 	$info_dialog->destroy();
@@ -142,7 +139,7 @@ sub dlg_question_message (
 	)
 {
 
-	my $question_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
+	my $question_dialog = Gtk3::MessageDialog->new($self->_window, [qw/modal destroy-with-parent/], 'other', 'none', undef);
 
 	$question_dialog->set_title("Shutter");
 
@@ -160,7 +157,6 @@ sub dlg_question_message (
 	$question_dialog->add_action_widget($button_widget_extra2, 50) if $button_widget_extra2;
 	$question_dialog->add_action_widget($button_widget_extra3, 60) if $button_widget_extra3;
 
-	#show a detailed message (use expander to show it)
 	if ($detail_message) {
 		my $expander     = Gtk3::Expander->new_with_mnemonic('Show more _details');
 		my $detail_label = Gtk3::Label->new($detail_message);
@@ -174,7 +170,6 @@ sub dlg_question_message (
 		$question_dialog->get_child->add($detail_hbox);
 	}
 
-	#show a detailed message with checkbox
 	my $dcheck = undef;
 	if ($detail_checkbox) {
 		$dcheck = Gtk3::CheckButton->new_with_mnemonic($detail_checkbox);
@@ -186,15 +181,14 @@ sub dlg_question_message (
 
 	$question_dialog->show_all;
 
-	if (defined $self->{_gdk_window} && $self->{_gdk_window} =~ /Gtk3::Gdk::Window|Gtk3::GdkX11::X11Window/) {
-		$question_dialog->get_window->set_transient_for($self->{_gdk_window});
+	if (defined $self->_gdk_window && $self->_gdk_window =~ /Gtk3::Gdk::Window|Gtk3::GdkX11::X11Window/) {
+		$question_dialog->get_window->set_transient_for($self->_gdk_window);
 	} else {
-		$question_dialog->set_transient_for($self->{_window});
+		$question_dialog->set_transient_for($self->_window);
 	}
 
 	my $question_response = $question_dialog->run;
 
-	#-1 when response is an event, e.g. delete-event
 	$question_response = -1 if $question_response =~ /event/;
 
 	$question_dialog->destroy();
@@ -220,7 +214,7 @@ sub dlg_error_message (
 	)
 {
 
-	my $error_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
+	my $error_dialog = Gtk3::MessageDialog->new($self->_window, [qw/modal destroy-with-parent/], 'other', 'none', undef);
 
 	$error_dialog->set_title("Shutter");
 
@@ -239,7 +233,6 @@ sub dlg_error_message (
 	$error_dialog->add_action_widget($button_widget_extra2, 50) if $button_widget_extra2;
 	$error_dialog->add_action_widget($button_widget_extra3, 60) if $button_widget_extra3;
 
-	#show a detailed message (use expander to show it)
 	if ($detail_message) {
 		my $expander     = Gtk3::Expander->new_with_mnemonic('Show more _details');
 		my $detail_label = Gtk3::Label->new($detail_message);
@@ -255,15 +248,14 @@ sub dlg_error_message (
 
 	$error_dialog->show_all;
 
-	if (defined $self->{_gdk_window} && $self->{_gdk_window} =~ /Gtk3::Gdk::Window|Gtk3::GdkX11::X11Window/) {
-		$error_dialog->get_window->set_transient_for($self->{_gdk_window});
+	if (defined $self->_gdk_window && $self->_gdk_window =~ /Gtk3::Gdk::Window|Gtk3::GdkX11::X11Window/) {
+		$error_dialog->get_window->set_transient_for($self->_gdk_window);
 	} else {
-		$error_dialog->set_transient_for($self->{_window});
+		$error_dialog->set_transient_for($self->_window);
 	}
 
 	my $error_response = $error_dialog->run;
 
-	#-1 when response is an event, e.g. delete-event
 	$error_response = -1 if $error_response =~ /event/;
 
 	$error_dialog->destroy();
@@ -284,7 +276,7 @@ sub dlg_warning_message (
 	)
 {
 
-	my $warning_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
+	my $warning_dialog = Gtk3::MessageDialog->new($self->_window, [qw/modal destroy-with-parent/], 'other', 'none', undef);
 
 	$warning_dialog->set_title("Shutter");
 
@@ -303,7 +295,6 @@ sub dlg_warning_message (
 	$warning_dialog->add_action_widget($button_widget_extra2, 50) if $button_widget_extra2;
 	$warning_dialog->add_action_widget($button_widget_extra3, 60) if $button_widget_extra3;
 
-	#show a detailed message (use expander to show it)
 	if ($detail_message) {
 		my $expander     = Gtk3::Expander->new_with_mnemonic('Show more _details');
 		my $detail_label = Gtk3::Label->new($detail_message);
@@ -319,15 +310,14 @@ sub dlg_warning_message (
 
 	$warning_dialog->show_all;
 
-	if (defined $self->{_gdk_window} && $self->{_gdk_window} =~ /Gtk3::Gdk::Window|Gtk3::GdkX11::X11Window/) {
-		$warning_dialog->get_window->set_transient_for($self->{_gdk_window});
+	if (defined $self->_gdk_window && $self->_gdk_window =~ /Gtk3::Gdk::Window|Gtk3::GdkX11::X11Window/) {
+		$warning_dialog->get_window->set_transient_for($self->_gdk_window);
 	} else {
-		$warning_dialog->set_transient_for($self->{_window});
+		$warning_dialog->set_transient_for($self->_window);
 	}
 
 	my $warning_response = $warning_dialog->run;
 
-	#-1 when response is an event, e.g. delete-event
 	$warning_response = -1 if $warning_response =~ /event/;
 
 	$warning_dialog->destroy();

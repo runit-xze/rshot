@@ -22,92 +22,101 @@
 
 package Shutter::App::ShutterNotification;
 
-#modules
-#--------------------------------------
+use Moo;
 use utf8;
 use v5.40;
 use feature 'try';
 no warnings 'experimental::try';
 
-#Glib
 use Glib qw/TRUE FALSE/;
 
-#Gtk3
 use Gtk3;
 
 use Log::Any;
 
-#--------------------------------------
-
 my $log = Log::Any->get_logger;
 
-sub new ($class, $sc) {
+has _sc => (
+	is       => 'rwp',
+	required => 1,
+);
+has _nid => (
+	is      => 'rwp',
+	lazy    => 1,
+	default => 0,
+);
+has _summary => (
+	is  => 'rwp',
+	clearer => 1,
+);
+has _body => (
+	is  => 'rwp',
+	clearer => 1,
+);
+has _notifications_timeout => (
+	is      => 'rwp',
+	lazy    => 1,
+	default => 0,
+);
+has _enter_notify_timeout => (
+	is      => 'rwp',
+	lazy    => 1,
+	default => 0,
+);
+has _notifications_window => (
+	is       => 'rwp',
+	init_arg => undef,
+	lazy     => 1,
+	builder  => '_build__notifications_window',
+);
 
-	my $self = {_sc => $sc};
-
-	#Use notifications object
+sub _build__notifications_window ($self) {
 	try {
+		my $win = Gtk3::Window->new('popup');
+		if ($self->_sc->main_window->get_screen->is_composited) {
+			my $screen = $self->_sc->main_window->get_screen;
 
-		#notification window (borderless gtk window)
-		$self->{_notifications_window} = Gtk3::Window->new('popup');
-		if ($self->{_sc}->main_window->get_screen->is_composited) {
-			my $screen = $self->{_sc}->main_window->get_screen;
-
-			# Glib::Object::Introspection doesn't support method call via
-			# cross-package inheritance, call it as a free function instead
-			# (X11Screen inherits from Screen)
-			$self->{_notifications_window}->set_visual(Gtk3::Gdk::Screen::get_rgba_visual($screen) || Gtk3::Gdb::Screen::get_system_visual($screen));
+			$win->set_visual(Gtk3::Gdk::Screen::get_rgba_visual($screen) || Gtk3::Gdb::Screen::get_system_visual($screen));
 		}
 
-		$self->{_notifications_window}->set_app_paintable(TRUE);
-		$self->{_notifications_window}->set_decorated(FALSE);
-		$self->{_notifications_window}->set_skip_taskbar_hint(TRUE);
-		$self->{_notifications_window}->set_skip_pager_hint(TRUE);
-		$self->{_notifications_window}->set_keep_above(TRUE);
-		$self->{_notifications_window}->set_accept_focus(FALSE);
-		$self->{_notifications_window}->add_events('GDK_ENTER_NOTIFY_MASK');
+		$win->set_app_paintable(TRUE);
+		$win->set_decorated(FALSE);
+		$win->set_skip_taskbar_hint(TRUE);
+		$win->set_skip_pager_hint(TRUE);
+		$win->set_keep_above(TRUE);
+		$win->set_accept_focus(FALSE);
+		$win->add_events('GDK_ENTER_NOTIFY_MASK');
 
-		#shape the window
-		my $pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($self->{_sc}->shutter_root . "/share/shutter/resources/icons/notify.svg");
+		my $pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($self->_sc->shutter_root . "/share/shutter/resources/icons/notify.svg");
 
-		#~ my ($pixmap, $mask) = $pixbuf->render_pixmap_and_mask (1);
-		#~ $self->{_notifications_window}->shape_combine_mask($mask, 0, 0);
-
-		#add a widget to control size of the window
 		my $fixed = Gtk3::Fixed->new;
 		$fixed->set_size_request(300, 120);
-		$self->{_notifications_window}->add($fixed);
+		$win->add($fixed);
 
-		$self->{_notifications_window}->signal_connect(
+		$win->signal_connect(
 			'draw' => sub {
 
-				return FALSE unless $self->{_notifications_window};
+				return FALSE unless $self->_notifications_window;
 
-				return FALSE unless $self->{_summary};
+				return FALSE unless $self->_summary;
 
-				#current monitor
-				my $mon = $self->{_sc}->get_current_monitor;
+				my $mon = $self->_sc->get_current_monitor;
 
-				#initial position
-				unless (defined $self->{_notifications_window}->{'pos'}) {
-					$self->{_notifications_window}->move($mon->{x} + $mon->{width} - 315, $mon->{y} + $mon->{height} - 140);
-					$self->{_notifications_window}->{'pos'} = 1;
+				unless (defined $win->{'pos'}) {
+					$win->move($mon->{x} + $mon->{width} - 315, $mon->{y} + $mon->{height} - 140);
+					$win->{'pos'} = 1;
 				}
 
-				#window size and position
-				my ($w, $h) = $self->{_notifications_window}->get_size;
-				my ($x, $y) = $self->{_notifications_window}->get_position;
+				my ($w, $h) = $win->get_size;
+				my ($x, $y) = $win->get_position;
 
-				#obtain current colors and font_desc from the main window
-				my $style     = $self->{_sc}->main_window->get_style_context;
+				my $style     = $self->_sc->main_window->get_style_context;
 				my $sel_bg    = Gtk3::Gdk::RGBA::parse('#131313');
 				my $font_fam  = $style->get_font('normal')->get_family;
 				my $font_size = $style->get_font('normal')->get_size / Pango::SCALE;
 
-				#create cairo context
 				my $cr = $_[1];
 
-				#pango layout
 				my $layout = Pango::Cairo::create_layout($cr);
 				$layout->set_width(($w - 30) * Pango::SCALE);
 
@@ -118,16 +127,15 @@ sub new ($class, $sc) {
 				$layout->set_alignment('left');
 				$layout->set_wrap('word-char');
 
-				#set text
 				$layout->set_markup("<span font_desc=\"$font_fam $font_size\" weight=\"bold\" foreground=\"#FFFFFF\">"
-						. Glib::Markup::escape_text($self->{_summary})
+						. Glib::Markup::escape_text($self->_summary)
 						. "</span><span font_desc=\"$font_fam $font_size\" foreground=\"#FFFFFF\">\n"
-						. Glib::Markup::escape_text($self->{_body})
+						. Glib::Markup::escape_text($self->_body)
 						. "</span>");
 
 				$cr->set_operator('source');
 
-				if ($self->{_sc}->main_window->get_screen->is_composited) {
+				if ($self->_sc->main_window->get_screen->is_composited) {
 					$cr->set_source_rgba(1.0, 1.0, 1.0, 0);
 					Gtk3::Gdk::cairo_set_source_pixbuf($cr, $pixbuf, 0, 0);
 					$cr->paint;
@@ -138,7 +146,6 @@ sub new ($class, $sc) {
 
 				$cr->set_operator('over');
 
-				#get layout size
 				my ($lw, $lh) = $layout->get_pixel_size;
 				$cr->move_to(($w - $lw) / 2, ($h - $lh) / 2);
 				Pango::Cairo::show_layout($cr, $layout);
@@ -146,84 +153,79 @@ sub new ($class, $sc) {
 				return TRUE;
 			});
 
-		$self->{_notifications_window}->signal_connect(
+		$win->signal_connect(
 			'enter-notify-event' => sub {
 
-				#remove old handler
-				if ($self->{_enter_notify_timeout}) {
-					Glib::Source->remove($self->{_enter_notify_timeout});
+				if ($self->_enter_notify_timeout) {
+					Glib::Source->remove($self->_enter_notify_timeout);
 				}
 
-				#current monitor
-				my $mon = $self->{_sc}->get_current_monitor;
+				my $mon = $self->_sc->get_current_monitor;
 
-				if (defined $self->{_notifications_window}->{'pos'} && $self->{_notifications_window}->{'pos'} == 1) {
-					$self->{_notifications_window}->move($mon->{x} + $mon->{width} - 315, $mon->{y} + 40);
-					$self->{_notifications_window}->{'pos'} = 0;
+				if (defined $win->{'pos'} && $win->{'pos'} == 1) {
+					$win->move($mon->{x} + $mon->{width} - 315, $mon->{y} + 40);
+					$win->{'pos'} = 0;
 				} else {
-					$self->{_notifications_window}->move($mon->{x} + $mon->{width} - 315, $mon->{y} + $mon->{height} - 140);
-					$self->{_notifications_window}->{'pos'} = 1;
+					$win->move($mon->{x} + $mon->{width} - 315, $mon->{y} + $mon->{height} - 140);
+					$win->{'pos'} = 1;
 				}
 
-				$self->{_enter_notify_timeout} = Glib::Timeout->add(
+				$self->_set__enter_notify_timeout(Glib::Timeout->add(
 					100,
 					sub {
-						$self->show($self->{_summary}, $self->{_body});
-						$self->{_enter_notify_timeout} = 0;
+						$self->show($self->_summary, $self->_body);
+						$self->_set__enter_notify_timeout(0);
 						return FALSE;
-					});
+					}));
 
 				return FALSE;
 			});
 
+		return $win;
 	} catch ($e) {
 		$log->warn("ShutterNotification init warning: $e");
+		return undef;
 	}
+}
 
-	#last nid
-	$self->{_nid} = 0;
-
-	bless $self, $class;
-	return $self;
+sub BUILDARGS ($class, @args) {
+	return {_sc => $args[0]};
 }
 
 sub show ($self, $summary, $body) {
 
-	#remove old handler
-	if ($self->{_notifications_timeout}) {
-		Glib::Source->remove($self->{_notifications_timeout});
+	if ($self->_notifications_timeout) {
+		Glib::Source->remove($self->_notifications_timeout);
 	}
 
-	#set body and summary
-	$self->{_summary} = $summary;
-	$self->{_body}    = $body;
+	$self->_set__summary($summary);
+	$self->_set__body($body);
 
-	$self->{_notifications_window}->show_all;
+	$self->_notifications_window->show_all if $self->_notifications_window;
 
-	$self->{_notifications_window}->queue_draw;
+	$self->_notifications_window->queue_draw if $self->_notifications_window;
 
-	$self->{_notifications_timeout} = Glib::Timeout->add(
+	$self->_set__notifications_timeout(Glib::Timeout->add(
 		3000,
 		sub {
 			$self->close;
-			$self->{_notifications_timeout} = 0;
+			$self->_set__notifications_timeout(0);
 			return FALSE;
-		});
+		}));
 
 	return 0;
 }
 
 sub close ($self, $no_clear = undef) {
 
-	#clear body and summary
 	unless ($no_clear) {
-		$self->{_summary} = undef;
-		$self->{_body}    = undef;
+		$self->_clear_summary;
+		$self->_clear_body;
 	}
 
-	$self->{_notifications_window}->hide;
+	$self->_notifications_window->hide if $self->_notifications_window;
 
-	$self->{_notifications_window}->{'pos'} = undef;
+	$self->_notifications_window->{'pos'} = undef if $self->_notifications_window;
 
 	return 0;
 }

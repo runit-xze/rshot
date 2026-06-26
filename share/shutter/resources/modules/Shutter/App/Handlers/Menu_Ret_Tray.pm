@@ -62,15 +62,15 @@ sub fct_ret_program_menu ($self, $menu_programs) {
 
 	#still no key? => leave sub
 	unless ($key) {
-		$sm->{_menuitem_reopen}->set_sensitive(FALSE)       if $sm->{_menuitem_reopen};
-		$sm->{_menuitem_large_reopen}->set_sensitive(FALSE) if $sm->{_menuitem_large_reopen};
+		$sm->_menuitem_reopen->set_sensitive(FALSE)       if $sm->_menuitem_reopen;
+		$sm->_menuitem_large_reopen->set_sensitive(FALSE) if $sm->_menuitem_large_reopen;
 		return $menu_programs;
 	}
 
 	#no valid hash entry?
 	unless (exists $session_screens->{$key}->{'mime_type'}) {
-		$sm->{_menuitem_reopen}->set_sensitive(FALSE)       if $sm->{_menuitem_reopen};
-		$sm->{_menuitem_large_reopen}->set_sensitive(FALSE) if $sm->{_menuitem_large_reopen};
+		$sm->_menuitem_reopen->set_sensitive(FALSE)       if $sm->_menuitem_reopen;
+		$sm->_menuitem_large_reopen->set_sensitive(FALSE) if $sm->_menuitem_large_reopen;
 		return $menu_programs;
 	}
 
@@ -80,15 +80,15 @@ sub fct_ret_program_menu ($self, $menu_programs) {
 	my $apps = Glib::IO::AppInfo::get_recommended_for_type($mime_type);
 
 	unless (defined $apps) {
-		$sm->{_menuitem_reopen}->set_sensitive(FALSE)       if $sm->{_menuitem_reopen};
-		$sm->{_menuitem_large_reopen}->set_sensitive(FALSE) if $sm->{_menuitem_large_reopen};
+		$sm->_menuitem_reopen->set_sensitive(FALSE)       if $sm->_menuitem_reopen;
+		$sm->_menuitem_large_reopen->set_sensitive(FALSE) if $sm->_menuitem_large_reopen;
 		return $menu_programs;
 	}
 
 	#no apps determined!
 	unless (scalar @$apps) {
-		$sm->{_menuitem_reopen}->set_sensitive(FALSE)       if $sm->{_menuitem_reopen};
-		$sm->{_menuitem_large_reopen}->set_sensitive(FALSE) if $sm->{_menuitem_large_reopen};
+		$sm->_menuitem_reopen->set_sensitive(FALSE)       if $sm->_menuitem_reopen;
+		$sm->_menuitem_large_reopen->set_sensitive(FALSE) if $sm->_menuitem_large_reopen;
 		return $menu_programs;
 	}
 
@@ -128,8 +128,8 @@ sub fct_ret_program_menu ($self, $menu_programs) {
 
 	#menu does not contain any item
 	unless ($menu_programs->get_children) {
-		$sm->{_menuitem_reopen}->set_sensitive(FALSE)       if $sm->{_menuitem_reopen};
-		$sm->{_menuitem_large_reopen}->set_sensitive(FALSE) if $sm->{_menuitem_large_reopen};
+		$sm->_menuitem_reopen->set_sensitive(FALSE)       if $sm->_menuitem_reopen;
+		$sm->_menuitem_large_reopen->set_sensitive(FALSE) if $sm->_menuitem_large_reopen;
 	}
 
 	$menu_programs->show_all;

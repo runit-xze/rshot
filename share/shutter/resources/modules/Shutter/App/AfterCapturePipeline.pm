@@ -13,6 +13,7 @@
 
 package Shutter::App::AfterCapturePipeline;
 
+use Moo;
 use utf8;
 use v5.40;
 use feature 'try';
@@ -24,7 +25,6 @@ use Log::Any;
 
 my $log = Log::Any->get_logger;
 
-# Valid step types and their display labels
 my %STEP_TYPES = (
 	save_to_disk   => 'Save to Disk',
 	open_in_editor => 'Open in Editor',
@@ -41,56 +41,65 @@ my @STEP_ORDER = qw(
 	upload_sxcu copy_link pin_to_screen run_command
 );
 
-sub new ($class, $sc, $gettext_object, $main_gtk_window) {
-	my $self = {
-		_sc              => $sc,
-		_d               => $gettext_object,
-		_main_gtk_window => $main_gtk_window,
-		_steps           => [],
-	};
-	bless $self, $class;
-	return $self;
+has _sc => (
+	is       => 'rwp',
+	required => 1,
+);
+has _d => (
+	is       => 'rwp',
+	required => 1,
+);
+has _main_gtk_window => (
+	is       => 'rwp',
+	required => 1,
+);
+has _steps => (
+	is       => 'rwp',
+	init_arg => undef,
+	lazy     => 1,
+	builder  => '_build__steps',
+);
+
+sub _build__steps ($self) {
+	return [];
 }
 
-# Load pipeline steps from a JSON string (stored in settings XML)
+sub BUILDARGS ($class, @args) {
+	return {_sc => $args[0], _d => $args[1], _main_gtk_window => $args[2]};
+}
+
 sub load_from_json ($self, $json_str) {
 	return unless $json_str && length($json_str) > 2;
 	try {
 		my $data = JSON::MaybeXS->new->decode($json_str);
-		$self->{_steps} = $data if ref $data eq 'ARRAY';
+		$self->_set__steps($data) if ref $data eq 'ARRAY';
 	} catch ($e) {
 		$log->warn("failed to parse steps JSON: $e");
-		$self->{_steps} = [];
+		$self->_set__steps([]);
 	}
 	return;
 }
 
-# Serialize pipeline steps to a JSON string for storage
 sub to_json ($self) {
-	return JSON::MaybeXS->new->encode($self->{_steps} // []);
+	return JSON::MaybeXS->new->encode($self->_steps // []);
 }
 
 sub get_steps ($self) {
-	return @{$self->{_steps}};
+	return @{$self->_steps};
 }
 
 sub set_steps ($self, @steps) {
-	$self->{_steps} = \@steps;
+	$self->_set__steps(\@steps);
 	return;
 }
 
-# Execute the pipeline for a given screenshot filename.
-# $context is a hashref with keys: filename, pixbuf, clipboard, upload_cb, editor_cb, pin_cb
 sub execute ($self, $context) {
-	my $d = $self->{_d};
+	my $d = $self->_d;
 
-	for my $step (@{$self->{_steps}}) {
+	for my $step (@{$self->_steps}) {
 		my $type = $step->{type} // '';
 
 		if ($type eq 'save_to_disk') {
-
-			# Already saved before pipeline runs; this step is a no-op placeholder
-			# but could trigger a "save as" dialog if desired.
 
 		} elsif ($type eq 'open_in_editor') {
 			$context->{editor_cb}->($context->{filename})
@@ -111,8 +120,8 @@ sub execute ($self, $context) {
 				if ref $context->{upload_cb} eq 'CODE';
 
 		} elsif ($type eq 'copy_link') {
-			if (defined $context->{clipboard} && defined $$context->{upload_link}) {
-				$context->{clipboard}->set_text($$context->{upload_link});
+			if (defined $context->{clipboard} && defined $context->{upload_link}) {
+				$context->{clipboard}->set_text($context->{upload_link});
 			}
 
 		} elsif ($type eq 'pin_to_screen') {
@@ -128,13 +137,11 @@ sub execute ($self, $context) {
 	return;
 }
 
-# Build and return a GTK widget for configuring the pipeline (for embedding in Preferences)
 sub build_config_widget ($self) {
-	my $d = $self->{_d};
+	my $d = $self->_d;
 
 	my $vbox = Gtk3::VBox->new(FALSE, 6);
 
-	# Header label
 	my $header = Gtk3::Label->new('');
 	$header->set_markup('<b>After Capture Task Pipeline</b>');
 	$header->set_alignment(0, 0.5);
@@ -145,11 +152,9 @@ sub build_config_widget ($self) {
 	$desc->set_alignment(0, 0.5);
 	$vbox->pack_start($desc, FALSE, FALSE, 0);
 
-	# List store: col 0 = enabled bool, col 1 = step type key, col 2 = display label, col 3 = extra (e.g. command)
 	my $store = Gtk3::ListStore->new('Glib::Boolean', 'Glib::String', 'Glib::String', 'Glib::String');
 
-	# Populate store from current steps
-	for my $step (@{$self->{_steps}}) {
+	for my $step (@{$self->_steps}) {
 		my $type    = $step->{type}      // '';
 		my $label   = $STEP_TYPES{$type} // $type;
 		my $extra   = $step->{command}   // $step->{sxcu_path} // '';
@@ -158,11 +163,9 @@ sub build_config_widget ($self) {
 		$store->set($iter, 0 => $enabled, 1 => $type, 2 => $label, 3 => $extra);
 	}
 
-	# Tree view
 	my $tv = Gtk3::TreeView->new($store);
 	$tv->set_reorderable(TRUE);
 
-	# Enabled checkbox column
 	my $toggle_renderer = Gtk3::CellRendererToggle->new;
 	$toggle_renderer->set_activatable(TRUE);
 	$toggle_renderer->signal_connect(
@@ -175,13 +178,11 @@ sub build_config_widget ($self) {
 	my $col_enabled = Gtk3::TreeViewColumn->new_with_attributes('On', $toggle_renderer, active => 0);
 	$tv->append_column($col_enabled);
 
-	# Step label column
 	my $text_renderer = Gtk3::CellRendererText->new;
 	my $col_step      = Gtk3::TreeViewColumn->new_with_attributes('Step', $text_renderer, text => 2);
 	$col_step->set_expand(TRUE);
 	$tv->append_column($col_step);
 
-	# Extra info column (command / sxcu path)
 	my $extra_renderer = Gtk3::CellRendererText->new;
 	$extra_renderer->set_property('editable', TRUE);
 	$extra_renderer->signal_connect(
@@ -200,10 +201,8 @@ sub build_config_widget ($self) {
 	$sw->add($tv);
 	$vbox->pack_start($sw, TRUE, TRUE, 4);
 
-	# Buttons: Add step, Remove step, Move Up, Move Down
 	my $btn_box = Gtk3::HBox->new(FALSE, 4);
 
-	# "Add Step" dropdown via combo
 	my $step_combo = Gtk3::ComboBoxText->new;
 	for my $key (@STEP_ORDER) {
 		$step_combo->append_text($STEP_TYPES{$key});
@@ -231,7 +230,7 @@ sub build_config_widget ($self) {
 		});
 	$btn_box->pack_start($remove_btn, FALSE, FALSE, 0);
 
-	my $up_btn = Gtk3::Button->new_with_label('↑');
+	my $up_btn = Gtk3::Button->new_with_label("\x{e2}\x{86}\x{91}");
 	$up_btn->signal_connect(
 		'clicked' => sub {
 			my $sel = $tv->get_selection;
@@ -245,7 +244,7 @@ sub build_config_widget ($self) {
 		});
 	$btn_box->pack_start($up_btn, FALSE, FALSE, 0);
 
-	my $down_btn = Gtk3::Button->new_with_label('↓');
+	my $down_btn = Gtk3::Button->new_with_label("\x{e2}\x{86}\x{93}");
 	$down_btn->signal_connect(
 		'clicked' => sub {
 			my $sel = $tv->get_selection;
@@ -258,7 +257,6 @@ sub build_config_widget ($self) {
 
 	$vbox->pack_start($btn_box, FALSE, FALSE, 0);
 
-	# Attach a method to extract steps back from the store when saving
 	$vbox->{_get_steps_from_store} = sub {
 		my @steps;
 		my $iter = $store->get_iter_first;

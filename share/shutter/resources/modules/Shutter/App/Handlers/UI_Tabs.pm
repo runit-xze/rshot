@@ -133,9 +133,9 @@ sub fct_update_profile_selectors ($self, $combobox_settings_profiles, $current_p
 		}
 
 		#main menu
-		if ($sm->{_menuitem_quicks}) {
-			$sm->{_menuitem_quicks}->set_submenu(fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref, $sm->{_menuitem_quicks}->get_submenu)) if defined &fct_ret_profile_menu;
-			$sm->{_menuitem_quicks}->set_sensitive(TRUE);
+		if ($sm->_menuitem_quicks) {
+			$sm->_menuitem_quicks->set_submenu(fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref, $sm->_menuitem_quicks->get_submenu)) if defined &fct_ret_profile_menu;
+			$sm->_menuitem_quicks->set_sensitive(TRUE);
 		}
 
 		#and statusbar
@@ -186,9 +186,9 @@ sub fct_update_profile_selectors ($self, $combobox_settings_profiles, $current_p
 		}
 
 		#main menu
-		if ($sm->{_menuitem_quicks}) {
-			$sm->{_menuitem_quicks}->set_submenu(undef);
-			$sm->{_menuitem_quicks}->set_sensitive(FALSE);
+		if ($sm->_menuitem_quicks) {
+			$sm->_menuitem_quicks->set_submenu(undef);
+			$sm->_menuitem_quicks->set_sensitive(FALSE);
 		}
 
 		#and statusbar

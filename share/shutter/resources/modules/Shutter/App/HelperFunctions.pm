@@ -22,8 +22,7 @@
 
 package Shutter::App::HelperFunctions;
 
-#modules
-#--------------------------------------
+use Moo;
 use utf8;
 use v5.40;
 use feature 'try';
@@ -32,28 +31,38 @@ use Gtk3;
 use Log::Any;
 use Shutter::App::SimpleDialogs;
 
-#Glib
 use Glib qw/TRUE FALSE/;
-
-#--------------------------------------
 
 my $log = Log::Any->get_logger;
 
-##################public subs##################
-sub new ($class, $common) {
+has _common => (
+	is       => 'rwp',
+	required => 1,
+);
+has _dialogs => (
+	is       => 'rwp',
+	init_arg => undef,
+	lazy     => 1,
+	builder  => '_build__dialogs',
+);
+has _d => (
+	is       => 'rwp',
+	init_arg => undef,
+	lazy     => 1,
+	builder  => '_build__d',
+);
 
-	#constructor
-	my $self = {_common => $common};
+sub _build__dialogs ($self) {
+	my $current_window = $self->_common->main_window;
+	return Shutter::App::SimpleDialogs->new($current_window);
+}
 
-	#import shutter dialogs
-	my $current_window = $self->{_common}->main_window;
-	$self->{_dialogs} = Shutter::App::SimpleDialogs->new($current_window);
+sub _build__d ($self) {
+	return $self->_common->gettext_object;
+}
 
-	#gettext
-	$self->{_d} = $self->{_common}->gettext_object;
-
-	bless $self, $class;
-	return $self;
+sub BUILDARGS ($class, @args) {
+	return {_common => $args[0]};
 }
 
 sub xdg_open ($self, $dialog, $link, $user_data) {
@@ -63,9 +72,9 @@ sub xdg_open ($self, $dialog, $link, $user_data) {
 		Gtk3::show_uri_on_window(undef, $uri, Gtk3::Gdk::CURRENT_TIME);
 	};
 	if ($@) {
-		my $response = $self->{_dialogs}->dlg_error_message(
-			sprintf($self->{_d}->get("Error while executing %s."),        "'xdg-open'"),
-			sprintf($self->{_d}->get("There was an error executing %s."), "'xdg-open'"),
+		my $response = $self->_dialogs->dlg_error_message(
+			sprintf($self->_d->get("Error while executing %s."),        "'xdg-open'"),
+			sprintf($self->_d->get("There was an error executing %s."), "'xdg-open'"),
 			undef, undef, undef, undef, undef, undef, $@
 		);
 	}
@@ -79,10 +88,10 @@ sub xdg_open_mail ($self, $dialog, $mail, @user_data) {
 	system(@cmd, @user_data);
 
 	if ($?) {
-		my $response = $self->{_dialogs}->dlg_error_message(
-			sprintf($self->{_d}->get("Error while executing %s."),        "'xdg-email'"),
-			sprintf($self->{_d}->get("There was an error executing %s."), "'xdg-email'"),
-			undef, undef, undef, undef, undef, undef, sprintf($self->{_d}->get("Exit Code: %d."), $? >> 8));
+		my $response = $self->_dialogs->dlg_error_message(
+			sprintf($self->_d->get("Error while executing %s."),        "'xdg-email'"),
+			sprintf($self->_d->get("There was an error executing %s."), "'xdg-email'"),
+			undef, undef, undef, undef, undef, undef, sprintf($self->_d->get("Exit Code: %d."), $? >> 8));
 	}
 	return;
 }
@@ -90,10 +99,10 @@ sub xdg_open_mail ($self, $dialog, $mail, @user_data) {
 sub nautilus_sendto ($self, $user_data) {
 	system('nautilus-sendto', $user_data);
 	if ($?) {
-		my $response = $self->{_dialogs}->dlg_error_message(
-			sprintf($self->{_d}->get("Error while executing %s."),        "'nautilus-sendto'"),
-			sprintf($self->{_d}->get("There was an error executing %s."), "'nautilus-sendto'"),
-			undef, undef, undef, undef, undef, undef, sprintf($self->{_d}->get("Exit Code: %d."), $? >> 8));
+		my $response = $self->_dialogs->dlg_error_message(
+			sprintf($self->_d->get("Error while executing %s."),        "'nautilus-sendto'"),
+			sprintf($self->_d->get("There was an error executing %s."), "'nautilus-sendto'"),
+			undef, undef, undef, undef, undef, undef, sprintf($self->_d->get("Exit Code: %d."), $? >> 8));
 	}
 	return;
 }
@@ -128,13 +137,12 @@ sub file_executable ($self, $filename) {
 }
 
 sub switch_home_in_file ($self, $filename) {
-	$filename =~ s/^~/$ENV{ HOME }/;    #switch ~ in path to /home/username
+	$filename =~ s/^~/$ENV{ HOME }/;
 	return $filename;
 }
 
 sub utf8_decode ($self, $string) {
 
-	#see https://bugs.launchpad.net/shutter/+bug/347821
 	utf8::decode $string;
 
 	return $string;
@@ -182,8 +190,6 @@ sub usage ($self) {
 	return TRUE;
 }
 
-# to help migration from Gtk2 to Gtk3
-# Native Gtk3::IconSize doesn't work for some reason
 sub icon_size ($self, $size) {
 	my @result = Glib::Object::Introspection->invoke('Gtk', undef, 'icon_size_lookup', Glib::Object::Introspection->convert_sv_to_enum('Gtk3::IconSize', $size));
 	my $one    = shift @result;
@@ -191,7 +197,6 @@ sub icon_size ($self, $size) {
 	return @result;
 }
 
-# to help migration from Gtk2 to Gtk3
 sub accel ($self, $str) {
 	return Glib::Object::Introspection->invoke('Gtk', undef, 'accelerator_parse', $str);
 }
@@ -216,15 +221,12 @@ sub validate_filename ($self, $myfilename, $myfilename_hint) {
 
 			my $input = Gtk3::Gdk::keyval_to_unicode($event->keyval);
 
-			#invalid input
 			if (grep { $input == $_ } @invalid_codes) {
 				my $char = chr($input);
 				$char = '&amp;' if $char eq '&';
-				$myfilename_hint->set_markup("<span size='small'>" . sprintf($self->{_d}->get("Reserved character %s is not allowed to be in a filename."), "'" . $char . "'") . "</span>");
+				$myfilename_hint->set_markup("<span size='small'>" . sprintf($self->_d->get("Reserved character %s is not allowed to be in a filename."), "'" . $char . "'") . "</span>");
 				return TRUE;
 			} else {
-
-				#clear possible message when valid char is entered
 				$myfilename_hint->set_markup("<span size='small'></span>");
 				return FALSE;
 			}
@@ -234,13 +236,11 @@ sub validate_filename ($self, $myfilename, $myfilename_hint) {
 
 sub get_program_model ($self) {
 	my $model = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::Scalar');
-	my $sc    = $self->{_common};
-	my $d     = $self->{_d};
+	my $sc    = $self->_common;
+	my $d     = $self->_d;
 
-	# TODO: check goocanvas properly
 	my $goocanvas = TRUE;
 
-	#add Shutter's built-in editor to the list
 	if ($goocanvas) {
 		my $icon_pixbuf = undef;
 		my $icon        = 'shutter';
@@ -255,20 +255,16 @@ sub get_program_model ($self) {
 		$model->set($model->append, 0, $icon_pixbuf, 1, $d->get("Built-in Editor"), 2, 'shutter-built-in');
 	}
 
-	#get applications
 	my $apps = Glib::IO::AppInfo::get_recommended_for_type('image/png');
 
 	return $model unless defined $apps && scalar @$apps;
 
-	#create menu items
 	foreach my $app (@$apps) {
 
-		#ignore Shutter's desktop entry
 		next if $app->get_id eq 'shutter.desktop';
 
 		my $app_name = $self->utf8_decode($app->get_display_name);
 
-		#get icon
 		my $icon_pixbuf = undef;
 		my $icon        = $app->get_icon;
 		if ($icon) {
@@ -290,29 +286,24 @@ sub get_program_model ($self) {
 
 sub check_installed_programs ($self, $progname) {
 
-	#update list of available programs in settings dialog
 	if ($progname) {
 		my $model         = $progname->get_model();
 		my $progname_iter = $progname->get_active_iter();
 
-		#get last prog
 		my $progname_value;
 		if (defined $progname_iter) {
 			$progname_value = $model->get_value($progname_iter, 1);
 		}
 
-		#rebuild model with new hash of installed programs...
 		$model = $self->get_program_model();
 		$progname->set_model($model);
 
-		#...and try to set last value
 		if ($progname_value) {
 			$model->foreach(sub { $self->fct_iter_programs(@_, $progname_value, $progname) });
 		} else {
 			$progname->set_active(0);
 		}
 
-		#nothing has been set
 		if ($progname->get_active == -1) {
 			$progname->set_active(0);
 		}
@@ -334,7 +325,7 @@ sub fct_iter_programs ($self, $model, $path, $iter, $data, $progname_widget) {
 
 sub load_plugin_tree ($self, $plugins, $lp) {
 	my $effects_model = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String');
-	my $shutter_root  = $self->{_common}->shutter_root;
+	my $shutter_root  = $self->_common->shutter_root;
 
 	foreach my $pkey (sort keys %$plugins) {
 		if ($plugins->{$pkey}->{'binary'}) {

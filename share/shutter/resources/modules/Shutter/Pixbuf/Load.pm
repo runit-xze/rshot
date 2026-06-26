@@ -22,33 +22,25 @@
 
 package Shutter::Pixbuf::Load;
 
-#modules
-#--------------------------------------
 use utf8;
 use v5.40;
 use feature 'try';
 no warnings 'experimental::try';
 
+use Moo;
 use Gtk3;
-
-#fileparse and tempfile
 use File::Basename qw/ fileparse dirname basename /;
 use File::Temp     qw/ tempfile tempdir /;
-
-#Glib
 use Glib qw/TRUE FALSE/;
 
-#--------------------------------------
+has '_common'          => (is => 'rwp');
+has '_window'          => (is => 'rwp');
+has '_no_error_dialog' => (is => 'rwp');
 
-##################public subs##################
-sub new ($class, $common, $window = undef, $no_error_dialog = undef) {
-
-	#constructor
-	my $self = {_common => $common, _window => $window, _no_error_dialog => $no_error_dialog};
-
-	bless $self, $class;
-	return $self;
-}
+around BUILDARGS => sub {
+	my ($orig, $class, $common, $window, $no_error_dialog) = @_;
+	return { common => $common, window => $window, no_error_dialog => $no_error_dialog };
+};
 
 sub load ($self, $filename, $width = undef, $height = undef, $sratio = undef, $rotate = undef) {
 	my $pixbuf = undef;
@@ -61,19 +53,15 @@ sub load ($self, $filename, $width = undef, $height = undef, $sratio = undef, $r
 			$pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($filename);
 		}
 	} catch ($e) {
-		unless (defined $self->{_no_error_dialog} && $self->{_no_error_dialog}) {
+		unless (defined $self->_no_error_dialog && $self->_no_error_dialog) {
 
-			#import shutter dialogs
-			my $current_window = $self->{_window} || $self->{_common}->main_window;
+			my $current_window = $self->_window || $self->_common->main_window;
 			my $sd             = Shutter::App::SimpleDialogs->new($current_window);
 
-			#gettext variable
-			my $d = $self->{_common}->gettext_object;
+			my $d = $self->_common->gettext_object;
 
-			#parse filename
 			my ($name, $folder, $type) = fileparse($filename, qr/\.[^.]*/);
 
-			#nice error dialog, more detailed messages are shown with a gtk2 expander
 			my $response = $sd->dlg_error_message(
 				sprintf($d->get("Error while opening image %s."), "'" . $name . $type . "'"),
 				$d->get("There was an error opening the image."),
@@ -82,7 +70,6 @@ sub load ($self, $filename, $width = undef, $height = undef, $sratio = undef, $r
 		}
 	}
 
-	#read exif and rotate accordingly
 	if ($rotate && $pixbuf) {
 		$pixbuf = $self->auto_rotate($pixbuf);
 	}
@@ -111,7 +98,6 @@ sub auto_rotate ($self, $pixbuf) {
 	if (defined $option && exists $orientation_flags{$option}) {
 		my ($rotate, $flip_horiz) = split ",", $orientation_flags{$option};
 
-		#~ print $option, "\n";
 		if (defined $rotate) {
 			$pixbuf = $pixbuf->rotate_simple($rotate);
 		}

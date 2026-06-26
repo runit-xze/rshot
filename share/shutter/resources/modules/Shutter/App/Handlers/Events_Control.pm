@@ -144,32 +144,32 @@ sub fct_control_signals ($self, $action) {
 	}
 
 	#enable/disable controls
-	if ($st && $st->{_select} && $sm && $sm->{_menuitem_selection}) {
+	if ($st && $st->_select && $sm && $sm->_menuitem_selection) {
 
 		#menu
 		if ($x11_supported) {
-			$sm->{_menuitem_selection}->set_sensitive($sensitive);
-			$sm->{_menuitem_window}->set_sensitive($sensitive);
-			$sm->{_menuitem_menu}->set_sensitive($sensitive);
-			$sm->{_menuitem_tooltip}->set_sensitive($sensitive);
+			$sm->_menuitem_selection->set_sensitive($sensitive);
+			$sm->_menuitem_window->set_sensitive($sensitive);
+			$sm->_menuitem_menu->set_sensitive($sensitive);
+			$sm->_menuitem_tooltip->set_sensitive($sensitive);
 		}
-		$sm->{_menuitem_web}->set_sensitive($sensitive)
-			if ($gnome_web_photo && $sm->{_menuitem_web});
-		$sm->{_menuitem_iclipboard}->set_sensitive($sensitive) if $sm->{_menuitem_iclipboard};
+		$sm->_menuitem_web->set_sensitive($sensitive)
+			if ($gnome_web_photo && $sm->_menuitem_web);
+		$sm->_menuitem_iclipboard->set_sensitive($sensitive) if $sm->_menuitem_iclipboard;
 
 		#toolbar
 		if ($x11_supported) {
-			$st->{_select}->set_sensitive($sensitive);
-			$st->{_window}->set_sensitive($sensitive);
-			$st->{_menu}->set_sensitive($sensitive);
-			$st->{_tooltip}->set_sensitive($sensitive);
+			$st->_select->set_sensitive($sensitive);
+			$st->_window->set_sensitive($sensitive);
+			$st->_menu->set_sensitive($sensitive);
+			$st->_tooltip->set_sensitive($sensitive);
 		}
-		$st->{_web}->set_sensitive($sensitive) if ($gnome_web_photo && $st->{_web});
+		$st->_web->set_sensitive($sensitive) if ($gnome_web_photo && $st->_web);
 
 		#special case: redoshot (toolbar and menu)
 		if (defined &fct_get_last_capture && fct_get_last_capture()) {
-			$st->{_redoshot}->set_sensitive($sensitive)          if $st->{_redoshot};
-			$sm->{_menuitem_redoshot}->set_sensitive($sensitive) if $sm->{_menuitem_redoshot};
+			$st->_redoshot->set_sensitive($sensitive)          if $st->_redoshot;
+			$sm->_menuitem_redoshot->set_sensitive($sensitive) if $sm->_menuitem_redoshot;
 		}
 
 	}

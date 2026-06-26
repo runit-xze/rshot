@@ -135,10 +135,10 @@ sub dlg_open ($self, $widget, $data) {
 		}
 
 	} else {
-		if ($sm && $sm->{_menu_recent} && $sm->{_menu_recent}->get_current_item) {
-			print "Trying to open file via RecentChooserMenu ", $sm->{_menu_recent}->get_current_item->get_uri, "\n"
+		if ($sm && $sm->_menu_recent && $sm->_menu_recent->get_current_item) {
+			print "Trying to open file via RecentChooserMenu ", $sm->_menu_recent->get_current_item->get_uri, "\n"
 				if $sc->debug;
-			push @new_files, $sm->{_menu_recent}->get_current_item->get_uri;
+			push @new_files, $sm->_menu_recent->get_current_item->get_uri;
 		}
 	}
 

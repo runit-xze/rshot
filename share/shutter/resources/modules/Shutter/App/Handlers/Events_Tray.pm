@@ -72,14 +72,14 @@ sub evt_iconview_button_press ($self, $ev_box, $ev, $view) {
 		#select item
 		$view->select_path($path);
 
-		$sm->{_menu_large_actions}->popup(
+		$sm->_menu_large_actions->popup(
 			undef,    # parent menu shell
 			undef,    # parent menu item
 			undef,    # menu pos func
 			undef,    # data
 			$ev->button,
 			$ev->time
-		) if $sm->{_menu_large_actions};
+		) if $sm->_menu_large_actions;
 
 	}
 
@@ -195,14 +195,14 @@ sub evt_tab_button_press ($self, $ev_box, $ev, $key) {
 
 	#right click
 	if ($key && $ev->button == 3 && $ev->type eq 'button-press') {
-		$sm->{_menu_large_actions}->popup(
+		$sm->_menu_large_actions->popup(
 			undef,    # parent menu shell
 			undef,    # parent menu item
 			undef,    # menu pos func
 			undef,    # data
 			$ev->button,
 			$ev->time
-		) if $sm->{_menu_large_actions};
+		) if $sm->_menu_large_actions;
 	}
 
 	return TRUE;
