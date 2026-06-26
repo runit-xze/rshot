@@ -1,4 +1,9 @@
 # RShot (formerly Shutter)
+## Q: How do I install this?
+## A: For now, point your agent at it and ask it to do so. Flatpak and appimage will be coming soon-ish.
+
+## Q: What works?
+## A: This changes depending on the state of the repo, but as of time of writing screenshots + gif recording + video recording with sound all work.
 
 RShot is a modern, feature-rich screenshot program for Linux-based operating systems. It is a heavily refactored and modernized fork of the original Shutter project.
 
