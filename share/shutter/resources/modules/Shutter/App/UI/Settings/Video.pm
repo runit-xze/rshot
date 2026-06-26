@@ -14,7 +14,7 @@ has _vbox => (is => 'rw');
 
 sub BUILD ($self, $args) {
 	my $sc = $self->cli->sc;
-	my $d  = $sc->get_gettext;
+	my $d  = $sc->gettext_object;
 	my $sm = $self->cli->{settings_manager};
 
 	my $vbox_main = Gtk3::VBox->new(FALSE, 12);

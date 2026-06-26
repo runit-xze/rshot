@@ -31,7 +31,7 @@ has _uploaders_dir => (is => 'rw', default => sub { $ENV{'HOME'} . "/.shutter/up
 
 sub BUILD ($self, $args) {
 	my $sc = $self->cli->sc;
-	my $d  = $sc->get_gettext;
+	my $d  = $sc->gettext_object;
 
 	make_path($self->_uploaders_dir) unless -d $self->_uploaders_dir;
 

@@ -47,7 +47,7 @@ has '_tabs'         => (is => 'rw', default => sub { [] });
 
 sub create_settings_dialog ($self, $window) {
 	my $sc = $self->cli->sc;
-	my $d  = $sc->get_gettext;
+	my $d  = $sc->gettext_object;
 
 	my $dialog = Gtk3::Dialog->new(SHUTTER_NAME . " - " . $d->get("Preferences"), $window, [qw/modal destroy-with-parent/], 'gtk-close' => 'close');
 
