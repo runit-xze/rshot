@@ -1,3 +1,8 @@
+RShot (v1.0.0)
+
+  Inital public release:
+	- * Major architectural refactor (see readme, obviously)
+	- * Add GIF + video w/ sound capture support.
 shutter (0.99.7)
 
 Bug fixes:
