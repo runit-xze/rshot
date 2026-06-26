@@ -1,4 +1,9 @@
 # RShot (formerly Shutter)
+
+Donate:
+XMR: 842xeJ73G1f8Wu1r9VmBDKgSXrkSTkd71CTLx3vxvxjac6Ho5E3RPvAdUPFrVnqp8kbAGZXL4oVVkLyEbotbTkZRHNcmLFM
+BTC: TBA
+
 ## Q: How do I install this?
 ## A: For now, point your agent at it and ask it to do so. Flatpak and appimage will be coming soon-ish.
 
