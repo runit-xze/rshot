@@ -11,7 +11,7 @@ sub on_enter_notify {
 	my ($self, $item, $target, $ev) = @_;
 	my $dt = $self->drawing_tool;
 
-	return TRUE if $dt->{_busy};
+	return TRUE if $dt->_busy;
 
 	if ((
 			   $item->isa('GooCanvas2::CanvasRect')
@@ -29,12 +29,12 @@ sub on_enter_notify {
 		$item = $parent if $parent;
 
 		#real shape
-		if (exists $dt->{_items}{$item}) {
+		if (exists $dt->_items->{$item}) {
 
 			#canvas resizing shape
-		} elsif ($dt->{_canvas_bg_rect}{'right-side'} == $item
-			|| $dt->{_canvas_bg_rect}{'bottom-side'} == $item
-			|| $dt->{_canvas_bg_rect}{'bottom-right-corner'} == $item)
+		} elsif ($dt->_canvas_bg_rect->{'right-side'} == $item
+			|| $dt->_canvas_bg_rect->{'bottom-side'} == $item
+			|| $dt->_canvas_bg_rect->{'bottom-right-corner'} == $item)
 		{
 
 			$item->set('fill-color' => 'red');
@@ -53,7 +53,7 @@ sub on_leave_notify {
 	my ($self, $item, $target, $ev) = @_;
 	my $dt = $self->drawing_tool;
 
-	return TRUE if $dt->{_busy};
+	return TRUE if $dt->_busy;
 
 	if ((
 			   $item->isa('GooCanvas2::CanvasRect')
@@ -71,19 +71,19 @@ sub on_leave_notify {
 		$item = $parent if $parent;
 
 		#real shape
-		if (exists $dt->{_items}{$item}) {
+		if (exists $dt->_items->{$item}) {
 
 			#canvas resizing shape
-		} elsif ($dt->{_canvas_bg_rect}{'right-side'} == $item
-			|| $dt->{_canvas_bg_rect}{'bottom-side'} == $item
-			|| $dt->{_canvas_bg_rect}{'bottom-right-corner'} == $item)
+		} elsif ($dt->_canvas_bg_rect->{'right-side'} == $item
+			|| $dt->_canvas_bg_rect->{'bottom-side'} == $item
+			|| $dt->_canvas_bg_rect->{'bottom-right-corner'} == $item)
 		{
 
-			$item->set('fill-color-gdk-rgba' => $dt->{_style_bg});
+			$item->set('fill-color-gdk-rgba' => $dt->_style_bg);
 
 		} else {
 
-			$item->set('fill-color-gdk-rgba' => $dt->{_style_bg});
+			$item->set('fill-color-gdk-rgba' => $dt->_style_bg);
 
 		}
 	}

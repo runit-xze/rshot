@@ -168,6 +168,16 @@ has '_height_spin_w_handler'    => (is => 'rw');
 has '_lp'                       => (is => 'rw');
 has '_lp_ne'                    => (is => 'rw');
 has '_dialogs'                  => (is => 'rw');
+has '_drawing_vbox'             => (is => 'rw');
+has '_drawing_hbox'             => (is => 'rw');
+has '_drawing_hbox_c'           => (is => 'rw');
+has '_scrolled_window_c'        => (is => 'rw');
+has '_rframe_c'                 => (is => 'rw');
+has '_btn_ok_c'                 => (is => 'rw');
+has '_hscroll_hid'              => (is => 'rw');
+has '_vscroll_hid'              => (is => 'rw');
+has '_root'                     => (is => 'rw');
+has '_is_unsaved'               => (is => 'rw');
 
 # Canvas overlays (set by ToolbarManager)
 has '_canvas_overlays'          => (is => 'rw');

@@ -37,12 +37,12 @@ sub on_drag ($self, $event) {
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	$dt->deactivate_all($item);
-	$dt->{_current_item}                                    = $item;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{resizing} = TRUE;
-	eval { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
-	if ($@) { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
+	$dt->_current_item                                    = $item;
+	$dt->_items->{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
+	$dt->_items->{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
+	$dt->_items->{$item}{'bottom-right-corner'}->{resizing} = TRUE;
+	eval { $dt->_canvas->pointer_grab($dt->_items->{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
+	if ($@) { $dt->_canvas->pointer_grab($dt->_items->{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
 	$dt->store_to_xdo_stack($item, 'create', 'undo');
 	return TRUE;
 }
@@ -61,14 +61,14 @@ sub setup ($self, $event, $copy_item) {
 	my $item = $self->_create_item;
 
 	$dt->current_new_item($item) unless $self->copy_item;
-	$dt->{_items}{$item} = $item;
+	$dt->_items->{$item} = $item;
 
-	$dt->{_items}{$item}{type} = 'rectangle';
-	$dt->{_items}{$item}{uid}  = $dt->uid;
+	$dt->_items->{$item}{type} = 'rectangle';
+	$dt->_items->{$item}{uid}  = $dt->uid;
 	$dt->increase_uid;
 
-	$dt->{_items}{$item}{fill_color}   = $self->fill_color;
-	$dt->{_items}{$item}{stroke_color} = $self->stroke_color;
+	$dt->_items->{$item}{fill_color}   = $self->fill_color;
+	$dt->_items->{$item}{stroke_color} = $self->stroke_color;
 
 	$dt->handle_rects('create', $item);
 	$dt->setup_item_signals($item);
@@ -88,8 +88,8 @@ sub _check_event_and_copy_item ($self) {
 		$self->Y($self->copy_item->get('y') + POSITION_INDENT);
 		$self->width($self->copy_item->get('width'));
 		$self->height($self->copy_item->get('height'));
-		$self->stroke_color($dt->{_items}{$self->copy_item}{stroke_color});
-		$self->fill_color($dt->{_items}{$self->copy_item}{fill_color});
+		$self->stroke_color($dt->_items->{$self->copy_item}{stroke_color});
+		$self->fill_color($dt->_items->{$self->copy_item}{fill_color});
 		$self->line_width($self->copy_item->get('line-width'));
 	}
 	return;

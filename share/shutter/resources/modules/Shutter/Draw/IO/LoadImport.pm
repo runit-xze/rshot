@@ -91,7 +91,7 @@ sub import_from_filesystem ($self, $button, $parent = undef, $directory = undef)
 
 	my $menu_objects = Gtk3::Menu->new;
 
-	my $dobjects = $directory || $dt->{_sc}->get_root . "/share/shutter/resources/icons/drawing_tool/objects";
+	my $dobjects = $directory || $dt->_sc->get_root . "/share/shutter/resources/icons/drawing_tool/objects";
 
 	#first directory flag (see description above)
 	my $fd = TRUE;

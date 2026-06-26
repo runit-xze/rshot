@@ -41,21 +41,21 @@ sub on_drag {
 sub acquire_focus {
 	my ($self, $item, $ev, $cursor) = @_;
 	my $dt = $self->drawing_tool;
-	eval { $dt->{_canvas}->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], $cursor, $ev->time); };
+	eval { $dt->_canvas->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], $cursor, $ev->time); };
 	if ($@) {
 
 		# workaround for https://gitlab.gnome.org/GNOME/goocanvas/-/merge_requests/8
-		$dt->{_canvas}->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time);
+		$dt->_canvas->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time);
 	}
-	$dt->{_canvas}->grab_focus($item);
+	$dt->_canvas->grab_focus($item);
 	return;
 }
 
 sub release_focus {
 	my ($self, $item, $ev) = @_;
 	my $dt = $self->drawing_tool;
-	$dt->{_canvas}->pointer_ungrab($item, $ev->time);
-	$dt->{_canvas}->keyboard_ungrab($item, $ev->time);
+	$dt->_canvas->pointer_ungrab($item, $ev->time);
+	$dt->_canvas->keyboard_ungrab($item, $ev->time);
 	return;
 }
 

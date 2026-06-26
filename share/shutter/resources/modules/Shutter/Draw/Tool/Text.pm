@@ -35,12 +35,12 @@ sub on_drag ($self, $event) {
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	$dt->deactivate_all($item);
-	$dt->{_current_item}                                    = $item;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{resizing} = TRUE;
-	eval { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
-	if ($@) { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
+	$dt->_current_item                                    = $item;
+	$dt->_items->{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
+	$dt->_items->{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
+	$dt->_items->{$item}{'bottom-right-corner'}->{resizing} = TRUE;
+	eval { $dt->_canvas->pointer_grab($dt->_items->{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
+	if ($@) { $dt->_canvas->pointer_grab($dt->_items->{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
 	$dt->store_to_xdo_stack($item, 'create', 'undo');
 	return TRUE;
 }
@@ -59,9 +59,9 @@ sub setup ($self, $event, $copy_item) {
 	my $item = $self->_create_item;
 
 	$dt->current_new_item($item) unless $self->copy_item;
-	$dt->{_items}{$item} = $item;
+	$dt->_items->{$item} = $item;
 
-	$dt->{_items}{$item}{text} = GooCanvas2::CanvasText->new(
+	$dt->_items->{$item}{text} = GooCanvas2::CanvasText->new(
 		parent                => $dt->canvas->get_root_item,
 		text                  => "<span font_desc='" . $dt->font . "' >" . $self->text_str . "</span>",
 		x                     => $item->get('x'),
@@ -73,20 +73,20 @@ sub setup ($self, $event, $copy_item) {
 		'line-width'          => $self->line_width,
 	);
 
-	my $tb = $dt->{_items}{$item}{text}->get_bounds;
+	my $tb = $dt->_items->{$item}{text}->get_bounds;
 	my $w  = abs($tb->x1 - $tb->x2);
 	my $h  = abs($tb->y1 - $tb->y2);
 
 	if ($self->copy_item) {
-		$dt->{_items}{$item}->set(
-			x          => $dt->{_items}{$item}->get('x') + 20,
-			y          => $dt->{_items}{$item}->get('y') + 20,
+		$dt->_items->{$item}->set(
+			x          => $dt->_items->{$item}->get('x') + 20,
+			y          => $dt->_items->{$item}->get('y') + 20,
 			width      => $w,
 			height     => $h,
 			visibility => 'hidden',
 		);
 	} else {
-		$dt->{_items}{$item}->set(
+		$dt->_items->{$item}->set(
 			x          => $self->event->x - $w,
 			y          => $self->event->y - $h,
 			width      => $w,
@@ -97,10 +97,10 @@ sub setup ($self, $event, $copy_item) {
 
 	$dt->handle_embedded('hide', $item);
 
-	$dt->{_items}{$item}{type} = 'text';
-	$dt->{_items}{$item}{uid}  = $dt->uid;
+	$dt->_items->{$item}{type} = 'text';
+	$dt->_items->{$item}{uid}  = $dt->uid;
 	$dt->increase_uid;
-	$dt->{_items}{$item}{stroke_color} = $dt->stroke_color;
+	$dt->_items->{$item}{stroke_color} = $dt->stroke_color;
 
 	$dt->handle_rects('create', $item);
 	if ($self->copy_item) {
@@ -108,8 +108,8 @@ sub setup ($self, $event, $copy_item) {
 		$dt->handle_rects('hide', $item);
 	}
 
-	$dt->setup_item_signals($dt->{_items}{$item}{text});
-	$dt->setup_item_signals_extra($dt->{_items}{$item}{text});
+	$dt->setup_item_signals($dt->_items->{$item}{text});
+	$dt->setup_item_signals_extra($dt->_items->{$item}{text});
 	$dt->setup_item_signals($item);
 	$dt->setup_item_signals_extra($item);
 
@@ -127,9 +127,9 @@ sub _check_event_and_copy_item ($self) {
 		$self->Y($self->copy_item->get('y') + 20);
 		$self->width($self->copy_item->get('width'));
 		$self->height($self->copy_item->get('height'));
-		$self->stroke_color($dt->{_items}{$self->copy_item}{stroke_color});
-		$self->text_str($dt->{_items}{$self->copy_item}{text}->get('text'));
-		$self->line_width($dt->{_items}{$self->copy_item}{text}->get('line-width'));
+		$self->stroke_color($dt->_items->{$self->copy_item}{stroke_color});
+		$self->text_str($dt->_items->{$self->copy_item}{text}->get('text'));
+		$self->line_width($dt->_items->{$self->copy_item}{text}->get('line-width'));
 	}
 	return;
 }

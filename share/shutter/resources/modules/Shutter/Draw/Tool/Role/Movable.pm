@@ -9,10 +9,10 @@ sub handle_moving {
 	my $dt = $self->drawing_tool;
 
 	if ($item->isa('GooCanvas2::CanvasRect')) {
-		my $new_x = $dt->{_items}{$item}->get('x') + $ev->x - $item->{drag_x};
-		my $new_y = $dt->{_items}{$item}->get('y') + $ev->y - $item->{drag_y};
+		my $new_x = $dt->_items->{$item}->get('x') + $ev->x - $item->{drag_x};
+		my $new_y = $dt->_items->{$item}->get('y') + $ev->y - $item->{drag_y};
 
-		$dt->{_items}{$item}->set(
+		$dt->_items->{$item}->set(
 			'x' => $new_x,
 			'y' => $new_y,
 		);

@@ -29,8 +29,8 @@ sub on_drag ($self, $event) {
 
 sub on_drag_creation_points ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
-	push @{$dt->{_items}{$item}{'points'}}, $ev->x, $ev->y;
-	$dt->{_items}{$item}->set('points' => Shutter::Draw::Utils::points_to_canvas_points(@{$dt->{_items}{$item}{'points'}}));
+	push @{$dt->_items->{$item}{'points'}}, $ev->x, $ev->y;
+	$dt->_items->{$item}->set('points' => Shutter::Draw::Utils::points_to_canvas_points(@{$dt->_items->{$item}{'points'}}));
 	return;
 }
 
@@ -48,14 +48,14 @@ sub setup ($self, $event, $copy_item) {
 	my $item = $self->_create_item;
 
 	$dt->current_new_item($item) unless $self->copy_item;
-	$dt->{_items}{$item} = $item;
+	$dt->_items->{$item} = $item;
 
-	$dt->{_items}{$item}{type} = 'censor';
-	$dt->{_items}{$item}{uid}  = $dt->uid;
+	$dt->_items->{$item}{type} = 'censor';
+	$dt->_items->{$item}{uid}  = $dt->uid;
 	$dt->increase_uid;
 
-	push @{$dt->{_items}{$item}{'points'}}, @{$self->points};
-	$item->set(points    => Shutter::Draw::Utils::points_to_canvas_points(@{$dt->{_items}{$item}{'points'}}));
+	push @{$dt->_items->{$item}{'points'}}, @{$self->points};
+	$item->set(points    => Shutter::Draw::Utils::points_to_canvas_points(@{$dt->_items->{$item}{'points'}}));
 	$item->set(transform => $self->transform) if $self->transform;
 
 	$dt->setup_item_signals($item);
@@ -71,7 +71,7 @@ sub _check_event_and_copy_item ($self) {
 		$self->points([$self->event->x, $self->event->y, $self->event->x, $self->event->y]);
 	} elsif ($self->copy_item) {
 		my @pts;
-		foreach (@{$dt->{_items}{$self->copy_item}{points}}) {
+		foreach (@{$dt->_items->{$self->copy_item}{points}}) {
 			push @pts, $_ + 20;
 		}
 		$self->points(\@pts);

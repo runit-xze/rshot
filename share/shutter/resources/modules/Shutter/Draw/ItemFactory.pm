@@ -9,7 +9,7 @@ has drawing_tool => (is => 'ro', required => 1);
 sub _tool_setup {
 	my ($mgr, $tool_name, @setup_args) = @_;
 	my $dt         = $mgr->drawing_tool;
-	my $tool_class = $dt->{_canvas_manager}->registry->get_tool($tool_name)
+	my $tool_class = $dt->_canvas_manager->registry->get_tool($tool_name)
 		or die "Unknown drawing tool: $tool_name";
 	eval "require $tool_class; 1" or die "Could not load $tool_class: $@";
 	return $tool_class->new(drawing_tool => $dt)->setup(@setup_args);
@@ -53,10 +53,10 @@ sub create_image {
 		#and use the original image size
 		#dnd for example
 		if ($force_orig_size_init) {
-			$x      = $ev->x - int($self->{_current_pixbuf}->get_width / 2);
-			$y      = $ev->y - int($self->{_current_pixbuf}->get_height / 2);
-			$width  = $self->{_current_pixbuf}->get_width;
-			$height = $self->{_current_pixbuf}->get_height;
+			$x      = $ev->x - int($self->_current_pixbuf->get_width / 2);
+			$y      = $ev->y - int($self->_current_pixbuf->get_height / 2);
+			$width  = $self->_current_pixbuf->get_width;
+			$height = $self->_current_pixbuf->get_height;
 		} else {
 			$x = $ev->x;
 			$y = $ev->y;
@@ -66,12 +66,12 @@ sub create_image {
 	} elsif ($copy_item) {
 		$x      = $copy_item->get('x') + 20;
 		$y      = $copy_item->get('y') + 20;
-		$width  = $self->{_items}{$copy_item}->get('width');
-		$height = $self->{_items}{$copy_item}->get('height');
+		$width  = $self->_items->{$copy_item}->get('width');
+		$height = $self->_items->{$copy_item}->get('height');
 	}
 
 	my $item = GooCanvas2::CanvasRect->new(
-		parent            => $self->{_canvas}->get_root_item,
+		parent            => $self->_canvas->get_root_item,
 		x                 => $x,
 		y                 => $y,
 		width             => $width,
@@ -82,20 +82,20 @@ sub create_image {
 		'stroke-color'    => 'gray',
 	);
 
-	$self->{_current_new_item} = $item unless ($copy_item);
-	$self->{_items}{$item} = $item;
+	$self->_current_new_item = $item unless ($copy_item);
+	$self->_items->{$item} = $item;
 
 	if ($ev) {
-		$self->{_items}{$item}{orig_pixbuf}          = $self->{_current_pixbuf}->copy;
-		$self->{_items}{$item}{orig_pixbuf_filename} = $self->{_current_pixbuf_filename};
+		$self->_items->{$item}{orig_pixbuf}          = $self->_current_pixbuf->copy;
+		$self->_items->{$item}{orig_pixbuf_filename} = $self->_current_pixbuf_filename;
 	} elsif ($copy_item) {
-		$self->{_items}{$item}{orig_pixbuf}          = $self->{_items}{$copy_item}{orig_pixbuf}->copy;
-		$self->{_items}{$item}{orig_pixbuf_filename} = $self->{_items}{$copy_item}{orig_pixbuf_filename};
+		$self->_items->{$item}{orig_pixbuf}          = $self->_items->{$copy_item}{orig_pixbuf}->copy;
+		$self->_items->{$item}{orig_pixbuf_filename} = $self->_items->{$copy_item}{orig_pixbuf_filename};
 	}
 
-	$self->{_items}{$item}{image} = GooCanvas2::CanvasImage->new(
-		parent   => $self->{_canvas}->get_root_item,
-		pixbuf   => $self->{_items}{$item}{orig_pixbuf},
+	$self->_items->{$item}{image} = GooCanvas2::CanvasImage->new(
+		parent   => $self->_canvas->get_root_item,
+		pixbuf   => $self->_items->{$item}{orig_pixbuf},
 		x        => $item->get('x'),
 		y        => $item->get('y'),
 		'width'  => 2,
@@ -103,8 +103,8 @@ sub create_image {
 	);
 
 	#set type flag
-	$self->{_items}{$item}{type} = 'image';
-	$self->{_items}{$item}{uid}  = $self->{_uid}++;
+	$self->_items->{$item}{type} = 'image';
+	$self->_items->{$item}{uid}  = $self->_uid++;
 
 	#create rectangles
 	$self->handle_rects('create', $item);
@@ -114,19 +114,19 @@ sub create_image {
 		$self->handle_embedded('update', $item);
 	}
 
-	$self->setup_item_signals($self->{_items}{$item}{image});
-	$self->setup_item_signals_extra($self->{_items}{$item}{image});
+	$self->setup_item_signals($self->_items->{$item}{image});
+	$self->setup_item_signals_extra($self->_items->{$item}{image});
 
-	$self->setup_item_signals($self->{_items}{$item});
-	$self->setup_item_signals_extra($self->{_items}{$item});
+	$self->setup_item_signals($self->_items->{$item});
+	$self->setup_item_signals_extra($self->_items->{$item});
 
 	if ($copy_item) {
 
-		my $copy = $self->{_lp}->load($self->{_items}{$item}{orig_pixbuf_filename}, $self->{_items}{$item}->get('width'), $self->{_items}{$item}->get('height'), FALSE, TRUE);
+		my $copy = $self->_lp->load($self->_items->{$item}{orig_pixbuf_filename}, $self->_items->{$item}->get('width'), $self->_items->{$item}->get('height'), FALSE, TRUE);
 
-		$self->{_items}{$item}{image}->set(
-			'x'      => int $self->{_items}{$item}->get('x'),
-			'y'      => int $self->{_items}{$item}->get('y'),
+		$self->_items->{$item}{image}->set(
+			'x'      => int $self->_items->{$item}->get('x'),
+			'y'      => int $self->_items->{$item}->get('y'),
 			'pixbuf' => $copy
 		);
 
@@ -171,31 +171,31 @@ sub paste_item {
 	my $delete_after = shift;
 
 	#import from system's clipboard
-	if (my $image = $self->{_clipboard}->wait_for_image) {
+	if (my $image = $self->_clipboard->wait_for_image) {
 
 		#backup current pixbuf and filename
-		my $old_current  = $self->{_current_pixbuf};
-		my $old_filename = $self->{_current_pixbuf_filename};
+		my $old_current  = $self->_current_pixbuf;
+		my $old_filename = $self->_current_pixbuf_filename;
 
 		#create tempfile
 		my ($tmpfh, $tmpfilename) = tempfile(UNLINK => 1);
 
 		#save pixbuf to tempfile and integrate it
-		my $pixbuf_save = Shutter::Pixbuf::Save->new($self->{_sc}, $self->{_drawing_window});
+		my $pixbuf_save = Shutter::Pixbuf::Save->new($self->_sc, $self->_drawing_window);
 		if ($pixbuf_save->save_pixbuf_to_file($image, $tmpfilename, 'png')) {
 
 			#set pixbuf vars
-			$self->{_current_pixbuf}          = $image;
-			$self->{_current_pixbuf_filename} = $tmpfilename;
+			$self->_current_pixbuf          = $image;
+			$self->_current_pixbuf_filename = $tmpfilename;
 
 			#construct an event and create a new image object
 			my $initevent = Gtk3::Gdk::Event->new('motion-notify');
 			$initevent->time(Gtk3::get_current_event_time());
-			$initevent->window($self->{_drawing_window}->get_window);
+			$initevent->window($self->_drawing_window->get_window);
 
 			#calculate coordinates
-			$initevent->x(int($self->{_canvas_bg_rect}->get('width') / 2));
-			$initevent->y(int($self->{_canvas_bg_rect}->get('height') / 2));
+			$initevent->x(int($self->_canvas_bg_rect->get('width') / 2));
+			$initevent->y(int($self->_canvas_bg_rect->get('height') / 2));
 
 			#new item
 			my $nitem = $self->create_image($initevent, undef, TRUE);
@@ -204,13 +204,13 @@ sub paste_item {
 			$self->store_to_xdo_stack($nitem, 'create', 'undo');
 
 			#restore saved values
-			$self->{_current_pixbuf}          = $old_current;
-			$self->{_current_pixbuf_filename} = $old_filename;
+			$self->_current_pixbuf          = $old_current;
+			$self->_current_pixbuf_filename = $old_filename;
 
 			#uncheck
-			$self->{_current_new_item}  = undef;
-			$self->{_current_item}      = undef;
-			$self->{_current_copy_item} = undef;
+			$self->_current_new_item  = undef;
+			$self->_current_item      = undef;
+			$self->_current_copy_item = undef;
 
 		}
 
@@ -228,7 +228,7 @@ sub paste_item {
 
 			#~ print "Creating Polyline...\n";
 			$new_item = $self->create_polyline(undef, $item);
-		} elsif ($child->isa('GooCanvas2::CanvasPolyline') && exists $self->{_items}{$item}{stroke_color}) {
+		} elsif ($child->isa('GooCanvas2::CanvasPolyline') && exists $self->_items->{$item}{stroke_color}) {
 
 			#~ print "Creating Line...\n";
 			$new_item = $self->create_line(undef, $item);
@@ -244,7 +244,7 @@ sub paste_item {
 
 			#~ print "Creating Text...\n";
 			$new_item = $self->create_text(undef, $item);
-		} elsif ($child->isa('GooCanvas2::CanvasImage') && exists $self->{_items}{$item}{pixelize}) {
+		} elsif ($child->isa('GooCanvas2::CanvasImage') && exists $self->_items->{$item}{pixelize}) {
 
 			#~ print "Creating Pixelize...\n";
 			$new_item = $self->create_pixel_image(undef, $item);
@@ -257,8 +257,8 @@ sub paste_item {
 		#cut instead of copy
 		if ($delete_after) {
 			$self->clear_item_from_canvas($item);
-			$self->{_current_item}      = undef;
-			$self->{_current_copy_item} = undef;
+			$self->_current_item      = undef;
+			$self->_current_copy_item = undef;
 		}
 
 		#add to undo stack
@@ -277,10 +277,10 @@ sub get_opposite_rect {
 	my $width  = shift;
 	my $height = shift;
 
-	foreach (keys %{$self->{_items}{$item}}) {
+	foreach (keys %{$self->_items->{$item}}) {
 
 		#fancy resizing using our little resize boxes
-		if ($rect eq $self->{_items}{$item}{$_}) {
+		if ($rect eq $self->_items->{$item}{$_}) {
 
 			if ($_ eq 'top-left-corner') {
 
@@ -336,12 +336,12 @@ sub get_parent_item {
 	return FALSE unless $item;
 
 	my $parent = undef;
-	foreach (keys %{$self->{_items}}) {
-		$parent = $self->{_items}{$_} if exists $self->{_items}{$_}{ellipse}  && $self->{_items}{$_}{ellipse} == $item;
-		$parent = $self->{_items}{$_} if exists $self->{_items}{$_}{text}     && $self->{_items}{$_}{text} == $item;
-		$parent = $self->{_items}{$_} if exists $self->{_items}{$_}{image}    && $self->{_items}{$_}{image} == $item;
-		$parent = $self->{_items}{$_} if exists $self->{_items}{$_}{pixelize} && $self->{_items}{$_}{pixelize} == $item;
-		$parent = $self->{_items}{$_} if exists $self->{_items}{$_}{line}     && $self->{_items}{$_}{line} == $item;
+	foreach (keys %{$self->_items}) {
+		$parent = $self->_items->{$_} if exists $self->_items->{$_}{ellipse}  && $self->_items->{$_}{ellipse} == $item;
+		$parent = $self->_items->{$_} if exists $self->_items->{$_}{text}     && $self->_items->{$_}{text} == $item;
+		$parent = $self->_items->{$_} if exists $self->_items->{$_}{image}    && $self->_items->{$_}{image} == $item;
+		$parent = $self->_items->{$_} if exists $self->_items->{$_}{pixelize} && $self->_items->{$_}{pixelize} == $item;
+		$parent = $self->_items->{$_} if exists $self->_items->{$_}{line}     && $self->_items->{$_}{line} == $item;
 		if (defined $parent) {
 			last;
 		}
@@ -360,17 +360,17 @@ sub get_parent_item {
 sub get_highest_auto_digit {
 	my $self   = shift;
 	my $number = 0;
-	foreach (keys %{$self->{_items}}) {
+	foreach (keys %{$self->_items}) {
 
-		my $item = $self->{_items}{$_};
+		my $item = $self->_items->{$_};
 
 		#numbered shape
-		if (   exists $self->{_items}{$item}
-			&& exists $self->{_items}{$item}{type}
-			&& $self->{_items}{$item}{type} eq 'number'
-			&& $self->{_items}{$item}{text}->get('visibility') ne 'hidden')
+		if (   exists $self->_items->{$item}
+			&& exists $self->_items->{$item}{type}
+			&& $self->_items->{$item}{type} eq 'number'
+			&& $self->_items->{$item}{text}->get('visibility') ne 'hidden')
 		{
-			$number = $self->{_items}{$item}{text}{digit} if $self->{_items}{$item}{text}{digit} > $number;
+			$number = $self->_items->{$item}{text}{digit} if $self->_items->{$item}{text}{digit} > $number;
 		}
 
 	}
@@ -395,7 +395,7 @@ sub get_pixelated_pixbuf_from_canvas {
 	$self->handle_embedded('hide', $item);
 
 	#render the content and load it via Gtk3::Gdk::PixbufLoader
-	$self->{_canvas}->render($cr, $bounds, 1);
+	$self->_canvas->render($cr, $bounds, 1);
 
 	#show rects again
 	$self->handle_rects('update', $item);
@@ -496,12 +496,12 @@ sub get_child_item {
 
 	#notice (special shapes like numbered ellipse do deliver ellipse here => NOT text!)
 	#therefore the order matters
-	if (defined $item && exists $self->{_items}{$item}) {
-		$child = $self->{_items}{$item}{text}     if exists $self->{_items}{$item}{text};
-		$child = $self->{_items}{$item}{ellipse}  if exists $self->{_items}{$item}{ellipse};
-		$child = $self->{_items}{$item}{image}    if exists $self->{_items}{$item}{image};
-		$child = $self->{_items}{$item}{pixelize} if exists $self->{_items}{$item}{pixelize};
-		$child = $self->{_items}{$item}{line}     if exists $self->{_items}{$item}{line};
+	if (defined $item && exists $self->_items->{$item}) {
+		$child = $self->_items->{$item}{text}     if exists $self->_items->{$item}{text};
+		$child = $self->_items->{$item}{ellipse}  if exists $self->_items->{$item}{ellipse};
+		$child = $self->_items->{$item}{image}    if exists $self->_items->{$item}{image};
+		$child = $self->_items->{$item}{pixelize} if exists $self->_items->{$item}{pixelize};
+		$child = $self->_items->{$item}{line}     if exists $self->_items->{$item}{line};
 	}
 
 	#~ #debug

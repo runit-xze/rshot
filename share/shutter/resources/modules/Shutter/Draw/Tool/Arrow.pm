@@ -41,12 +41,12 @@ sub on_drag ($self, $event) {
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	$dt->deactivate_all($item);
-	$dt->{_current_item}                                    = $item;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{resizing} = TRUE;
-	eval { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
-	if ($@) { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
+	$dt->_current_item                                    = $item;
+	$dt->_items->{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
+	$dt->_items->{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
+	$dt->_items->{$item}{'bottom-right-corner'}->{resizing} = TRUE;
+	eval { $dt->_canvas->pointer_grab($dt->_items->{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
+	if ($@) { $dt->_canvas->pointer_grab($dt->_items->{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
 	$dt->store_to_xdo_stack($item, 'create', 'undo');
 	return TRUE;
 }
@@ -68,9 +68,9 @@ sub setup ($self, $event, $copy_item, $end_arrow, $start_arrow) {
 	my $item = $self->_create_item;
 
 	$dt->current_new_item($item) unless $self->copy_item;
-	$dt->{_items}{$item} = $item;
+	$dt->_items->{$item} = $item;
 
-	$dt->{_items}{$item}{line} = GooCanvas2::CanvasPolyline->new(
+	$dt->_items->{$item}{line} = GooCanvas2::CanvasPolyline->new(
 		parent                  => $dt->canvas->get_root_item,
 		close_path              => FALSE,
 		points                  => Shutter::Draw::Utils::points_to_canvas_points($item->get('x'), $item->get('y'), $item->get('x') + $item->get('width'), $item->get('y') + $item->get('height'),),
@@ -87,20 +87,20 @@ sub setup ($self, $event, $copy_item, $end_arrow, $start_arrow) {
 	);
 
 	if (defined $self->end_arrow || defined $self->start_arrow) {
-		$dt->{_items}{$item}{end_arrow}        = $dt->{_items}{$item}{line}->get('end-arrow');
-		$dt->{_items}{$item}{start_arrow}      = $dt->{_items}{$item}{line}->get('start-arrow');
-		$dt->{_items}{$item}{arrow_width}      = $dt->{_items}{$item}{line}->get('arrow-width');
-		$dt->{_items}{$item}{arrow_length}     = $dt->{_items}{$item}{line}->get('arrow-length');
-		$dt->{_items}{$item}{arrow_tip_length} = $dt->{_items}{$item}{line}->get('arrow-tip-length');
+		$dt->_items->{$item}{end_arrow}        = $dt->_items->{$item}{line}->get('end-arrow');
+		$dt->_items->{$item}{start_arrow}      = $dt->_items->{$item}{line}->get('start-arrow');
+		$dt->_items->{$item}{arrow_width}      = $dt->_items->{$item}{line}->get('arrow-width');
+		$dt->_items->{$item}{arrow_length}     = $dt->_items->{$item}{line}->get('arrow-length');
+		$dt->_items->{$item}{arrow_tip_length} = $dt->_items->{$item}{line}->get('arrow-tip-length');
 	}
 
-	$dt->{_items}{$item}{type} = 'line';
-	$dt->{_items}{$item}{uid}  = $dt->uid;
+	$dt->_items->{$item}{type} = 'line';
+	$dt->_items->{$item}{uid}  = $dt->uid;
 	$dt->increase_uid;
 
-	$dt->{_items}{$item}{mirrored_w}   = $self->mirrored_w;
-	$dt->{_items}{$item}{mirrored_h}   = $self->mirrored_h;
-	$dt->{_items}{$item}{stroke_color} = $dt->stroke_color;
+	$dt->_items->{$item}{mirrored_w}   = $self->mirrored_w;
+	$dt->_items->{$item}{mirrored_h}   = $self->mirrored_h;
+	$dt->_items->{$item}{stroke_color} = $dt->stroke_color;
 
 	$dt->handle_rects('create', $item);
 	if ($self->copy_item) {
@@ -108,8 +108,8 @@ sub setup ($self, $event, $copy_item, $end_arrow, $start_arrow) {
 		$dt->handle_rects('hide', $item);
 	}
 
-	$dt->setup_item_signals($dt->{_items}{$item}{line});
-	$dt->setup_item_signals_extra($dt->{_items}{$item}{line});
+	$dt->setup_item_signals($dt->_items->{$item}{line});
+	$dt->setup_item_signals_extra($dt->_items->{$item}{line});
 	$dt->setup_item_signals($item);
 	$dt->setup_item_signals_extra($item);
 
@@ -127,15 +127,15 @@ sub _check_event_and_copy_item ($self) {
 		$self->Y($self->copy_item->get('y') + 20);
 		$self->width($self->copy_item->get('width'));
 		$self->height($self->copy_item->get('height'));
-		$self->stroke_color($dt->{_items}{$self->copy_item}{stroke_color});
-		$self->line_width($dt->{_items}{$self->copy_item}{line}->get('line-width'));
-		$self->mirrored_w($dt->{_items}{$self->copy_item}{mirrored_w});
-		$self->mirrored_h($dt->{_items}{$self->copy_item}{mirrored_h});
-		$self->end_arrow($dt->{_items}{$self->copy_item}{end_arrow});
-		$self->start_arrow($dt->{_items}{$self->copy_item}{start_arrow});
-		$self->arrow_width($dt->{_items}{$self->copy_item}{arrow_width});
-		$self->arrow_length($dt->{_items}{$self->copy_item}{arrow_length});
-		$self->arrow_tip_length($dt->{_items}{$self->copy_item}{arrow_tip_length});
+		$self->stroke_color($dt->_items->{$self->copy_item}{stroke_color});
+		$self->line_width($dt->_items->{$self->copy_item}{line}->get('line-width'));
+		$self->mirrored_w($dt->_items->{$self->copy_item}{mirrored_w});
+		$self->mirrored_h($dt->_items->{$self->copy_item}{mirrored_h});
+		$self->end_arrow($dt->_items->{$self->copy_item}{end_arrow});
+		$self->start_arrow($dt->_items->{$self->copy_item}{start_arrow});
+		$self->arrow_width($dt->_items->{$self->copy_item}{arrow_width});
+		$self->arrow_length($dt->_items->{$self->copy_item}{arrow_length});
+		$self->arrow_tip_length($dt->_items->{$self->copy_item}{arrow_tip_length});
 	}
 	return;
 }

@@ -26,14 +26,14 @@ sub export_to_file ($self, $rfiletype = undef) {
 		'gtk-save'   => 'accept'
 	);
 
-	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->{_sc});
+	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->_sc);
 
 	#parse filename
 	my ($short, $folder, $ext) = fileparse($dt->filename(), qr/\.[^.]*/);
 
 	#go to recently used folder
-	if (defined $dt->{_sc}->get_rusf && $shutter_hfunct->folder_exists($dt->{_sc}->get_rusf)) {
-		$fs->set_current_folder($dt->{_sc}->get_rusf);
+	if (defined $dt->_sc->get_rusf && $shutter_hfunct->folder_exists($dt->_sc->get_rusf)) {
+		$fs->set_current_folder($dt->_sc->get_rusf);
 		$fs->set_current_name($short . $ext);
 	} elsif (defined $dt->is_unsaved() && $dt->is_unsaved()) {
 		$fs->set_current_folder(Shutter::App::Directories::get_home_dir());
@@ -169,7 +169,7 @@ sub export_to_file ($self, $rfiletype = undef) {
 		my ($short, $folder, $ext) = fileparse($filename, qr/\.[^.]*/);
 
 		#keep selected folder in mind
-		$dt->{_sc}->set_rusf($folder);
+		$dt->_sc->set_rusf($folder);
 
 		#handle file format
 		my $choosen_format = $combobox_save_as_type->get_active_text;
@@ -177,7 +177,7 @@ sub export_to_file ($self, $rfiletype = undef) {
 
 		$filename = $folder . $short . "." . $choosen_format;
 
-		my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->{_sc});
+		my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->_sc);
 
 		unless ($shutter_hfunct->file_exists($filename)) {
 
@@ -370,7 +370,7 @@ sub save {
 		}
 
 		#save pixbuf to file
-		my $pixbuf_save = Shutter::Pixbuf::Save->new($dt->{_sc}, $dt->drawing_window());
+		my $pixbuf_save = Shutter::Pixbuf::Save->new($dt->_sc, $dt->drawing_window());
 		return $pixbuf_save->save_pixbuf_to_file($pixbuf, $filename, $filetype, undef);
 
 	}

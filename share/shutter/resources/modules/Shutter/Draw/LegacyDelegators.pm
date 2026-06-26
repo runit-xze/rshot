@@ -9,67 +9,67 @@ use Glib qw(TRUE FALSE);
 
 sub load_settings {
 	my $self = shift;
-	return $self->{_settings_manager}->load_settings(@_);
+	return $self->_settings_manager->load_settings(@_);
 }
 
 sub save_settings {
 	my $self = shift;
-	return $self->{_settings_manager}->save_settings(@_);
+	return $self->_settings_manager->save_settings(@_);
 }
 
 sub import_from_dnd {
 	my $self = shift;
-	return $self->{_io_manager}->import_from_dnd(@_);
+	return $self->_io_manager->import_from_dnd(@_);
 }
 
 sub import_from_filesystem {
 	my $self = shift;
-	return $self->{_io_manager}->import_from_filesystem(@_);
+	return $self->_io_manager->import_from_filesystem(@_);
 }
 
 sub import_from_utheme {
 	my $self = shift;
-	return $self->{_io_manager}->import_from_utheme(@_);
+	return $self->_io_manager->import_from_utheme(@_);
 }
 
 sub import_from_utheme_ctxt {
 	my $self = shift;
-	return $self->{_io_manager}->import_from_utheme_ctxt(@_);
+	return $self->_io_manager->import_from_utheme_ctxt(@_);
 }
 
 sub import_from_session {
 	my $self = shift;
-	return $self->{_io_manager}->import_from_session(@_);
+	return $self->_io_manager->import_from_session(@_);
 }
 
 sub get_pixelated_pixbuf_from_canvas {
 	my $self = shift;
-	return $self->{_item_factory}->get_pixelated_pixbuf_from_canvas(@_);
+	return $self->_item_factory->get_pixelated_pixbuf_from_canvas(@_);
 }
 
 sub export_to_file {
 	my $self = shift;
-	return $self->{_io_manager}->export_to_file(@_);
+	return $self->_io_manager->export_to_file(@_);
 }
 
 sub export_to_svg {
 	my $self = shift;
-	return $self->{_io_manager}->export_to_svg(@_);
+	return $self->_io_manager->export_to_svg(@_);
 }
 
 sub export_to_ps {
 	my $self = shift;
-	return $self->{_io_manager}->export_to_ps(@_);
+	return $self->_io_manager->export_to_ps(@_);
 }
 
 sub export_to_pdf {
 	my $self = shift;
-	return $self->{_io_manager}->export_to_pdf(@_);
+	return $self->_io_manager->export_to_pdf(@_);
 }
 
 sub save {
 	my $self = shift;
-	return $self->{_io_manager}->save(@_);
+	return $self->_io_manager->save(@_);
 }
 
 sub setup_item_signals {
@@ -123,34 +123,34 @@ sub setup_item_signals_extra {
 
 sub event_item_on_motion_notify {
 	my $self = shift;
-	return $self->{_mouse_manager}->event_item_on_motion_notify(@_);
+	return $self->_mouse_manager->event_item_on_motion_notify(@_);
 }
 
 sub get_opposite_rect {
 	my $self = shift;
-	return $self->{_item_factory}->get_opposite_rect(@_);
+	return $self->_item_factory->get_opposite_rect(@_);
 }
 
 sub get_parent_item {
 	my $self = shift;
-	return $self->{_item_factory}->get_parent_item(@_);
+	return $self->_item_factory->get_parent_item(@_);
 }
 
 sub get_highest_auto_digit {
 	my $self = shift;
-	return $self->{_item_factory}->get_highest_auto_digit(@_);
+	return $self->_item_factory->get_highest_auto_digit(@_);
 }
 
 sub get_child_item {
 	my $self = shift;
-	return $self->{_item_factory}->get_child_item(@_);
+	return $self->_item_factory->get_child_item(@_);
 }
 
 sub abort_current_mode {
 	my $self = shift;
-	if ($self->{_current_item}) {
-		$self->{_canvas}->pointer_ungrab($self->{_current_item}, Gtk3::get_current_event_time());
-		$self->{_canvas}->keyboard_ungrab($self->{_current_item}, Gtk3::get_current_event_time());
+	if ($self->_current_item) {
+		$self->_canvas->pointer_ungrab($self->_current_item, Gtk3::get_current_event_time());
+		$self->_canvas->keyboard_ungrab($self->_current_item, Gtk3::get_current_event_time());
 	}
 
 	#~ print "abort_current_mode\n";
@@ -164,8 +164,8 @@ sub clear_item_from_canvas {
 	my ($self, $item) = @_;
 
 	#~ print "clear_item_from_canvas\n";
-	$self->{_current_item}     = undef;
-	$self->{_current_new_item} = undef;
+	$self->_current_item     = undef;
+	$self->_current_new_item = undef;
 
 	if ($item) {
 
@@ -196,81 +196,81 @@ sub clear_item_from_canvas {
 
 sub store_to_xdo_stack {
 	my $self = shift;
-	return $self->{_macro_manager}->store_to_xdo_stack(@_);
+	return $self->_macro_manager->store_to_xdo_stack(@_);
 }
 
 sub xdo_remove {
 	my $self = shift;
-	return $self->{_macro_manager}->xdo_remove(@_);
+	return $self->_macro_manager->xdo_remove(@_);
 }
 
 sub xdo {
 	my $self = shift;
-	return $self->{_macro_manager}->xdo(@_);
+	return $self->_macro_manager->xdo(@_);
 }
 
 sub set_and_save_drawing_properties {
 	my $self = shift;
-	return $self->{_settings_manager}->set_and_save_drawing_properties(@_);
+	return $self->_settings_manager->set_and_save_drawing_properties(@_);
 }
 
 sub restore_fixed_properties {
 	my $self = shift;
-	return $self->{_settings_manager}->restore_fixed_properties(@_);
+	return $self->_settings_manager->restore_fixed_properties(@_);
 }
 
 sub restore_drawing_properties {
 	my $self = shift;
-	return $self->{_settings_manager}->restore_drawing_properties(@_);
+	return $self->_settings_manager->restore_drawing_properties(@_);
 }
 
 sub event_item_on_key_press {
 	my $self = shift;
-	return $self->{_mouse_manager}->event_item_on_key_press(@_);
+	return $self->_mouse_manager->event_item_on_key_press(@_);
 }
 
 sub event_item_on_button_press {
 	my $self = shift;
-	return $self->{_mouse_manager}->event_item_on_button_press(@_);
+	return $self->_mouse_manager->event_item_on_button_press(@_);
 }
 
 sub ret_background_menu {
 	my $self = shift;
-	return $self->{_context_menu_manager}->ret_background_menu(@_);
+	return $self->_context_menu_manager->ret_background_menu(@_);
 }
 
 sub ret_item_menu {
 	my $self = shift;
-	return $self->{_context_menu_manager}->ret_item_menu(@_);
+	return $self->_context_menu_manager->ret_item_menu(@_);
 }
 
 sub show_item_properties {
 	my $self = shift;
-	return $self->{_property_manager}->show_item_properties(@_);
+	return $self->_property_manager->show_item_properties(@_);
 }
 
 sub apply_properties {
 	my $self = shift;
-	return $self->{_property_manager}->apply_properties(@_);
+	return $self->_property_manager->apply_properties(@_);
 }
 
 sub modify_text_in_properties {
 	my $self = shift;
-	return $self->{_property_manager}->modify_text_in_properties(@_);
+	return $self->_property_manager->modify_text_in_properties(@_);
 }
 
 sub move_all {
 	my ($self, $x, $y) = @_;
-	foreach (keys %{$self->{_items}}) {
+	foreach (keys %{$self->_items}) {
 
-		my $item = $self->{_items}{$_};
+		my $item = $self->_items->{$_};
 
 		#embedded item?
 		my $parent = $self->get_parent_item($item);
 		$item = $parent if $parent;
 
 		#real shape
-		if (exists $self->{_items}{$item}) {
+		if (exists $self->_items->{$item}) {
 
 			if ($item->isa('GooCanvas2::CanvasRect')) {
 
@@ -293,16 +293,16 @@ sub move_all {
 					if ($child && $child->isa('GooCanvas2::CanvasImage')) {
 						my $parent = $self->get_parent_item($child);
 
-						if (exists $self->{_items}{$parent}{pixelize}) {
+						if (exists $self->_items->{$parent}{pixelize}) {
 
 							Glib::Idle->add(
 								sub {
-									$self->{_items}{$parent}{pixelize}->set(
-										'x'      => int $self->{_items}{$parent}->get('x'),
-										'y'      => int $self->{_items}{$parent}->get('y'),
-										'width'  => $self->{_items}{$parent}->get('width'),
-										'height' => $self->{_items}{$parent}->get('height'),
-										'pixbuf' => $self->get_pixelated_pixbuf_from_canvas($self->{_items}{$parent}),
+									$self->_items->{$parent}{pixelize}->set(
+										'x'      => int $self->_items->{$parent}->get('x'),
+										'y'      => int $self->_items->{$parent}->get('y'),
+										'width'  => $self->_items->{$parent}->get('width'),
+										'height' => $self->_items->{$parent}->get('height'),
+										'pixbuf' => $self->get_pixelated_pixbuf_from_canvas($self->_items->{$parent}),
 									);
 
 									$self->handle_embedded('update', $parent, undef, undef, TRUE);
@@ -348,9 +348,9 @@ sub deactivate_all {
 
 	#~ print "deactivate_all\n";
 
-	foreach (keys %{$self->{_items}}) {
+	foreach (keys %{$self->_items}) {
 
-		my $item = $self->{_items}{$_};
+		my $item = $self->_items->{$_};
 
 		next if $item == $exclude;
 
@@ -359,54 +359,54 @@ sub deactivate_all {
 		$item = $parent if $parent;
 
 		#real shape
-		if (exists $self->{_items}{$item}) {
+		if (exists $self->_items->{$item}) {
 			$self->handle_rects('hide', $item);
 		}
 
 	}
 
-	$self->{_current_item}     = undef;
-	$self->{_current_new_item} = undef;
+	$self->_current_item     = undef;
+	$self->_current_new_item = undef;
 
 	return TRUE;
 }
 
 sub handle_embedded {
 	my $self = shift;
-	return $self->{_canvas_overlays}->handle_embedded(@_);
+	return $self->_canvas_overlays->handle_embedded(@_);
 }
 
 sub handle_bg_rects {
 	my ($self, $action, $bg_rect) = @_;
-	$bg_rect //= $self->{_canvas_bg_rect};
-	return $self->{_canvas_overlays}->handle_bg_rects($action, $bg_rect);
+	$bg_rect //= $self->_canvas_bg_rect;
+	return $self->_canvas_overlays->handle_bg_rects($action, $bg_rect);
 }
 
 sub handle_rects {
 	my $self = shift;
-	return $self->{_canvas_overlays}->handle_item_handles(@_);
+	return $self->_canvas_overlays->handle_item_handles(@_);
 }
 
 sub event_item_on_button_release {
 	my $self = shift;
-	return $self->{_mouse_manager}->event_item_on_button_release(@_);
+	return $self->_mouse_manager->event_item_on_button_release(@_);
 }
 
 sub event_item_on_enter_notify {
 	my $self = shift;
-	return $self->{_mouse_manager}->event_item_on_enter_notify(@_);
+	return $self->_mouse_manager->event_item_on_enter_notify(@_);
 }
 
 sub event_item_on_leave_notify {
 	my $self = shift;
-	return $self->{_mouse_manager}->event_item_on_leave_notify(@_);
+	return $self->_mouse_manager->event_item_on_leave_notify(@_);
 }
 
 sub gen_thumbnail_on_idle {
 	my ($self, $stock, $parent, $button, $no_init) = @_;
 	my @menu_items = @_;
 
-	my $shutter_hfunct = Shutter::App::HelperFunctions->new($self->{_sc});
+	my $shutter_hfunct = Shutter::App::HelperFunctions->new($self->_sc);
 
 	#generate thumbnails in an idle callback
 	my $next_item = 0;
@@ -442,7 +442,7 @@ sub gen_thumbnail_on_idle {
 				if (exists $child->{'giofile'}) {
 					my $thumb;
 					unless ($child->{'no_thumbnail'}) {
-						$thumb = $self->{_lp_ne}->load($shutter_hfunct->utf8_decode($child->{'giofile'}->get_path), Gtk3::IconSize->lookup('small-toolbar'));
+						$thumb = $self->_lp_ne->load($shutter_hfunct->utf8_decode($child->{'giofile'}->get_path), Gtk3::IconSize->lookup('small-toolbar'));
 					} else {
 						$thumb = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, 5, 5);
 						$thumb->fill(0x00000000);
@@ -450,7 +450,7 @@ sub gen_thumbnail_on_idle {
 
 					$small_image = Gtk3::Image->new_from_pixbuf($thumb);
 				} else {
-					my $pixbuf = $self->{_lp_ne}->load($name, undef, undef, undef, TRUE);
+					my $pixbuf = $self->_lp_ne->load($name, undef, undef, undef, TRUE);
 
 					#16x16 is minimum size
 					if ($pixbuf->get_width >= 16 && $pixbuf->get_height >= 16) {
@@ -466,17 +466,17 @@ sub gen_thumbnail_on_idle {
 					unless ($no_init) {
 						unless ($button->get_icon_widget) {
 							$button->set_icon_widget(Gtk3::Image->new_from_pixbuf($small_image->get_pixbuf));
-							$self->{_current_pixbuf_filename} = $name;
+							$self->_current_pixbuf_filename = $name;
 							$button->show_all;
 						}
 					}
 
 					$child->signal_connect(
 						'activate' => sub {
-							$self->{_current_pixbuf_filename} = $name;
+							$self->_current_pixbuf_filename = $name;
 							$button->set_icon_widget(Gtk3::Image->new_from_pixbuf($small_image->get_pixbuf));
 							$button->show_all;
-							$self->{_canvas}->get_window->set_cursor($self->change_cursor_to_current_pixbuf);
+							$self->_canvas->get_window->set_cursor($self->change_cursor_to_current_pixbuf);
 						});
 				} else {
 					$child->destroy;
@@ -496,7 +496,7 @@ sub set_drawing_action {
 
 	#~ print "set_drawing_action\n";
 	my $item_index = 0;
-	my $toolbar    = $self->{_uimanager}->get_widget("/ToolBarDrawing");
+	my $toolbar    = $self->_uimanager->get_widget("/ToolBarDrawing");
 	for (my $i = 0 ; $i < $toolbar->get_n_items ; $i++) {
 		my $item = $toolbar->get_nth_item($i);
 
@@ -524,19 +524,19 @@ sub change_cursor_to_current_pixbuf {
 	my $self = shift;
 
 	#~ print "change_cursor_to_current_pixbuf\n";
-	$self->{_current_mode_descr} = "image";
+	$self->_current_mode_descr = "image";
 
 	my $cursor = undef;
 
 	#load file
-	$self->{_current_pixbuf} = $self->{_lp}->load($self->{_current_pixbuf_filename}, undef, undef, undef, TRUE);
-	unless ($self->{_current_pixbuf}) {
-		$cursor = Gtk3::Gdk::Cursor->new_from_pixbuf(Gtk3::Gdk::Display::get_default(), Gtk3::Gdk::Pixbuf->new_from_file($self->{_dicons} . '/draw-image.svg'), Gtk3::IconSize->lookup('menu'));
+	$self->_current_pixbuf = $self->_lp->load($self->_current_pixbuf_filename, undef, undef, undef, TRUE);
+	unless ($self->_current_pixbuf) {
+		$cursor = Gtk3::Gdk::Cursor->new_from_pixbuf(Gtk3::Gdk::Display::get_default(), Gtk3::Gdk::Pixbuf->new_from_file($self->_dicons . '/draw-image.svg'), Gtk3::IconSize->lookup('menu'));
 	}
 
 	#very big images usually don't work as a cursor (no error though??)
-	my $pb_w = $self->{_current_pixbuf}->get_width;
-	my $pb_h = $self->{_current_pixbuf}->get_height;
+	my $pb_w = $self->_current_pixbuf->get_width;
+	my $pb_h = $self->_current_pixbuf->get_height;
 
 	if ($pb_w < 800 && $pb_h < 800) {
 		eval {
@@ -547,23 +547,23 @@ sub change_cursor_to_current_pixbuf {
 			#images smaller than max cursor size?
 			# => don't scale to a bigger size
 			if ($cw > $pb_w || $ch > $pb_w) {
-				$cursor = Gtk3::Gdk::Cursor->new_from_pixbuf(Gtk3::Gdk::Display::get_default(), $self->{_current_pixbuf}, int($pb_w / 2), int($pb_h / 2));
+				$cursor = Gtk3::Gdk::Cursor->new_from_pixbuf(Gtk3::Gdk::Display::get_default(), $self->_current_pixbuf, int($pb_w / 2), int($pb_h / 2));
 			} else {
-				my $cpixbuf = $self->{_lp}->load($self->{_current_pixbuf_filename}, $cw, $ch, TRUE, TRUE);
+				my $cpixbuf = $self->_lp->load($self->_current_pixbuf_filename, $cw, $ch, TRUE, TRUE);
 				$cursor = Gtk3::Gdk::Cursor->new_from_pixbuf(Gtk3::Gdk::Display::get_default(), $cpixbuf, int($cpixbuf->get_width / 2), int($cpixbuf->get_height / 2));
 			}
 
 		};
 		if ($@) {
-			my $response = $self->{_dialogs}->dlg_error_message(
-				sprintf($self->{_d}->get("Error while opening image %s."), "'" . $self->{_current_pixbuf_filename} . "'"),
-				$self->{_d}->get("There was an error opening the image."),
+			my $response = $self->_dialogs->dlg_error_message(
+				sprintf($self->_d->get("Error while opening image %s."), "'" . $self->_current_pixbuf_filename . "'"),
+				$self->_d->get("There was an error opening the image."),
 				undef, undef, undef, undef, undef, undef, $@
 			);
 			$self->abort_current_mode;
 		}
 	} else {
-		$cursor = Gtk3::Gdk::Cursor->new_from_pixbuf(Gtk3::Gdk::Display::get_default(), Gtk3::Gdk::Pixbuf->new_from_file($self->{_dicons} . '/draw-image.svg'), Gtk3::IconSize->lookup('menu'));
+		$cursor = Gtk3::Gdk::Cursor->new_from_pixbuf(Gtk3::Gdk::Display::get_default(), Gtk3::Gdk::Pixbuf->new_from_file($self->_dicons . '/draw-image.svg'), Gtk3::IconSize->lookup('menu'));
 	}
 
 	return $cursor;
@@ -571,47 +571,47 @@ sub change_cursor_to_current_pixbuf {
 
 sub paste_item {
 	my $self = shift;
-	return $self->{_item_factory}->paste_item(@_);
+	return $self->_item_factory->paste_item(@_);
 }
 
 sub create_polyline {
 	my $self = shift;
-	return $self->{_item_factory}->create_polyline(@_);
+	return $self->_item_factory->create_polyline(@_);
 }
 
 sub create_censor {
 	my $self = shift;
-	return $self->{_item_factory}->create_censor(@_);
+	return $self->_item_factory->create_censor(@_);
 }
 
 sub create_pixel_image {
 	my $self = shift;
-	return $self->{_item_factory}->create_pixel_image(@_);
+	return $self->_item_factory->create_pixel_image(@_);
 }
 
 sub create_image {
 	my $self = shift;
-	return $self->{_item_factory}->create_image(@_);
+	return $self->_item_factory->create_image(@_);
 }
 
 sub create_text {
 	my $self = shift;
-	return $self->{_item_factory}->create_text(@_);
+	return $self->_item_factory->create_text(@_);
 }
 
 sub create_line {
 	my $self = shift;
-	return $self->{_item_factory}->create_line(@_);
+	return $self->_item_factory->create_line(@_);
 }
 
 sub create_ellipse {
 	my $self = shift;
-	return $self->{_item_factory}->create_ellipse(@_);
+	return $self->_item_factory->create_ellipse(@_);
 }
 
 sub create_rectangle {
 	my $self = shift;
-	return $self->{_item_factory}->create_rectangle(@_);
+	return $self->_item_factory->create_rectangle(@_);
 }
 
 1;

@@ -18,7 +18,7 @@ sub load_settings {
 	my $self = shift;
 	my $dt   = $self->drawing_tool;
 
-	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->{_sc});
+	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->_sc);
 
 	#settings file
 	my $settingsfile = "$ENV{ HOME }/.shutter/drawingtool.xml";
