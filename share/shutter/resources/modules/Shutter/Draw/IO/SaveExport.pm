@@ -29,13 +29,13 @@ sub export_to_file ($self, $rfiletype = undef) {
 	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->_sc);
 
 	#parse filename
-	my ($short, $folder, $ext) = fileparse($dt->filename(), qr/\.[^.]*/);
+	my ($short, $folder, $ext) = fileparse($dt->_filename(), qr/\.[^.]*/);
 
 	#go to recently used folder
 	if (defined $dt->_sc->rusf && $shutter_hfunct->folder_exists($dt->_sc->rusf)) {
 		$fs->set_current_folder($dt->_sc->rusf);
 		$fs->set_current_name($short . $ext);
-	} elsif (defined $dt->is_unsaved() && $dt->is_unsaved()) {
+	} elsif (defined $dt->_is_unsaved() && $dt->_is_unsaved()) {
 		$fs->set_current_folder(Shutter::App::Directories::get_home_dir());
 		$fs->set_current_name($short . $ext);
 	} else {
@@ -64,7 +64,7 @@ sub export_to_file ($self, $rfiletype = undef) {
 
 	#change extension related to the requested filetype
 	if (defined $rfiletype) {
-		my ($short, $folder, $ext) = fileparse($dt->filename(), qr/\.[^.]*/);
+		my ($short, $folder, $ext) = fileparse($dt->_filename(), qr/\.[^.]*/);
 		$fs->set_current_name($short . "." . $rfiletype);
 	}
 
@@ -112,7 +112,7 @@ sub export_to_file ($self, $rfiletype = undef) {
 			#loop because multiple mime types are registered for fome file formats
 			foreach my $mime (@{$format->get_mime_types}) {
 				$combobox_save_as_type->set_active($counter)
-					if $mime eq $dt->mimetype() || defined $rfiletype;
+					if $mime eq $dt->_mimetype() || defined $rfiletype;
 
 				#save png_counter as well as fallback
 				$png_counter = $counter if $mime eq 'image/png';
@@ -191,7 +191,7 @@ sub export_to_file ($self, $rfiletype = undef) {
 			my $replace_btn = Gtk3::Button->new_with_mnemonic($dt->gettext()->get("_Replace"));
 			$replace_btn->set_image(Gtk3::Image->new_from_stock('gtk-save-as', 'button'));
 
-			my $response = $dt->dialogs()->dlg_warning_message(
+			my $response = $dt->_dialogs()->dlg_warning_message(
 				sprintf($dt->gettext()->get("The image already exists in %s. Replacing it will overwrite its contents."), "'" . $folder . "'"),
 				sprintf($dt->gettext()->get("An image named %s already exists. Do you want to replace it?"),              "'" . $short . "." . $choosen_format . "'"),
 				undef, undef, undef, $replace_btn, undef, undef
@@ -250,8 +250,8 @@ sub save {
 	my $self        = shift;
 	my $dt          = $self->drawing_tool;
 	my $save_to_mem = shift;
-	my $filename    = shift || $dt->filename();
-	my $filetype    = shift || $dt->filetype();
+	my $filename    = shift || $dt->_filename();
+	my $filetype    = shift || $dt->_filetype();
 
 	#make sure not to save the bounding rectangles
 	$dt->deactivate_all;
