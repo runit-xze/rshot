@@ -15,7 +15,8 @@ package Shutter::App::PinToScreen;
 
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Moo;
 use Glib qw/TRUE FALSE/;
@@ -66,9 +67,10 @@ sub pin ($self, $pixbuf, $sc) {
 	$opacity_scale->set_value(95);
 	$opacity_scale->set_draw_value(FALSE);
 	$opacity_scale->set_size_request(100, -1);
-	$opacity_scale->signal_connect('value-changed' => sub {
-		$win->set_opacity($opacity_scale->get_value / 100);
-	});
+	$opacity_scale->signal_connect(
+		'value-changed' => sub {
+			$win->set_opacity($opacity_scale->get_value / 100);
+		});
 
 	my $close_btn = Gtk3::Button->new_with_label('Close');
 	$close_btn->signal_connect('clicked' => sub { $win->destroy });
@@ -84,20 +86,22 @@ sub pin ($self, $pixbuf, $sc) {
 	$win->add($vbox);
 
 	# Escape key closes the pin window
-	$win->signal_connect('key-press-event' => sub {
-		my ($widget, $event) = @_;
-		if ($event->keyval == Gtk3::Gdk::KEY_Escape) {
-			$win->destroy;
-			return TRUE;
-		}
-		return FALSE;
-	});
+	$win->signal_connect(
+		'key-press-event' => sub {
+			my ($widget, $event) = @_;
+			if ($event->keyval == Gtk3::Gdk::KEY_Escape) {
+				$win->destroy;
+				return TRUE;
+			}
+			return FALSE;
+		});
 
 	# Track all open pin windows so we can close them all if needed
 	push @{$self->_windows}, $win;
-	$win->signal_connect('destroy' => sub {
-		$self->_windows([grep { $_ != $win } @{$self->_windows}]);
-	});
+	$win->signal_connect(
+		'destroy' => sub {
+			$self->_windows([grep { $_ != $win } @{$self->_windows}]);
+		});
 
 	$win->show_all;
 	return $win;
@@ -109,7 +113,7 @@ sub unpin_all ($self) {
 		$w->destroy if Gtk3::widget_get_visible($w) // FALSE;
 	}
 	$self->_windows([]);
-    return;
+	return;
 }
 
 sub has_pinned_windows ($self) {

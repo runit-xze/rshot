@@ -23,7 +23,8 @@
 package Shutter::Draw::Utils;
 
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Gtk3;
 use GooCanvas2;
@@ -31,14 +32,14 @@ use GooCanvas2;
 sub points_to_canvas_points {
 	my (@points) = @_;
 
-    my $num_points = scalar(@points) / 2;
-    my $result     = GooCanvas2::CanvasPoints::new( num_points => $num_points );
+	my $num_points = scalar(@points) / 2;
+	my $result     = GooCanvas2::CanvasPoints::new(num_points => $num_points);
 
-    for ( my $i = 0; $i < @points; $i += 2 ) {
-        $result->set_point( $i / 2, $points[$i], $points[ $i + 1 ] );
-    }
+	for (my $i = 0 ; $i < @points ; $i += 2) {
+		$result->set_point($i / 2, $points[$i], $points[$i + 1]);
+	}
 
-    return $result;
+	return $result;
 }
 
 1;

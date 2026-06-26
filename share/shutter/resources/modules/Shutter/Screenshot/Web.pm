@@ -26,7 +26,8 @@ package Shutter::Screenshot::Web;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use File::Temp qw/ tempfile tempdir /;
 
@@ -41,10 +42,10 @@ use Glib qw/TRUE FALSE/;
 
 use Moo;
 
-has '_sc' => (is => 'rw');
+has '_sc'      => (is => 'rw');
 has '_timeout' => (is => 'rw');
-has '_width' => (is => 'rw');
-has '_shf' => (is => 'lazy', builder => 1);
+has '_width'   => (is => 'rw');
+has '_shf'     => (is => 'lazy', builder => 1);
 
 sub _build__shf {
 	my $self = shift;
@@ -56,9 +57,9 @@ around BUILDARGS => sub {
 	if (@args == 3) {
 		my ($sc, $timeout, $width) = @args;
 		return $class->$orig(
-			_sc => $sc,
+			_sc      => $sc,
 			_timeout => $timeout,
-			_width => $width,
+			_width   => $width,
 		);
 	}
 	return $class->$orig(@args);
@@ -75,7 +76,8 @@ sub dlg_website ($self, $url) {
 	#gettext
 	my $d = $self->{_sc}->get_gettext;
 
-	my $website_dialog = Gtk3::MessageDialog->new($self->{_sc}->get_mainwindow, [qw/modal destroy-with-parent/], 'error', 'close', $d->get("Web capture is no longer supported because gnome-web-photo is obsolete."));
+	my $website_dialog =
+		Gtk3::MessageDialog->new($self->{_sc}->get_mainwindow, [qw/modal destroy-with-parent/], 'error', 'close', $d->get("Web capture is no longer supported because gnome-web-photo is obsolete."));
 	$website_dialog->set_title("Shutter");
 	$website_dialog->run;
 	$website_dialog->destroy();

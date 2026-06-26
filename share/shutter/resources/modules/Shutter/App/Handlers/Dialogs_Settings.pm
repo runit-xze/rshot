@@ -32,12 +32,12 @@ use Shutter::App::UI::SettingsDialog;
 has cli => (is => 'ro', required => 1);
 
 sub evt_show_settings ($self) {
-    my $sd = Shutter::App::UI::SettingsDialog->new(cli => $self->cli);
-    $sd->create_settings_dialog($self->cli->window);
-    $sd->show;
-    $sd->save;
-    $sd->hide;
-    return;
+	my $sd = Shutter::App::UI::SettingsDialog->new(cli => $self->cli);
+	$sd->create_settings_dialog($self->cli->window);
+	$sd->show;
+	$sd->save;
+	$sd->hide;
+	return;
 }
 
 1;

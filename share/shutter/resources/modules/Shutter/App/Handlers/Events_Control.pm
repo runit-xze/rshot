@@ -31,149 +31,150 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 
 sub fct_control_main_window ($self, $mode, $present) {
-    
-    #default value for present is TRUE
-    $present = TRUE unless defined $present;
-    
-    my $cli = $self->cli;
-    my $window = $cli->window;
 
-    #this is an unusual method for raising the window
-    #to the top within the stacking order (z-axis)
-    #but it works best here
-    if ($mode eq 'show' && $present) {
+	#default value for present is TRUE
+	$present = TRUE unless defined $present;
 
-        #move window to saved position
-        $window->move($window->{x}, $window->{y})
-            if (defined $window->{x} && defined $window->{y});
+	my $cli    = $self->cli;
+	my $window = $cli->window;
 
-        #if it's shown already, but behind other windows, without hiding it doesn't show
-        $window->hide;
+	#this is an unusual method for raising the window
+	#to the top within the stacking order (z-axis)
+	#but it works best here
+	if ($mode eq 'show' && $present) {
 
-        $window->show_all;
-        $window->present;
+		#move window to saved position
+		$window->move($window->{x}, $window->{y})
+			if (defined $window->{x} && defined $window->{y});
 
-        #set flag
-        $cli->{_is_hidden} = FALSE;
+		#if it's shown already, but behind other windows, without hiding it doesn't show
+		$window->hide;
 
-        #toolbar->set_show_arrow is FALSE at startup
-        #to automatically adjust the main window width
-        #we change the setting to TRUE if it is still false,
-        #so the window/toolbar is resizable again
-        my $toolbar = $cli->{_toolbar};
-        if ($toolbar) {
-            unless ($toolbar->get_show_arrow) {
-                $toolbar->set_show_arrow(TRUE);
+		$window->show_all;
+		$window->present;
 
-                #add a small margin
-                my ($rw, $rh) = $window->get_size;
-                $window->resize($rw + 50, $rh);
-            }
-        }
+		#set flag
+		$cli->{_is_hidden} = FALSE;
 
-    } elsif ($mode eq 'hide') {
+		#toolbar->set_show_arrow is FALSE at startup
+		#to automatically adjust the main window width
+		#we change the setting to TRUE if it is still false,
+		#so the window/toolbar is resizable again
+		my $toolbar = $cli->{_toolbar};
+		if ($toolbar) {
+			unless ($toolbar->get_show_arrow) {
+				$toolbar->set_show_arrow(TRUE);
 
-        #save current position of main window
-        ($window->{x}, $window->{y}) = $window->get_position;
+				#add a small margin
+				my ($rw, $rh) = $window->get_size;
+				$window->resize($rw + 50, $rh);
+			}
+		}
 
-        $window->hide;
+	} elsif ($mode eq 'hide') {
 
-        $cli->{_is_hidden} = TRUE;
+		#save current position of main window
+		($window->{x}, $window->{y}) = $window->get_position;
 
-    }
+		$window->hide;
 
-    return TRUE;
+		$cli->{_is_hidden} = TRUE;
+
+	}
+
+	return TRUE;
 }
 
 sub fct_control_signals ($self, $action) {
-    
-    my $cli = $self->cli;
-    my $app = $cli->app;
-    my $tray = $cli->{_tray};
-    my $signal_connections = $cli->{_signal_connections} // [];
-    my $st = $cli->{_st};
-    my $sm = $cli->{_sm};
-    my $x11_supported = $cli->{_x11_supported};
-    my $gnome_web_photo = $cli->{_gnome_web_photo};
 
-    my $sensitive = undef;
-    if ($action eq 'block') {
+	my $cli                = $self->cli;
+	my $app                = $cli->app;
+	my $tray               = $cli->{_tray};
+	my $signal_connections = $cli->{_signal_connections} // [];
+	my $st                 = $cli->{_st};
+	my $sm                 = $cli->{_sm};
+	my $x11_supported      = $cli->{_x11_supported};
+	my $gnome_web_photo    = $cli->{_gnome_web_photo};
 
-        $sensitive = FALSE;
+	my $sensitive = undef;
+	if ($action eq 'block') {
 
-        #block signals
-        foreach my $connection (@$signal_connections) {
-            if ($app->signal_handler_is_connected($connection)) {
-                $app->signal_handler_block($connection);
-            }
-        }
+		$sensitive = FALSE;
 
-        #and block status icon handler
-        if ($tray && $tray->isa('Gtk3::StatusIcon')) {
-            if ($tray->signal_handler_is_connected($tray->{'hid'})) {
-                $tray->signal_handler_block($tray->{'hid'});
-            }
-            if ($tray->signal_handler_is_connected($tray->{'hid2'})) {
-                $tray->signal_handler_block($tray->{'hid2'});
-            }
-        } elsif ($tray && $tray->isa('AppIndicator::Indicator')) {
-            $tray->set_status('passive');
-        }
-    } elsif ($action eq 'unblock') {
+		#block signals
+		foreach my $connection (@$signal_connections) {
+			if ($app->signal_handler_is_connected($connection)) {
+				$app->signal_handler_block($connection);
+			}
+		}
 
-        $sensitive = TRUE;
+		#and block status icon handler
+		if ($tray && $tray->isa('Gtk3::StatusIcon')) {
+			if ($tray->signal_handler_is_connected($tray->{'hid'})) {
+				$tray->signal_handler_block($tray->{'hid'});
+			}
+			if ($tray->signal_handler_is_connected($tray->{'hid2'})) {
+				$tray->signal_handler_block($tray->{'hid2'});
+			}
+		} elsif ($tray && $tray->isa('AppIndicator::Indicator')) {
+			$tray->set_status('passive');
+		}
+	} elsif ($action eq 'unblock') {
 
-        #attach signal-handler again
-        foreach my $connection (@$signal_connections) {
-            if ($app->signal_handler_is_connected($connection)) {
-                $app->signal_handler_unblock($connection);
-            }
-        }
+		$sensitive = TRUE;
 
-        #and unblock status icon handler
-        if ($tray && $tray->isa('Gtk3::StatusIcon')) {
-            if ($tray->signal_handler_is_connected($tray->{'hid'})) {
-                $tray->signal_handler_unblock($tray->{'hid'});
-            }
-            if ($tray->signal_handler_is_connected($tray->{'hid2'})) {
-                $tray->signal_handler_unblock($tray->{'hid2'});
-            }
-        } elsif ($tray && $tray->isa('AppIndicator::Indicator')) {
-            $tray->set_status('active');
-        }
-    }
+		#attach signal-handler again
+		foreach my $connection (@$signal_connections) {
+			if ($app->signal_handler_is_connected($connection)) {
+				$app->signal_handler_unblock($connection);
+			}
+		}
 
-    #enable/disable controls
-    if ($st && $st->{_select} && $sm && $sm->{_menuitem_selection}) {
-        #menu
-        if ($x11_supported) {
-            $sm->{_menuitem_selection}->set_sensitive($sensitive);
-            $sm->{_menuitem_window}->set_sensitive($sensitive);
-            $sm->{_menuitem_menu}->set_sensitive($sensitive);
-            $sm->{_menuitem_tooltip}->set_sensitive($sensitive);
-        }
-        $sm->{_menuitem_web}->set_sensitive($sensitive)
-            if ($gnome_web_photo && $sm->{_menuitem_web});
-        $sm->{_menuitem_iclipboard}->set_sensitive($sensitive) if $sm->{_menuitem_iclipboard};
+		#and unblock status icon handler
+		if ($tray && $tray->isa('Gtk3::StatusIcon')) {
+			if ($tray->signal_handler_is_connected($tray->{'hid'})) {
+				$tray->signal_handler_unblock($tray->{'hid'});
+			}
+			if ($tray->signal_handler_is_connected($tray->{'hid2'})) {
+				$tray->signal_handler_unblock($tray->{'hid2'});
+			}
+		} elsif ($tray && $tray->isa('AppIndicator::Indicator')) {
+			$tray->set_status('active');
+		}
+	}
 
-        #toolbar
-        if ($x11_supported) {
-            $st->{_select}->set_sensitive($sensitive);
-            $st->{_window}->set_sensitive($sensitive);
-            $st->{_menu}->set_sensitive($sensitive);
-            $st->{_tooltip}->set_sensitive($sensitive);
-        }
-        $st->{_web}->set_sensitive($sensitive) if ($gnome_web_photo && $st->{_web});
+	#enable/disable controls
+	if ($st && $st->{_select} && $sm && $sm->{_menuitem_selection}) {
 
-        #special case: redoshot (toolbar and menu)
-        if (defined &fct_get_last_capture && fct_get_last_capture()) {
-            $st->{_redoshot}->set_sensitive($sensitive) if $st->{_redoshot};
-            $sm->{_menuitem_redoshot}->set_sensitive($sensitive) if $sm->{_menuitem_redoshot};
-        }
+		#menu
+		if ($x11_supported) {
+			$sm->{_menuitem_selection}->set_sensitive($sensitive);
+			$sm->{_menuitem_window}->set_sensitive($sensitive);
+			$sm->{_menuitem_menu}->set_sensitive($sensitive);
+			$sm->{_menuitem_tooltip}->set_sensitive($sensitive);
+		}
+		$sm->{_menuitem_web}->set_sensitive($sensitive)
+			if ($gnome_web_photo && $sm->{_menuitem_web});
+		$sm->{_menuitem_iclipboard}->set_sensitive($sensitive) if $sm->{_menuitem_iclipboard};
 
-    }
+		#toolbar
+		if ($x11_supported) {
+			$st->{_select}->set_sensitive($sensitive);
+			$st->{_window}->set_sensitive($sensitive);
+			$st->{_menu}->set_sensitive($sensitive);
+			$st->{_tooltip}->set_sensitive($sensitive);
+		}
+		$st->{_web}->set_sensitive($sensitive) if ($gnome_web_photo && $st->{_web});
 
-    return TRUE;
+		#special case: redoshot (toolbar and menu)
+		if (defined &fct_get_last_capture && fct_get_last_capture()) {
+			$st->{_redoshot}->set_sensitive($sensitive)          if $st->{_redoshot};
+			$sm->{_menuitem_redoshot}->set_sensitive($sensitive) if $sm->{_menuitem_redoshot};
+		}
+
+	}
+
+	return TRUE;
 }
 
 1;

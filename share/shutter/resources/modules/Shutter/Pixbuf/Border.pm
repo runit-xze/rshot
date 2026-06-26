@@ -26,7 +26,8 @@ package Shutter::Pixbuf::Border;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Moo;
 use Gtk3;
@@ -37,6 +38,7 @@ use Glib qw/TRUE FALSE/;
 has '_common' => (is => 'ro', required => 1, init_arg => 'common');
 
 sub create_border ($self, $pixbuf, $width, $color) {
+
 	#create new pixbuf
 	my $tmp_pbuf = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, $pixbuf->get_width + 2 * $width, $pixbuf->get_height + 2 * $width);
 

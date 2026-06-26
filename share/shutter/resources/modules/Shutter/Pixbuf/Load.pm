@@ -26,13 +26,14 @@ package Shutter::Pixbuf::Load;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Gtk3;
 
 #fileparse and tempfile
 use File::Basename qw/ fileparse dirname basename /;
-use File::Temp qw/ tempfile tempdir /;
+use File::Temp     qw/ tempfile tempdir /;
 
 #Glib
 use Glib qw/TRUE FALSE/;
@@ -41,6 +42,7 @@ use Glib qw/TRUE FALSE/;
 
 ##################public subs##################
 sub new ($class, $common, $window = undef, $no_error_dialog = undef) {
+
 	#constructor
 	my $self = {_common => $common, _window => $window, _no_error_dialog => $no_error_dialog};
 
@@ -58,8 +60,7 @@ sub load ($self, $filename, $width = undef, $height = undef, $sratio = undef, $r
 		} else {
 			$pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($filename);
 		}
-	}
-	catch ($e) {
+	} catch ($e) {
 		unless (defined $self->{_no_error_dialog} && $self->{_no_error_dialog}) {
 
 			#import shutter dialogs

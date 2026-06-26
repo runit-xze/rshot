@@ -343,7 +343,7 @@ sub move_all {
 }
 
 sub deactivate_all {
-	my $self = shift;
+	my $self    = shift;
 	my $exclude = shift || 0;
 
 	#~ print "deactivate_all\n";

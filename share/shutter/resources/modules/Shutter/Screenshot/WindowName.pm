@@ -66,8 +66,7 @@ sub window_find_by_name ($self, $name_pattern) {
 					$output = $self->window_by_xid($win->get_xid);
 					last;
 				}
-			}
-			catch ($e) {
+			} catch ($e) {
 				$output = 8;
 				$self->{_error_text} = $e;
 			}

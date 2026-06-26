@@ -52,6 +52,7 @@ sub new ($class, $sc) {
 		$self->{_notifications_window} = Gtk3::Window->new('popup');
 		if ($self->{_sc}->get_mainwindow->get_screen->is_composited) {
 			my $screen = $self->{_sc}->get_mainwindow->get_screen;
+
 			# Glib::Object::Introspection doesn't support method call via
 			# cross-package inheritance, call it as a free function instead
 			# (X11Screen inherits from Screen)
@@ -175,8 +176,7 @@ sub new ($class, $sc) {
 				return FALSE;
 			});
 
-	}
-	catch ($e) {
+	} catch ($e) {
 		$log->warn("ShutterNotification init warning: $e");
 	}
 

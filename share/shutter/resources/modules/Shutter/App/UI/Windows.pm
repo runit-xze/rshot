@@ -32,36 +32,36 @@ use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
 
-has common => (is => 'ro', required => 1);
-has app => (is => 'ro', required => 1);
-has cli => (is => 'ro', required => 1);
+has common  => (is => 'ro', required => 1);
+has app     => (is => 'ro', required => 1);
+has cli     => (is => 'ro', required => 1);
 has _window => (is => 'rw');
-has _vbox => (is => 'rw');
+has _vbox   => (is => 'rw');
 
 sub BUILD ($self, $args) {
-    my $sc = $self->common;
-    my $app = $self->app;
+	my $sc  = $self->common;
+	my $app = $self->app;
 
-    my $window = Gtk3::ApplicationWindow->new($app);
-    $self->_window($window);
-    $sc->set_mainwindow($window);
+	my $window = Gtk3::ApplicationWindow->new($app);
+	$self->_window($window);
+	$sc->set_mainwindow($window);
 
-    $window->signal_connect('delete-event' => sub { $self->cli->handlers->get('Core')->evt_delete_window('', 'quit') });
-    $window->set_border_width(0);
-    $window->set_resizable(TRUE);
-    $window->set_focus_on_map(TRUE);
-    $window->set_default_size(-1, 500);
+	$window->signal_connect('delete-event' => sub { $self->cli->handlers->get('Core')->evt_delete_window('', 'quit') });
+	$window->set_border_width(0);
+	$window->set_resizable(TRUE);
+	$window->set_focus_on_map(TRUE);
+	$window->set_default_size(-1, 500);
 
-    Gtk3::Window::set_default_icon_name("rshot");
+	Gtk3::Window::set_default_icon_name("rshot");
 
-    my $vbox = Gtk3::VBox->new(FALSE, 0);
-    $self->_vbox($vbox);
-    $window->add($vbox);
-    return;
+	my $vbox = Gtk3::VBox->new(FALSE, 0);
+	$self->_vbox($vbox);
+	$window->add($vbox);
+	return;
 }
 
 sub get_window { return $_[0]->_window }
-sub get_vbox { return $_[0]->_vbox }
+sub get_vbox   { return $_[0]->_vbox }
 
 1;
 

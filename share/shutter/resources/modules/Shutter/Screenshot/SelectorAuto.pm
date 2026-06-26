@@ -26,7 +26,8 @@ package Shutter::Screenshot::SelectorAuto;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Shutter::Screenshot::Main;
 use Shutter::Screenshot::History;
@@ -53,7 +54,7 @@ sub select_auto ($self, $x, $y, $width, $height) {
 	my $d = $self->{_sc}->get_gettext;
 
 	my $output;
-	if ($x>=0 && $y>=0 && $width && $height) {
+	if ($x >= 0 && $y >= 0 && $width && $height) {
 		($output) = $self->get_pixbuf_from_drawable($self->{_root}, $x, $y, $width, $height);
 
 		#section not valid

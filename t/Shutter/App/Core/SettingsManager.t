@@ -1,3 +1,4 @@
+## no critic (Subroutines::RequireFinalReturn)
 use Test2::V0;
 use Shutter::App::Core::SettingsManager;
 use File::Temp qw/tempdir/;
@@ -7,7 +8,7 @@ use Data::Dumper;
 
 # Mock SimpleDialogs
 package Shutter::App::SimpleDialogs;
-sub new { bless {}, shift }
+sub new               { bless {}, shift }
 sub dlg_error_message { }
 
 package main;
@@ -17,21 +18,22 @@ $ENV{HOME} = $temp_dir;
 
 # Simple mock classes
 {
-    package MockLocale;
-    sub new { bless {}, shift }
-    sub get { shift; shift }
-    
-    package MockHelper;
-    sub new { my ($class, $fe) = @_; bless {fe => $fe}, $class }
-    sub file_exists { shift->{fe} }
-    
-    package MockCommon;
-    sub new { my ($class, $fe) = @_; bless {fe => $fe}, $class }
-    sub get_gettext { MockLocale->new }
-    sub get_helper_functions { MockHelper->new(shift->{fe}) }
-    sub get_mainwindow { undef }
-    sub get_version { '0.0.1' }
-    sub get_rev { 'rev1' }
+
+	package MockLocale;
+	sub new { bless {}, shift }
+	sub get { shift; shift }
+
+	package MockHelper;
+	sub new         { my ($class, $fe) = @_; bless {fe => $fe}, $class }
+	sub file_exists { shift->{fe} }
+
+	package MockCommon;
+	sub new                  { my ($class, $fe) = @_; bless {fe => $fe}, $class }
+	sub get_gettext          { MockLocale->new }
+	sub get_helper_functions { MockHelper->new(shift->{fe}) }
+	sub get_mainwindow       { undef }
+	sub get_version          { '0.0.1' }
+	sub get_rev              { 'rev1' }
 }
 
 # Test saving/loading

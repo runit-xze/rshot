@@ -12,7 +12,6 @@ with 'Shutter::Draw::Tool::Role::Selectable';
 with 'Shutter::Draw::Tool::Role::HoverHighlight';
 with 'Shutter::Draw::Tool::Role::Autoscroll';
 
-
 sub on_motion_notify ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 
@@ -29,7 +28,8 @@ sub on_motion_notify ($self, $item, $target, $ev) {
 		#freehand line
 	} elsif ($self->can('on_drag_creation_points') && $ev->state >= 'button1-mask') {
 		$self->on_drag_creation_points($dt->{_current_new_item} || $item, $target, $ev);
-#new item is already on the canvas with small initial size
+
+		#new item is already on the canvas with small initial size
 		#drawing is like resizing, so set up for resizing
 	} elsif ($self->can('on_drag_creation_shape') && $ev->state >= 'button1-mask' && !$item->{resizing}) {
 		return FALSE unless $self->on_drag_creation_shape($dt->{_current_new_item} || $item, $target, $ev);
@@ -68,7 +68,6 @@ sub on_motion_notify ($self, $item, $target, $ev) {
 
 	return TRUE;
 }
-
 
 sub on_key_press ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
@@ -130,7 +129,6 @@ sub on_key_press ($self, $item, $target, $ev) {
 
 	return TRUE;
 }
-
 
 sub on_button_press ($self, $item, $target, $ev, $select) {
 	my $dt = $self->drawing_tool;
@@ -294,10 +292,9 @@ sub on_button_press ($self, $item, $target, $ev, $select) {
 			#~ print "grab keyboard and pointer focus for $item\n";
 
 			#grab keyboard and pointer focus
-			eval {
-				$dt->{_canvas}->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], $cursor, $ev->time);
-			};
+			eval { $dt->{_canvas}->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], $cursor, $ev->time); };
 			if ($@) {
+
 				# workaround for https://gitlab.gnome.org/GNOME/goocanvas/-/merge_requests/8
 				$dt->{_canvas}->pointer_grab($item, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time);
 			}
@@ -358,6 +355,7 @@ sub on_button_press ($self, $item, $target, $ev, $select) {
 				#grab keyboard focus
 				if (my $nitem = $dt->{_current_new_item}) {
 					$dt->handle_rects('update', $nitem);
+
 					#~ print "grab keyboard focus for new item $nitem\n";
 					$dt->{_canvas}->grab_focus($nitem);
 				}
@@ -373,7 +371,6 @@ sub on_button_press ($self, $item, $target, $ev, $select) {
 
 	return TRUE;
 }
-
 
 sub on_button_release ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
@@ -642,6 +639,5 @@ sub on_button_release ($self, $item, $target, $ev) {
 
 	return TRUE;
 }
-
 
 1;

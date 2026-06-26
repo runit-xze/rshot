@@ -8,21 +8,23 @@ use Glib qw/TRUE FALSE/;
 
 with 'Shutter::Draw::Tool::Base';
 
-has event     => ( is => 'rw', lazy => 1 );
-has copy_item => ( is => 'rw', lazy => 1 );
-has points    => ( is => 'rw', default => sub { [] } );
-has transform => ( is => 'rw' );
+has event     => (is => 'rw', lazy    => 1);
+has copy_item => (is => 'rw', lazy    => 1);
+has points    => (is => 'rw', default => sub { [] });
+has transform => (is => 'rw');
 
 sub draw ($self, $cr) {
-    # Handled by GooCanvas2
+
+	# Handled by GooCanvas2
 }
 
 sub on_click ($self, $event) {
-    return $self->drawing_tool->create_censor($event, undef);
+	return $self->drawing_tool->create_censor($event, undef);
 }
 
 sub on_drag ($self, $event) {
-    # Handled by DrawingTool for now
+
+	# Handled by DrawingTool for now
 }
 
 sub on_drag_creation_points ($self, $item, $target, $ev) {
@@ -53,7 +55,7 @@ sub setup ($self, $event, $copy_item) {
 	$dt->increase_uid;
 
 	push @{$dt->{_items}{$item}{'points'}}, @{$self->points};
-	$item->set(points => Shutter::Draw::Utils::points_to_canvas_points(@{$dt->{_items}{$item}{'points'}}));
+	$item->set(points    => Shutter::Draw::Utils::points_to_canvas_points(@{$dt->{_items}{$item}{'points'}}));
 	$item->set(transform => $self->transform) if $self->transform;
 
 	$dt->setup_item_signals($item);
@@ -82,12 +84,12 @@ sub _create_item ($self) {
 	my $dt = $self->drawing_tool;
 
 	return GooCanvas2::CanvasPolyline->new(
-		parent        => $dt->canvas->get_root_item,
-		'close-path'  => FALSE,
+		parent          => $dt->canvas->get_root_item,
+		'close-path'    => FALSE,
 		'stroke-pixbuf' => $dt->stipple_pixbuf,
-		'line-width'  => 14,
-		'line-cap'    => 'CAIRO_LINE_CAP_ROUND',
-		'line-join'   => 'CAIRO_LINE_JOIN_ROUND',
+		'line-width'    => 14,
+		'line-cap'      => 'CAIRO_LINE_CAP_ROUND',
+		'line-join'     => 'CAIRO_LINE_JOIN_ROUND',
 	);
 }
 

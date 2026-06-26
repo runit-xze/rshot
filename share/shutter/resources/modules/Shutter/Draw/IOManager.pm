@@ -9,13 +9,13 @@ use Shutter::Draw::IO::SaveExport;
 use Shutter::Draw::IO::LoadImport;
 
 has drawing_tool => (
-    is => 'ro',
-    required => 1,
+	is       => 'ro',
+	required => 1,
 );
 
 with qw(
-    Shutter::Draw::IO::SaveExport
-    Shutter::Draw::IO::LoadImport
+	Shutter::Draw::IO::SaveExport
+	Shutter::Draw::IO::LoadImport
 );
 
 1;

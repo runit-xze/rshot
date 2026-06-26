@@ -49,17 +49,15 @@ has '_notify_timeout' => (is => 'rw');
 
 # GDK properties
 has '_gdk_screen' => (
-	is => 'lazy',
-	default => sub { Gtk3::Gdk::Screen::get_default() }
-);
+	is      => 'lazy',
+	default => sub { Gtk3::Gdk::Screen::get_default() });
 
 has '_gdk_display' => (
-	is => 'lazy',
-	default => sub { shift->_gdk_screen->get_display }
-);
+	is      => 'lazy',
+	default => sub { shift->_gdk_screen->get_display });
 
 has '_root' => (
-	is => 'lazy',
+	is      => 'lazy',
 	builder => 1,
 );
 
@@ -67,13 +65,11 @@ sub _build__root ($self) {
 	my $window = Gtk3::Window->new('toplevel');
 	my $root;
 	try {
-		$root = Gtk3::GdkX11::X11Window::lookup_for_display(
-			$window->get_display,
-			Gtk3::GdkX11::x11_get_default_root_xwindow()
-		);
+		$root = Gtk3::GdkX11::X11Window::lookup_for_display($window->get_display, Gtk3::GdkX11::x11_get_default_root_xwindow());
 		($root->{x}, $root->{y}, $root->{w}, $root->{h}) = $root->get_geometry;
 		($root->{x}, $root->{y}) = $root->get_origin;
 	} catch ($e) {
+
 		# it's wayland
 		return;
 	}
@@ -82,7 +78,7 @@ sub _build__root ($self) {
 
 # Wnck properties
 has '_wnck_screen' => (
-	is => 'lazy',
+	is      => 'lazy',
 	builder => 1,
 );
 
@@ -94,7 +90,7 @@ sub _build__wnck_screen ($self) {
 }
 
 has '_wm_manager_name' => (
-	is => 'lazy',
+	is      => 'lazy',
 	builder => 1,
 );
 
@@ -108,7 +104,7 @@ sub _build__wm_manager_name ($self) {
 }
 
 has '_workspaces' => (
-	is => 'lazy',
+	is      => 'lazy',
 	builder => 1,
 );
 
@@ -137,7 +133,8 @@ around BUILDARGS => sub {
 };
 
 sub BUILD ($self, $args) {
-	# Force evaluation of lazy attributes so that legacy child classes 
+
+	# Force evaluation of lazy attributes so that legacy child classes
 	# accessing the underlying hash keys directly won't get undef!
 	$self->_gdk_screen;
 	$self->_gdk_display;
@@ -205,10 +202,11 @@ sub ungrab_pointer_and_keyboard ($self, $ungrab_server, $quit_event_handler, $qu
 	Gtk3::Gdk::X11->ungrab_server if $ungrab_server;
 	Gtk3::Gdk::pointer_ungrab(Gtk3::get_current_event_time());
 	Gtk3::Gdk::keyboard_ungrab(Gtk3::get_current_event_time());
-	Gtk3::Gdk::Event::handler_set(sub {
-		my $event = shift;
-		Gtk3::main_do_event($event);
-	}) if $quit_event_handler;
+	Gtk3::Gdk::Event::handler_set(
+		sub {
+			my $event = shift;
+			Gtk3::main_do_event($event);
+		}) if $quit_event_handler;
 	Gtk3->main_quit if $quit_main;
 
 	return TRUE unless Gtk3::Gdk::pointer_is_grabbed();
@@ -281,17 +279,20 @@ sub get_pixbuf_from_drawable ($self, $drawable, $x = undef, $y = undef, $width =
 		$r_cropped = $x + $width - $self->{_root}->{w};
 		$width -= $x + $width - $self->{_root}->{w};
 	}
+
 	#bottom
 	if ($y + $height > $self->{_root}->{h}) {
 		$b_cropped = $y + $height - $self->{_root}->{h};
 		$height -= $y + $height - $self->{_root}->{h};
 	}
+
 	#left
 	if ($x < $self->{_root}->{x}) {
 		$l_cropped = $self->{_root}->{x} - $x;
 		$width     = $width + $x;
 		$x         = 0;
 	}
+
 	#top
 	if ($y < $self->{_root}->{y}) {
 		$t_cropped = $self->{_root}->{y} - $y;
@@ -303,8 +304,7 @@ sub get_pixbuf_from_drawable ($self, $drawable, $x = undef, $y = undef, $width =
 		if ($width > 0 && $height > 0) {
 			$pixbuf = Gtk3::Gdk::pixbuf_get_from_window($drawable, $x, $y, $width, $height);
 		}
-	}
-	catch ($e) {
+	} catch ($e) {
 		return (undef, 0, 0, 0, 0);
 	}
 
@@ -314,17 +314,17 @@ sub get_pixbuf_from_drawable ($self, $drawable, $x = undef, $y = undef, $width =
 
 	if ($region) {
 		my $clipbox = $self->get_clipbox($region);
-		my $target = Gtk3::Gdk::Pixbuf->new($pixbuf->get_colorspace, TRUE, 8, $clipbox->{width}, $clipbox->{height});
+		my $target  = Gtk3::Gdk::Pixbuf->new($pixbuf->get_colorspace, TRUE, 8, $clipbox->{width}, $clipbox->{height});
 		$target->fill(0x00000000);
 		my $small_x = $self->{_root}->{w};
 		my $small_y = $self->{_root}->{h};
-		my $len = $region->num_rectangles-1;
-		for my $i (0..$len) {
+		my $len     = $region->num_rectangles - 1;
+		for my $i (0 .. $len) {
 			my $r = $region->get_rectangle($i);
 			$small_x = $r->{x} if $r->{x} < $small_x;
 			$small_y = $r->{y} if $r->{y} < $small_y;
 		}
-		for my $i (0..$len) {
+		for my $i (0 .. $len) {
 			my $r = $region->get_rectangle($i);
 			$pixbuf->copy_area($r->{x} - $small_x, $r->{y} - $small_y, $r->{width}, $r->{height}, $target, $r->{x} - $small_x, $r->{y} - $small_y);
 		}
@@ -432,8 +432,7 @@ sub get_pixbuf_from_drawable_async ($self, $drawable, $x = undef, $y = undef, $w
 				if ($width > 0 && $height > 0) {
 					$pixbuf = Gtk3::Gdk::pixbuf_get_from_window($drawable, $x, $y, $width, $height);
 				}
-			}
-			catch ($e) {
+			} catch ($e) {
 				$f->fail("Failed to get pixbuf from window: $e");
 				return FALSE;
 			}
@@ -460,15 +459,15 @@ sub get_pixbuf_from_drawable_async ($self, $drawable, $x = undef, $y = undef, $w
 				#determine low x and y
 				my $small_x = $self->{_root}->{w};
 				my $small_y = $self->{_root}->{h};
-				my $len = $region->num_rectangles-1;
-				for my $i (0..$len) {
+				my $len     = $region->num_rectangles - 1;
+				for my $i (0 .. $len) {
 					my $r = $region->get_rectangle($i);
 					$small_x = $r->{x} if $r->{x} < $small_x;
 					$small_y = $r->{y} if $r->{y} < $small_y;
 				}
 
 				#copy each rectangle
-				for my $i (0..$len) {
+				for my $i (0 .. $len) {
 					my $r = $region->get_rectangle($i);
 
 					$pixbuf->copy_area($r->{x} - $small_x, $r->{y} - $small_y, $r->{width}, $r->{height}, $target, $r->{x} - $small_x, $r->{y} - $small_y);
@@ -481,9 +480,10 @@ sub get_pixbuf_from_drawable_async ($self, $drawable, $x = undef, $y = undef, $w
 		});
 
 	# Enable future cancellation!
-	$f->on_cancel(sub {
-	    # Could potentially disable the timeouts here if we stored their IDs
-	});
+	$f->on_cancel(
+		sub {
+			# Could potentially disable the timeouts here if we stored their IDs
+		});
 
 	return $f;
 }
@@ -585,7 +585,7 @@ sub include_cursor ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) {
 		my $y = $cursor_pixbuf_yroot;
 
 		#screenshot dimensions saved in a rect (global x, y)
-		my $scshot = Cairo::Region->create({x=>$xp, y=>$yp, width=>$widthp, height=>$heightp});
+		my $scshot = Cairo::Region->create({x => $xp, y => $yp, width => $widthp, height => $heightp});
 
 		#see 'man xcursor' for a detailed description
 		#of these values
@@ -593,7 +593,7 @@ sub include_cursor ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) {
 		my $yhot = $cursor_pixbuf_yhot;
 
 		#cursor dimensions (global x, y and width and height of the pixbuf)
-		my $cursor = {x=>$x, y=>$y, width=>$cursor_pixbuf->get_width, height=>$cursor_pixbuf->get_height};
+		my $cursor = {x => $x, y => $y, width => $cursor_pixbuf->get_width, height => $cursor_pixbuf->get_height};
 
 		#is the cursor visible in the current screenshot?
 		#(do the rects intersect?)

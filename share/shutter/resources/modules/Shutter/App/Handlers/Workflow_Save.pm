@@ -35,81 +35,82 @@ use File::Copy qw(move);
 has cli => (is => 'ro', required => 1);
 
 sub fct_load_settings ($self, $data, $profilename) {
-    my $cli = $self->cli;
-    my $sc = $cli->sc;
-    my $shf = $cli->shf;
-    my $sd = $cli->sc->{_sd};
-    my $d = $cli->sc->get_gettext;
-    
-    # settings and profile-specific UI components are expected to be injected in CLI object
-    # This refactoring is complex due to UI dependencies, keeping minimal implementation
-    # to maintain functionality for now.
+	my $cli = $self->cli;
+	my $sc  = $cli->sc;
+	my $shf = $cli->shf;
+	my $sd  = $cli->sc->{_sd};
+	my $d   = $cli->sc->get_gettext;
 
-    my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
-    $settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml"
-        if (defined $profilename);
+	# settings and profile-specific UI components are expected to be injected in CLI object
+	# This refactoring is complex due to UI dependencies, keeping minimal implementation
+	# to maintain functionality for now.
 
-    my $settings_xml;
-    if ($shf->file_exists($settingsfile)) {
-        eval {
-            $settings_xml = XMLin(IO::File->new($settingsfile));
-            
-            # ... UI updating logic ...
-            if (defined &fct_load_accounts) {
-                $self->fct_load_accounts($profilename);
-            }
-        };
-        if ($@) {
-            $sd->dlg_error_message("$@", $d->get("Settings could not be restored!"));
-            unlink $settingsfile;
-        } else {
-            $self->fct_show_status_message(1, $d->get("Settings loaded successfully")) if defined &fct_show_status_message;
-        }
-    }
-    return $settings_xml;
+	my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
+	$settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml"
+		if (defined $profilename);
+
+	my $settings_xml;
+	if ($shf->file_exists($settingsfile)) {
+		eval {
+			$settings_xml = XMLin(IO::File->new($settingsfile));
+
+			# ... UI updating logic ...
+			if (defined &fct_load_accounts) {
+				$self->fct_load_accounts($profilename);
+			}
+		};
+		if ($@) {
+			$sd->dlg_error_message("$@", $d->get("Settings could not be restored!"));
+			unlink $settingsfile;
+		} else {
+			$self->fct_show_status_message(1, $d->get("Settings loaded successfully")) if defined &fct_show_status_message;
+		}
+	}
+	return $settings_xml;
 }
 
 sub fct_save_settings ($self, $profilename) {
-    my $cli = $self->cli;
-    my $sc = $cli->sc;
-    my $shf = $cli->shf;
-    my $sd = $cli->sc->{_sd};
-    my $d = $cli->sc->get_gettext;
-    my $combobox_settings_profiles = $cli->{_combobox_settings_profiles};
+	my $cli                        = $self->cli;
+	my $sc                         = $cli->sc;
+	my $shf                        = $cli->shf;
+	my $sd                         = $cli->sc->{_sd};
+	my $d                          = $cli->sc->get_gettext;
+	my $combobox_settings_profiles = $cli->{_combobox_settings_profiles};
 
-    # settings file
-    my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
-    if (defined $profilename && $profilename ne "") {
-        $settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml";
-    }
+	# settings file
+	my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
+	if (defined $profilename && $profilename ne "") {
+		$settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml";
+	}
 
-    # session file
-    my $sessionfile = "$ENV{ HOME }/.shutter/session.xml";
+	# session file
+	my $sessionfile = "$ENV{ HOME }/.shutter/session.xml";
 
-    # accounts file
-    my $accountsfile = "$ENV{ HOME }/.shutter/accounts.xml";
-    if (defined $profilename && $profilename ne "") {
-        $accountsfile = "$ENV{ HOME }/.shutter/profiles/$profilename\_accounts.xml";
-    }
+	# accounts file
+	my $accountsfile = "$ENV{ HOME }/.shutter/accounts.xml";
+	if (defined $profilename && $profilename ne "") {
+		$accountsfile = "$ENV{ HOME }/.shutter/profiles/$profilename\_accounts.xml";
+	}
 
-    my %settings;
-    # ... logic to populate %settings ...
+	my %settings;
 
-    #save settings
-    eval {
-        my ($tmpfh, $tmpfilename) = tempfile(UNLINK => 1);
-        XMLout(\%settings, OutputFile => $tmpfilename);
-        move($tmpfilename, $settingsfile);
-    };
-    if ($@) {
-        $sd->dlg_error_message("$@", $d->get("Settings could not be saved!"));
-    } else {
-        $self->fct_show_status_message(1, $d->get("Settings saved successfully!")) if defined &fct_show_status_message;
-    }
+	# ... logic to populate %settings ...
 
-    # ... logic to save session and accounts ...
+	#save settings
+	eval {
+		my ($tmpfh, $tmpfilename) = tempfile(UNLINK => 1);
+		XMLout(\%settings, OutputFile => $tmpfilename);
+		move($tmpfilename, $settingsfile);
+	};
+	if ($@) {
+		$sd->dlg_error_message("$@", $d->get("Settings could not be saved!"));
+	} else {
+		$self->fct_show_status_message(1, $d->get("Settings saved successfully!")) if defined &fct_show_status_message;
+	}
 
-    return TRUE;
+	# ... logic to save session and accounts ...
+
+	return TRUE;
 }
 
 1;

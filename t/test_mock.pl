@@ -1,3 +1,4 @@
+## no critic (Subroutines::RequireFinalReturn)
 use strict;
 use warnings;
 

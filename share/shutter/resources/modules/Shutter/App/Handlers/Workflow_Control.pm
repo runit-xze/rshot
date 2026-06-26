@@ -36,58 +36,57 @@ has cli => (is => 'ro', required => 1);
 
 sub fct_control_wm_settings ($self, $mode, $restore_value) {
 
-    #compiz via dbus
-    my $bus    = undef;
-    my $compiz = undef;
-    my $fpl    = undef;
+	#compiz via dbus
+	my $bus    = undef;
+	my $compiz = undef;
+	my $fpl    = undef;
 
-    #disable focus_prevention
-    my $curr_value = -1;
+	#disable focus_prevention
+	my $curr_value = -1;
 
-    #disable focus prevention when using compiz
-    eval {
-        $bus = Net::DBus->find;
+	#disable focus prevention when using compiz
+	eval {
+		$bus = Net::DBus->find;
 
-        #Get a handle to the compiz service
-        $compiz = $bus->get_service("org.freedesktop.compiz");
+		#Get a handle to the compiz service
+		$compiz = $bus->get_service("org.freedesktop.compiz");
 
-        #Get the relevant object
-        $fpl = $compiz->get_object("/org/freedesktop/compiz/core/screen0/focus_prevention_level", "org.freedesktop.compiz");
-    };
-    if ($@) {
-        $log->info("DBus connection to org.freedesktop.compiz failed --> skipping compiz related tasks: $@");
-        return $curr_value;
-    }
+		#Get the relevant object
+		$fpl = $compiz->get_object("/org/freedesktop/compiz/core/screen0/focus_prevention_level", "org.freedesktop.compiz");
+	};
+	if ($@) {
+		$log->info("DBus connection to org.freedesktop.compiz failed --> skipping compiz related tasks: $@");
+		return $curr_value;
+	}
 
-    if (defined $fpl && $fpl) {
-        eval {
-            if ($mode eq 'start') {
+	if (defined $fpl && $fpl) {
+		eval {
+			if ($mode eq 'start') {
 
-                #save and return current value
-                if (defined $fpl && $fpl) {
-                    $curr_value = $fpl->get;
-                }
-                if (defined $fpl && $fpl && $fpl->get != 0) {
-                    $fpl->set(0);
-                }
+				#save and return current value
+				if (defined $fpl && $fpl) {
+					$curr_value = $fpl->get;
+				}
+				if (defined $fpl && $fpl && $fpl->get != 0) {
+					$fpl->set(0);
+				}
 
-                #re-enable focus prevention -> restore value
-            } elsif ($mode eq 'stop') {
-                if (defined $fpl && $fpl && defined $restore_value) {
-                    $fpl->set($restore_value);
-                } elsif (defined $fpl && $fpl) {
-                    $fpl->set(1);
-                }
-            }
-        };
-        if ($@) {
-            $log->error("Unable to set/get focus_level_prevention --> skipping compiz related tasks: $@");
-        }
-    }
+				#re-enable focus prevention -> restore value
+			} elsif ($mode eq 'stop') {
+				if (defined $fpl && $fpl && defined $restore_value) {
+					$fpl->set($restore_value);
+				} elsif (defined $fpl && $fpl) {
+					$fpl->set(1);
+				}
+			}
+		};
+		if ($@) {
+			$log->error("Unable to set/get focus_level_prevention --> skipping compiz related tasks: $@");
+		}
+	}
 
-    return $curr_value;
+	return $curr_value;
 }
-
 
 1;
 

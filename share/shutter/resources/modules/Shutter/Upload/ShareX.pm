@@ -11,184 +11,177 @@ use MIME::Base64;
 use JSON::MaybeXS;
 use LWP::UserAgent;
 use HTTP::Request::Common;
-use Glib qw/TRUE FALSE/;
+use Glib     qw/TRUE FALSE/;
 use IPC::Cmd qw(can_run);
 use URI::Escape;
 use File::Temp;
 use Gtk3;
 
-has sxcu_path => (is => 'ro', required => 1);
-has debug => (is => 'ro', default => sub { 0 });
+has sxcu_path       => (is => 'ro', required => 1);
+has debug           => (is => 'ro', default  => sub { 0 });
 has main_gtk_window => (is => 'ro');
-has _sxcu => (is => 'rw');
+has _sxcu           => (is => 'rw');
 
 sub BUILD ($self) {
-    my $json = JSON::MaybeXS->new;
-    eval {
-        open(my $fh, '<', $self->sxcu_path) or die "Cannot open " . $self->sxcu_path;
-        my $json_text = do { local $/; <$fh> };
-        close($fh);
-        $self->_sxcu($json->decode($json_text));
-    };
-    if ($@) {
-        print "Error parsing .sxcu file: $@\n" if $self->debug;
-    }
-    return;
+	my $json = JSON::MaybeXS->new;
+	eval {
+		open(my $fh, '<', $self->sxcu_path) or die "Cannot open " . $self->sxcu_path;
+		my $json_text = do { local $/; <$fh> };
+		close($fh);
+		$self->_sxcu($json->decode($json_text));
+	};
+	if ($@) {
+		print "Error parsing .sxcu file: $@\n" if $self->debug;
+	}
+	return;
 }
 
 sub upload ($self, $upload_filename) {
-    return (success => 0, error => "File not found") unless -e $upload_filename;
-    return (success => 0, error => "Failed to load sxcu") unless $self->_sxcu;
+	return (success => 0, error => "File not found")      unless -e $upload_filename;
+	return (success => 0, error => "Failed to load sxcu") unless $self->_sxcu;
 
-    my $client = LWP::UserAgent->new(
-        'timeout'    => 20,
-        'keep_alive' => 10,
-        'env_proxy'  => 1,
-    );
+	my $client = LWP::UserAgent->new(
+		'timeout'    => 20,
+		'keep_alive' => 10,
+		'env_proxy'  => 1,
+	);
 
-    my %upload_result;
+	my %upload_result;
 
-    eval {
-        my %form_data;
-        
-        # Build arguments
-        if (exists $self->_sxcu->{Arguments}) {
-            foreach my $k (keys %{$self->_sxcu->{Arguments}}) {
-                $form_data{$k} = $self->_sxcu->{Arguments}->{$k};
-            }
-        }
+	eval {
+		my %form_data;
 
-        # Add file
-        my $file_form_name = $self->_sxcu->{FileFormName} || 'file';
-        $form_data{$file_form_name} = [$upload_filename];
-        
-        my @params = ($self->_sxcu->{RequestURL}, 'Content_Type' => 'form-data', 'Content' => [%form_data]);
-        my $req = HTTP::Request::Common::POST(@params);
-        
-        # Headers
-        if (exists $self->_sxcu->{Headers}) {
-            foreach my $k (keys %{$self->_sxcu->{Headers}}) {
-                $req->header($k => $self->_sxcu->{Headers}->{$k});
-            }
-        }
-        
-        my $rsp = $client->request($req);
+		# Build arguments
+		if (exists $self->_sxcu->{Arguments}) {
+			foreach my $k (keys %{$self->_sxcu->{Arguments}}) {
+				$form_data{$k} = $self->_sxcu->{Arguments}->{$k};
+			}
+		}
 
-        if ($rsp->is_success) {
-            my $content = $rsp->decoded_content || $rsp->content;
-            
-            my $final_url = $content;
-            
-            if (exists $self->_sxcu->{URL}) {
-                my $regex = $self->_sxcu->{URL};
-                if ($regex =~ /^\$json:(.+)\$$/) {
-                    my $jpath = $1;
-                    my $json_obj = JSON::MaybeXS->new->decode($content);
-                    my @parts = split(/\./, $jpath);
-                    my $curr = $json_obj;
-                    foreach my $p (@parts) {
-                        if (ref($curr) eq 'HASH' && exists $curr->{$p}) {
-                            $curr = $curr->{$p};
-                        } else {
-                            $curr = undef;
-                            last;
-                        }
-                    }
-                    if (defined $curr && !ref($curr)) {
-                        $final_url = $curr;
-                    }
-                } elsif ($content =~ /$regex/) {
-                    $final_url = $1 || $content;
-                }
-            }
-            
-            # Clean up url
-            $final_url =~ s/^\s+|\s+$//g;
+		# Add file
+		my $file_form_name = $self->_sxcu->{FileFormName} || 'file';
+		$form_data{$file_form_name} = [$upload_filename];
 
-            # --- After Upload Actions ---
-            my $after = $self->_sxcu->{AfterUpload} // {};
+		my @params = ($self->_sxcu->{RequestURL}, 'Content_Type' => 'form-data', 'Content' => [%form_data]);
+		my $req    = HTTP::Request::Common::POST(@params);
 
-            # URL Shortening via TinyURL
-            if ($after->{shorten_url} && $final_url =~ m{^https?://}) {
-                try {
-                    my $shorten_ua  = LWP::UserAgent->new(timeout => 10, env_proxy => 1);
-                    my $shorten_rsp = $shorten_ua->get(
-                        'https://tinyurl.com/api-create.php?url=' . URI::Escape::uri_escape($final_url)
-                    );
-                    if ($shorten_rsp->is_success) {
-                        my $short = $shorten_rsp->decoded_content;
-                        $short =~ s/\s+//g;
-                        $final_url = $short if $short =~ m{^https?://};
-                    }
-                } catch ($e) {
-                    print "URL shortening failed: $e\n" if $self->debug;
-                }
-            }
+		# Headers
+		if (exists $self->_sxcu->{Headers}) {
+			foreach my $k (keys %{$self->_sxcu->{Headers}}) {
+				$req->header($k => $self->_sxcu->{Headers}->{$k});
+			}
+		}
 
-            # QR Code display via qrencode (if available and requested)
-            if ($after->{show_qr} && can_run('qrencode')) {
-                my $tmpfile = File::Temp::tempnam('/tmp', 'shutter_qr_') . '.png';
-                my $escaped = $final_url;
-                $escaped =~ s/'/'\''/g;
-                system("qrencode -o '$tmpfile' -s 5 '$escaped' 2>/dev/null");
-                if (-f $tmpfile) {
-                    $self->_show_qr_dialog($tmpfile, $final_url);
-                    unlink $tmpfile;
-                }
-            }
+		my $rsp = $client->request($req);
 
-            %upload_result = (success => 1, url => $final_url);
-        } else {
-            %upload_result = (success => 0, error => "Upload failed: " . $rsp->status_line . "\n" . $rsp->content);
-        }
-    };
-    if ($@) {
-        %upload_result = (success => 0, error => $@);
-    }
+		if ($rsp->is_success) {
+			my $content = $rsp->decoded_content || $rsp->content;
 
-    return %upload_result;
+			my $final_url = $content;
+
+			if (exists $self->_sxcu->{URL}) {
+				my $regex = $self->_sxcu->{URL};
+				if ($regex =~ /^\$json:(.+)\$$/) {
+					my $jpath    = $1;
+					my $json_obj = JSON::MaybeXS->new->decode($content);
+					my @parts    = split(/\./, $jpath);
+					my $curr     = $json_obj;
+					foreach my $p (@parts) {
+						if (ref($curr) eq 'HASH' && exists $curr->{$p}) {
+							$curr = $curr->{$p};
+						} else {
+							$curr = undef;
+							last;
+						}
+					}
+					if (defined $curr && !ref($curr)) {
+						$final_url = $curr;
+					}
+				} elsif ($content =~ /$regex/) {
+					$final_url = $1 || $content;
+				}
+			}
+
+			# Clean up url
+			$final_url =~ s/^\s+|\s+$//g;
+
+			# --- After Upload Actions ---
+			my $after = $self->_sxcu->{AfterUpload} // {};
+
+			# URL Shortening via TinyURL
+			if ($after->{shorten_url} && $final_url =~ m{^https?://}) {
+				try {
+					my $shorten_ua  = LWP::UserAgent->new(timeout => 10, env_proxy => 1);
+					my $shorten_rsp = $shorten_ua->get('https://tinyurl.com/api-create.php?url=' . URI::Escape::uri_escape($final_url));
+					if ($shorten_rsp->is_success) {
+						my $short = $shorten_rsp->decoded_content;
+						$short =~ s/\s+//g;
+						$final_url = $short if $short =~ m{^https?://};
+					}
+				} catch ($e) {
+					print "URL shortening failed: $e\n" if $self->debug;
+				}
+			}
+
+			# QR Code display via qrencode (if available and requested)
+			if ($after->{show_qr} && can_run('qrencode')) {
+				my $tmpfile = File::Temp::tempnam('/tmp', 'shutter_qr_') . '.png';
+				my $escaped = $final_url;
+				$escaped =~ s/'/'\''/g;
+				system("qrencode -o '$tmpfile' -s 5 '$escaped' 2>/dev/null");
+				if (-f $tmpfile) {
+					$self->_show_qr_dialog($tmpfile, $final_url);
+					unlink $tmpfile;
+				}
+			}
+
+			%upload_result = (success => 1, url => $final_url);
+		} else {
+			%upload_result = (success => 0, error => "Upload failed: " . $rsp->status_line . "\n" . $rsp->content);
+		}
+	};
+	if ($@) {
+		%upload_result = (success => 0, error => $@);
+	}
+
+	return %upload_result;
 }
 
 sub _show_qr_dialog ($self, $qr_path, $url) {
-    return unless -f $qr_path;
-    return unless $self->main_gtk_window;
+	return unless -f $qr_path;
+	return unless $self->main_gtk_window;
 
-    my $dialog = Gtk3::Dialog->new(
-        'Upload Complete - QR Code',
-        $self->main_gtk_window,
-        [qw/destroy-with-parent/],
-        'gtk-ok' => 'accept'
-    );
-    $dialog->set_default_size(320, 400);
+	my $dialog = Gtk3::Dialog->new('Upload Complete - QR Code', $self->main_gtk_window, [qw/destroy-with-parent/], 'gtk-ok' => 'accept');
+	$dialog->set_default_size(320, 400);
 
-    my $vbox = $dialog->get_content_area;
+	my $vbox = $dialog->get_content_area;
 
-    my $url_label = Gtk3::Label->new('');
-    $url_label->set_markup("<b>Upload URL:</b>");
-    $url_label->set_alignment(0, 0.5);
-    $vbox->pack_start($url_label, FALSE, FALSE, 4);
+	my $url_label = Gtk3::Label->new('');
+	$url_label->set_markup("<b>Upload URL:</b>");
+	$url_label->set_alignment(0, 0.5);
+	$vbox->pack_start($url_label, FALSE, FALSE, 4);
 
-    my $url_entry = Gtk3::Entry->new;
-    $url_entry->set_text($url);
-    $url_entry->set_editable(FALSE);
-    $vbox->pack_start($url_entry, FALSE, FALSE, 2);
+	my $url_entry = Gtk3::Entry->new;
+	$url_entry->set_text($url);
+	$url_entry->set_editable(FALSE);
+	$vbox->pack_start($url_entry, FALSE, FALSE, 2);
 
-    my $qr_label = Gtk3::Label->new('Scan to open on another device:');
-    $qr_label->set_alignment(0, 0.5);
-    $vbox->pack_start($qr_label, FALSE, FALSE, 4);
+	my $qr_label = Gtk3::Label->new('Scan to open on another device:');
+	$qr_label->set_alignment(0, 0.5);
+	$vbox->pack_start($qr_label, FALSE, FALSE, 4);
 
-    try {
-        my $pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($qr_path);
-        my $img    = Gtk3::Image->new_from_pixbuf($pixbuf);
-        $vbox->pack_start($img, TRUE, TRUE, 0);
-    } catch ($e) {
-        $vbox->pack_start(Gtk3::Label->new('(Could not load QR image)'), FALSE, FALSE, 0);
-    }
+	try {
+		my $pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($qr_path);
+		my $img    = Gtk3::Image->new_from_pixbuf($pixbuf);
+		$vbox->pack_start($img, TRUE, TRUE, 0);
+	} catch ($e) {
+		$vbox->pack_start(Gtk3::Label->new('(Could not load QR image)'), FALSE, FALSE, 0);
+	}
 
-    $dialog->show_all;
-    $dialog->run;
-    $dialog->destroy;
-    return;
+	$dialog->show_all;
+	$dialog->run;
+	$dialog->destroy;
+	return;
 }
 
 1;

@@ -26,7 +26,7 @@ no warnings 'experimental::try';
 
 use Moo;
 use Gtk3 '-init';
-use Glib qw/TRUE FALSE/;
+use Glib       qw/TRUE FALSE/;
 use File::Copy qw(cp);
 use File::Spec;
 use Shutter::Geometry::Region;
@@ -35,286 +35,289 @@ use Shutter::App::Directories;
 has cli => (is => 'ro', required => 1);
 
 sub fct_clipboard ($self, $widget = undef, $mode = 'image') {
-    my $cli = $self->cli;
-    my $h   = $cli->handlers;
-    my $d   = $cli->sc->get_gettext;
-    my $clipboard = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
-    my $session_start_screen = $cli->{_session_start_screen};
-    my $session_screens = $cli->{_session_screens};
-    my $lp = $cli->{_lp}; # LoadPixbuf module
+	my $cli                  = $self->cli;
+	my $h                    = $cli->handlers;
+	my $d                    = $cli->sc->get_gettext;
+	my $clipboard            = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
+	my $session_start_screen = $cli->{_session_start_screen};
+	my $session_screens      = $cli->{_session_screens};
+	my $lp                   = $cli->{_lp};                                                                               # LoadPixbuf module
 
-    my $key = $h->get('Menu_Ret_Get')->fct_get_current_file();
+	my $key = $h->get('Menu_Ret_Get')->fct_get_current_file();
 
-    #create shutter region object
-    my $sr = Shutter::Geometry::Region->new();
+	#create shutter region object
+	my $sr = Shutter::Geometry::Region->new();
 
-    my @clipboard_array;
+	my @clipboard_array;
 
-    #single file
-    if ($key) {
-        return FALSE unless $h->get('UI_Status')->fct_screenshot_exists($key);
-        push(@clipboard_array, $key);
-    } else {
-        if ($session_start_screen && $session_start_screen->{'first_page'} && $session_start_screen->{'first_page'}->{'view'}) {
-            $session_start_screen->{'first_page'}->{'view'}->selected_foreach(
-                sub {
-                    my ($view, $path) = @_;
-                    my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
-                    if (defined $iter) {
-                        my $key = $session_start_screen->{'first_page'}->{'model'}->get_value($iter, 2);
-                        push(@clipboard_array, $key);
-                    }
-                },
-                undef
-            );
-        }
-    }
+	#single file
+	if ($key) {
+		return FALSE unless $h->get('UI_Status')->fct_screenshot_exists($key);
+		push(@clipboard_array, $key);
+	} else {
+		if ($session_start_screen && $session_start_screen->{'first_page'} && $session_start_screen->{'first_page'}->{'view'}) {
+			$session_start_screen->{'first_page'}->{'view'}->selected_foreach(
+				sub {
+					my ($view, $path) = @_;
+					my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
+					if (defined $iter) {
+						my $key = $session_start_screen->{'first_page'}->{'model'}->get_value($iter, 2);
+						push(@clipboard_array, $key);
+					}
+				},
+				undef
+			);
+		}
+	}
 
-    my $clipboard_string = undef;
-    my $clipboard_region = Cairo::Region->create;
-    my @pixbuf_array;
-    my @rects_array;
-    
-    foreach my $k (@clipboard_array) {
-        if ($mode eq 'image') {
-            if ($lp && $session_screens->{$k} && $session_screens->{$k}->{'long'}) {
-                my $pixbuf = $lp->load($session_screens->{$k}->{'long'});
-                if ($pixbuf) {
-                    my $rect = {x=>$sr->get_clipbox($clipboard_region)->{width}, y=>0, width=>$pixbuf->get_width, height=>$pixbuf->get_height};
-                    $clipboard_region->union_rectangle($rect);
-                    push @pixbuf_array, $pixbuf;
-                    push @rects_array,  $rect;
-                }
-            }
-        } else {
-            if ($session_screens->{$k} && $session_screens->{$k}->{'long'}) {
-                $clipboard_string .= $session_screens->{$k}->{'long'} . "\n";
-            }
-        }
-    }
+	my $clipboard_string = undef;
+	my $clipboard_region = Cairo::Region->create;
+	my @pixbuf_array;
+	my @rects_array;
 
-    if ($clipboard_string) {
-        chomp $clipboard_string;
-        $clipboard->set_text($clipboard_string);
-        $h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected filenames copied to clipboard"));
-    }
+	foreach my $k (@clipboard_array) {
+		if ($mode eq 'image') {
+			if ($lp && $session_screens->{$k} && $session_screens->{$k}->{'long'}) {
+				my $pixbuf = $lp->load($session_screens->{$k}->{'long'});
+				if ($pixbuf) {
+					my $rect = {x => $sr->get_clipbox($clipboard_region)->{width}, y => 0, width => $pixbuf->get_width, height => $pixbuf->get_height};
+					$clipboard_region->union_rectangle($rect);
+					push @pixbuf_array, $pixbuf;
+					push @rects_array,  $rect;
+				}
+			}
+		} else {
+			if ($session_screens->{$k} && $session_screens->{$k}->{'long'}) {
+				$clipboard_string .= $session_screens->{$k}->{'long'} . "\n";
+			}
+		}
+	}
 
-    if ($clipboard_region->num_rectangles) {
-        my $clipboard_image = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, $sr->get_clipbox($clipboard_region)->{width}, $sr->get_clipbox($clipboard_region)->{height});
-        $clipboard_image->fill(0x00000000);
+	if ($clipboard_string) {
+		chomp $clipboard_string;
+		$clipboard->set_text($clipboard_string);
+		$h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected filenames copied to clipboard"));
+	}
 
-        #copy images to the blank pixbuf
-        my $rect_counter = 0;
-        foreach my $pixbuf (@pixbuf_array) {
-            $pixbuf->copy_area(0, 0, $pixbuf->get_width, $pixbuf->get_height, $clipboard_image, $rects_array[$rect_counter]->{x}, 0);
-            $rect_counter++;
-        }
+	if ($clipboard_region->num_rectangles) {
+		my $clipboard_image = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, $sr->get_clipbox($clipboard_region)->{width}, $sr->get_clipbox($clipboard_region)->{height});
+		$clipboard_image->fill(0x00000000);
 
-        $clipboard->set_image($clipboard_image);
-        $h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected images copied to clipboard"));
-    }
+		#copy images to the blank pixbuf
+		my $rect_counter = 0;
+		foreach my $pixbuf (@pixbuf_array) {
+			$pixbuf->copy_area(0, 0, $pixbuf->get_width, $pixbuf->get_height, $clipboard_image, $rects_array[$rect_counter]->{x}, 0);
+			$rect_counter++;
+		}
 
-    return TRUE;
+		$clipboard->set_image($clipboard_image);
+		$h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected images copied to clipboard"));
+	}
+
+	return TRUE;
 }
 
 sub fct_clipboard_import ($self) {
-    my $cli = $self->cli;
-    my $h   = $cli->handlers;
-    my $d   = $cli->sc->get_gettext;
-    my $clipboard = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
-    my $saveDir_button = $cli->{_saveDir_button};
-    my $save_no_active = $cli->{_save_no_active};
-    my $combobox_type = $cli->{_combobox_type};
-    my $sd = $cli->sc->{_sd};
-    my $sp = $cli->{_sp}; # SavePixbuf module
-    my $session_screens = $cli->{_session_screens};
+	my $cli             = $self->cli;
+	my $h               = $cli->handlers;
+	my $d               = $cli->sc->get_gettext;
+	my $clipboard       = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
+	my $saveDir_button  = $cli->{_saveDir_button};
+	my $save_no_active  = $cli->{_save_no_active};
+	my $combobox_type   = $cli->{_combobox_type};
+	my $sd              = $cli->sc->{_sd};
+	my $sp              = $cli->{_sp};                                                                               # SavePixbuf module
+	my $session_screens = $cli->{_session_screens};
 
-    my $image = $clipboard->wait_for_image;
-    if (defined $image) {
+	my $image = $clipboard->wait_for_image;
+	if (defined $image) {
 
-        #folder to save
-        my $folder = $saveDir_button ? Glib::filename_to_unicode($saveDir_button->get_filename) : Shutter::App::Directories::get_cache_dir();
-        if ($save_no_active && $save_no_active->get_active) {
-            $folder = Shutter::App::Directories::get_cache_dir();
-        }
-        
-        #determine current file type (name - description)
-        my $filetype_value;
-        if ($combobox_type && $combobox_type->get_active_text) {
-            $combobox_type->get_active_text =~ /(.*) -/;
-            $filetype_value = $1;
-        } else {
-            $filetype_value = 'png'; # Fallback
-        }
-        
-        unless ($filetype_value) {
-            $sd->dlg_error_message($d->get("No valid filetype specified"), $d->get("Failed"));
-            $h->get('Core')->fct_control_main_window('show');
-            return FALSE;
-        }
-        
-        #generate random filename
-        my $short = "clipboard-import-" . int(rand(10000000000));
+		#folder to save
+		my $folder = $saveDir_button ? Glib::filename_to_unicode($saveDir_button->get_filename) : Shutter::App::Directories::get_cache_dir();
+		if ($save_no_active && $save_no_active->get_active) {
+			$folder = Shutter::App::Directories::get_cache_dir();
+		}
 
-        #relative to abs
-        my $tmpfilename = $folder ."/" . $short ."." . $filetype_value;
-        unless (File::Spec->file_name_is_absolute($tmpfilename)) {
-            $tmpfilename = File::Spec->rel2abs($tmpfilename);
-        }
-        
-        #save pixbuf to tempfile and integrate it
-        if ($sp && $sp->save_pixbuf_to_file($image, $tmpfilename, $filetype_value)) {
-            my $new_key = $h->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook(Glib::IO::File::new_for_path($tmpfilename), $image);
-            if ($new_key && $session_screens->{$new_key} && $session_screens->{$new_key}->{'image'}) {
-                $session_screens->{$new_key}->{'image'}->set_fitting(TRUE);
-            }
-        }
+		#determine current file type (name - description)
+		my $filetype_value;
+		if ($combobox_type && $combobox_type->get_active_text) {
+			$combobox_type->get_active_text =~ /(.*) -/;
+			$filetype_value = $1;
+		} else {
+			$filetype_value = 'png';    # Fallback
+		}
 
-    } else {
-        $h->get('UI_Status')->fct_show_status_message(1, $d->get("There is no image data in the clipboard to paste"));
-    }
+		unless ($filetype_value) {
+			$sd->dlg_error_message($d->get("No valid filetype specified"), $d->get("Failed"));
+			$h->get('Core')->fct_control_main_window('show');
+			return FALSE;
+		}
 
-    return TRUE;
+		#generate random filename
+		my $short = "clipboard-import-" . int(rand(10000000000));
+
+		#relative to abs
+		my $tmpfilename = $folder . "/" . $short . "." . $filetype_value;
+		unless (File::Spec->file_name_is_absolute($tmpfilename)) {
+			$tmpfilename = File::Spec->rel2abs($tmpfilename);
+		}
+
+		#save pixbuf to tempfile and integrate it
+		if ($sp && $sp->save_pixbuf_to_file($image, $tmpfilename, $filetype_value)) {
+			my $new_key = $h->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook(Glib::IO::File::new_for_path($tmpfilename), $image);
+			if ($new_key && $session_screens->{$new_key} && $session_screens->{$new_key}->{'image'}) {
+				$session_screens->{$new_key}->{'image'}->set_fitting(TRUE);
+			}
+		}
+
+	} else {
+		$h->get('UI_Status')->fct_show_status_message(1, $d->get("There is no image data in the clipboard to paste"));
+	}
+
+	return TRUE;
 }
 
 sub fct_fullscreen ($self, $widget = undef) {
-    my $window = $self->cli->window;
+	my $window = $self->cli->window;
 
-    if ($window) {
-        if ($widget && $widget->get_active) {
-            $window->fullscreen;
-        } else {
-            $window->unfullscreen;
-        }
-    }
-    return;
+	if ($window) {
+		if ($widget && $widget->get_active) {
+			$window->fullscreen;
+		} else {
+			$window->unfullscreen;
+		}
+	}
+	return;
 }
 
 sub fct_redo ($self) {
-    my $cli = $self->cli;
-    my $h   = $cli->handlers;
-    my $d   = $cli->sc->get_gettext;
-    my $sd  = $cli->sc->{_sd};
-    my $session_screens = $cli->{_session_screens};
+	my $cli             = $self->cli;
+	my $h               = $cli->handlers;
+	my $d               = $cli->sc->get_gettext;
+	my $sd              = $cli->sc->{_sd};
+	my $session_screens = $cli->{_session_screens};
 
-    my $key = $h->get('Menu_Ret_Get')->fct_get_current_file();
+	my $key = $h->get('Menu_Ret_Get')->fct_get_current_file();
 
-    #single file
-    if ($key) {
-        return FALSE unless $h->get('UI_Status')->fct_screenshot_exists($key);
+	#single file
+	if ($key) {
+		return FALSE unless $h->get('UI_Status')->fct_screenshot_exists($key);
 
-        #and revert last version
-        my $last_version = pop @{$session_screens->{$key}->{'redo'}};
+		#and revert last version
+		my $last_version = pop @{$session_screens->{$key}->{'redo'}};
 
-        if ($last_version) {
-            #cancel handle
-            if (exists $session_screens->{$key}->{'handle'}) {
-                $session_screens->{$key}->{'handle'}->cancel;
-            }
+		if ($last_version) {
 
-            if (cp($last_version, $session_screens->{$key}->{'long'})) {
-                $h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'gui');
-                $h->get('UI_Status')->fct_show_status_message(1, $d->get("Last action redone"));
-                #delete last_version from filesystem
-                unlink $last_version;
-            } else {
-                my $response = $sd->dlg_error_message(
-                    sprintf($d->get("Error while copying last version (%s)."),    "'" . $last_version . "'"),
-                    sprintf($d->get("There was an error performing redo on %s."), "'" . $session_screens->{$key}->{'long'} . "'"),
-                    undef, undef, undef, undef, undef, undef, $@
-                );
-                $h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'clear');
-            }
+			#cancel handle
+			if (exists $session_screens->{$key}->{'handle'}) {
+				$session_screens->{$key}->{'handle'}->cancel;
+			}
 
-            #setup a new filemonitor, so we get noticed if the file changed
-            $h->get('Events_Init')->fct_add_file_monitor($key);
-        }
-    }
-    return TRUE;
+			if (cp($last_version, $session_screens->{$key}->{'long'})) {
+				$h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'gui');
+				$h->get('UI_Status')->fct_show_status_message(1, $d->get("Last action redone"));
+
+				#delete last_version from filesystem
+				unlink $last_version;
+			} else {
+				my $response = $sd->dlg_error_message(
+					sprintf($d->get("Error while copying last version (%s)."),    "'" . $last_version . "'"),
+					sprintf($d->get("There was an error performing redo on %s."), "'" . $session_screens->{$key}->{'long'} . "'"),
+					undef, undef, undef, undef, undef, undef, $@
+				);
+				$h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'clear');
+			}
+
+			#setup a new filemonitor, so we get noticed if the file changed
+			$h->get('Events_Init')->fct_add_file_monitor($key);
+		}
+	}
+	return TRUE;
 }
 
 sub fct_undo ($self) {
-    my $cli = $self->cli;
-    my $h   = $cli->handlers;
-    my $d   = $cli->sc->get_gettext;
-    my $sd  = $cli->sc->{_sd};
-    my $session_screens = $cli->{_session_screens};
+	my $cli             = $self->cli;
+	my $h               = $cli->handlers;
+	my $d               = $cli->sc->get_gettext;
+	my $sd              = $cli->sc->{_sd};
+	my $session_screens = $cli->{_session_screens};
 
-    my $key = $h->get('Menu_Ret_Get')->fct_get_current_file();
+	my $key = $h->get('Menu_Ret_Get')->fct_get_current_file();
 
-    #single file
-    if ($key) {
-        return FALSE unless $h->get('UI_Status')->fct_screenshot_exists($key);
+	#single file
+	if ($key) {
+		return FALSE unless $h->get('UI_Status')->fct_screenshot_exists($key);
 
-        #push current version to redo
-        #(current version is always the last element in the array)
-        my $current_version = pop @{$session_screens->{$key}->{'undo'}};
-        push @{$session_screens->{$key}->{'redo'}}, $current_version;
+		#push current version to redo
+		#(current version is always the last element in the array)
+		my $current_version = pop @{$session_screens->{$key}->{'undo'}};
+		push @{$session_screens->{$key}->{'redo'}}, $current_version;
 
-        #and revert last version
-        my $last_version = pop @{$session_screens->{$key}->{'undo'}};
-        if ($last_version) {
+		#and revert last version
+		my $last_version = pop @{$session_screens->{$key}->{'undo'}};
+		if ($last_version) {
 
-            #cancel handle
-            if (exists $session_screens->{$key}->{'handle'}) {
-                $session_screens->{$key}->{'handle'}->cancel;
-            }
+			#cancel handle
+			if (exists $session_screens->{$key}->{'handle'}) {
+				$session_screens->{$key}->{'handle'}->cancel;
+			}
 
-            if (cp($last_version, $session_screens->{$key}->{'long'})) {
-                $h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'gui');
-                $h->get('UI_Status')->fct_show_status_message(1, $d->get("Last action undone"));
-                #delete last_version from filesystem
-                unlink $last_version;
-            } else {
-                my $response = $sd->dlg_error_message(
-                    sprintf($d->get("Error while copying last version (%s)."),    "'" . $last_version . "'"),
-                    sprintf($d->get("There was an error performing undo on %s."), "'" . $session_screens->{$key}->{'long'} . "'"),
-                    undef, undef, undef, undef, undef, undef, $@
-                );
-                $h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'clear');
-            }
+			if (cp($last_version, $session_screens->{$key}->{'long'})) {
+				$h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'gui');
+				$h->get('UI_Status')->fct_show_status_message(1, $d->get("Last action undone"));
 
-            #setup a new filemonitor, so we get noticed if the file changed
-            $h->get('Events_Init')->fct_add_file_monitor($key);
-        }
-    }
-    return TRUE;
+				#delete last_version from filesystem
+				unlink $last_version;
+			} else {
+				my $response = $sd->dlg_error_message(
+					sprintf($d->get("Error while copying last version (%s)."),    "'" . $last_version . "'"),
+					sprintf($d->get("There was an error performing undo on %s."), "'" . $session_screens->{$key}->{'long'} . "'"),
+					undef, undef, undef, undef, undef, undef, $@
+				);
+				$h->get('UI_Status')->fct_update_tab($key, undef, $session_screens->{$key}->{'giofile'}, TRUE, 'clear');
+			}
+
+			#setup a new filemonitor, so we get noticed if the file changed
+			$h->get('Events_Init')->fct_add_file_monitor($key);
+		}
+	}
+	return TRUE;
 }
 
 sub fct_zoom_100 ($self) {
-    my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
-    my $session_screens = $self->cli->{_session_screens};
-    if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
-        $session_screens->{$key}->{'image'}->set_zoom(1);
-    }
-    return;
+	my $key             = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
+	my $session_screens = $self->cli->{_session_screens};
+	if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
+		$session_screens->{$key}->{'image'}->set_zoom(1);
+	}
+	return;
 }
 
 sub fct_zoom_best ($self) {
-    my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
-    my $session_screens = $self->cli->{_session_screens};
-    if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
-        $session_screens->{$key}->{'image'}->set_fitting(TRUE);
-    }
-    return;
+	my $key             = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
+	my $session_screens = $self->cli->{_session_screens};
+	if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
+		$session_screens->{$key}->{'image'}->set_fitting(TRUE);
+	}
+	return;
 }
 
 sub fct_zoom_in ($self) {
-    my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
-    my $session_screens = $self->cli->{_session_screens};
-    if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
-        $session_screens->{$key}->{'image'}->zoom_in;
-    }
-    return;
+	my $key             = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
+	my $session_screens = $self->cli->{_session_screens};
+	if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
+		$session_screens->{$key}->{'image'}->zoom_in;
+	}
+	return;
 }
 
 sub fct_zoom_out ($self) {
-    my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
-    my $session_screens = $self->cli->{_session_screens};
-    if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
-        $session_screens->{$key}->{'image'}->zoom_out;
-    }
-    return;
+	my $key             = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
+	my $session_screens = $self->cli->{_session_screens};
+	if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
+		$session_screens->{$key}->{'image'}->zoom_out;
+	}
+	return;
 }
 
 1;

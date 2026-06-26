@@ -31,278 +31,279 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 
 sub fct_delete ($self, $key = undef, $action = undef) {
-    my $cli = $self->cli;
-    my $h   = $cli->handlers;
-    my $d   = $cli->sc->get_gettext;
-    my $sd  = $cli->sc->{_sd};
-    my $ask_on_delete_active = $cli->{_ask_on_delete_active};
-    my $session_screens = $cli->{_session_screens};
-    my $session_start_screen = $cli->{_session_start_screen};
-    my $notebook = $cli->{_notebook};
-    my $window = $cli->window;
-    my $is_hidden = $cli->{_is_hidden};
+	my $cli                  = $self->cli;
+	my $h                    = $cli->handlers;
+	my $d                    = $cli->sc->get_gettext;
+	my $sd                   = $cli->sc->{_sd};
+	my $ask_on_delete_active = $cli->{_ask_on_delete_active};
+	my $session_screens      = $cli->{_session_screens};
+	my $session_start_screen = $cli->{_session_start_screen};
+	my $notebook             = $cli->{_notebook};
+	my $window               = $cli->window;
+	my $is_hidden            = $cli->{_is_hidden};
 
-    #close current tab (unless $key is provided or close_all)
-    unless (defined $action && $action eq 'menu_close_all') {
-        $key = $h->get('Menu_Ret_Get')->fct_get_current_file() unless $key;
-    }
+	#close current tab (unless $key is provided or close_all)
+	unless (defined $action && $action eq 'menu_close_all') {
+		$key = $h->get('Menu_Ret_Get')->fct_get_current_file() unless $key;
+	}
 
-    #single file
-    if ($key) {
+	#single file
+	if ($key) {
 
-        if ($ask_on_delete_active && $ask_on_delete_active->get_active) {
-            my $response = $sd->dlg_question_message(
-                "", sprintf($d->get("Are you sure you want to move %s to the trash?"), "'" . $session_screens->{$key}->{'long'} . "'"),
-                'gtk-cancel', $d->get("Move to _Trash"),
-            );
-            return FALSE unless $response == 20;
-        }
+		if ($ask_on_delete_active && $ask_on_delete_active->get_active) {
+			my $response = $sd->dlg_question_message(
+				"",           sprintf($d->get("Are you sure you want to move %s to the trash?"), "'" . $session_screens->{$key}->{'long'} . "'"),
+				'gtk-cancel', $d->get("Move to _Trash"),
+			);
+			return FALSE unless $response == 20;
+		}
 
-        if ($session_screens->{$key}->{'giofile'}->query_exists) {
-            $self->fct_trash($key);
-            eval {
-                #remove from recentmanager
-                Gtk3::RecentManager::get_default->remove_item($session_screens->{$key}->{'giofile'}->get_path);
-            };
-        }
+		if ($session_screens->{$key}->{'giofile'}->query_exists) {
+			$self->fct_trash($key);
+			eval {
+				#remove from recentmanager
+				Gtk3::RecentManager::get_default->remove_item($session_screens->{$key}->{'giofile'}->get_path);
+			};
+		}
 
-        $notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));    #delete tab
-        $h->get('UI_Status')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("deleted"))
-            if defined($session_screens->{$key}->{'long'});
+		$notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));    #delete tab
+		$h->get('UI_Status')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("deleted"))
+			if defined($session_screens->{$key}->{'long'});
 
-        if (defined $session_screens->{$key}->{'iter'}
-            && $session_start_screen->{'first_page'}->{'model'}->iter_is_valid($session_screens->{$key}->{'iter'}))
-        {
-            $session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
-        }
+		if (defined $session_screens->{$key}->{'iter'}
+			&& $session_start_screen->{'first_page'}->{'model'}->iter_is_valid($session_screens->{$key}->{'iter'}))
+		{
+			$session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
+		}
 
-        #unlink undo and redo files
-        $h->get('Util_File')->fct_unlink_tempfiles($key);
+		#unlink undo and redo files
+		$h->get('Util_File')->fct_unlink_tempfiles($key);
 
-        delete $session_screens->{$key};
+		delete $session_screens->{$key};
 
-        $window->show_all unless $is_hidden;
+		$window->show_all unless $is_hidden;
 
-    #session tab
-    } else {
+		#session tab
+	} else {
 
-        if ($ask_on_delete_active && $ask_on_delete_active->get_active) {
+		if ($ask_on_delete_active && $ask_on_delete_active->get_active) {
 
-            #any files selected?
-            my $selected = FALSE;
-            if ($session_start_screen->{'first_page'}->{'view'}) {
-                $session_start_screen->{'first_page'}->{'view'}->selected_foreach(
-                    sub {
-                        my ($view, $path) = @_;
-                        my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
-                        if (defined $iter) {
-                            $selected = TRUE;
-                        }
-                    }
-                );
-            }
+			#any files selected?
+			my $selected = FALSE;
+			if ($session_start_screen->{'first_page'}->{'view'}) {
+				$session_start_screen->{'first_page'}->{'view'}->selected_foreach(
+					sub {
+						my ($view, $path) = @_;
+						my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
+						if (defined $iter) {
+							$selected = TRUE;
+						}
+					});
+			}
 
-            if ($selected) {
-                my $response = $sd->dlg_question_message("", $d->get("Are you sure you want to move the selected files to the trash?"), 'gtk-cancel', $d->get("Move to _Trash"),);
-                return FALSE unless $response == 20;
-            } else {
-                $h->get('UI_Status')->fct_show_status_message(1, $d->get("No screenshots selected"));
-                return FALSE;
-            }
-        }
+			if ($selected) {
+				my $response = $sd->dlg_question_message("", $d->get("Are you sure you want to move the selected files to the trash?"), 'gtk-cancel', $d->get("Move to _Trash"),);
+				return FALSE unless $response == 20;
+			} else {
+				$h->get('UI_Status')->fct_show_status_message(1, $d->get("No screenshots selected"));
+				return FALSE;
+			}
+		}
 
-        my @to_delete;
-        if ($session_start_screen->{'first_page'}->{'view'}) {
-            $session_start_screen->{'first_page'}->{'view'}->selected_foreach(
-                sub {
-                    my ($view, $path) = @_;
-                    my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
-                    if (defined $iter) {
-                        my $key = $session_start_screen->{'first_page'}->{'model'}->get_value($iter, 2);
-                        $notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));
+		my @to_delete;
+		if ($session_start_screen->{'first_page'}->{'view'}) {
+			$session_start_screen->{'first_page'}->{'view'}->selected_foreach(
+				sub {
+					my ($view, $path) = @_;
+					my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
+					if (defined $iter) {
+						my $key = $session_start_screen->{'first_page'}->{'model'}->get_value($iter, 2);
+						$notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));
 
-                        if ($session_screens->{$key}->{'giofile'}->query_exists) {
-                            $self->fct_trash($key);
-                            eval {
-                                #remove from recentmanager
-                                Gtk3::RecentManager::get_default->remove_item($session_screens->{$key}->{'giofile'}->get_path);
-                            };
-                        }
+						if ($session_screens->{$key}->{'giofile'}->query_exists) {
+							$self->fct_trash($key);
+							eval {
+								#remove from recentmanager
+								Gtk3::RecentManager::get_default->remove_item($session_screens->{$key}->{'giofile'}->get_path);
+							};
+						}
 
-                        #copy to array
-                        #we delete the files from hash and model
-                        #when exiting the sub
-                        push @to_delete, $key;
+						#copy to array
+						#we delete the files from hash and model
+						#when exiting the sub
+						push @to_delete, $key;
 
-                    }
-                },
-                undef
-            );
-        }
+					}
+				},
+				undef
+			);
+		}
 
-        if (scalar @to_delete == 0) {
-            $h->get('UI_Status')->fct_show_status_message(1, $d->get("No screenshots selected"));
-            return FALSE;
-        }
+		if (scalar @to_delete == 0) {
+			$h->get('UI_Status')->fct_show_status_message(1, $d->get("No screenshots selected"));
+			return FALSE;
+		}
 
-        #delete from hash and model
-        foreach my $key (@to_delete) {
-            if (defined $session_screens->{$key}->{'iter'}
-                && $session_start_screen->{'first_page'}->{'model'}->iter_is_valid($session_screens->{$key}->{'iter'}))
-            {
-                $session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
-            }
+		#delete from hash and model
+		foreach my $key (@to_delete) {
+			if (defined $session_screens->{$key}->{'iter'}
+				&& $session_start_screen->{'first_page'}->{'model'}->iter_is_valid($session_screens->{$key}->{'iter'}))
+			{
+				$session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
+			}
 
-            #unlink undo and redo files
-            $h->get('Util_File')->fct_unlink_tempfiles($key);
+			#unlink undo and redo files
+			$h->get('Util_File')->fct_unlink_tempfiles($key);
 
-            delete $session_screens->{$key};
-        }
+			delete $session_screens->{$key};
+		}
 
-        $h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected screenshots deleted"));
+		$h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected screenshots deleted"));
 
-        $window->show_all unless $is_hidden;
+		$window->show_all unless $is_hidden;
 
-    }
+	}
 
-    $h->get('UI_Status')->fct_update_info_and_tray();
+	$h->get('UI_Status')->fct_update_info_and_tray();
 
-    return TRUE;
+	return TRUE;
 }
 
 sub fct_remove ($self, $key = undef, $action = undef) {
-    my $cli = $self->cli;
-    my $h   = $cli->handlers;
-    my $d   = $cli->sc->get_gettext;
-    my $delete_on_close_active = $cli->{_delete_on_close_active};
-    my $session_screens = $cli->{_session_screens};
-    my $session_start_screen = $cli->{_session_start_screen};
-    my $notebook = $cli->{_notebook};
-    my $window = $cli->window;
-    my $is_hidden = $cli->{_is_hidden};
+	my $cli                    = $self->cli;
+	my $h                      = $cli->handlers;
+	my $d                      = $cli->sc->get_gettext;
+	my $delete_on_close_active = $cli->{_delete_on_close_active};
+	my $session_screens        = $cli->{_session_screens};
+	my $session_start_screen   = $cli->{_session_start_screen};
+	my $notebook               = $cli->{_notebook};
+	my $window                 = $cli->window;
+	my $is_hidden              = $cli->{_is_hidden};
 
-    #close current tab (unless $key is provided or close_all)
-    unless (defined $action && $action eq 'menu_close_all') {
-        $key = $h->get('Menu_Ret_Get')->fct_get_current_file() unless $key;
-    }
+	#close current tab (unless $key is provided or close_all)
+	unless (defined $action && $action eq 'menu_close_all') {
+		$key = $h->get('Menu_Ret_Get')->fct_get_current_file() unless $key;
+	}
 
-    #single file
-    if ($key) {
+	#single file
+	if ($key) {
 
-        #delete instead of remove
-        if ($delete_on_close_active && $delete_on_close_active->get_active) {
-            $self->fct_delete($key);
-            return FALSE;
-        }
+		#delete instead of remove
+		if ($delete_on_close_active && $delete_on_close_active->get_active) {
+			$self->fct_delete($key);
+			return FALSE;
+		}
 
-        if (exists $session_screens->{$key}->{'handle'}) {
-            #cancel handle
-            $session_screens->{$key}->{'handle'}->cancel;
-        }
+		if (exists $session_screens->{$key}->{'handle'}) {
 
-        $notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));    #delete tab
-        $h->get('UI_Status')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("removed from session"))
-            if defined($session_screens->{$key}->{'long'});
+			#cancel handle
+			$session_screens->{$key}->{'handle'}->cancel;
+		}
 
-        if (defined $session_screens->{$key}->{'iter'}
-            && $session_start_screen->{'first_page'}->{'model'}->iter_is_valid($session_screens->{$key}->{'iter'}))
-        {
-            $session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
-        }
+		$notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));    #delete tab
+		$h->get('UI_Status')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("removed from session"))
+			if defined($session_screens->{$key}->{'long'});
 
-        #unlink undo and redo files
-        $h->get('Util_File')->fct_unlink_tempfiles($key);
+		if (defined $session_screens->{$key}->{'iter'}
+			&& $session_start_screen->{'first_page'}->{'model'}->iter_is_valid($session_screens->{$key}->{'iter'}))
+		{
+			$session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
+		}
 
-        delete $session_screens->{$key};
+		#unlink undo and redo files
+		$h->get('Util_File')->fct_unlink_tempfiles($key);
 
-        $window->show_all unless $is_hidden;
+		delete $session_screens->{$key};
 
-    } else {
+		$window->show_all unless $is_hidden;
 
-        #delete instead of remove
-        if ($delete_on_close_active && $delete_on_close_active->get_active) {
-            $self->fct_delete(undef, 'menu_close_all');
-            return FALSE;
-        }
+	} else {
 
-        my @to_remove;
-        if ($session_start_screen->{'first_page'}->{'view'}) {
-            $session_start_screen->{'first_page'}->{'view'}->selected_foreach(
-                sub {
-                    my ($view, $path) = @_;
-                    my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
-                    if (defined $iter) {
-                        my $key = $session_start_screen->{'first_page'}->{'model'}->get_value($iter, 2);
-                        $notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));
+		#delete instead of remove
+		if ($delete_on_close_active && $delete_on_close_active->get_active) {
+			$self->fct_delete(undef, 'menu_close_all');
+			return FALSE;
+		}
 
-                        if (exists $session_screens->{$key}->{'handle'}) {
-                            #cancel handle
-                            $session_screens->{$key}->{'handle'}->cancel;
-                        }
+		my @to_remove;
+		if ($session_start_screen->{'first_page'}->{'view'}) {
+			$session_start_screen->{'first_page'}->{'view'}->selected_foreach(
+				sub {
+					my ($view, $path) = @_;
+					my $iter = $session_start_screen->{'first_page'}->{'model'}->get_iter($path);
+					if (defined $iter) {
+						my $key = $session_start_screen->{'first_page'}->{'model'}->get_value($iter, 2);
+						$notebook->remove_page($notebook->page_num($session_screens->{$key}->{'tab_child'}));
 
-                        #copy to array
-                        #we remove the files from hash and model
-                        #when exiting the sub
-                        push @to_remove, $key;
+						if (exists $session_screens->{$key}->{'handle'}) {
 
-                    }
-                },
-                undef
-            );
-        }
+							#cancel handle
+							$session_screens->{$key}->{'handle'}->cancel;
+						}
 
-        if (scalar @to_remove == 0) {
-            $h->get('UI_Status')->fct_show_status_message(1, $d->get("No screenshots selected"));
-            return FALSE;
-        }
+						#copy to array
+						#we remove the files from hash and model
+						#when exiting the sub
+						push @to_remove, $key;
 
-        #delete from hash and model
-        foreach my $key (@to_remove) {
-            if (defined $session_screens->{$key}->{'iter'}
-                && $session_start_screen->{'first_page'}->{'model'}->iter_is_valid($session_screens->{$key}->{'iter'}))
-            {
-                $session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
-            }
+					}
+				},
+				undef
+			);
+		}
 
-            #unlink undo and redo files
-            $h->get('Util_File')->fct_unlink_tempfiles($key);
+		if (scalar @to_remove == 0) {
+			$h->get('UI_Status')->fct_show_status_message(1, $d->get("No screenshots selected"));
+			return FALSE;
+		}
 
-            delete $session_screens->{$key};
-        }
+		#delete from hash and model
+		foreach my $key (@to_remove) {
+			if (defined $session_screens->{$key}->{'iter'}
+				&& $session_start_screen->{'first_page'}->{'model'}->iter_is_valid($session_screens->{$key}->{'iter'}))
+			{
+				$session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
+			}
 
-        $h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected screenshots removed"));
+			#unlink undo and redo files
+			$h->get('Util_File')->fct_unlink_tempfiles($key);
 
-        $window->show_all unless $is_hidden;
+			delete $session_screens->{$key};
+		}
 
-    }
+		$h->get('UI_Status')->fct_show_status_message(1, $d->get("Selected screenshots removed"));
 
-    $h->get('UI_Status')->fct_update_info_and_tray();
+		$window->show_all unless $is_hidden;
 
-    return TRUE;
+	}
+
+	$h->get('UI_Status')->fct_update_info_and_tray();
+
+	return TRUE;
 }
 
 sub fct_select_all ($self) {
-    my $session_start_screen = $self->cli->{_session_start_screen};
-    
-    if ($session_start_screen && $session_start_screen->{'first_page'} && $session_start_screen->{'first_page'}->{'view'}) {
-        $session_start_screen->{'first_page'}->{'view'}->select_all;
-    }
+	my $session_start_screen = $self->cli->{_session_start_screen};
 
-    return TRUE;
+	if ($session_start_screen && $session_start_screen->{'first_page'} && $session_start_screen->{'first_page'}->{'view'}) {
+		$session_start_screen->{'first_page'}->{'view'}->select_all;
+	}
+
+	return TRUE;
 }
 
 sub fct_trash ($self, $key) {
-    my $session_screens = $self->cli->{_session_screens};
+	my $session_screens = $self->cli->{_session_screens};
 
-    #cancel handle
-    if (exists $session_screens->{$key}->{'handle'}) {
-        $session_screens->{$key}->{'handle'}->cancel;
-    }
+	#cancel handle
+	if (exists $session_screens->{$key}->{'handle'}) {
+		$session_screens->{$key}->{'handle'}->cancel;
+	}
 
-    if ($session_screens->{$key}->{'giofile'}) {
-        $session_screens->{$key}->{'giofile'}->trash;
-    }
-    return;
+	if ($session_screens->{$key}->{'giofile'}) {
+		$session_screens->{$key}->{'giofile'}->trash;
+	}
+	return;
 }
 
 1;

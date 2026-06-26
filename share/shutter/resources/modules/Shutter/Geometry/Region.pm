@@ -26,7 +26,8 @@ package Shutter::Geometry::Region;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Moo;
 use Gtk3;

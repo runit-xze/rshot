@@ -10,9 +10,9 @@ with 'Shutter::Draw::Tool::Base';
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	$dt->deactivate_all($item);
-	$dt->{_current_item} = $item;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x} = $ev->x;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y} = $ev->y;
+	$dt->{_current_item}                                    = $item;
+	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
+	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
 	$dt->{_items}{$item}{'bottom-right-corner'}->{resizing} = TRUE;
 	eval { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
 	if ($@) { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
@@ -25,8 +25,7 @@ sub on_click_creation ($self, $item, $target, $ev, $copy_item = undef) {
 }
 
 sub setup ($self, $event, $copy_item) {
-	return Shutter::Draw::Tool::Ellipse->new(drawing_tool => $self->drawing_tool)
-		->setup($event, $copy_item, TRUE);
+	return Shutter::Draw::Tool::Ellipse->new(drawing_tool => $self->drawing_tool)->setup($event, $copy_item, TRUE);
 }
 
 sub is_text_tool {

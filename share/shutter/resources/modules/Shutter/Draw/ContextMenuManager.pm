@@ -59,7 +59,7 @@ sub ret_background_menu {
 
 sub ret_item_menu {
 	my ($self, $item, $parent, $key) = @_;
-	my $app    = $self->drawing_tool;
+	my $app = $self->drawing_tool;
 
 	my $menu_item = Gtk3::Menu->new;
 

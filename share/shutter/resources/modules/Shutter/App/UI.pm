@@ -44,50 +44,50 @@ my $log = Log::Any->get_logger;
 has common => (is => 'ro', required => 1);
 
 sub create_main_window ($self, $app) {
-    my $sc = $self->common;
-    my $window = Gtk3::ApplicationWindow->new($app);
-    $sc->set_mainwindow($window);
-    $window->signal_connect('delete-event' => \&evt_delete_window);
-    $window->set_border_width(0);
-    $window->set_resizable(TRUE);
-    $window->set_focus_on_map(TRUE);
-    $window->set_default_size(-1, 500);
-    return $window;
+	my $sc     = $self->common;
+	my $window = Gtk3::ApplicationWindow->new($app);
+	$sc->set_mainwindow($window);
+	$window->signal_connect('delete-event' => \&evt_delete_window);
+	$window->set_border_width(0);
+	$window->set_resizable(TRUE);
+	$window->set_focus_on_map(TRUE);
+	$window->set_default_size(-1, 500);
+	return $window;
 }
 
 sub setup_app_objects ($self) {
-    my $sc = $self->common;
+	my $sc = $self->common;
 
-    my $sas = Shutter::App::Autostart->new();
-    my $sm = Shutter::App::Menu->new($sc);
-    my $st = Shutter::App::Toolbar->new($sc);
-    my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+	my $sas = Shutter::App::Autostart->new();
+	my $sm  = Shutter::App::Menu->new($sc);
+	my $st  = Shutter::App::Toolbar->new($sc);
+	my $sd  = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
 
-    my $vbox = Gtk3::VBox->new(FALSE, 0);
-    $sc->get_mainwindow->add($vbox);
-    
-    my $menu = $sm->create_menu;
-    my $toolbar = $st->create_toolbar;
-    
-    $log->debug("Packing menu: " . (defined $menu ? ref($menu) : "undef"));
-    $log->debug("Packing toolbar: " . (defined $toolbar ? ref($toolbar) : "undef"));
-    
-    $vbox->pack_start($menu, FALSE, TRUE, 0);
-    $vbox->pack_start($toolbar, FALSE, TRUE, 0);
+	my $vbox = Gtk3::VBox->new(FALSE, 0);
+	$sc->get_mainwindow->add($vbox);
 
-    my $status = Gtk3::Statusbar->new;
-    $status->set_name('main-window-statusbar');
-    $vbox->pack_start($status, FALSE, TRUE, 0);
+	my $menu    = $sm->create_menu;
+	my $toolbar = $st->create_toolbar;
 
-    # Store references for backward compatibility
-    $sc->{_sas} = $sas;
-    $sc->{_sm} = $sm;
-    $sc->{_st} = $st;
-    $sc->{_sd} = $sd;
-    $sc->{_vbox} = $vbox;
-    $sc->{_status} = $status;
+	$log->debug("Packing menu: " . (defined $menu       ? ref($menu)    : "undef"));
+	$log->debug("Packing toolbar: " . (defined $toolbar ? ref($toolbar) : "undef"));
 
-    return ($sas, $sm, $st, $sd, $vbox, $status);
+	$vbox->pack_start($menu,    FALSE, TRUE, 0);
+	$vbox->pack_start($toolbar, FALSE, TRUE, 0);
+
+	my $status = Gtk3::Statusbar->new;
+	$status->set_name('main-window-statusbar');
+	$vbox->pack_start($status, FALSE, TRUE, 0);
+
+	# Store references for backward compatibility
+	$sc->{_sas}    = $sas;
+	$sc->{_sm}     = $sm;
+	$sc->{_st}     = $st;
+	$sc->{_sd}     = $sd;
+	$sc->{_vbox}   = $vbox;
+	$sc->{_status} = $status;
+
+	return ($sas, $sm, $st, $sd, $vbox, $status);
 }
 
 # Accessor for backward compatibility

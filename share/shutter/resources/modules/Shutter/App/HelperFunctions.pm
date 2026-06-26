@@ -26,7 +26,8 @@ package Shutter::App::HelperFunctions;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 use Gtk3;
 use Log::Any;
 use Shutter::App::SimpleDialogs;
@@ -57,17 +58,18 @@ sub new ($class, $common) {
 
 sub xdg_open ($self, $dialog, $link, $user_data) {
 	eval {
-        my $uri = $link;
-        $uri = "file://$uri" unless $uri =~ m{^[a-zA-Z]+://};
-        Gtk3::show_uri_on_window(undef, $uri, Gtk3::Gdk::CURRENT_TIME);
-    };
+		my $uri = $link;
+		$uri = "file://$uri" unless $uri =~ m{^[a-zA-Z]+://};
+		Gtk3::show_uri_on_window(undef, $uri, Gtk3::Gdk::CURRENT_TIME);
+	};
 	if ($@) {
 		my $response = $self->{_dialogs}->dlg_error_message(
 			sprintf($self->{_d}->get("Error while executing %s."),        "'xdg-open'"),
 			sprintf($self->{_d}->get("There was an error executing %s."), "'xdg-open'"),
-			undef, undef, undef, undef, undef, undef, $@);
+			undef, undef, undef, undef, undef, undef, $@
+		);
 	}
-    return;
+	return;
 }
 
 sub xdg_open_mail ($self, $dialog, $mail, @user_data) {
@@ -82,7 +84,7 @@ sub xdg_open_mail ($self, $dialog, $mail, @user_data) {
 			sprintf($self->{_d}->get("There was an error executing %s."), "'xdg-email'"),
 			undef, undef, undef, undef, undef, undef, sprintf($self->{_d}->get("Exit Code: %d."), $? >> 8));
 	}
-    return;
+	return;
 }
 
 sub nautilus_sendto ($self, $user_data) {
@@ -93,7 +95,7 @@ sub nautilus_sendto ($self, $user_data) {
 			sprintf($self->{_d}->get("There was an error executing %s."), "'nautilus-sendto'"),
 			undef, undef, undef, undef, undef, undef, sprintf($self->{_d}->get("Exit Code: %d."), $? >> 8));
 	}
-    return;
+	return;
 }
 
 sub file_exists ($self, $filename) {
@@ -184,7 +186,7 @@ sub usage ($self) {
 # Native Gtk3::IconSize doesn't work for some reason
 sub icon_size ($self, $size) {
 	my @result = Glib::Object::Introspection->invoke('Gtk', undef, 'icon_size_lookup', Glib::Object::Introspection->convert_sv_to_enum('Gtk3::IconSize', $size));
-	my $one = shift @result;
+	my $one    = shift @result;
 	die "icon_size($size)=$one, @result" if $one != 1;
 	return @result;
 }
@@ -197,7 +199,7 @@ sub accel ($self, $str) {
 sub format_bytes ($self, $bytes) {
 	return "0 B" unless $bytes;
 	my @units = qw(B kB MB GB TB PB);
-	my $i = 0;
+	my $i     = 0;
 	while ($bytes >= 1000 && $i < @units - 1) {
 		$bytes /= 1000;
 		$i++;
@@ -221,19 +223,19 @@ sub validate_filename ($self, $myfilename, $myfilename_hint) {
 				$myfilename_hint->set_markup("<span size='small'>" . sprintf($self->{_d}->get("Reserved character %s is not allowed to be in a filename."), "'" . $char . "'") . "</span>");
 				return TRUE;
 			} else {
+
 				#clear possible message when valid char is entered
 				$myfilename_hint->set_markup("<span size='small'></span>");
 				return FALSE;
 			}
-		}
-	);
-    return;
+		});
+	return;
 }
 
 sub get_program_model ($self) {
 	my $model = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::Scalar');
-	my $sc = $self->{_common};
-	my $d = $self->{_d};
+	my $sc    = $self->{_common};
+	my $d     = $self->{_d};
 
 	# TODO: check goocanvas properly
 	my $goocanvas = TRUE;
@@ -260,6 +262,7 @@ sub get_program_model ($self) {
 
 	#create menu items
 	foreach my $app (@$apps) {
+
 		#ignore Shutter's desktop entry
 		next if $app->get_id eq 'shutter.desktop';
 
@@ -286,6 +289,7 @@ sub get_program_model ($self) {
 }
 
 sub check_installed_programs ($self, $progname) {
+
 	#update list of available programs in settings dialog
 	if ($progname) {
 		my $model         = $progname->get_model();
@@ -330,7 +334,7 @@ sub fct_iter_programs ($self, $model, $path, $iter, $data, $progname_widget) {
 
 sub load_plugin_tree ($self, $plugins, $lp) {
 	my $effects_model = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String');
-	my $shutter_root = $self->{_common}->get_root;
+	my $shutter_root  = $self->{_common}->get_root;
 
 	foreach my $pkey (sort keys %$plugins) {
 		if ($plugins->{$pkey}->{'binary'}) {
@@ -349,14 +353,8 @@ sub load_plugin_tree ($self, $plugins, $lp) {
 			}
 
 			$effects_model->set(
-				$effects_model->append,
-				0, $plugins->{$pkey}->{'pixbuf_object'},
-				1, $plugins->{$pkey}->{'name'},
-				2, $plugins->{$pkey}->{'category'},
-				3, $plugins->{$pkey}->{'tooltip'},
-				4, $plugins->{$pkey}->{'lang'},
-				5, $plugins->{$pkey}->{'binary'},
-				6, $pkey,
+				$effects_model->append,         0, $plugins->{$pkey}->{'pixbuf_object'}, 1, $plugins->{$pkey}->{'name'},   2, $plugins->{$pkey}->{'category'}, 3,
+				$plugins->{$pkey}->{'tooltip'}, 4, $plugins->{$pkey}->{'lang'},          5, $plugins->{$pkey}->{'binary'}, 6, $pkey,
 			);
 		} else {
 			$log->warn("Plugin $pkey is not configured properly, ignoring");
@@ -379,20 +377,11 @@ sub load_accounts_tree ($self, $accounts) {
 			$hidden_text .= '*';
 		}
 		$accounts_model->set(
-			$accounts_model->append,
-			0,  $accounts->{$_}->{'host'},
-			1,  $accounts->{$_}->{'username'},
-			2,  $hidden_text,
-			3,  $accounts->{$_}->{'not_used_yet'},
-			4,  $accounts->{$_}->{'register_color'},
-			5,  $accounts->{$_}->{'register_text'},
-			6,  $accounts->{$_}->{'module'},
-			7,  $accounts->{$_}->{'path'},
-			8,  $accounts->{$_}->{'folder'},
-			9,  $accounts->{$_}->{'description'},
-			10, $accounts->{$_}->{'supports_anonymous_upload'},
-			11, $accounts->{$_}->{'supports_authorized_upload'},
-			12, $accounts->{$_}->{'supports_oauth_upload'},
+			$accounts_model->append,            0, $accounts->{$_}->{'host'},         1,  $accounts->{$_}->{'username'},                  2,
+			$hidden_text,                       3, $accounts->{$_}->{'not_used_yet'}, 4,  $accounts->{$_}->{'register_color'},            5,
+			$accounts->{$_}->{'register_text'}, 6, $accounts->{$_}->{'module'},       7,  $accounts->{$_}->{'path'},                      8,
+			$accounts->{$_}->{'folder'},        9, $accounts->{$_}->{'description'},  10, $accounts->{$_}->{'supports_anonymous_upload'}, 11,
+			$accounts->{$_}->{'supports_authorized_upload'}, 12, $accounts->{$_}->{'supports_oauth_upload'},
 		);
 	}
 

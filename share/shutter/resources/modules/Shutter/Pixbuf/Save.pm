@@ -26,13 +26,14 @@ package Shutter::Pixbuf::Save;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Gtk3;
 
 #fileparse and tempfile
 use File::Basename qw/ fileparse dirname basename /;
-use File::Temp qw/ tempfile tempdir /;
+use File::Temp     qw/ tempfile tempdir /;
 
 #Glib
 use Glib qw/TRUE FALSE/;
@@ -40,6 +41,7 @@ use Glib qw/TRUE FALSE/;
 #--------------------------------------
 
 sub new ($class, $common, $window = undef) {
+
 	#constructor
 	my $self = {_common => $common, _window => $window};
 
@@ -54,34 +56,34 @@ sub new ($class, $common, $window = undef) {
 }
 
 sub set_quality_setting ($self, $filetype) {
-		my $default_image_quality = {
-			"png" => 9,
-			"jpg" => 90,
-			"webp" => 98,
-			"avif" => 68
-		};
+	my $default_image_quality = {
+		"png"  => 9,
+		"jpg"  => 90,
+		"webp" => 98,
+		"avif" => 68
+	};
 
-		#get quality value from settings if not set
-		if (my $settings = $self->{_common}->get_globalsettings_object) {
-			if (defined $settings->get_image_quality($filetype)) {
-				$self->{_quality} = $settings->get_image_quality($filetype);
-			} else {
-				$self->{_quality} = $default_image_quality->{$filetype};
-			}
+	#get quality value from settings if not set
+	if (my $settings = $self->{_common}->get_globalsettings_object) {
+		if (defined $settings->get_image_quality($filetype)) {
+			$self->{_quality} = $settings->get_image_quality($filetype);
 		} else {
 			$self->{_quality} = $default_image_quality->{$filetype};
 		}
-		return;
+	} else {
+		$self->{_quality} = $default_image_quality->{$filetype};
+	}
+	return;
 }
 
 sub save_pdf_ps_svg ($self, $filename, $filetype, $pixbuf) {
 
 	my $class = {
 		pdf => 'Cairo::PdfSurface',
-		ps => 'Cairo::PsSurface',
+		ps  => 'Cairo::PsSurface',
 		svg => 'Cairo::SvgSurface',
 	}->{$filetype};
-	
+
 	#0.8? => 72 / 90 dpi
 	my $surface = $class->create($filename, $pixbuf->get_width * 0.8, $pixbuf->get_height * 0.8);
 	my $cr      = Cairo::Context->create($surface);
@@ -96,7 +98,7 @@ sub save_pdf_ps_svg ($self, $filename, $filetype, $pixbuf) {
 }
 
 sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
-	
+
 	$self->{_quality} = $quality;
 
 	#gettext variable
@@ -119,7 +121,7 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 	#currently this is bmp, jpeg (jpg), png and ico (ico is not useful here)
 	my $imagemagick_result = undef;
 	if ($filetype eq 'jpeg' || $filetype eq 'jpg') {
-	
+
 		$self->set_quality_setting($filetype);
 
 		print "Saving file $filename, $filetype, " . $self->{_quality} . "\n" if $self->{_common}->get_debug;
@@ -160,7 +162,6 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 
 		eval { $pixbuf->save($filename, $filetype, "tEXt::Software" => "Shutter", quality => $self->{_quality}); };
 
-	
 	} elsif ($filetype eq 'avif') {
 
 		$self->set_quality_setting($filetype);

@@ -42,7 +42,7 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 
 		my $shape_path = undef;
 		$shape_path = $self->{_sc}->get_root . "/share/shutter/resources/conf/shape.conf" if $shf->file_exists($self->{_sc}->get_root . "/share/shutter/resources/conf/shape.conf");
-		$shape_path = "$ENV{'HOME'}/.shutter/shape.conf" if $shf->file_exists("$ENV{'HOME'}/.shutter/shape.conf");
+		$shape_path = "$ENV{'HOME'}/.shutter/shape.conf"                                  if $shf->file_exists("$ENV{'HOME'}/.shutter/shape.conf");
 
 		if (defined $shape_path && $shape_path) {
 
@@ -117,7 +117,7 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 		}
 
 		print "Current $rect[0],$rect[1],$rect[2],$rect[3]\n" if $self->{_sc}->get_debug;
-		$bregion->union_rectangle({x=>$rect[0], y=>$rect[1], width=>$rect[2], height=>$rect[3]});
+		$bregion->union_rectangle({x => $rect[0], y => $rect[1], width => $rect[2], height => $rect[3]});
 	}
 
 	if (defined $orig) {
@@ -129,15 +129,15 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 		$target->fill(0x00000000);
 
 		#copy all rectangles of bounding region to the target pixbuf
-		my $len = $bregion->num_rectangles-1;
-		for my $i (0..$len) {
+		my $len = $bregion->num_rectangles - 1;
+		for my $i (0 .. $len) {
 			my $r = $bregion->get_rectangle($i);
 			print $r->{x} . " " . $r->{y} . " " . $r->{width} . " " . $r->{height} . "\n" if $self->{_sc}->get_debug;
 
 			next if ($r->{x} > $orig->get_width);
 			next if ($r->{y} > $orig->get_height);
 
-			$r->{width} = $orig->get_width - $r->{x}   if ($r->{x} + $r->{width} > $orig->get_width);
+			$r->{width}  = $orig->get_width - $r->{x}  if ($r->{x} + $r->{width} > $orig->get_width);
 			$r->{height} = $orig->get_height - $r->{y} if ($r->{y} + $r->{height} > $orig->get_height);
 
 			if ($r->{x} >= 0 && $r->{x} + $r->{width} <= $orig->get_width && $r->{y} >= 0 && $r->{y} + $r->{height} <= $orig->get_height) {
@@ -215,6 +215,7 @@ sub get_window_size ($self, $wnck_window, $gdk_window, $border, $no_resize = und
 
 	return ($xp, $yp, $wp, $hp);
 }
+
 sub find_active_window ($self) {
 
 	my $gdk_window = $self->{_gdk_screen}->get_active_window;
@@ -261,7 +262,7 @@ sub find_region_for_window_type ($self, $xwindow, $type_hint = undef) {
 			#~ print $xp, " - ", $yp, " - ", $wp, " - ", $hp, "\n";
 
 			#create region
-			my $sr = Cairo::Region->create({x=>$xp, y=>$yp, width=>$wp * $self->{_dpi_scale}, height=>$hp * $self->{_dpi_scale}});
+			my $sr = Cairo::Region->create({x => $xp, y => $yp, width => $wp * $self->{_dpi_scale}, height => $hp * $self->{_dpi_scale}});
 
 			#init region
 			unless (defined $self->{_c}{'cw'}{'window_region'}) {

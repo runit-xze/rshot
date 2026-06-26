@@ -6,26 +6,26 @@ use Moo;
 with 'Shutter::Upload::Role::Uploader';
 
 sub upload ($self, $file) {
-    return (success => 0, error => "File not found") unless -e $file;
+	return (success => 0, error => "File not found") unless -e $file;
 
-    require WebService::Gyazo::B;
-    my $client = WebService::Gyazo::B->new();
+	require WebService::Gyazo::B;
+	my $client = WebService::Gyazo::B->new();
 
-    my %upload_result;
-    eval {
-        my $image = $client->uploadFile($file);
-        if (!$client->isError) {
-            my $url = $image->getImageUrl();
-            %upload_result = (success => 1, url => $url);
-        } else {
-            %upload_result = (success => 0, error => $client->error());
-        }
-    };
-    if ($@) {
-        %upload_result = (success => 0, error => $@);
-    }
+	my %upload_result;
+	eval {
+		my $image = $client->uploadFile($file);
+		if (!$client->isError) {
+			my $url = $image->getImageUrl();
+			%upload_result = (success => 1, url => $url);
+		} else {
+			%upload_result = (success => 0, error => $client->error());
+		}
+	};
+	if ($@) {
+		%upload_result = (success => 0, error => $@);
+	}
 
-    return %upload_result;
+	return %upload_result;
 }
 
 1;

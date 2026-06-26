@@ -64,7 +64,8 @@ has '_ignore_type'    => (is => 'rw');
 around BUILDARGS => sub {
 	my ($orig, $class, @args) = @_;
 	if (@args >= 14 && @args <= 15) {
-		my ($sc, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize, $windowresize_w, $windowresize_h, $hide_time, $mode, $auto_shape, $is_hidden, $show_visible, $ignore_type) = @args;
+		my ($sc, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize, $windowresize_w, $windowresize_h, $hide_time, $mode, $auto_shape, $is_hidden, $show_visible, $ignore_type) =
+			@args;
 		return $class->$orig(
 			_sc             => $sc,
 			_include_cursor => $include_cursor,
@@ -86,6 +87,7 @@ around BUILDARGS => sub {
 };
 
 sub BUILD ($self, $args) {
+
 	#X11 protocol and XSHAPE ext
 	require X11::Protocol;
 
@@ -94,7 +96,7 @@ sub BUILD ($self, $args) {
 
 	#main window
 	$self->{_main_gtk_window} = $self->_sc->get_mainwindow;
-	$self->{_dpi_scale} = $self->{_main_gtk_window}->get('scale-factor');
+	$self->{_dpi_scale}       = $self->{_main_gtk_window}->get('scale-factor');
 
 	#only used when selecting a window
 	if (defined $self->_mode && $self->_mode =~ m/(window|section)/ig) {
@@ -108,10 +110,6 @@ sub BUILD ($self, $args) {
 #~ print "$self dying at\n";
 #~ }
 #~
-
-
-
-
 
 sub window_async ($self) {
 
@@ -143,13 +141,16 @@ sub window_async ($self) {
 
 	my $initevent = $self->_init_capture_state;
 
-	if (Gtk3::Gdk::pointer_is_grabbed()
-		&& !($self->{_mode} eq "menu"
+	if (
+		Gtk3::Gdk::pointer_is_grabbed()
+		&& !(
+			   $self->{_mode} eq "menu"
 			|| $self->{_mode} eq "tray_menu"
 			|| $self->{_mode} eq "tooltip"
 			|| $self->{_mode} eq "tray_tooltip"
 			|| $self->{_mode} eq "awindow"
-			|| $self->{_mode} eq "tray_awindow"))
+			|| $self->{_mode} eq "tray_awindow"
+		))
 	{
 		$self->_capture_interactive($f, $active_workspace, $initevent);
 	} else {

@@ -26,9 +26,9 @@ no warnings 'experimental::try';
 
 use Moo;
 use Gtk3 '-init';
-use Glib qw/TRUE FALSE/;
+use Glib       qw/TRUE FALSE/;
 use File::Glob qw(bsd_glob);
-use IPC::Cmd qw(can_run);
+use IPC::Cmd   qw(can_run);
 use Log::Any;
 use Shutter::App::Directories;
 use Shutter::App::Constants qw(SHUTTER_VERSION SHUTTER_REV);
@@ -36,121 +36,110 @@ use Shutter::App::Constants qw(SHUTTER_VERSION SHUTTER_REV);
 has cli => (is => 'ro', required => 1);
 
 sub fct_init_debug_output ($self) {
-    my $log = Log::Any->get_logger;
+	my $log = Log::Any->get_logger;
 
-    $log->debug("gathering system information...");
-    $log->debug("Shutter " . SHUTTER_VERSION . " " . SHUTTER_REV);
+	$log->debug("gathering system information...");
+	$log->debug("Shutter " . SHUTTER_VERSION . " " . SHUTTER_REV);
 
-    #kernel info
-    if (can_run('uname')) {
-        my $uname = `uname -a`;
-        chomp $uname;
-        $log->debug($uname);
-    }
+	#kernel info
+	if (can_run('uname')) {
+		my $uname = `uname -a`;
+		chomp $uname;
+		$log->debug($uname);
+	}
 
-    eval {
-        open my $fh, '<', '/etc/os-release' or die;
-        my %map = map {
-            chomp;
-            my ($key, $value) = split /=/, $_, 2;
-            $value =~ s/^(['"])(.*)\1$/$2/;
-            ($key, $value)
-        } <$fh>;
-        my $os_info = join(' ', grep { $_ } map { $map{$_} } qw/NAME VERSION_ID BUILD_ID/);
-        $log->debug($os_info);
-    };
-    $log->debug("Cannot open /etc/os-release") if $@;
+	eval {
+		open my $fh, '<', '/etc/os-release' or die;
+		my %map = map {
+			chomp;
+			my ($key, $value) = split /=/, $_, 2;
+			$value =~ s/^(['"])(.*)\1$/$2/;
+			($key, $value)
+		} <$fh>;
+		my $os_info = join(' ', grep { $_ } map { $map{$_} } qw/NAME VERSION_ID BUILD_ID/);
+		$log->debug($os_info);
+	};
+	$log->debug("Cannot open /etc/os-release") if $@;
 
-    $log->debug(sprintf "Glib %s", $Glib::VERSION);
-    $log->debug(sprintf "Gtk3 %s", $Gtk3::VERSION);
+	$log->debug(sprintf "Glib %s", $Glib::VERSION);
+	$log->debug(sprintf "Gtk3 %s", $Gtk3::VERSION);
 
-    # The version info stuff appeared in 1.040.
-    if ($Glib::VERSION >= 1.040) {
-        $log->debug("Glib built for " . join(".", Glib->GET_VERSION_INFO) . ", running with " . join(".", Glib::major_version(), Glib::minor_version(), Glib::micro_version()));
-    }
-    if ($Gtk3::VERSION >= 1.040) {
-        $log->debug("Gtk3 built for " . join(".", Gtk3->GET_VERSION_INFO) . ", running with " . join(".", Gtk3::major_version(), Gtk3::minor_version(), Gtk3::micro_version()));
-    }
+	# The version info stuff appeared in 1.040.
+	if ($Glib::VERSION >= 1.040) {
+		$log->debug("Glib built for " . join(".", Glib->GET_VERSION_INFO) . ", running with " . join(".", Glib::major_version(), Glib::minor_version(), Glib::micro_version()));
+	}
+	if ($Gtk3::VERSION >= 1.040) {
+		$log->debug("Gtk3 built for " . join(".", Gtk3->GET_VERSION_INFO) . ", running with " . join(".", Gtk3::major_version(), Gtk3::minor_version(), Gtk3::micro_version()));
+	}
 
-    return TRUE;
+	return TRUE;
 }
 
 sub fct_init_depend ($self) {
-    my $cli = $self->cli;
-    my $log = Log::Any->get_logger;
-    
-    #imagemagick/perlmagick
-    unless (can_run('convert')) {
-        # warn "WARNING: imagemagick is missing --> color reduction features disabled!\n\n";
-    }
+	my $cli = $self->cli;
+	my $log = Log::Any->get_logger;
 
-    #gnome-web-photo
-    unless (can_run('gnome-web-photo')) {
-        # warn "WARNING: gnome-web-photo is missing --> screenshots of websites will be disabled!\n\n";
-        $cli->{_gnome_web_photo} = FALSE;
-    }
+	#imagemagick/perlmagick
+	unless (can_run('convert')) {
 
-    #nautilus-sendto
-    unless (can_run('nautilus-sendto')) {
-        $cli->{_nautilus_sendto} = FALSE;
-    }
+		# warn "WARNING: imagemagick is missing --> color reduction features disabled!\n\n";
+	}
 
-    #goocanvas
-    eval { require GooCanvas2; require GooCanvas2::CairoTypes; };
-    if ($@) {
-        $log->error("Failed to load GooCanvas2: $@");
-        $cli->{_goocanvas} = FALSE;
-    } else {
-        $log->info("GooCanvas2 loaded successfully");
-        $cli->{_goocanvas} = TRUE;
-    }
+	#gnome-web-photo
+	unless (can_run('gnome-web-photo')) {
 
-    #libimage-exiftool-perl
-    eval { require Image::ExifTool };
-    if ($@) {
-        $cli->{_exiftool} = FALSE;
-    }
+		# warn "WARNING: gnome-web-photo is missing --> screenshots of websites will be disabled!\n\n";
+		$cli->{_gnome_web_photo} = FALSE;
+	}
 
-    #dev-libs/libappindicator[introspection]
-    eval {
-        Glib::Object::Introspection->setup(
-            basename => 'AppIndicator3',
-            version  => '0.1',
-            package  => 'AppIndicator',
-        );
-    };
-    if ($@) {
-        eval {
-            Glib::Object::Introspection->setup(
-                basename => 'AyatanaAppIndicator3',
-                version  => '0.1',
-                package  => 'AppIndicator',
-            );
-        };
-        if ($@) {
-            $cli->{_appindicator} = FALSE;
-        }
-    }
+	#nautilus-sendto
+	unless (can_run('nautilus-sendto')) {
+		$cli->{_nautilus_sendto} = FALSE;
+	}
 
-    return TRUE;
+	#goocanvas
+	eval { require GooCanvas2; require GooCanvas2::CairoTypes; };
+	if ($@) {
+		$log->error("Failed to load GooCanvas2: $@");
+		$cli->{_goocanvas} = FALSE;
+	} else {
+		$log->info("GooCanvas2 loaded successfully");
+		$cli->{_goocanvas} = TRUE;
+	}
+
+	#libimage-exiftool-perl
+	eval { require Image::ExifTool };
+	if ($@) {
+		$cli->{_exiftool} = FALSE;
+	}
+
+	#dev-libs/libappindicator[introspection]
+	eval { Glib::Object::Introspection->setup(basename => 'AppIndicator3', version => '0.1', package => 'AppIndicator',); };
+	if ($@) {
+		eval { Glib::Object::Introspection->setup(basename => 'AyatanaAppIndicator3', version => '0.1', package => 'AppIndicator',); };
+		if ($@) {
+			$cli->{_appindicator} = FALSE;
+		}
+	}
+
+	return TRUE;
 }
 
 sub fct_init_unsaved_files ($self) {
 
-    #delete all files in this folder
-    #except the ones that are in the current session
-    my @unsaved_files = bsd_glob(Shutter::App::Directories::get_cache_dir() . "/*");
-    foreach my $unsaved_file (@unsaved_files) {
-        utf8::decode $unsaved_file;
-        if (defined &fct_get_key_by_filename) {
-            unless (fct_get_key_by_filename($unsaved_file)) {
-                unlink $unsaved_file;
-            }
-        }
-    }
-    return;
+	#delete all files in this folder
+	#except the ones that are in the current session
+	my @unsaved_files = bsd_glob(Shutter::App::Directories::get_cache_dir() . "/*");
+	foreach my $unsaved_file (@unsaved_files) {
+		utf8::decode $unsaved_file;
+		if (defined &fct_get_key_by_filename) {
+			unless (fct_get_key_by_filename($unsaved_file)) {
+				unlink $unsaved_file;
+			}
+		}
+	}
+	return;
 }
-
 
 1;
 

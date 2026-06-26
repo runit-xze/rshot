@@ -1,6 +1,7 @@
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 use Net::DBus;
 use Net::DBus::Reactor;
 
@@ -8,8 +9,8 @@ package Shutter::Screenshot::Wayland;
 
 sub xdg_portal ($screenshooter, $interactive = 0) {
 	my $reactor = Net::DBus::Reactor->main;
-	my $bus = Net::DBus->find;
-	my $me = $bus->get_unique_name;
+	my $bus     = Net::DBus->find;
+	my $me      = $bus->get_unique_name;
 	$me =~ s/\./_/g;
 	$me =~ s/^://g;
 
@@ -17,7 +18,7 @@ sub xdg_portal ($screenshooter, $interactive = 0) {
 
 	try {
 		my $portal_service = $bus->get_service('org.freedesktop.portal.Desktop');
-		my $portal = $portal_service->get_object('/org/freedesktop/portal/desktop', 'org.freedesktop.portal.Screenshot');
+		my $portal         = $portal_service->get_object('/org/freedesktop/portal/desktop', 'org.freedesktop.portal.Screenshot');
 
 		my $num;
 		my $output;
@@ -29,14 +30,14 @@ sub xdg_portal ($screenshooter, $interactive = 0) {
 		my $token = 'shutter' . rand;
 		$token =~ s/\.//g;
 		my $request = $portal_service->get_object("/org/freedesktop/portal/desktop/request/$me/$token", 'org.freedesktop.portal.Request');
-		my $conn = $request->connect_to_signal(Response => $cb);
+		my $conn    = $request->connect_to_signal(Response => $cb);
 		my $options = {handle_token => $token};
 		$options->{interactive} = Net::DBus::dbus_boolean(1) if $interactive;
 		my $request_path = $portal->Screenshot('', $options);
 		if ($request->get_object_path ne $request_path) {
 			$request->disconnect_from_signal(Response => $conn);
 			$request = $portal_service->get_object($request_path, 'org.freedesktop.portal.Request');
-			$conn = $request->connect_to_signal(Response => $cb);
+			$conn    = $request->connect_to_signal(Response => $cb);
 		}
 		$reactor->run;
 		$request->disconnect_from_signal(Response => $conn);
@@ -45,11 +46,10 @@ sub xdg_portal ($screenshooter, $interactive = 0) {
 			return 9;
 		}
 		my $giofile = Glib::IO::File::new_for_uri($output->{uri});
-		print "xdg portal: got file ".$giofile->get_path."\n";
+		print "xdg portal: got file " . $giofile->get_path . "\n";
 		$pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($giofile->get_path);
 		$giofile->delete;
-	}
-	catch ($e) {
+	} catch ($e) {
 		$screenshooter->{_error_text} = $e;
 		return 9;
 	};

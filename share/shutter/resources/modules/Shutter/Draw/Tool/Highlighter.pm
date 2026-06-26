@@ -7,20 +7,19 @@ use Glib qw/TRUE FALSE/;
 
 with 'Shutter::Draw::Tool::Base';
 
-
-
 sub draw ($self, $cr) {
-    # Handled by GooCanvas2
+
+	# Handled by GooCanvas2
 }
 
 sub on_click ($self, $event) {
-    return $self->drawing_tool->create_polyline($event, undef, TRUE);
+	return $self->drawing_tool->create_polyline($event, undef, TRUE);
 }
 
 sub on_drag ($self, $event) {
-    # Handled by DrawingTool for now
-}
 
+	# Handled by DrawingTool for now
+}
 
 sub on_drag_creation_points ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
@@ -29,10 +28,9 @@ sub on_drag_creation_points ($self, $item, $target, $ev) {
 	return;
 }
 
-
 sub on_click_creation ($self, $item, $target, $ev, $copy_item = undef) {
 	require Shutter::Draw::Polyline;
-	my $poly = Shutter::Draw::Polyline->new( app => $self->drawing_tool );
+	my $poly = Shutter::Draw::Polyline->new(app => $self->drawing_tool);
 	return $poly->setup($ev, $copy_item, TRUE);
 }
 

@@ -35,48 +35,48 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 
 sub dlg_open ($self, $widget, $type) {
-    my @files = grep { $self->cli->shf->file_exists($_) } @ARGV;
-    fct_open_files(@files);
-    fct_control_main_window('show');
-    return;
+	my @files = grep { $self->cli->shf->file_exists($_) } @ARGV;
+	fct_open_files(@files);
+	fct_control_main_window('show');
+	return;
 }
 
 sub evt_save_as ($self, $widget, $mode) {
-    fct_save_as($mode);
-    return;
+	fct_save_as($mode);
+	return;
 }
 
 sub evt_delete_window ($self, $widget, $reason) {
-    if ($reason eq 'quit') {
-        $self->cli->sc->set_exit_after_capture(TRUE);
-    }
-    $self->cli->app->quit;
-    return;
+	if ($reason eq 'quit') {
+		$self->cli->sc->set_exit_after_capture(TRUE);
+	}
+	$self->cli->app->quit;
+	return;
 }
 
 sub evt_show_settings ($self) {
-    evt_show_settings();
-    return;
+	evt_show_settings();
+	return;
 }
 
 sub fct_email ($self, $mode) {
-    fct_email($mode);
-    return;
+	fct_email($mode);
+	return;
 }
 
 sub fct_print ($self, $mode) {
-    fct_print($mode);
-    return;
+	fct_print($mode);
+	return;
 }
 
 sub evt_page_setup ($self) {
-    evt_page_setup();
-    return;
+	evt_page_setup();
+	return;
 }
 
 sub fct_clipboard_import ($self) {
-    fct_clipboard_import();
-    return;
+	fct_clipboard_import();
+	return;
 }
 
 1;

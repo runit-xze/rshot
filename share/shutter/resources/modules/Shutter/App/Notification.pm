@@ -26,7 +26,8 @@ package Shutter::App::Notification;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Moo;
 use Net::DBus;
@@ -47,11 +48,10 @@ sub BUILD ($self, $args) {
 	try {
 		$self->_notifications_service(Net::DBus->session->get_service('org.freedesktop.Notifications'));
 		$self->_notifications_object($self->_notifications_service->get_object('/org/freedesktop/Notifications', 'org.freedesktop.Notifications'));
-	}
-	catch ($e) {
+	} catch ($e) {
 		$log->warn("Warning: $e");
 	}
-    return;
+	return;
 }
 
 sub show ($self, $summary, $body, $nid = undef) {
@@ -62,8 +62,7 @@ sub show ($self, $summary, $body, $nid = undef) {
 		if (defined $self->_notifications_object) {
 			$self->_nid($self->_notifications_object->Notify('Shutter', $nid, "gtk-dialog-info", $summary, $body, [], {}, -1));
 		}
-	}
-	catch ($e) {
+	} catch ($e) {
 		$log->warn("NotifyWarning: $e");
 	}
 
@@ -79,8 +78,7 @@ sub close ($self, $nid = undef) {
 			if (defined $self->_notifications_object) {
 				$self->_notifications_object->CloseNotification($nid);
 			}
-		}
-		catch ($e) {
+		} catch ($e) {
 			$log->warn("CloseNotificationWarning: $e");
 		}
 		return TRUE;

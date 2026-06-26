@@ -29,18 +29,18 @@ use Moo;
 my %_handlers;
 
 sub register_handler ($name, $handler) {
-    $_handlers{$name} = $handler;
-    return;
+	$_handlers{$name} = $handler;
+	return;
 }
 
 sub get_handler ($name) {
-    return $_handlers{$name};
+	return $_handlers{$name};
 }
 
 sub call ($name, @args) {
-    my $handler = $_handlers{$name};
-    die "No handler registered for '$name'" unless $handler;
-    return $handler->($name, @args);
+	my $handler = $_handlers{$name};
+	die "No handler registered for '$name'" unless $handler;
+	return $handler->($name, @args);
 }
 
 1;

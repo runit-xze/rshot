@@ -32,19 +32,19 @@ use Moo;
 use Gtk3;
 use Glib qw/TRUE FALSE/;
 
-has '_common' => (is => 'ro', required => 1);
-has '_window' => (is => 'rw');
+has '_common'   => (is => 'ro', required => 1);
+has '_window'   => (is => 'rw');
 has '_notebook' => (is => 'rw');
-has '_status' => (is => 'rw');
+has '_status'   => (is => 'rw');
 
 sub create_main_window ($self, $app) {
-    my $window = Gtk3::ApplicationWindow->new($app);
-    $self->_window($window);
-    return $window;
+	my $window = Gtk3::ApplicationWindow->new($app);
+	$self->_window($window);
+	return $window;
 }
 
-sub get_window { return $_[0]->_window }
+sub get_window   { return $_[0]->_window }
 sub get_notebook { return $_[0]->_notebook }
-sub get_status { return $_[0]->_status }
+sub get_status   { return $_[0]->_status }
 
 1;

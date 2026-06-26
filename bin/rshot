@@ -34,10 +34,10 @@ use Shutter::App::CLI;
 # Determine shutter_root
 my $shutter_root = undef;
 if ($ENV{PAR_TEMP}) {
-    $shutter_root = $ENV{PAR_TEMP};
+	$shutter_root = $ENV{PAR_TEMP};
 } else {
-    $Bin =~ m/(.*)\//;
-    $shutter_root = $1;
+	$Bin =~ m/(.*)\//;
+	$shutter_root = $1;
 }
 $ENV{'SHUTTER_ROOT'} = $shutter_root;
 

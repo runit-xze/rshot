@@ -30,26 +30,26 @@ has cli => (is => 'ro', required => 1);
 
 # Registry cache
 has _handlers => (
-    is      => 'ro',
-    default => sub { {} },
+	is      => 'ro',
+	default => sub { {} },
 );
 
 sub get ($self, $name) {
-    
-    return $self->_handlers->{$name} if exists $self->_handlers->{$name};
-    
-    # Factory: Try to load and instantiate
-    my $class = "Shutter::App::Handlers::$name";
-    
-    eval "use $class;";
-    if ($@) {
-        die "Could not load handler class $class: $@";
-    }
-    
-    my $handler = $class->new(cli => $self->cli);
-    $self->_handlers->{$name} = $handler;
-    
-    return $handler;
+
+	return $self->_handlers->{$name} if exists $self->_handlers->{$name};
+
+	# Factory: Try to load and instantiate
+	my $class = "Shutter::App::Handlers::$name";
+
+	eval "use $class;";
+	if ($@) {
+		die "Could not load handler class $class: $@";
+	}
+
+	my $handler = $class->new(cli => $self->cli);
+	$self->_handlers->{$name} = $handler;
+
+	return $handler;
 }
 
 1;

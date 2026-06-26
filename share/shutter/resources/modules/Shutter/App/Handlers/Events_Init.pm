@@ -31,93 +31,94 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 
 sub fct_add_file_monitor ($self, $key) {
-    my $cli = $self->cli;
-    my $session_screens = $cli->{_session_screens};
-    my $sc = $cli->sc;
-    my $sd = $cli->sc->{_sd};
-    my $d = $cli->sc->get_gettext;
+	my $cli             = $self->cli;
+	my $session_screens = $cli->{_session_screens};
+	my $sc              = $cli->sc;
+	my $sd              = $cli->sc->{_sd};
+	my $d               = $cli->sc->get_gettext;
 
-    return FALSE unless exists $session_screens->{$key};
+	return FALSE unless exists $session_screens->{$key};
 
-    $session_screens->{$key}->{'changed'} = FALSE;
-    $session_screens->{$key}->{'deleted'} = FALSE;
-    $session_screens->{$key}->{'created'} = FALSE;
+	$session_screens->{$key}->{'changed'} = FALSE;
+	$session_screens->{$key}->{'deleted'} = FALSE;
+	$session_screens->{$key}->{'created'} = FALSE;
 
-    eval {
-        if (defined $session_screens->{$key}->{'giofile'}) {
-            my $monitor = $session_screens->{$key}->{'giofile'}->monitor_file([]);
-            $session_screens->{$key}->{'monitor'} = $monitor;
-            $monitor->signal_connect(
-                'changed',
-                sub {
-                    my ($handle, $file1, $file2, $event, $k) = @_;
+	eval {
+		if (defined $session_screens->{$key}->{'giofile'}) {
+			my $monitor = $session_screens->{$key}->{'giofile'}->monitor_file([]);
+			$session_screens->{$key}->{'monitor'} = $monitor;
+			$monitor->signal_connect(
+				'changed',
+				sub {
+					my ($handle, $file1, $file2, $event, $k) = @_;
 
-                    print $event. " - $k\n" if $sc->get_debug;
+					print $event. " - $k\n" if $sc->get_debug;
 
-                    if ($event eq 'deleted') {
+					if ($event eq 'deleted') {
 
-                        my $v = $session_screens->{$k};
-                        if ($v && $v->{'giofile'} && -e $v->{'giofile'}->get_path) {
-                            print "got event 'deleted', but file $k still exists, ignoring\n" if $sc->get_debug;
-                            return;
-                        }
+						my $v = $session_screens->{$k};
+						if ($v && $v->{'giofile'} && -e $v->{'giofile'}->get_path) {
+							print "got event 'deleted', but file $k still exists, ignoring\n" if $sc->get_debug;
+							return;
+						}
 
-                        $handle->cancel;
+						$handle->cancel;
 
-                        if (exists $session_screens->{$k}) {
-                            $session_screens->{$k}->{'deleted'} = TRUE;
-                            $session_screens->{$k}->{'changed'} = TRUE;
-                            fct_update_tab($k) if defined &fct_update_tab;
-                        }
+						if (exists $session_screens->{$k}) {
+							$session_screens->{$k}->{'deleted'} = TRUE;
+							$session_screens->{$k}->{'changed'} = TRUE;
+							fct_update_tab($k) if defined &fct_update_tab;
+						}
 
-                    } elsif ($event eq 'changed') {
+					} elsif ($event eq 'changed') {
 
-                        print $session_screens->{$k}->{'giofile'}->get_path . " - " . $event . "\n"
-                            if $sc->get_debug;
-                        $session_screens->{$k}->{'changed'} = TRUE;
-                        fct_update_tab($k) if defined &fct_update_tab;
-                    }
-                },
-                $key
-            );
-        }
-    };
-    if ($@) {
-        #show error dialog when installing the file
-        #monitor failed
-        $sd->dlg_error_message("$@", $d->get("Error while adding the file monitor."));
-        return FALSE;
-    }
+						print $session_screens->{$k}->{'giofile'}->get_path . " - " . $event . "\n"
+							if $sc->get_debug;
+						$session_screens->{$k}->{'changed'} = TRUE;
+						fct_update_tab($k) if defined &fct_update_tab;
+					}
+				},
+				$key
+			);
+		}
+	};
+	if ($@) {
 
-    return TRUE;
+		#show error dialog when installing the file
+		#monitor failed
+		$sd->dlg_error_message("$@", $d->get("Error while adding the file monitor."));
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 sub fct_iter_programs ($self, $model, $path, $iter, $search_for) {
-    my $progname = $self->cli->{_progname};
-    
-    my $progname_value = $model->get_value($iter, 1);
-    return FALSE if $search_for ne $progname_value;
-    $progname->set_active_iter($iter) if $progname;
-    return TRUE;
+	my $progname = $self->cli->{_progname};
+
+	my $progname_value = $model->get_value($iter, 1);
+	return FALSE                      if $search_for ne $progname_value;
+	$progname->set_active_iter($iter) if $progname;
+	return TRUE;
 }
 
 sub fct_navigation_toolbar ($self, $widget) {
-    my $nav_toolbar = $self->cli->{_nav_toolbar};
-    
-    return unless $nav_toolbar;
+	my $nav_toolbar = $self->cli->{_nav_toolbar};
 
-    if ($widget->get_active) {
-        $nav_toolbar->show;
-        foreach my $child ($nav_toolbar->get_children) {
-            $child->show_all;
-        }
-    } else {
-        $nav_toolbar->hide;
-        foreach my $child ($nav_toolbar->get_children) {
-            $child->hide_all;
-        }
-    }
-    return;
+	return unless $nav_toolbar;
+
+	if ($widget->get_active) {
+		$nav_toolbar->show;
+		foreach my $child ($nav_toolbar->get_children) {
+			$child->show_all;
+		}
+	} else {
+		$nav_toolbar->hide;
+		foreach my $child ($nav_toolbar->get_children) {
+			$child->hide_all;
+		}
+	}
+	return;
 }
 
 1;

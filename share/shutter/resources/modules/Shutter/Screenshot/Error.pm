@@ -26,16 +26,17 @@ package Shutter::Screenshot::Error;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 #Glib
 use Glib qw/TRUE FALSE/;
 
 use Moo;
 
-has '_sc' => (is => 'rw');
-has '_code' => (is => 'rw');
-has '_data' => (is => 'rw');
+has '_sc'    => (is => 'rw');
+has '_code'  => (is => 'rw');
+has '_data'  => (is => 'rw');
 has '_extra' => (is => 'rw');
 
 around BUILDARGS => sub {
@@ -43,9 +44,9 @@ around BUILDARGS => sub {
 	if (@args == 4) {
 		my ($sc, $code, $data, $extra) = @args;
 		return $class->$orig(
-			_sc => $sc,
-			_code => $code,
-			_data => $data,
+			_sc    => $sc,
+			_code  => $code,
+			_data  => $data,
 			_extra => $extra,
 		);
 	}

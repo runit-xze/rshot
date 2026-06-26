@@ -31,10 +31,10 @@ no warnings 'experimental::try';
 use Exporter 'import';
 
 our @EXPORT_OK = qw(
-    MAX_ERROR
-    SHUTTER_REV
-    SHUTTER_NAME
-    SHUTTER_VERSION
+	MAX_ERROR
+	SHUTTER_REV
+	SHUTTER_NAME
+	SHUTTER_VERSION
 );
 
 use constant MAX_ERROR       => 5;

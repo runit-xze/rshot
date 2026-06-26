@@ -34,23 +34,23 @@ use Glib qw/TRUE FALSE/;
 
 has cli => (is => 'ro', required => 1);
 
-sub fct_undo ($self) { return $self->cli->handlers->get('Core')->fct_undo() }
-sub fct_redo ($self) { return $self->cli->handlers->get('Core')->fct_redo() }
-sub fct_zoom_in ($self) { return $self->cli->handlers->get('Core')->fct_zoom_in() }
-sub fct_zoom_out ($self) { return $self->cli->handlers->get('Core')->fct_zoom_out() }
-sub fct_zoom_100 ($self) { return $self->cli->handlers->get('Core')->fct_zoom_100() }
-sub fct_zoom_best ($self) { return $self->cli->handlers->get('Core')->fct_zoom_best() }
-sub fct_fullscreen ($self) { return $self->cli->handlers->get('Core')->fct_fullscreen() }
-sub fct_draw ($self) { return $self->cli->handlers->get('Core')->fct_draw() }
-sub fct_clipboard ($self, $mode) { return $self->cli->handlers->get('Core')->fct_clipboard($mode) }
-sub fct_delete ($self) { return $self->cli->handlers->get('Core')->fct_delete() }
-sub fct_select_all ($self) { return $self->cli->handlers->get('Core')->fct_select_all() }
-sub fct_upload ($self) { return $self->cli->handlers->get('Core')->fct_upload() }
-sub fct_send ($self) { return $self->cli->handlers->get('Core')->fct_send() }
-sub fct_plugin ($self) { return $self->cli->handlers->get('Core')->fct_plugin() }
-sub fct_rename ($self) { return $self->cli->handlers->get('Edit_Draw')->fct_rename() }
-sub fct_show_in_folder ($self) { return $self->cli->handlers->get('Edit_Draw')->fct_show_in_folder() }
-sub fct_value_changed ($self, $widget, $reason) { return $self->cli->handlers->get('Screenshot_UI')->evt_value_changed($widget, $reason) }
+sub fct_undo           ($self)                   { return $self->cli->handlers->get('Core')->fct_undo() }
+sub fct_redo           ($self)                   { return $self->cli->handlers->get('Core')->fct_redo() }
+sub fct_zoom_in        ($self)                   { return $self->cli->handlers->get('Core')->fct_zoom_in() }
+sub fct_zoom_out       ($self)                   { return $self->cli->handlers->get('Core')->fct_zoom_out() }
+sub fct_zoom_100       ($self)                   { return $self->cli->handlers->get('Core')->fct_zoom_100() }
+sub fct_zoom_best      ($self)                   { return $self->cli->handlers->get('Core')->fct_zoom_best() }
+sub fct_fullscreen     ($self)                   { return $self->cli->handlers->get('Core')->fct_fullscreen() }
+sub fct_draw           ($self)                   { return $self->cli->handlers->get('Core')->fct_draw() }
+sub fct_clipboard      ($self, $mode)            { return $self->cli->handlers->get('Core')->fct_clipboard($mode) }
+sub fct_delete         ($self)                   { return $self->cli->handlers->get('Core')->fct_delete() }
+sub fct_select_all     ($self)                   { return $self->cli->handlers->get('Core')->fct_select_all() }
+sub fct_upload         ($self)                   { return $self->cli->handlers->get('Core')->fct_upload() }
+sub fct_send           ($self)                   { return $self->cli->handlers->get('Core')->fct_send() }
+sub fct_plugin         ($self)                   { return $self->cli->handlers->get('Core')->fct_plugin() }
+sub fct_rename         ($self)                   { return $self->cli->handlers->get('Edit_Draw')->fct_rename() }
+sub fct_show_in_folder ($self)                   { return $self->cli->handlers->get('Edit_Draw')->fct_show_in_folder() }
+sub fct_value_changed  ($self, $widget, $reason) { return $self->cli->handlers->get('Screenshot_UI')->evt_value_changed($widget, $reason) }
 
 1;
 

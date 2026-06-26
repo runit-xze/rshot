@@ -23,169 +23,169 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 
 # Widgets
-has _vbox => (is => 'rw');
-has _combobox_type => (is => 'rw');
-has _scale => (is => 'rw');
-has _filename => (is => 'rw');
-has _save_dir_button => (is => 'rw');
-has _save_auto => (is => 'rw');
-has _save_ask => (is => 'rw');
-has _save_no => (is => 'rw');
-has _image_autocopy => (is => 'rw');
-has _fname_autocopy => (is => 'rw');
-has _no_autocopy => (is => 'rw');
-has _cursor_active => (is => 'rw');
-has _delay => (is => 'rw');
-has _gif_fps => (is => 'rw');
+has _vbox             => (is => 'rw');
+has _combobox_type    => (is => 'rw');
+has _scale            => (is => 'rw');
+has _filename         => (is => 'rw');
+has _save_dir_button  => (is => 'rw');
+has _save_auto        => (is => 'rw');
+has _save_ask         => (is => 'rw');
+has _save_no          => (is => 'rw');
+has _image_autocopy   => (is => 'rw');
+has _fname_autocopy   => (is => 'rw');
+has _no_autocopy      => (is => 'rw');
+has _cursor_active    => (is => 'rw');
+has _delay            => (is => 'rw');
+has _gif_fps          => (is => 'rw');
 has _gif_max_duration => (is => 'rw');
-has _gif_countdown => (is => 'rw');
-has _gif_cursor => (is => 'rw');
+has _gif_countdown    => (is => 'rw');
+has _gif_cursor       => (is => 'rw');
 
 sub BUILD ($self, $args) {
-    my $sc = $self->cli->sc;
-    my $d = $sc->get_gettext;
-    my $sm = $self->cli->{settings_manager};
-    my $shf = $self->cli->shf;
+	my $sc  = $self->cli->sc;
+	my $d   = $sc->get_gettext;
+	my $sm  = $self->cli->{settings_manager};
+	my $shf = $self->cli->shf;
 
-    my $vbox_main = Gtk3::VBox->new(FALSE, 12);
-    $vbox_main->set_border_width(5);
+	my $vbox_main = Gtk3::VBox->new(FALSE, 12);
+	$vbox_main->set_border_width(5);
 
-    # --- File Frame ---
-    my $file_frame = Gtk3::Frame->new;
-    my $file_frame_label = Gtk3::Label->new;
-    $file_frame_label->set_markup("<b>" . $d->get("Main") . "</b>");
-    $file_frame->set_label_widget($file_frame_label);
-    $file_frame->set_shadow_type('none');
-    
-    my $file_vbox = Gtk3::VBox->new(FALSE, 0);
-    
-    # Image Format
-    my $filetype_box = Gtk3::HBox->new(FALSE, 0);
-    my $filetype_label = Gtk3::Label->new($d->get("Image format") . ":");
-    my $combobox_type = Gtk3::ComboBoxText->new;
-    
-    my @supported_formats;
-    my $png_index = 0;
-    my $i = 0;
-    foreach my $format (Gtk3::Gdk::Pixbuf::get_formats()) {
-        my $format_name = $format->get_name;
-        if (grep { $_ eq $format_name } qw(jpeg png bmp webp avif)) {
-            $format_name = "jpg" if $format_name eq "jpeg";
-            $combobox_type->append_text($format_name . " - " . $format->get_description);
-            push @supported_formats, $format_name;
-            $png_index = $i if $format_name eq "png";
-            $i++;
-        }
-    }
-    $self->{_supported_formats} = \@supported_formats;
-    
-    my $current_type = $sm->get_setting('general', 'filetype') // $png_index;
-    $combobox_type->set_active($current_type);
-    
-    $filetype_box->pack_start($filetype_label, FALSE, TRUE, 12);
-    $filetype_box->pack_start($combobox_type, TRUE, TRUE, 0);
-    $file_vbox->pack_start($filetype_box, FALSE, TRUE, 3);
-    
-    # Compression
-    my $scale_box = Gtk3::HBox->new(FALSE, 0);
-    my $scale_label = Gtk3::Label->new($d->get("Compression") . ":");
-    my $scale = Gtk3::HScale->new_with_range(0, 9, 1);
-    $scale->set_value_pos('right');
-    $scale->set_value($sm->get_setting('general', 'quality') // 1);
-    
-    $scale_box->pack_start($scale_label, FALSE, TRUE, 12);
-    $scale_box->pack_start($scale, TRUE, TRUE, 0);
-    $file_vbox->pack_start($scale_box, TRUE, TRUE, 3);
-    
-    $file_frame->add($file_vbox);
-    $vbox_main->pack_start($file_frame, FALSE, TRUE, 3);
+	# --- File Frame ---
+	my $file_frame       = Gtk3::Frame->new;
+	my $file_frame_label = Gtk3::Label->new;
+	$file_frame_label->set_markup("<b>" . $d->get("Main") . "</b>");
+	$file_frame->set_label_widget($file_frame_label);
+	$file_frame->set_shadow_type('none');
 
-    # --- Save Frame ---
-    my $save_frame = Gtk3::Frame->new;
-    my $save_frame_label = Gtk3::Label->new;
-    $save_frame_label->set_markup("<b>" . $d->get("Save") . "</b>");
-    $save_frame->set_label_widget($save_frame_label);
-    $save_frame->set_shadow_type('none');
-    
-    my $save_vbox = Gtk3::VBox->new(FALSE, 0);
-    
-    # Save Mode
-    my $save_auto = Gtk3::RadioButton->new_with_label(undef, $d->get("Automatically save file"));
-    my $save_ask = Gtk3::RadioButton->new_with_label_from_widget($save_auto, $d->get("Browse for save folder every time"));
-    my $save_no = Gtk3::RadioButton->new_with_label_from_widget($save_auto, $d->get("Do not save file automatically"));
-    
-    $save_auto->set_active(TRUE) if $sm->get_setting('general', 'save_auto') // TRUE;
-    $save_ask->set_active(TRUE) if $sm->get_setting('general', 'save_ask');
-    $save_no->set_active(TRUE) if $sm->get_setting('general', 'save_no');
-    
-    $save_vbox->pack_start($save_auto, TRUE, TRUE, 3);
-    $save_vbox->pack_start($save_ask, TRUE, TRUE, 3);
-    $save_vbox->pack_start($save_no, TRUE, TRUE, 3);
-    
-    # Filename
-    my $filename_box = Gtk3::HBox->new(FALSE, 0);
-    my $filename_label = Gtk3::Label->new($d->get("Filename") . ":");
-    my $filename = Gtk3::Entry->new;
-    $filename->set_text($sm->get_setting('general', 'filename') // '$name_%NNN');
-    
-    my $filename_hint = Gtk3::Label->new;
-    $filename_hint->set_no_show_all(TRUE);
-    $shf->validate_filename($filename, $filename_hint);
-    
-    $filename_box->pack_start($filename_label, FALSE, TRUE, 12);
-    $filename_box->pack_start($filename, TRUE, TRUE, 0);
-    $save_vbox->pack_start($filename_box, TRUE, TRUE, 3);
-    $save_vbox->pack_start($filename_hint, TRUE, TRUE, 3);
-    
-    # Directory
-    my $save_dir_box = Gtk3::HBox->new(FALSE, 0);
-    my $save_dir_label = Gtk3::Label->new($d->get("Directory") . ":");
-    my $save_dir_button = Gtk3::FileChooserButton->new($d->get("Choose folder"), 'select-folder');
-    
-    my $initial_dir = $sm->get_setting('general', 'folder') // Glib::get_user_special_dir('pictures') // Glib::get_home_dir();
-    $save_dir_button->set_current_folder($initial_dir) if $initial_dir;
-    
-    $save_dir_box->pack_start($save_dir_label, FALSE, TRUE, 12);
-    $save_dir_box->pack_start($save_dir_button, TRUE, TRUE, 0);
-    $save_vbox->pack_start($save_dir_box, FALSE, TRUE, 3);
-    
-    $save_frame->add($save_vbox);
-    $vbox_main->pack_start($save_frame, FALSE, TRUE, 3);
-    
-    # Sizegroups
-    my $sg_main = Gtk3::SizeGroup->new('horizontal');
-    $sg_main->add_widget($scale_label);
-    $sg_main->add_widget($filetype_label);
-    $sg_main->add_widget($filename_label);
-    $sg_main->add_widget($save_dir_label);
-    
-    # Store widgets
-    $self->_vbox($vbox_main);
-    $self->_combobox_type($combobox_type);
-    $self->_scale($scale);
-    $self->_filename($filename);
-    $self->_save_dir_button($save_dir_button);
-    $self->_save_auto($save_auto);
-    $self->_save_ask($save_ask);
-    $self->_save_no($save_no);
-    return;
+	my $file_vbox = Gtk3::VBox->new(FALSE, 0);
+
+	# Image Format
+	my $filetype_box   = Gtk3::HBox->new(FALSE, 0);
+	my $filetype_label = Gtk3::Label->new($d->get("Image format") . ":");
+	my $combobox_type  = Gtk3::ComboBoxText->new;
+
+	my @supported_formats;
+	my $png_index = 0;
+	my $i         = 0;
+	foreach my $format (Gtk3::Gdk::Pixbuf::get_formats()) {
+		my $format_name = $format->get_name;
+		if (grep { $_ eq $format_name } qw(jpeg png bmp webp avif)) {
+			$format_name = "jpg" if $format_name eq "jpeg";
+			$combobox_type->append_text($format_name . " - " . $format->get_description);
+			push @supported_formats, $format_name;
+			$png_index = $i if $format_name eq "png";
+			$i++;
+		}
+	}
+	$self->{_supported_formats} = \@supported_formats;
+
+	my $current_type = $sm->get_setting('general', 'filetype') // $png_index;
+	$combobox_type->set_active($current_type);
+
+	$filetype_box->pack_start($filetype_label, FALSE, TRUE, 12);
+	$filetype_box->pack_start($combobox_type,  TRUE,  TRUE, 0);
+	$file_vbox->pack_start($filetype_box, FALSE, TRUE, 3);
+
+	# Compression
+	my $scale_box   = Gtk3::HBox->new(FALSE, 0);
+	my $scale_label = Gtk3::Label->new($d->get("Compression") . ":");
+	my $scale       = Gtk3::HScale->new_with_range(0, 9, 1);
+	$scale->set_value_pos('right');
+	$scale->set_value($sm->get_setting('general', 'quality') // 1);
+
+	$scale_box->pack_start($scale_label, FALSE, TRUE, 12);
+	$scale_box->pack_start($scale,       TRUE,  TRUE, 0);
+	$file_vbox->pack_start($scale_box,   TRUE,  TRUE, 3);
+
+	$file_frame->add($file_vbox);
+	$vbox_main->pack_start($file_frame, FALSE, TRUE, 3);
+
+	# --- Save Frame ---
+	my $save_frame       = Gtk3::Frame->new;
+	my $save_frame_label = Gtk3::Label->new;
+	$save_frame_label->set_markup("<b>" . $d->get("Save") . "</b>");
+	$save_frame->set_label_widget($save_frame_label);
+	$save_frame->set_shadow_type('none');
+
+	my $save_vbox = Gtk3::VBox->new(FALSE, 0);
+
+	# Save Mode
+	my $save_auto = Gtk3::RadioButton->new_with_label(undef, $d->get("Automatically save file"));
+	my $save_ask  = Gtk3::RadioButton->new_with_label_from_widget($save_auto, $d->get("Browse for save folder every time"));
+	my $save_no   = Gtk3::RadioButton->new_with_label_from_widget($save_auto, $d->get("Do not save file automatically"));
+
+	$save_auto->set_active(TRUE) if $sm->get_setting('general', 'save_auto') // TRUE;
+	$save_ask->set_active(TRUE)  if $sm->get_setting('general', 'save_ask');
+	$save_no->set_active(TRUE)   if $sm->get_setting('general', 'save_no');
+
+	$save_vbox->pack_start($save_auto, TRUE, TRUE, 3);
+	$save_vbox->pack_start($save_ask,  TRUE, TRUE, 3);
+	$save_vbox->pack_start($save_no,   TRUE, TRUE, 3);
+
+	# Filename
+	my $filename_box   = Gtk3::HBox->new(FALSE, 0);
+	my $filename_label = Gtk3::Label->new($d->get("Filename") . ":");
+	my $filename       = Gtk3::Entry->new;
+	$filename->set_text($sm->get_setting('general', 'filename') // '$name_%NNN');
+
+	my $filename_hint = Gtk3::Label->new;
+	$filename_hint->set_no_show_all(TRUE);
+	$shf->validate_filename($filename, $filename_hint);
+
+	$filename_box->pack_start($filename_label, FALSE, TRUE, 12);
+	$filename_box->pack_start($filename,       TRUE,  TRUE, 0);
+	$save_vbox->pack_start($filename_box,  TRUE, TRUE, 3);
+	$save_vbox->pack_start($filename_hint, TRUE, TRUE, 3);
+
+	# Directory
+	my $save_dir_box    = Gtk3::HBox->new(FALSE, 0);
+	my $save_dir_label  = Gtk3::Label->new($d->get("Directory") . ":");
+	my $save_dir_button = Gtk3::FileChooserButton->new($d->get("Choose folder"), 'select-folder');
+
+	my $initial_dir = $sm->get_setting('general', 'folder') // Glib::get_user_special_dir('pictures') // Glib::get_home_dir();
+	$save_dir_button->set_current_folder($initial_dir) if $initial_dir;
+
+	$save_dir_box->pack_start($save_dir_label,  FALSE, TRUE, 12);
+	$save_dir_box->pack_start($save_dir_button, TRUE,  TRUE, 0);
+	$save_vbox->pack_start($save_dir_box, FALSE, TRUE, 3);
+
+	$save_frame->add($save_vbox);
+	$vbox_main->pack_start($save_frame, FALSE, TRUE, 3);
+
+	# Sizegroups
+	my $sg_main = Gtk3::SizeGroup->new('horizontal');
+	$sg_main->add_widget($scale_label);
+	$sg_main->add_widget($filetype_label);
+	$sg_main->add_widget($filename_label);
+	$sg_main->add_widget($save_dir_label);
+
+	# Store widgets
+	$self->_vbox($vbox_main);
+	$self->_combobox_type($combobox_type);
+	$self->_scale($scale);
+	$self->_filename($filename);
+	$self->_save_dir_button($save_dir_button);
+	$self->_save_auto($save_auto);
+	$self->_save_ask($save_ask);
+	$self->_save_no($save_no);
+	return;
 }
 
 sub get_widget ($self) {
-    return $self->_vbox;
+	return $self->_vbox;
 }
 
 sub save ($self) {
-    my $sm = $self->cli->{settings_manager};
-    
-    $sm->set_setting('general', 'filetype', $self->_combobox_type->get_active);
-    $sm->set_setting('general', 'quality', $self->_scale->get_value);
-    $sm->set_setting('general', 'filename', $self->_filename->get_text);
-    $sm->set_setting('general', 'folder', $self->_save_dir_button->get_filename);
-    $sm->set_setting('general', 'save_auto', $self->_save_auto->get_active);
-    $sm->set_setting('general', 'save_ask', $self->_save_ask->get_active);
-    $sm->set_setting('general', 'save_no', $self->_save_no->get_active);
-    return;
+	my $sm = $self->cli->{settings_manager};
+
+	$sm->set_setting('general', 'filetype',  $self->_combobox_type->get_active);
+	$sm->set_setting('general', 'quality',   $self->_scale->get_value);
+	$sm->set_setting('general', 'filename',  $self->_filename->get_text);
+	$sm->set_setting('general', 'folder',    $self->_save_dir_button->get_filename);
+	$sm->set_setting('general', 'save_auto', $self->_save_auto->get_active);
+	$sm->set_setting('general', 'save_ask',  $self->_save_ask->get_active);
+	$sm->set_setting('general', 'save_no',   $self->_save_no->get_active);
+	return;
 }
 
 1;

@@ -100,7 +100,7 @@ my $events_arrayref = [
 			### XFixesCursorNotify unpack: @_
 			my ($subtype, $window, $cursor_serial, $time, $cursor_name) = unpack 'xCxxL4', $data;
 			return (
-				@_,             # base fields
+				@_,                                                                   # base fields
 				subtype       => $X->interp('XFixesCursorNotifySubtype', $subtype),
 				window        => _interp_none($X, $window),                           # probably not None though
 				cursor_serial => $cursor_serial,
@@ -131,7 +131,7 @@ sub _ext_events_install ($X, $event_num, $events_arrayref) {
 			carp "Event $event_num $already overwritten with $name";
 		}
 		$X->{'ext_const'}->{'Events'}->[$event_num] = $name;
-		$X->{'ext_events'}->[$event_num] = $events_arrayref->[$i + 1];    # pack/unpack
+		$X->{'ext_events'}->[$event_num] = $events_arrayref->[$i + 1];               # pack/unpack
 		$event_num++;
 	}
 	return;
@@ -271,11 +271,11 @@ my $requests_arrayref = [[
 	[
 		'XFixesRegionExtents',              # 18
 		\&_request_card32s
-	],                                      # ($X, $src, $dst)
+	],    # ($X, $src, $dst)
 
 	[
-		'XFixesFetchRegion',                # 19
-		\&_request_card32s,                 # ($X, $region)
+		'XFixesFetchRegion',    # 19
+		\&_request_card32s,     # ($X, $region)
 		sub {
 			my ($X, $data) = @_;
 			### XFixesFetchRegion reply: length($data)
@@ -288,12 +288,12 @@ my $requests_arrayref = [[
 	],
 
 	[
-		'XFixesSetGCClipRegion',                     # 20
+		'XFixesSetGCClipRegion',    # 20
 		\&_request_xid_xy_region
-	],                                               # ($gc, $x, $y, $region)
+	],    # ($gc, $x, $y, $region)
 
 	[
-		'XFixesSetWindowShapeRegion',                # 21
+		'XFixesSetWindowShapeRegion',    # 21
 		sub {
 			my ($X, $window, $shape_kind, $x, $y, $region) = @_;
 
@@ -307,10 +307,10 @@ my $requests_arrayref = [[
 	[
 		'XFixesSetPictureClipRegion',    # 22
 		\&_request_xid_xy_region
-	],                                   # ($pict, $x, $y, $region)
+	],    # ($pict, $x, $y, $region)
 
 	[
-		'XFixesSetCursorName',           # 23
+		'XFixesSetCursorName',    # 23
 		sub {
 			my ($X, $cursor, $str) = @_;
 			### XFixesSetCursorName request
@@ -346,12 +346,12 @@ my $requests_arrayref = [[
 				@ret,
 				substr($data, 32, $pixelsize),    # pixels
 				_interp_none($X, $atom),
-				substr($data, 32 + $pixelsize, $namelen));                                    # name
+				substr($data, 32 + $pixelsize, $namelen));    # name
 		}
 	],
 
 	[
-		'XFixesChangeCursor',                     # 26
+		'XFixesChangeCursor',    # 26
 		sub {
 			my ($X, $src, $dst) = @_;
 			return pack 'LL', $src, $dst;
@@ -359,7 +359,7 @@ my $requests_arrayref = [[
 	],
 
 	[
-		'XFixesChangeCursorByName',               # 27
+		'XFixesChangeCursorByName',    # 27
 		sub {
 			my ($X, $src, $str) = @_;
 			return pack('LSxx' . padded($str), $src, length($str), $str);
@@ -372,7 +372,7 @@ my $requests_arrayref = [[
 	[
 		'XFixesExpandRegion',    # 28
 		sub {
-			shift;               # $X
+			shift;                       # $X
 			return pack 'LLSSSS', @_;    # $src, $dst, $left,$right, $top,$bottom
 		}
 	],
@@ -402,8 +402,8 @@ my $requests_arrayref = [[
 			### format: 'LLssssLxxS'.padded($devices)
 			return pack(
 				'LLssssLxxS' . padded($devices),
-				$barrier,     # CARD32
-				$drawable,    # CARD32
+				$barrier,              # CARD32
+				$drawable,             # CARD32
 				$x1, $y1, $x2, $y2,    # INT16 x 4
 				$directions,           # CARD32
 				scalar(@devices),      # CARD16 num_devices
@@ -415,7 +415,7 @@ my $requests_arrayref = [[
 	[
 		'XFixesDestroyPointerBarrier',    # 32
 		\&_request_xids
-	],                                    # ($X, $barrier)  single barrier to destroy
+	],    # ($X, $barrier)  single barrier to destroy
 ];
 
 sub _ext_requests_install ($X, $request_num, $requests_arrayref) {
@@ -531,9 +531,9 @@ sub _num_xinputdevice ($device) {
 
 sub _ext_error_install ($X, $error_num) {
 	### _ext_error_install: @_
-	my $aref      = $X->{'ext_const'}{'Error'}    # copy
+	my $aref = $X->{'ext_const'}{'Error'}    # copy
 		= [@{$X->{'ext_const'}{'Error'} || []}];
-	my $href = $X->{'ext_const_num'}{'Error'}     # copy
+	my $href = $X->{'ext_const_num'}{'Error'}    # copy
 		= {%{$X->{'ext_const_num'}{'Error'} || {}}};
 	my $i;
 	foreach $i (0 .. $#_) {

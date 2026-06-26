@@ -31,8 +31,9 @@ use feature "try";
 no warnings "experimental::try";
 {
 	no warnings 'redefine';
-sub lookup {
-	my ($self, $size) = @_;
+
+	sub lookup {
+		my ($self, $size) = @_;
 		return Shutter::App::HelperFunctions->icon_size($size);
 	}
 }
@@ -52,9 +53,7 @@ use utf8;
 use strict;
 use warnings;
 
-use constant {
-	DEFAULT_FONT => "Sans Regular 16"
-};
+use constant {DEFAULT_FONT => "Sans Regular 16"};
 
 use Gtk3;
 
@@ -62,10 +61,9 @@ use Exporter;
 use GooCanvas2;
 use GooCanvas2::CairoTypes;
 use File::Basename qw/ fileparse dirname basename /;
-use File::Glob qw/ bsd_glob /;
-use File::Temp qw/ tempfile tempdir /;
+use File::Glob     qw/ bsd_glob /;
+use File::Temp     qw/ tempfile tempdir /;
 use Data::Dumper;
-
 
 #load and save settings
 use XML::Simple;
@@ -157,27 +155,28 @@ sub new {
 
 	#drawing colors and line width
 	#general - shown in the bottom hbox
-	$self->{_fill_color}         = Gtk3::Gdk::RGBA::parse('#0000ff');
+	$self->{_fill_color} = Gtk3::Gdk::RGBA::parse('#0000ff');
 	$self->{_fill_color}->alpha(0.25);
-	$self->{_stroke_color}       = Gtk3::Gdk::RGBA::parse('#ff0000');
+	$self->{_stroke_color} = Gtk3::Gdk::RGBA::parse('#ff0000');
 	$self->{_stroke_color}->alpha(1);
-	$self->{_line_width}         = 3;
-	$self->{_font}               = DEFAULT_FONT;
+	$self->{_line_width} = 3;
+	$self->{_font}       = DEFAULT_FONT;
 
 	#obtain current colors and font_desc from the main window
 	$self->{_style}    = $self->{_sc}->get_mainwindow->get_style_context;
 	$self->{_style_bg} = $self->{_style}->get_background_color('selected');
 	$self->{_style_bg}->alpha(1);
+
 	#$self->{_style_tx} = $self->{_style}->text('selected');
 
 	#remember drawing colors, line width and font settings
 	#maybe we have to restore them
-	$self->{_last_fill_color}         = Gtk3::Gdk::RGBA::parse('#0000ff');
+	$self->{_last_fill_color} = Gtk3::Gdk::RGBA::parse('#0000ff');
 	$self->{_last_fill_color}->alpha(0.25);
-	$self->{_last_stroke_color}       = Gtk3::Gdk::RGBA::parse('#ff0000');
+	$self->{_last_stroke_color} = Gtk3::Gdk::RGBA::parse('#ff0000');
 	$self->{_last_stroke_color}->alpha(1);
-	$self->{_last_line_width}         = 3;
-	$self->{_last_font}               = DEFAULT_FONT;
+	$self->{_last_line_width} = 3;
+	$self->{_last_font}       = DEFAULT_FONT;
 
 	#some status variables
 	$self->{_busy}                    = undef;
@@ -219,18 +218,18 @@ sub new {
 
 	require Shutter::Draw::Tool::Registry;
 	my $registry = Shutter::Draw::Tool::Registry->new;
-	$registry->register_tool('select', 'Shutter::Draw::Tool::Select');
-	$registry->register_tool('freehand', 'Shutter::Draw::Tool::Pen');
+	$registry->register_tool('select',      'Shutter::Draw::Tool::Select');
+	$registry->register_tool('freehand',    'Shutter::Draw::Tool::Pen');
 	$registry->register_tool('highlighter', 'Shutter::Draw::Tool::Highlighter');
-	$registry->register_tool('line', 'Shutter::Draw::Tool::Line');
-	$registry->register_tool('arrow', 'Shutter::Draw::Tool::Arrow');
-	$registry->register_tool('rect', 'Shutter::Draw::Tool::Rectangle');
-	$registry->register_tool('ellipse', 'Shutter::Draw::Tool::Ellipse');
-	$registry->register_tool('text', 'Shutter::Draw::Tool::Text');
-	$registry->register_tool('censor', 'Shutter::Draw::Tool::Censor');
-	$registry->register_tool('pixelize', 'Shutter::Draw::Tool::Blur');
-	$registry->register_tool('number', 'Shutter::Draw::Tool::Number');
-	$registry->register_tool('image', 'Shutter::Draw::Tool::Image');
+	$registry->register_tool('line',        'Shutter::Draw::Tool::Line');
+	$registry->register_tool('arrow',       'Shutter::Draw::Tool::Arrow');
+	$registry->register_tool('rect',        'Shutter::Draw::Tool::Rectangle');
+	$registry->register_tool('ellipse',     'Shutter::Draw::Tool::Ellipse');
+	$registry->register_tool('text',        'Shutter::Draw::Tool::Text');
+	$registry->register_tool('censor',      'Shutter::Draw::Tool::Censor');
+	$registry->register_tool('pixelize',    'Shutter::Draw::Tool::Blur');
+	$registry->register_tool('number',      'Shutter::Draw::Tool::Number');
+	$registry->register_tool('image',       'Shutter::Draw::Tool::Image');
 	require Shutter::Draw::CanvasManager;
 	$self->{_canvas_manager} = Shutter::Draw::CanvasManager->new(registry => $registry, drawing_tool => $self);
 
@@ -255,41 +254,40 @@ sub current_tool {
 }
 
 sub acquire_focus {
-    my ($self, $item, $ev, $cursor) = @_;
-    $self->{_canvas_manager}->acquire_focus($item, $ev, $cursor);
-    return;
+	my ($self, $item, $ev, $cursor) = @_;
+	$self->{_canvas_manager}->acquire_focus($item, $ev, $cursor);
+	return;
 }
 
 sub release_focus {
-    my ($self, $item, $ev) = @_;
-    $self->{_canvas_manager}->release_focus($item, $ev);
-    return;
+	my ($self, $item, $ev) = @_;
+	$self->{_canvas_manager}->release_focus($item, $ev);
+	return;
 }
 
 our $AUTOLOAD;
-sub AUTOLOAD {
-    my $self = shift;
-    my $name = $AUTOLOAD;
-    $name =~ s/.*://;
-    return if $name eq 'DESTROY';
 
-    if (@_) {
-        $self->{"_$name"} = shift;
-    }
-    return $self->{"_$name"};
+sub AUTOLOAD {
+	my $self = shift;
+	my $name = $AUTOLOAD;
+	$name =~ s/.*://;
+	return if $name eq 'DESTROY';
+
+	if (@_) {
+		$self->{"_$name"} = shift;
+	}
+	return $self->{"_$name"};
 }
 
-	#~ sub DESTROY {
-	#~ my $self = shift;
-	#~ print "$self dying at\n";
-	#~ }
-
+#~ sub DESTROY {
+#~ my $self = shift;
+#~ print "$self dying at\n";
+#~ }
 
 sub show {
 	my ($self, @args) = @_;
 	return $self->{_toolbar_manager}->setup_main_window(@args);
 }
-
 
 sub setup_right_vbox_c {
 	my ($self, @args) = @_;
@@ -346,28 +344,7 @@ sub update_warning_text {
 	return $self->{_state_manager}->update_warning_text(@args);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 #ITEM SIGNALS
-
-
-
-
-
-
-
-
-
 
 sub get_item_key {
 	my ($self, $item, $parent) = @_;
@@ -378,19 +355,10 @@ sub get_item_key {
 	}
 }
 
-
-
-
-
-
-
-
 sub setup_uimanager {
 	my $self = shift;
-	return Shutter::Draw::UIManager->new( app => $self )->setup;
+	return Shutter::Draw::UIManager->new(app => $self)->setup;
 }
-
-
 
 sub utf8_decode {
 	my ($self, $string) = @_;
@@ -413,27 +381,22 @@ sub check_valid_mime_type {
 	return FALSE;
 }
 
-
-
-
-
-
-sub gettext { return shift->{_d} }
-sub dicons { return shift->{_dicons} }
-sub line_spin_w { return shift->{_line_spin_w} }
-sub line_spin_wh { return shift->{_line_spin_wh} }
-sub stroke_color_w { return shift->{_stroke_color_w} }
+sub gettext         { return shift->{_d} }
+sub dicons          { return shift->{_dicons} }
+sub line_spin_w     { return shift->{_line_spin_w} }
+sub line_spin_wh    { return shift->{_line_spin_wh} }
+sub stroke_color_w  { return shift->{_stroke_color_w} }
 sub stroke_color_wh { return shift->{_stroke_color_wh} }
-sub fill_color_w { return shift->{_fill_color_w} }
-sub fill_color_wh { return shift->{_fill_color_wh} }
-sub font_btn_w { return shift->{_font_btn_w} }
-sub font_btn_wh { return shift->{_font_btn_wh} }
+sub fill_color_w    { return shift->{_fill_color_w} }
+sub fill_color_wh   { return shift->{_fill_color_wh} }
+sub font_btn_w      { return shift->{_font_btn_w} }
+sub font_btn_wh     { return shift->{_font_btn_wh} }
 
-sub icons { return shift->{_icons} }
-sub clipboard { return shift->{_clipboard} }
-sub items { return shift->{_items} }
+sub icons          { return shift->{_icons} }
+sub clipboard      { return shift->{_clipboard} }
+sub items          { return shift->{_items} }
 sub drawing_window { return shift->{_drawing_window} }
-sub canvas { return shift->{_canvas} }
+sub canvas         { return shift->{_canvas} }
 sub stipple_pixbuf { return shift->{_stipple_pixbuf} }
 
 sub cut {
@@ -441,6 +404,7 @@ sub cut {
 	$self->{_cut} = $args[0] if @args;
 	return $self->{_cut};
 }
+
 sub current_copy_item {
 	my ($self, @args) = @_;
 	$self->{_current_copy_item} = $args[0] if @args;

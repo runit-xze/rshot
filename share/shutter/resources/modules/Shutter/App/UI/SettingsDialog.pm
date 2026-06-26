@@ -30,7 +30,7 @@ no warnings 'experimental::try';
 
 use Moo;
 use Gtk3;
-use Glib qw/TRUE FALSE/;
+use Glib                    qw/TRUE FALSE/;
 use Shutter::App::Constants qw/SHUTTER_NAME/;
 use Shutter::App::UI::Settings::Main;
 use Shutter::App::UI::Settings::Behavior;
@@ -40,90 +40,90 @@ use Shutter::App::UI::Settings::Plugins;
 use Shutter::App::UI::Settings::ShareX;
 use Shutter::App::UI::Settings::Video;
 
-has 'cli' => (is => 'ro', required => 1);
-has '_dialog' => (is => 'rw');
+has 'cli'           => (is => 'ro', required => 1);
+has '_dialog'       => (is => 'rw');
 has '_profiles_box' => (is => 'rw');
-has '_tabs' => (is => 'rw', default => sub { [] });
+has '_tabs'         => (is => 'rw', default => sub { [] });
 
 sub create_settings_dialog ($self, $window) {
-    my $sc = $self->cli->sc;
-    my $d = $sc->get_gettext;
+	my $sc = $self->cli->sc;
+	my $d  = $sc->get_gettext;
 
-    my $dialog = Gtk3::Dialog->new(SHUTTER_NAME . " - " . $d->get("Preferences"), $window, [qw/modal destroy-with-parent/], 'gtk-close' => 'close');
-    
-    my $notebook = Gtk3::Notebook->new;
-    $notebook->set_tab_pos('left');
-    $notebook->set_border_width(6);
+	my $dialog = Gtk3::Dialog->new(SHUTTER_NAME . " - " . $d->get("Preferences"), $window, [qw/modal destroy-with-parent/], 'gtk-close' => 'close');
 
-    # Main Tab
-    my $tab_main = Shutter::App::UI::Settings::Main->new(cli => $self->cli);
-    $notebook->append_page($tab_main->get_widget, Gtk3::Label->new($d->get("Main")));
-    push @{$self->_tabs}, $tab_main;
+	my $notebook = Gtk3::Notebook->new;
+	$notebook->set_tab_pos('left');
+	$notebook->set_border_width(6);
 
-    # Behavior Tab
-    my $tab_behavior = Shutter::App::UI::Settings::Behavior->new(cli => $self->cli);
-    $notebook->append_page($tab_behavior->get_widget, Gtk3::Label->new($d->get("Behavior")));
-    push @{$self->_tabs}, $tab_behavior;
+	# Main Tab
+	my $tab_main = Shutter::App::UI::Settings::Main->new(cli => $self->cli);
+	$notebook->append_page($tab_main->get_widget, Gtk3::Label->new($d->get("Main")));
+	push @{$self->_tabs}, $tab_main;
 
-    # Capture Tab
-    my $tab_capture = Shutter::App::UI::Settings::Capture->new(cli => $self->cli);
-    $notebook->append_page($tab_capture->get_widget, Gtk3::Label->new($d->get("Capture")));
-    push @{$self->_tabs}, $tab_capture;
+	# Behavior Tab
+	my $tab_behavior = Shutter::App::UI::Settings::Behavior->new(cli => $self->cli);
+	$notebook->append_page($tab_behavior->get_widget, Gtk3::Label->new($d->get("Behavior")));
+	push @{$self->_tabs}, $tab_behavior;
 
-    # Upload Tab
-    my $tab_upload = Shutter::App::UI::Settings::Upload->new(cli => $self->cli);
-    $notebook->append_page($tab_upload->get_widget, Gtk3::Label->new($d->get("Upload")));
-    push @{$self->_tabs}, $tab_upload;
+	# Capture Tab
+	my $tab_capture = Shutter::App::UI::Settings::Capture->new(cli => $self->cli);
+	$notebook->append_page($tab_capture->get_widget, Gtk3::Label->new($d->get("Capture")));
+	push @{$self->_tabs}, $tab_capture;
 
-    # Video Tab
-    my $tab_video = Shutter::App::UI::Settings::Video->new(cli => $self->cli);
-    $notebook->append_page($tab_video->get_widget, Gtk3::Label->new($d->get("Video")));
-    push @{$self->_tabs}, $tab_video;
+	# Upload Tab
+	my $tab_upload = Shutter::App::UI::Settings::Upload->new(cli => $self->cli);
+	$notebook->append_page($tab_upload->get_widget, Gtk3::Label->new($d->get("Upload")));
+	push @{$self->_tabs}, $tab_upload;
 
-    # Plugins Tab
-    my $tab_plugins = Shutter::App::UI::Settings::Plugins->new(cli => $self->cli);
-    $notebook->append_page($tab_plugins->get_widget, Gtk3::Label->new($d->get("Plugins")));
-    push @{$self->_tabs}, $tab_plugins;
+	# Video Tab
+	my $tab_video = Shutter::App::UI::Settings::Video->new(cli => $self->cli);
+	$notebook->append_page($tab_video->get_widget, Gtk3::Label->new($d->get("Video")));
+	push @{$self->_tabs}, $tab_video;
 
-    # ShareX Tab
-    my $tab_sharex = Shutter::App::UI::Settings::ShareX->new(cli => $self->cli);
-    $notebook->append_page($tab_sharex->get_widget, Gtk3::Label->new($d->get("ShareX")));
-    push @{$self->_tabs}, $tab_sharex;
+	# Plugins Tab
+	my $tab_plugins = Shutter::App::UI::Settings::Plugins->new(cli => $self->cli);
+	$notebook->append_page($tab_plugins->get_widget, Gtk3::Label->new($d->get("Plugins")));
+	push @{$self->_tabs}, $tab_plugins;
 
-    # Workflow Tab
-    my $workflow_vbox = Gtk3::VBox->new(FALSE, 6);
-    $workflow_vbox->pack_start($self->cli->workflow->get_workflow_widget, TRUE, TRUE, 0);
-    $workflow_vbox->set_border_width(12);
-    
-    my $workflow_label = Gtk3::Label->new($d->get("Workflow"));
-    $notebook->append_page($workflow_vbox, $workflow_label);
-    push @{$self->_tabs}, $self->cli->workflow;
+	# ShareX Tab
+	my $tab_sharex = Shutter::App::UI::Settings::ShareX->new(cli => $self->cli);
+	$notebook->append_page($tab_sharex->get_widget, Gtk3::Label->new($d->get("ShareX")));
+	push @{$self->_tabs}, $tab_sharex;
 
-    $dialog->get_content_area->add($notebook);
-    $dialog->set_default_size(600, 450);
+	# Workflow Tab
+	my $workflow_vbox = Gtk3::VBox->new(FALSE, 6);
+	$workflow_vbox->pack_start($self->cli->workflow->get_workflow_widget, TRUE, TRUE, 0);
+	$workflow_vbox->set_border_width(12);
 
-    $self->_dialog($dialog);
-    return $dialog;
+	my $workflow_label = Gtk3::Label->new($d->get("Workflow"));
+	$notebook->append_page($workflow_vbox, $workflow_label);
+	push @{$self->_tabs}, $self->cli->workflow;
+
+	$dialog->get_content_area->add($notebook);
+	$dialog->set_default_size(600, 450);
+
+	$self->_dialog($dialog);
+	return $dialog;
 }
 
 sub save ($self) {
-    foreach my $tab (@{$self->_tabs}) {
-        $tab->save if $tab->can('save');
-        $tab->save_settings if $tab->can('save_settings');
-    }
-    $self->cli->{settings_manager}->save_settings;
-    return;
+	foreach my $tab (@{$self->_tabs}) {
+		$tab->save          if $tab->can('save');
+		$tab->save_settings if $tab->can('save_settings');
+	}
+	$self->cli->{settings_manager}->save_settings;
+	return;
 }
 
 sub show ($self) {
-    $self->_dialog->show_all if $self->_dialog;
-    return $self->_dialog->run if $self->_dialog;
-    return;
+	$self->_dialog->show_all   if $self->_dialog;
+	return $self->_dialog->run if $self->_dialog;
+	return;
 }
 
 sub hide ($self) {
-    $self->_dialog->hide() if $self->_dialog;
-    return;
+	$self->_dialog->hide() if $self->_dialog;
+	return;
 }
 
 1;

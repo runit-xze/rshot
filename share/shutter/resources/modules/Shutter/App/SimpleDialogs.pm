@@ -26,7 +26,8 @@ package Shutter::App::SimpleDialogs;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Gtk3;
 
@@ -59,7 +60,8 @@ sub dlg_info_message (
 	$detail_checkbox      = undef,
 	$content_widget       = undef,
 	$content_widget2      = undef,
-) {
+	)
+{
 
 	my $info_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'info', 'none', undef);
 
@@ -94,7 +96,7 @@ sub dlg_info_message (
 		$expander->add($detail_label);
 		my $detail_hbox = Gtk3::HBox->new();
 		$detail_hbox->pack_start(Gtk3::Label->new, FALSE, FALSE, 12);
-		$detail_hbox->pack_start($expander, TRUE, TRUE, 0);
+		$detail_hbox->pack_start($expander,        TRUE,  TRUE,  0);
 		$info_dialog->get_child->add($detail_hbox);
 	}
 
@@ -104,7 +106,7 @@ sub dlg_info_message (
 		$dcheck = Gtk3::CheckButton->new_with_mnemonic($detail_checkbox);
 		my $detail_hbox = Gtk3::HBox->new();
 		$detail_hbox->pack_start(Gtk3::Label->new, FALSE, FALSE, 12);
-		$detail_hbox->pack_start($dcheck, TRUE, TRUE, 0);
+		$detail_hbox->pack_start($dcheck,          TRUE,  TRUE,  0);
 		$info_dialog->get_child->add($detail_hbox);
 	}
 
@@ -137,7 +139,8 @@ sub dlg_question_message (
 	$button_widget_extra3 = undef,
 	$detail_message       = undef,
 	$detail_checkbox      = undef,
-) {
+	)
+{
 
 	my $question_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
 
@@ -167,7 +170,7 @@ sub dlg_question_message (
 		$expander->add($detail_label);
 		my $detail_hbox = Gtk3::HBox->new();
 		$detail_hbox->pack_start(Gtk3::Label->new, FALSE, FALSE, 12);
-		$detail_hbox->pack_start($expander, TRUE, TRUE, 0);
+		$detail_hbox->pack_start($expander,        TRUE,  TRUE,  0);
 		$question_dialog->get_child->add($detail_hbox);
 	}
 
@@ -177,7 +180,7 @@ sub dlg_question_message (
 		$dcheck = Gtk3::CheckButton->new_with_mnemonic($detail_checkbox);
 		my $detail_hbox = Gtk3::HBox->new();
 		$detail_hbox->pack_start(Gtk3::Label->new, FALSE, FALSE, 12);
-		$detail_hbox->pack_start($dcheck, TRUE, TRUE, 0);
+		$detail_hbox->pack_start($dcheck,          TRUE,  TRUE,  0);
 		$question_dialog->get_child->add($detail_hbox);
 	}
 
@@ -214,7 +217,8 @@ sub dlg_error_message (
 	$button_widget_extra2 = undef,
 	$button_widget_extra3 = undef,
 	$detail_message       = undef,
-) {
+	)
+{
 
 	my $error_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
 
@@ -226,7 +230,7 @@ sub dlg_error_message (
 
 	$error_dialog->set('secondary-text' => $dlg_error_message);
 
-	$error_dialog->add_button('gtk-cancel', 0);
+	$error_dialog->add_button('gtk-cancel',        0);
 	$error_dialog->add_button($button_text_extra1, 10) if $button_text_extra1;
 	$error_dialog->add_button($button_text_extra2, 20) if $button_text_extra2;
 	$error_dialog->add_button($button_text_extra3, 30) if $button_text_extra3;
@@ -245,7 +249,7 @@ sub dlg_error_message (
 		$expander->add($detail_label);
 		my $detail_hbox = Gtk3::HBox->new();
 		$detail_hbox->pack_start(Gtk3::Label->new, FALSE, FALSE, 12);
-		$detail_hbox->pack_start($expander, TRUE, TRUE, 0);
+		$detail_hbox->pack_start($expander,        TRUE,  TRUE,  0);
 		$error_dialog->get_child->add($detail_hbox);
 	}
 
@@ -277,7 +281,8 @@ sub dlg_warning_message (
 	$button_widget_extra2 = undef,
 	$button_widget_extra3 = undef,
 	$detail_message       = undef,
-) {
+	)
+{
 
 	my $warning_dialog = Gtk3::MessageDialog->new($self->{_window}, [qw/modal destroy-with-parent/], 'other', 'none', undef);
 
@@ -289,7 +294,7 @@ sub dlg_warning_message (
 
 	$warning_dialog->set('secondary-text' => $dlg_warning_message);
 
-	$warning_dialog->add_button('gtk-cancel', 0);
+	$warning_dialog->add_button('gtk-cancel',        0);
 	$warning_dialog->add_button($button_text_extra1, 10) if $button_text_extra1;
 	$warning_dialog->add_button($button_text_extra2, 20) if $button_text_extra2;
 	$warning_dialog->add_button($button_text_extra3, 30) if $button_text_extra3;
@@ -308,7 +313,7 @@ sub dlg_warning_message (
 		$expander->add($detail_label);
 		my $detail_hbox = Gtk3::HBox->new();
 		$detail_hbox->pack_start(Gtk3::Label->new, FALSE, FALSE, 12);
-		$detail_hbox->pack_start($expander, TRUE, TRUE, 0);
+		$detail_hbox->pack_start($expander,        TRUE,  TRUE,  0);
 		$warning_dialog->get_child->add($detail_hbox);
 	}
 

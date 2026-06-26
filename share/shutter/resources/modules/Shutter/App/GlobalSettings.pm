@@ -26,7 +26,8 @@ package Shutter::App::GlobalSettings;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Moo;
 
@@ -38,21 +39,21 @@ use Glib qw/TRUE FALSE/;
 has '_image_quality' => (
 	is      => 'rw',
 	default => sub {
-		{ "png" => undef, "jpg" => undef, "webp" => undef, "avif" => undef }
+		{"png" => undef, "jpg" => undef, "webp" => undef, "avif" => undef}
 	},
 );
 
 has '_default_image_quality' => (
 	is      => 'ro',
 	default => sub {
-		{ "png" => 9, "jpg" => 90, "webp" => 98, "avif" => 68 }
+		{"png" => 9, "jpg" => 90, "webp" => 98, "avif" => 68}
 	},
 );
 
 has '_gif_settings' => (
 	is      => 'rw',
 	default => sub {
-		{ fps => 10, max_duration => 30, countdown => 3, cursor => 1 }
+		{fps => 10, max_duration => 30, countdown => 3, cursor => 1}
 	},
 );
 
@@ -72,8 +73,8 @@ sub set_image_quality ($self, $format, $value = undef) {
 }
 
 sub clear_quality_settings ($self) {
-	$self->_image_quality({ "png" => undef, "jpg" => undef, "webp" => undef, "avif" => undef });
-    return;
+	$self->_image_quality({"png" => undef, "jpg" => undef, "webp" => undef, "avif" => undef});
+	return;
 }
 
 sub get_gif_setting ($self, $key) {
@@ -82,7 +83,7 @@ sub get_gif_setting ($self, $key) {
 
 sub set_gif_setting ($self, $key, $val) {
 	$self->_gif_settings->{$key} = $val;
-    return;
+	return;
 }
 
 1;

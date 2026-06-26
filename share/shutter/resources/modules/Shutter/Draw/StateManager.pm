@@ -2,7 +2,7 @@ package Shutter::Draw::StateManager;
 use Moo;
 use utf8;
 use v5.40;
-use Glib qw/TRUE FALSE/;
+use Glib           qw/TRUE FALSE/;
 use File::Basename qw/fileparse/;
 
 has drawing_tool => (is => 'ro', required => 1);
@@ -107,23 +107,17 @@ sub update_warning_text {
 	my $minutes = int((time - $self->{_start_time}) / 60);
 	$minutes = 1 if $minutes == 0;
 
-	my $txt = $self->{_d}->nget(
-		"If you don't save the image, changes from the last minute will be lost",
-		"If you don't save the image, changes from the last %d minutes will be lost",
-		$minutes
-	);
+	my $txt = $self->{_d}->nget("If you don't save the image, changes from the last minute will be lost", "If you don't save the image, changes from the last %d minutes will be lost", $minutes);
 
 	$txt = sprintf($txt, $minutes) if $minutes > 1;
 
-	$warn_dialog->set(
-		'secondary-text' => "$txt."
-	);
+	$warn_dialog->set('secondary-text' => "$txt.");
 
 	return TRUE;
 }
 
 sub abort_current_mode {
-	my $mgr = shift;
+	my $mgr  = shift;
 	my $self = $mgr->drawing_tool;
 
 	if ($self->{_current_item}) {
@@ -260,8 +254,8 @@ sub move_all {
 }
 
 sub deactivate_all {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $mgr     = shift;
+	my $self    = $mgr->drawing_tool;
 	my $exclude = shift || 0;
 
 	#~ print "deactivate_all\n";
@@ -290,8 +284,8 @@ sub deactivate_all {
 }
 
 sub gen_thumbnail_on_idle {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $mgr        = shift;
+	my $self       = $mgr->drawing_tool;
 	my $stock      = shift;
 	my $parent     = shift;
 	my $button     = shift;
@@ -384,8 +378,8 @@ sub gen_thumbnail_on_idle {
 }
 
 sub set_drawing_action {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $mgr   = shift;
+	my $self  = $mgr->drawing_tool;
 	my $index = shift;
 
 	#~ print "set_drawing_action\n";
@@ -416,7 +410,7 @@ sub set_drawing_action {
 }
 
 sub change_cursor_to_current_pixbuf {
-	my $mgr = shift;
+	my $mgr  = shift;
 	my $self = $mgr->drawing_tool;
 
 	#~ print "change_cursor_to_current_pixbuf\n";
@@ -566,11 +560,11 @@ sub push_tool_help_to_statusbar {
 }
 
 sub show_status_message {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $mgr          = shift;
+	my $self         = $mgr->drawing_tool;
 	my $index        = shift;
 	my $status_text  = shift;
-	my $status_image = shift;    #this is a stock-id
+	my $status_image = shift;                #this is a stock-id
 
 	#~ #remove old message and timer
 	#~ $self->{_drawing_statusbar}->pop($index);

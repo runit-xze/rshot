@@ -26,7 +26,8 @@ package Shutter::Screenshot::WindowXid;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Shutter::Screenshot::Window;
 use Data::Dumper;
@@ -48,8 +49,7 @@ use Glib qw/TRUE FALSE/;
 sub window_by_xid ($self, $xid) {
 
 	my $dummy_window = Gtk3::Window->new('toplevel');
-	my $gdk_window = Gtk3::GdkX11::X11Window->foreign_new_for_display(
-		$dummy_window->get_display, $xid);
+	my $gdk_window   = Gtk3::GdkX11::X11Window->foreign_new_for_display($dummy_window->get_display, $xid);
 
 	my $wnck_window = Wnck::Window::get($xid);
 

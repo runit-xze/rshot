@@ -8,10 +8,10 @@ use Gtk3;
 use Future;
 
 requires qw(
-    select_window
-    get_window_size
-    get_pixbuf_from_drawable_async
-    get_shape
+	select_window
+	get_window_size
+	get_pixbuf_from_drawable_async
+	get_shape
 );
 
 sub _capture_interactive ($self, $f, $active_workspace, $initevent) {
@@ -102,70 +102,79 @@ sub _capture_interactive ($self, $f, $active_workspace, $initevent) {
 
 				#A short timeout to give the server a chance to
 				#redraw the area
-				Glib::Timeout->add($self->{_hide_time}, sub {
-					$self->get_pixbuf_from_drawable_async($self->{_root}, $self->{_c}{'cw'}{'x'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'y'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'width'} / $self->{_dpi_scale}, $self->{_c}{'cw'}{'height'} / $self->{_dpi_scale}, undef)->then(sub {
-							my ($output_new, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = @_;
+				Glib::Timeout->add(
+					$self->{_hide_time},
+					sub {
+						$self->get_pixbuf_from_drawable_async(
+							$self->{_root},
+							$self->{_c}{'cw'}{'x'} / $self->{_dpi_scale},
+							$self->{_c}{'cw'}{'y'} / $self->{_dpi_scale},
+							$self->{_c}{'cw'}{'width'} / $self->{_dpi_scale},
+							$self->{_c}{'cw'}{'height'} / $self->{_dpi_scale}, undef
+						)->then(
+							sub {
+								my ($output_new, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = @_;
 
-				my $result = $output_new;
+								my $result = $output_new;
 
-				#respect rounded corners of wm decorations (metacity for example - does not work with compiz currently)
-				if ($self->{_include_border}) {
-					my $xid = $self->{_c}{'cw'}{'gdk_window'}->get_xid;
+								#respect rounded corners of wm decorations (metacity for example - does not work with compiz currently)
+								if ($self->{_include_border}) {
+									my $xid = $self->{_c}{'cw'}{'gdk_window'}->get_xid;
 
-					#do not try this for child windows
-					foreach my $win (@{$self->{_wnck_screen}->get_windows}) {
-						if ($win->get_xid == $xid) {
-							$result = $self->get_shape($xid, $result, $l_cropped, $r_cropped, $t_cropped, $b_cropped);
-							last;
-						}
-					}
-				}
+									#do not try this for child windows
+									foreach my $win (@{$self->{_wnck_screen}->get_windows}) {
+										if ($win->get_xid == $xid) {
+											$result = $self->get_shape($xid, $result, $l_cropped, $r_cropped, $t_cropped, $b_cropped);
+											last;
+										}
+									}
+								}
 
-				#restore window size when autoresizing was used
-				if ($self->{_mode} eq "window" || $self->{_mode} eq "tray_window" || $self->{_mode} eq "awindow" || $self->{_mode} eq "tray_awindow") {
-					if (defined $self->{_windowresize} && $self->{_windowresize}) {
-						if ($wc != $wp || $hc != $hp) {
-							if ($self->{_include_border}) {
-								$self->{_c}{'lw'}{'window'}->set_geometry('current', [qw/width height/], $xc, $yc, $wc, $hc);
-							} else {
-								$self->{_c}{'lw'}{'gdk_window'}->resize($wc, $hc);
-							}
-						}
-					}
-				}
+								#restore window size when autoresizing was used
+								if ($self->{_mode} eq "window" || $self->{_mode} eq "tray_window" || $self->{_mode} eq "awindow" || $self->{_mode} eq "tray_awindow") {
+									if (defined $self->{_windowresize} && $self->{_windowresize}) {
+										if ($wc != $wp || $hc != $hp) {
+											if ($self->{_include_border}) {
+												$self->{_c}{'lw'}{'window'}->set_geometry('current', [qw/width height/], $xc, $yc, $wc, $hc);
+											} else {
+												$self->{_c}{'lw'}{'gdk_window'}->resize($wc, $hc);
+											}
+										}
+									}
+								}
 
-				#set name of the captured window
-				#e.g. for use in wildcards
-				if ($result =~ /Gtk3/ && defined $self->{_c}{'cw'}{'window'}) {
-					$self->{_action_name} = $self->{_c}{'cw'}{'window'}->get_name;
-				}
+								#set name of the captured window
+								#e.g. for use in wildcards
+								if ($result =~ /Gtk3/ && defined $self->{_c}{'cw'}{'window'}) {
+									$self->{_action_name} = $self->{_c}{'cw'}{'window'}->get_name;
+								}
 
-				#set history object
-				$self->{_history} = Shutter::Screenshot::History->new(
-					$self->{_sc},           $self->{_root},                       $self->{_c}{'cw'}{'x'},
-					$self->{_c}{'cw'}{'y'}, $self->{_c}{'cw'}{'width'},           $self->{_c}{'cw'}{'height'},
-					undef,                  $self->{_c}{'cw'}{'window'}->get_xid, $self->{_c}{'cw'}{'gdk_window'}->get_xid
-				);
+								#set history object
+								$self->{_history} = Shutter::Screenshot::History->new(
+									$self->{_sc},           $self->{_root},                       $self->{_c}{'cw'}{'x'},
+									$self->{_c}{'cw'}{'y'}, $self->{_c}{'cw'}{'width'},           $self->{_c}{'cw'}{'height'},
+									undef,                  $self->{_c}{'cw'}{'window'}->get_xid, $self->{_c}{'cw'}{'gdk_window'}->get_xid
+								);
 
-				$self->quit;
-						$f->done($result);
-							return Future->done();
-						})->retain;
+								$self->quit;
+								$f->done($result);
+								return Future->done();
+							})->retain;
 						return FALSE;
 					});
 
-					#MOTION-NOTIFY
-				} elsif ($event->type eq 'motion-notify') {
-					print "Type: " . $event->type . "\n"
-						if (defined $event && $self->{_sc}->get_debug);
+				#MOTION-NOTIFY
+			} elsif ($event->type eq 'motion-notify') {
+				print "Type: " . $event->type . "\n"
+					if (defined $event && $self->{_sc}->get_debug);
 
-					#user selects window or section
-					$self->select_window($event, $active_workspace);
+				#user selects window or section
+				$self->select_window($event, $active_workspace);
 
-				} else {
-					Gtk3::main_do_event($event);
-				}
-			});
+			} else {
+				Gtk3::main_do_event($event);
+			}
+		});
 	return;
 }
 

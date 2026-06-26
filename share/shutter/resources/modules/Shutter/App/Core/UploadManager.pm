@@ -35,32 +35,32 @@ use Glib qw/TRUE FALSE/;
 has '_common' => (is => 'ro', required => 1);
 
 sub upload_file ($self, $key, $upload_type) {
-    my $sc = $self->_common;
-    my $d = $sc->get_gettext;
-    my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+	my $sc = $self->_common;
+	my $d  = $sc->get_gettext;
+	my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
 
-    return FALSE unless $key;
-    return FALSE unless exists $sc->cli->{_session_screens}->{$key};
+	return FALSE unless $key;
+	return FALSE unless exists $sc->cli->{_session_screens}->{$key};
 
-    my $file = $sc->cli->{_session_screens}->{$key}->{'long'};
-    my $userhash = $sc->cli->{settings_manager}->get_setting('general', 'catbox_userhash') // '';
-    
-    require Shutter::Upload::Catbox;
-    my $upload_plugin = Shutter::Upload::Catbox->new(userhash => $userhash);
+	my $file     = $sc->cli->{_session_screens}->{$key}->{'long'};
+	my $userhash = $sc->cli->{settings_manager}->get_setting('general', 'catbox_userhash') // '';
 
-    my %upload_result = $upload_plugin->upload($file);
+	require Shutter::Upload::Catbox;
+	my $upload_plugin = Shutter::Upload::Catbox->new(userhash => $userhash);
 
-    if ($upload_result{success}) {
-        $sc->cli->{_session_screens}->{$key}->{'links'}->{'Catbox.moe'} = {
-            'direct_link' => $upload_result{url},
-            'menuentry'   => 'Catbox.moe',
-        };
-        fct_show_status_message(1, $d->get("File uploaded successfully"));
-        return $upload_result{url};
-    } else {
-        $sd->dlg_error_message($upload_result{error}, $d->get("Upload failed"));
-        return FALSE;
-    }
+	my %upload_result = $upload_plugin->upload($file);
+
+	if ($upload_result{success}) {
+		$sc->cli->{_session_screens}->{$key}->{'links'}->{'Catbox.moe'} = {
+			'direct_link' => $upload_result{url},
+			'menuentry'   => 'Catbox.moe',
+		};
+		fct_show_status_message(1, $d->get("File uploaded successfully"));
+		return $upload_result{url};
+	} else {
+		$sd->dlg_error_message($upload_result{error}, $d->get("Upload failed"));
+		return FALSE;
+	}
 }
 
 1;

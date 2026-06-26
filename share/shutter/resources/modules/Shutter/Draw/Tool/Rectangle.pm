@@ -10,34 +10,36 @@ use constant POSITION_INDENT => 20;
 
 with 'Shutter::Draw::Tool::Base';
 
-has event     => ( is => 'rw', lazy => 1 );
-has copy_item => ( is => 'rw', lazy => 1 );
-has X         => ( is => 'rw', default => sub {0} );
-has Y         => ( is => 'rw', default => sub {0} );
-has width     => ( is => 'rw', default => sub {0} );
-has height    => ( is => 'rw', default => sub {0} );
-has stroke_color => ( is => 'rw', lazy => 1, default => sub { shift->drawing_tool->stroke_color } );
-has fill_color   => ( is => 'rw', lazy => 1, default => sub { shift->drawing_tool->fill_color } );
-has line_width   => ( is => 'rw', lazy => 1, default => sub { shift->drawing_tool->line_width } );
+has event        => (is => 'rw', lazy    => 1);
+has copy_item    => (is => 'rw', lazy    => 1);
+has X            => (is => 'rw', default => sub { 0 });
+has Y            => (is => 'rw', default => sub { 0 });
+has width        => (is => 'rw', default => sub { 0 });
+has height       => (is => 'rw', default => sub { 0 });
+has stroke_color => (is => 'rw', lazy    => 1, default => sub { shift->drawing_tool->stroke_color });
+has fill_color   => (is => 'rw', lazy    => 1, default => sub { shift->drawing_tool->fill_color });
+has line_width   => (is => 'rw', lazy    => 1, default => sub { shift->drawing_tool->line_width });
 
 sub draw ($self, $cr) {
-    # Handled by GooCanvas2
+
+	# Handled by GooCanvas2
 }
 
 sub on_click ($self, $event) {
-    return $self->drawing_tool->create_rectangle($event, undef);
+	return $self->drawing_tool->create_rectangle($event, undef);
 }
 
 sub on_drag ($self, $event) {
-    # Handled by DrawingTool for now
+
+	# Handled by DrawingTool for now
 }
 
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	$dt->deactivate_all($item);
-	$dt->{_current_item} = $item;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x} = $ev->x;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y} = $ev->y;
+	$dt->{_current_item}                                    = $item;
+	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
+	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
 	$dt->{_items}{$item}{'bottom-right-corner'}->{resizing} = TRUE;
 	eval { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
 	if ($@) { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
@@ -97,14 +99,14 @@ sub _create_item ($self) {
 	my $dt = $self->drawing_tool;
 
 	return GooCanvas2::CanvasRect->new(
-		parent                => $dt->canvas->get_root_item,
-		x                     => $self->X,
-		y                     => $self->Y,
-		width                 => $self->width,
-		height                => $self->height,
-		'fill-color-gdk-rgba' => $self->fill_color,
+		parent                  => $dt->canvas->get_root_item,
+		x                       => $self->X,
+		y                       => $self->Y,
+		width                   => $self->width,
+		height                  => $self->height,
+		'fill-color-gdk-rgba'   => $self->fill_color,
 		'stroke-color-gdk-rgba' => $self->stroke_color,
-		'line-width'          => $self->line_width,
+		'line-width'            => $self->line_width,
 	);
 }
 

@@ -31,7 +31,7 @@ sub handle_resizing {
 			$dt->handle_bg_rects('update');
 		}
 
-	#item resizing shape
+		#item resizing shape
 	} else {
 		my $curr_item = $dt->{_current_item};
 		return FALSE unless $curr_item;
@@ -49,8 +49,8 @@ sub handle_resizing {
 
 			if ($dt->{_items}{$curr_item}{$_} == $item) {
 				if ($_ eq 'bottom-side') {
-					$new_x = $dt->{_items}{$curr_item}->get('x');
-					$new_y = $dt->{_items}{$curr_item}->get('y');
+					$new_x      = $dt->{_items}{$curr_item}->get('x');
+					$new_y      = $dt->{_items}{$curr_item}->get('y');
 					$new_width  = $dt->{_items}{$curr_item}->get('width');
 					$new_height = $dt->{_items}{$curr_item}->get('height') + ($ev->y - $item->{res_y});
 					last;
@@ -79,8 +79,8 @@ sub handle_resizing {
 					}
 					last;
 				} elsif ($_ eq 'top-side') {
-					$new_x = $dt->{_items}{$curr_item}->get('x');
-					$new_y = $dt->{_items}{$curr_item}->get('y') + $ev->y - $item->{res_y};
+					$new_x      = $dt->{_items}{$curr_item}->get('x');
+					$new_y      = $dt->{_items}{$curr_item}->get('y') + $ev->y - $item->{res_y};
 					$new_width  = $dt->{_items}{$curr_item}->get('width');
 					$new_height = $dt->{_items}{$curr_item}->get('height') + ($dt->{_items}{$curr_item}->get('y') - $new_y);
 					last;
@@ -98,14 +98,14 @@ sub handle_resizing {
 					}
 					last;
 				} elsif ($_ eq 'right-side') {
-					$new_x = $dt->{_items}{$curr_item}->get('x');
-					$new_y = $dt->{_items}{$curr_item}->get('y');
+					$new_x      = $dt->{_items}{$curr_item}->get('x');
+					$new_y      = $dt->{_items}{$curr_item}->get('y');
 					$new_width  = $dt->{_items}{$curr_item}->get('width') + ($ev->x - $item->{res_x});
 					$new_height = $dt->{_items}{$curr_item}->get('height');
 					last;
 				} elsif ($_ eq 'left-side') {
-					$new_x = $dt->{_items}{$curr_item}->get('x') + $ev->x - $item->{res_x};
-					$new_y = $dt->{_items}{$curr_item}->get('y');
+					$new_x      = $dt->{_items}{$curr_item}->get('x') + $ev->x - $item->{res_x};
+					$new_y      = $dt->{_items}{$curr_item}->get('y');
 					$new_width  = $dt->{_items}{$curr_item}->get('width') + ($dt->{_items}{$curr_item}->get('x') - $new_x);
 					$new_height = $dt->{_items}{$curr_item}->get('height');
 					last;

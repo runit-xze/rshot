@@ -55,7 +55,7 @@ sub load_settings {
 			my $fill = Gtk3::Gdk::RGBA::parse($settings_xml->{'drawing'}->{'fill_color'}) // Gtk3::Gdk::RGBA::parse('black');
 			$fill->alpha($settings_xml->{'drawing'}->{'fill_color_alpha'});
 			$dt->fill_color($fill);
-			
+
 			my $stroke = Gtk3::Gdk::RGBA::parse($settings_xml->{'drawing'}->{'stroke_color'}) // Gtk3::Gdk::RGBA::parse('black');
 			$stroke->alpha($settings_xml->{'drawing'}->{'stroke_color_alpha'});
 			$dt->stroke_color($stroke);
@@ -145,7 +145,7 @@ sub save_settings {
 
 sub set_and_save_drawing_properties {
 	my ($self, $item, $save_only) = @_;
-	my $dt        = $self->drawing_tool;
+	my $dt = $self->drawing_tool;
 
 	return FALSE unless $item;
 
@@ -254,7 +254,7 @@ sub set_and_save_drawing_properties {
 
 sub restore_fixed_properties {
 	my ($self, $mode) = @_;
-	my $dt   = $self->drawing_tool;
+	my $dt = $self->drawing_tool;
 
 	#block 'value-change' handlers for widgets
 	#so we do not apply the changes twice
@@ -320,7 +320,7 @@ sub restore_drawing_properties {
 	$dt->line_width($dt->line_spin_w->get_value);
 	$dt->stroke_color($dt->stroke_color_w->get_rgba);
 	$dt->fill_color($dt->fill_color_w->get_rgba);
-	my $font_name = $dt->font_btn_w->get_font_name // 'Sans 10';
+	my $font_name  = $dt->font_btn_w->get_font_name // 'Sans 10';
 	my $font_descr = Pango::FontDescription->from_string($font_name);
 	$dt->font($font_name);
 

@@ -6,12 +6,12 @@ use Cwd qw(abs_path);
 use File::Spec;
 
 eval {
-    require Test::Perl::Critic::Progressive;
-    Test::Perl::Critic::Progressive->import(':all');
+	require Test::Perl::Critic::Progressive;
+	Test::Perl::Critic::Progressive->import(':all');
 };
 
 if ($@) {
-    plan skip_all => "Test::Perl::Critic::Progressive required for testing PBP compliance";
+	plan skip_all => "Test::Perl::Critic::Progressive required for testing PBP compliance";
 }
 
 my $history = File::Spec->catfile(abs_path('t'), '.perlcritic-history');

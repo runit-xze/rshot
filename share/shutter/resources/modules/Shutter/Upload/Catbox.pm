@@ -10,31 +10,32 @@ use HTTP::Request::Common qw(POST);
 has userhash => (is => 'rw', default => sub { '' });
 
 sub upload ($self, $file) {
-    return (success => 0, error => "File not found") unless -e $file;
+	return (success => 0, error => "File not found") unless -e $file;
 
-    my $ua = LWP::UserAgent->new(timeout => 30);
-    $ua->agent("rshot/1.0");
+	my $ua = LWP::UserAgent->new(timeout => 30);
+	$ua->agent("rshot/1.0");
 
-    my @content = (
-        reqtype      => 'fileupload',
-        fileToUpload => [$file],
-    );
+	my @content = (
+		reqtype      => 'fileupload',
+		fileToUpload => [$file],
+	);
 
-    if (my $uh = $self->userhash) {
-        push @content, (userhash => $uh);
-    }
+	if (my $uh = $self->userhash) {
+		push @content, (userhash => $uh);
+	}
 
-    my $response = $ua->request(POST 'https://catbox.moe/user/api.php',
-        Content_Type => 'form-data',
-        Content      => \@content
-    );
+	my $response = $ua->request(
+		POST 'https://catbox.moe/user/api.php',
+		Content_Type => 'form-data',
+		Content      => \@content
+	);
 
-    if ($response->is_success) {
-        my $url = $response->decoded_content;
-        return (success => 1, url => $url);
-    } else {
-        return (success => 0, error => $response->status_line);
-    }
+	if ($response->is_success) {
+		my $url = $response->decoded_content;
+		return (success => 1, url => $url);
+	} else {
+		return (success => 0, error => $response->status_line);
+	}
 }
 
 1;

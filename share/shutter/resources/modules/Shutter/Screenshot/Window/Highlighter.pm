@@ -14,10 +14,7 @@ sub setup_highlighter ($self) {
 	$self->{_highlighter} = Gtk3::Window->new('popup');
 	if ($compos) {
 		my $screen = $self->{_main_gtk_window}->get_screen;
-		$self->{_highlighter}->set_visual(
-			Gtk3::Gdk::Screen::get_rgba_visual($screen)
-				|| Gtk3::Gdb::Screen::get_system_visual($screen)
-		);
+		$self->{_highlighter}->set_visual(Gtk3::Gdk::Screen::get_rgba_visual($screen) || Gtk3::Gdb::Screen::get_system_visual($screen));
 	}
 
 	$self->{_highlighter}->set_app_paintable(TRUE);
@@ -53,8 +50,8 @@ sub setup_highlighter ($self) {
 			my $sec_text = "\n" . $self->{_c}{'cw'}{'width'} . "x" . $self->{_c}{'cw'}{'height'};
 
 			my ($w, $h) = $self->{_highlighter}->get_size;
-			my $icon    = $self->{_c}{'cw'}{'window'}->get_icon;
-			my $cr      = $_[1];
+			my $icon = $self->{_c}{'cw'}{'window'}->get_icon;
+			my $cr   = $_[1];
 
 			my $layout = Pango::Cairo::create_layout($cr);
 			$layout->set_width(($w - $icon->get_width - $font_size * 3) * Pango::SCALE);
@@ -75,8 +72,7 @@ sub setup_highlighter ($self) {
 			}
 
 			$layout->set_markup(
-				"<span font_desc=\"$font_fam $font_size\" weight=\"bold\" foreground=\"#FFFFFF\">$text</span><span font_desc=\"$font_fam $font_size\" foreground=\"#FFFFFF\">$sec_text</span>"
-			);
+				"<span font_desc=\"$font_fam $font_size\" weight=\"bold\" foreground=\"#FFFFFF\">$text</span><span font_desc=\"$font_fam $font_size\" foreground=\"#FFFFFF\">$sec_text</span>");
 
 			my ($lw, $lh) = $layout->get_pixel_size;
 			$lw += $icon->get_width;
@@ -137,9 +133,9 @@ sub setup_highlighter ($self) {
 					Pango::Cairo::show_layout($cr, $layout);
 				}
 
-				my $shape_region1 = Cairo::Region->create({ x => 0, y => 0, width => $w, height => $h });
-				my $shape_region2 = Cairo::Region->create({ x => 3, y => 3, width => $w - 6, height => $h - 6 });
-				my $shape_region3 = Cairo::Region->create({ x => $xi, y => $yi, width => $wi, height => $hi });
+				my $shape_region1 = Cairo::Region->create({x => 0, y => 0, width => $w, height => $h});
+				my $shape_region2 = Cairo::Region->create({x => 3, y => 3, width => $w - 6, height => $h - 6});
+				my $shape_region3 = Cairo::Region->create({x => $xi, y => $yi, width => $wi, height => $hi});
 
 				if ($self->{_c}{'cw'}{'is_parent'} && $lw <= $w && $lh <= $h) {
 					$shape_region2->subtract($shape_region3);
@@ -150,8 +146,7 @@ sub setup_highlighter ($self) {
 			}
 
 			return TRUE;
-		}
-	);
+		});
 	return;
 }
 

@@ -41,9 +41,9 @@ use Future::Utils qw(repeat);
 
 #--------------------------------------
 
-has '_selected_workspace' => (is => 'rw');
-has '_vpx' => (is => 'rw');
-has '_vpy' => (is => 'rw');
+has '_selected_workspace'   => (is => 'rw');
+has '_vpx'                  => (is => 'rw');
+has '_vpy'                  => (is => 'rw');
 has '_current_monitor_only' => (is => 'rw');
 
 around BUILDARGS => sub {
@@ -51,13 +51,13 @@ around BUILDARGS => sub {
 	if (@args == 8) {
 		my ($sc, $include_cursor, $delay, $notify_timeout, $selected_workspace, $vpx, $vpy, $current_monitor_only) = @args;
 		return $class->$orig(
-			_sc => $sc,
-			_include_cursor => $include_cursor,
-			_delay => $delay,
-			_notify_timeout => $notify_timeout,
-			_selected_workspace => $selected_workspace,
-			_vpx => $vpx,
-			_vpy => $vpy,
+			_sc                   => $sc,
+			_include_cursor       => $include_cursor,
+			_delay                => $delay,
+			_notify_timeout       => $notify_timeout,
+			_selected_workspace   => $selected_workspace,
+			_vpx                  => $vpx,
+			_vpy                  => $vpy,
 			_current_monitor_only => $current_monitor_only,
 		);
 	}
@@ -102,102 +102,105 @@ sub workspaces_async ($self) {
 			my $n_viewports_rows   = int($space->get_height / $self->{_wnck_screen}->get_height);
 			for (my $j = 0 ; $j < $n_viewports_rows ; $j++) {
 				for (my $i = 0 ; $i < $n_viewports_column ; $i++) {
-					push @tasks, {
-						type => 'compiz',
+					push @tasks,
+						{
+						type  => 'compiz',
 						space => $space,
-						vp => [$i * $self->{_wnck_screen}->get_width, $j * $self->{_wnck_screen}->get_height]
-					};
+						vp    => [$i * $self->{_wnck_screen}->get_width, $j * $self->{_wnck_screen}->get_height]};
 				}
 			}
 		} else {
-			push @tasks, { type => 'normal', space => $space };
+			push @tasks, {type => 'normal', space => $space};
 		}
 	}
 
 	my $f = repeat {
-		my $task = shift;
+		my $task  = shift;
 		my $space = $task->{space};
 
 		if ($task->{type} eq 'compiz') {
-			$self->{_vpx} = $task->{vp}[0];
-			$self->{_vpy} = $task->{vp}[1];
+			$self->{_vpx}                = $task->{vp}[0];
+			$self->{_vpy}                = $task->{vp}[1];
 			$self->{_selected_workspace} = undef;
 		} else {
 			$self->{_selected_workspace} = $space->get_number;
 		}
 
-		$self->workspace_async(TRUE, TRUE)->then(sub {
-			my $pixbuf = shift;
+		$self->workspace_async(TRUE, TRUE)->then(
+			sub {
+				my $pixbuf = shift;
 
-			if ($task->{type} eq 'compiz') {
-				my $rect = {x=>$width, y=>$height, width=>$pixbuf->get_width, height=>$pixbuf->get_height};
-				$wspaces_region->union_rectangle($rect);
-				push @pixbuf_array, $pixbuf;
-				push @rects_array,  $rect;
+				if ($task->{type} eq 'compiz') {
+					my $rect = {x => $width, y => $height, width => $pixbuf->get_width, height => $pixbuf->get_height};
+					$wspaces_region->union_rectangle($rect);
+					push @pixbuf_array, $pixbuf;
+					push @rects_array,  $rect;
 
-				$width += $pixbuf->get_width;
-
-				# Wait, row tracking in compiz from original code:
-				# It resets width and advances height inside the inner loop logic.
-				# To simulate this correctly:
-				my $n_viewports_column = int($space->get_width / $self->{_wnck_screen}->get_width);
-				if (@pixbuf_array % $n_viewports_column == 0) {
-					$height = $sr->get_clipbox($wspaces_region)->{height};
-					$width  = 0;
-				}
-			} else {
-				if ($column < $space->get_layout_column) {
 					$width += $pixbuf->get_width;
-				} elsif ($column > $space->get_layout_column) {
-					$width = 0;
+
+					# Wait, row tracking in compiz from original code:
+					# It resets width and advances height inside the inner loop logic.
+					# To simulate this correctly:
+					my $n_viewports_column = int($space->get_width / $self->{_wnck_screen}->get_width);
+					if (@pixbuf_array % $n_viewports_column == 0) {
+						$height = $sr->get_clipbox($wspaces_region)->{height};
+						$width  = 0;
+					}
+				} else {
+					if ($column < $space->get_layout_column) {
+						$width += $pixbuf->get_width;
+					} elsif ($column > $space->get_layout_column) {
+						$width = 0;
+					}
+					$column = $space->get_layout_column;
+
+					$height = $sr->get_clipbox($wspaces_region)->{height} if ($row != $space->get_layout_row);
+					$row    = $space->get_layout_row;
+
+					my $rect = {x => $width, y => $height, width => $pixbuf->get_width, height => $pixbuf->get_height};
+					$wspaces_region->union_rectangle($rect);
+					push @pixbuf_array, $pixbuf;
+					push @rects_array,  $rect;
 				}
-				$column = $space->get_layout_column;
+				return Future->done();
+			});
+	}
+	foreach => \@tasks;
 
-				$height = $sr->get_clipbox($wspaces_region)->{height} if ($row != $space->get_layout_row);
-				$row    = $space->get_layout_row;
+	return $f->then(
+		sub {
+			my $output = undef;
+			if ($wspaces_region->num_rectangles) {
+				$output = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, $sr->get_clipbox($wspaces_region)->{width}, $sr->get_clipbox($wspaces_region)->{height});
+				$output->fill(0x00000000);
 
-				my $rect = {x=>$width, y=>$height, width=>$pixbuf->get_width, height=>$pixbuf->get_height};
-				$wspaces_region->union_rectangle($rect);
-				push @pixbuf_array, $pixbuf;
-				push @rects_array,  $rect;
+				my $rect_counter = 0;
+				foreach my $pix (@pixbuf_array) {
+					$pix->copy_area(0, 0, $pix->get_width, $pix->get_height, $output, $rects_array[$rect_counter]->{x}, $rects_array[$rect_counter]->{y});
+					$rect_counter++;
+				}
 			}
-			return Future->done();
+
+			$self->{_selected_workspace} = 'all';
+			$self->{_history}            = Shutter::Screenshot::History->new($self->{_sc});
+
+			if ($output && $output =~ /Gtk3/) {
+				$self->{_action_name} = $d->get("Workspaces");
+			}
+
+			if ($self->{_wm_manager_name} =~ /compiz/i) {
+				$self->{_wnck_screen}->move_viewport($active_vpx, $active_vpy);
+			} else {
+				$active_workspace->activate(Gtk3::get_current_event_time());
+			}
+
+			return Future->done($output);
 		});
-	} foreach => \@tasks;
-
-	return $f->then(sub {
-		my $output = undef;
-		if ($wspaces_region->num_rectangles) {
-			$output = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, $sr->get_clipbox($wspaces_region)->{width}, $sr->get_clipbox($wspaces_region)->{height});
-			$output->fill(0x00000000);
-
-			my $rect_counter = 0;
-			foreach my $pix (@pixbuf_array) {
-				$pix->copy_area(0, 0, $pix->get_width, $pix->get_height, $output, $rects_array[$rect_counter]->{x}, $rects_array[$rect_counter]->{y});
-				$rect_counter++;
-			}
-		}
-
-		$self->{_selected_workspace} = 'all';
-		$self->{_history} = Shutter::Screenshot::History->new($self->{_sc});
-
-		if ($output && $output =~ /Gtk3/) {
-			$self->{_action_name} = $d->get("Workspaces");
-		}
-
-		if ($self->{_wm_manager_name} =~ /compiz/i) {
-			$self->{_wnck_screen}->move_viewport($active_vpx, $active_vpy);
-		} else {
-			$active_workspace->activate(Gtk3::get_current_event_time());
-		}
-
-		return Future->done($output);
-	});
 }
 
 sub workspace_async ($self, $no_active_check = undef, $no_finishing = undef) {
 
-	my $wrksp_changed = FALSE;
+	my $wrksp_changed    = FALSE;
 	my $active_workspace = $self->{_wnck_screen}->get_active_workspace;
 
 	#valid workspace?
@@ -237,22 +240,23 @@ sub workspace_async ($self, $no_active_check = undef, $no_finishing = undef) {
 		$f = Future->done();
 	}
 
-	return $f->then(sub {
-		my ($output) = @_;
+	return $f->then(
+		sub {
+			my ($output) = @_;
 
-		unless ($no_finishing) {
-			$self->{_history} = Shutter::Screenshot::History->new($self->{_sc});
-			if ($output && $output =~ /Gtk3/) {
-				$self->{_action_name} = $self->{_wnck_screen}->get_active_workspace->get_name;
+			unless ($no_finishing) {
+				$self->{_history} = Shutter::Screenshot::History->new($self->{_sc});
+				if ($output && $output =~ /Gtk3/) {
+					$self->{_action_name} = $self->{_wnck_screen}->get_active_workspace->get_name;
+				}
+				if ($self->{_selected_workspace}) {
+					$active_workspace->activate(Gtk3::get_current_event_time()) if $wrksp_changed;
+				} else {
+					$self->{_wnck_screen}->move_viewport($active_vpx, $active_vpy);
+				}
 			}
-			if ($self->{_selected_workspace}) {
-				$active_workspace->activate(Gtk3::get_current_event_time()) if $wrksp_changed;
-			} else {
-				$self->{_wnck_screen}->move_viewport($active_vpx, $active_vpy);
-			}
-		}
-		return Future->done($output);
-	});
+			return Future->done($output);
+		});
 }
 
 sub redo_capture_async ($self) {

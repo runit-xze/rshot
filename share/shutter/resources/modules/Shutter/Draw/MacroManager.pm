@@ -24,7 +24,7 @@ sub store_to_xdo_stack {
 
 		my $stroke_color = $self->{_items}{$item}{stroke_color};
 		my $fill_color   = $self->{_items}{$item}{fill_color};
-		my $line_width     = $self->{_items}{$item}->get('line-width');
+		my $line_width   = $self->{_items}{$item}->get('line-width');
 
 		#line
 		my $mirrored_w   = undef;
@@ -77,25 +77,25 @@ sub store_to_xdo_stack {
 
 		#item props
 		%do_info = (
-			'item'               => $self->{_items}{$item},
-			'action'             => $action,
-			'x'                  => $self->{_items}{$item}->get('x'),
-			'y'                  => $self->{_items}{$item}->get('y'),
-			'width'              => $self->{_items}{$item}->get('width'),
-			'height'             => $self->{_items}{$item}->get('height'),
-			'stroke_color'       => $self->{_items}{$item}{stroke_color},
-			'fill_color'         => $self->{_items}{$item}{fill_color},
-			'line-width'         => $line_width,
-			'mirrored_w'         => $mirrored_w,
-			'mirrored_h'         => $mirrored_h,
-			'end-arrow'          => $end_arrow,
-			'start-arrow'        => $start_arrow,
-			'arrow-length'       => $arrow_length,
-			'arrow-width'        => $arrow_width,
-			'arrow-tip-length'   => $tip_length,
-			'text'               => $text,
-			'digit'              => $digit,
-			'opt1'               => $opt1,
+			'item'             => $self->{_items}{$item},
+			'action'           => $action,
+			'x'                => $self->{_items}{$item}->get('x'),
+			'y'                => $self->{_items}{$item}->get('y'),
+			'width'            => $self->{_items}{$item}->get('width'),
+			'height'           => $self->{_items}{$item}->get('height'),
+			'stroke_color'     => $self->{_items}{$item}{stroke_color},
+			'fill_color'       => $self->{_items}{$item}{fill_color},
+			'line-width'       => $line_width,
+			'mirrored_w'       => $mirrored_w,
+			'mirrored_h'       => $mirrored_h,
+			'end-arrow'        => $end_arrow,
+			'start-arrow'      => $start_arrow,
+			'arrow-length'     => $arrow_length,
+			'arrow-width'      => $arrow_width,
+			'arrow-tip-length' => $tip_length,
+			'text'             => $text,
+			'digit'            => $digit,
+			'opt1'             => $opt1,
 		);
 
 	} elsif ($item->isa('GooCanvas2::CanvasImage') && $item == $self->{_canvas_bg}) {
@@ -128,18 +128,18 @@ sub store_to_xdo_stack {
 		#polyline specific properties to hash
 	} elsif ($item->isa('GooCanvas2::CanvasPolyline')) {
 
-		my $transform      = $self->{_items}{$item}->get('transform');
-		my $line_width     = $self->{_items}{$item}->get('line-width');
-		my $points         = $self->{_items}{$item}->get('points');
+		my $transform  = $self->{_items}{$item}->get('transform');
+		my $line_width = $self->{_items}{$item}->get('line-width');
+		my $points     = $self->{_items}{$item}->get('points');
 
 		%do_info = (
-			'item'           => $self->{_items}{$item},
-			'action'         => $action,
-			'points'         => $points,
-			'stroke_color'   => $self->{_items}{$item}{stroke_color},
-			'line-width'     => $line_width,
-			'transform'      => $transform,
-			'opt1'           => $opt1,
+			'item'         => $self->{_items}{$item},
+			'action'       => $action,
+			'points'       => $points,
+			'stroke_color' => $self->{_items}{$item}{stroke_color},
+			'line-width'   => $line_width,
+			'transform'    => $transform,
+			'opt1'         => $opt1,
 		);
 
 	}
@@ -170,9 +170,8 @@ sub store_to_xdo_stack {
 	return TRUE;
 }
 
-
 sub xdo_remove {
-	my $mgr = shift;
+	my $mgr  = shift;
 	my $self = $mgr->drawing_tool;
 	my $xdo  = shift;
 	my $item = shift;
@@ -211,10 +210,9 @@ sub xdo_remove {
 	return TRUE;
 }
 
-
 sub xdo {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $mgr           = shift;
+	my $self          = $mgr->drawing_tool;
 	my $xdo           = shift;
 	my $source        = shift;
 	my $block_reverse = shift;
@@ -288,31 +286,31 @@ sub xdo {
 				$self->{_items}{$item}{ellipse}->set(
 					'fill-color-gdk-rgba'   => $do->{'fill_color'},
 					'stroke-color-gdk-rgba' => $do->{'stroke_color'},
-					'line-width'     => $do->{'line-width'},
+					'line-width'            => $do->{'line-width'},
 				);
 
 				#numbered ellipse
 				if (exists $self->{_items}{$item}{text}) {
 					$self->{_items}{$item}{text}->set(
-						'text'         => $do->{'text'},
+						'text'                => $do->{'text'},
 						'fill-color-gdk-rgba' => $do->{'stroke_color'},
 					);
 					$self->{_items}{$item}{text}{digit} = $do->{'digit'};
 				}
 
 				#restore color and opacity as well
-				$self->{_items}{$item}{fill_color}         = $do->{'fill_color'};
-				$self->{_items}{$item}{stroke_color}       = $do->{'stroke_color'};
+				$self->{_items}{$item}{fill_color}   = $do->{'fill_color'};
+				$self->{_items}{$item}{stroke_color} = $do->{'stroke_color'};
 
 			} elsif (exists $self->{_items}{$item}{text}) {
 
 				$self->{_items}{$item}{text}->set(
-					'text'         => $do->{'text'},
+					'text'                => $do->{'text'},
 					'fill-color-gdk-rgba' => $do->{'stroke_color'},
 				);
 
 				#restore color and opacity as well
-				$self->{_items}{$item}{stroke_color}       = $do->{'stroke_color'};
+				$self->{_items}{$item}{stroke_color} = $do->{'stroke_color'};
 
 			} elsif (exists $self->{_items}{$item}{pixelize}) {
 
@@ -351,31 +349,31 @@ sub xdo {
 				$self->{_items}{$item}{line}->set(
 					'fill-color-gdk-rgba'   => $do->{'fill_color'},
 					'stroke-color-gdk-rgba' => $do->{'stroke_color'},
-					'line-width'       => $do->{'line-width'},
-					'end-arrow'        => $self->{_items}{$item}{end_arrow},
-					'start-arrow'      => $self->{_items}{$item}{start_arrow},
-					'arrow-length'     => $self->{_items}{$item}{arrow_length},
-					'arrow-width'      => $self->{_items}{$item}{arrow_width},
-					'arrow-tip-length' => $self->{_items}{$item}{arrow_tip_length},
+					'line-width'            => $do->{'line-width'},
+					'end-arrow'             => $self->{_items}{$item}{end_arrow},
+					'start-arrow'           => $self->{_items}{$item}{start_arrow},
+					'arrow-length'          => $self->{_items}{$item}{arrow_length},
+					'arrow-width'           => $self->{_items}{$item}{arrow_width},
+					'arrow-tip-length'      => $self->{_items}{$item}{arrow_tip_length},
 				);
 
 				$self->{_items}{$item}{mirrored_w} = $do->{'mirrored_w'} if exists $do->{'mirrored_w'};
 				$self->{_items}{$item}{mirrored_h} = $do->{'mirrored_h'} if exists $do->{'mirrored_h'};
 
 				#restore color and opacity as well
-				$self->{_items}{$item}{stroke_color}       = $do->{'stroke_color'};
+				$self->{_items}{$item}{stroke_color} = $do->{'stroke_color'};
 
 			} else {
 
 				$self->{_items}{$item}->set(
 					'fill-color-gdk-rgba'   => $do->{'fill_color'},
 					'stroke-color-gdk-rgba' => $do->{'stroke_color'},
-					'line-width'     => $do->{'line-width'},
+					'line-width'            => $do->{'line-width'},
 				);
 
 				#restore color and opacity as well
-				$self->{_items}{$item}{fill_color}         = $do->{'fill_color'};
-				$self->{_items}{$item}{stroke_color}       = $do->{'stroke_color'};
+				$self->{_items}{$item}{fill_color}   = $do->{'fill_color'};
+				$self->{_items}{$item}{stroke_color} = $do->{'stroke_color'};
 
 			}
 
@@ -423,12 +421,12 @@ sub xdo {
 
 				$self->{_items}{$item}->set(
 					'stroke-color-gdk-rgba' => $do->{'stroke_color'},
-					'line-width'     => $do->{'line-width'},
-					'points'         => $do->{'points'},
-					'transform'      => $do->{'transform'},
+					'line-width'            => $do->{'line-width'},
+					'points'                => $do->{'points'},
+					'transform'             => $do->{'transform'},
 				);
 
-				$self->{_items}{$item}{stroke_color}       = $do->{'stroke_color'};
+				$self->{_items}{$item}{stroke_color} = $do->{'stroke_color'};
 
 			} else {
 
@@ -521,7 +519,5 @@ sub xdo {
 
 	return TRUE;
 }
-
-
 
 1;

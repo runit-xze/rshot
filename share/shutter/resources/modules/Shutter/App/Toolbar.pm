@@ -73,8 +73,7 @@ sub create_toolbar ($self) {
 	try {
 		my $ccursor_pb = Gtk3::Gdk::Cursor->new('left_ptr')->get_image->scale_simple($self->{_shf}->icon_size('large-toolbar'), 'bilinear');
 		$image_select = Gtk3::Image->new_from_pixbuf($ccursor_pb);
-	}
-	catch ($e) {
+	} catch ($e) {
 		if ($icontheme->has_icon('applications-accessories')) {
 			$image_select = Gtk3::Image->new_from_icon_name('applications-accessories', 'large-toolbar');
 		} else {
@@ -267,14 +266,15 @@ sub create_toolbar ($self) {
 
 	#~ $self->{_toolbar}->insert( Gtk3::SeparatorToolItem->new, -1 );
 	#~ $self->{_toolbar}->insert( $self->{_aindow},             -1 );
-	$self->{_toolbar}->insert($self->{_window},  -1);
+	$self->{_toolbar}->insert($self->{_window}, -1);
+
 	#$self->{_toolbar}->insert($self->{_section}, -1);
 	$self->{_toolbar}->insert($self->{_menu},    -1);
 	$self->{_toolbar}->insert($self->{_tooltip}, -1);
 
 	#~ $self->{_toolbar}->insert( Gtk3::SeparatorToolItem->new, -1 );
-	$self->{_toolbar}->insert($self->{_web}, -1);
-	$self->{_toolbar}->insert($self->{_gif}, -1);
+	$self->{_toolbar}->insert($self->{_web},   -1);
+	$self->{_toolbar}->insert($self->{_gif},   -1);
 	$self->{_toolbar}->insert($self->{_video}, -1);
 
 	#~ $self->{_toolbar}->insert( Gtk3::SeparatorToolItem->new, -1 );

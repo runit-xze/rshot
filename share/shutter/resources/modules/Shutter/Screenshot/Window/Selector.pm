@@ -49,7 +49,10 @@ sub find_current_parent_window ($self, $event, $active_workspace) {
 			my ($xp, $yp, $wp, $hp) = $self->get_window_size($cwdow, $drawable, $self->{_include_border}, TRUE);
 
 			my $wr = Cairo::Region->create({
-				x=>$xp, y=>$yp, width=>$wp, height=>$hp,
+				x      => $xp,
+				y      => $yp,
+				width  => $wp,
+				height => $hp,
 			});
 
 			if (   $cwdow->is_visible_on_workspace($active_workspace)
@@ -127,7 +130,7 @@ sub find_current_child_window ($self, $event, $xwindow, $xparent, $depth = undef
 			($xp, $yp) = $gdk_window->get_origin;
 			next if ($wp * $hp < 4);
 
-			my $sr = Cairo::Region->create({x=>$xp, y=>$yp, width=>$wp, height=>$hp});
+			my $sr = Cairo::Region->create({x => $xp, y => $yp, width => $wp, height => $hp});
 
 			if ($sr->contains_point($event->x, $event->y) && $wp * $hp <= $self->{_min_size}) {
 
@@ -159,6 +162,7 @@ sub find_current_child_window ($self, $event, $xwindow, $xparent, $depth = undef
 
 	return TRUE;
 }
+
 sub select_window ($self, $event, $active_workspace, $depth = undef, $limit = undef, $type_hint = undef) {
 
 	#root window size is minimum at startup

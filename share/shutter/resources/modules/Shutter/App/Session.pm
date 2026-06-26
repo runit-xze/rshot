@@ -32,29 +32,30 @@ use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
 
-has cli => (is => 'ro', required => 1);
-has manager => (is => 'rw');
+has cli      => (is => 'ro', required => 1);
+has manager  => (is => 'rw');
 has notebook => (is => 'rw');
 
 sub BUILD ($self, $args) {
-    $self->manager(Shutter::App::Core::SessionManager->new(_common => $self->cli->sc));
-    $self->notebook(Gtk3::Notebook->new);
-    $self->cli->notebook($self->notebook);
-    $self->cli->{_notebook} = $self->notebook;
-    # Note: fct_create_session_notebook is called from CLI._initialize_modules
-    # after handlers are ready. It creates the proper Session tab with IconView,
-    # sets scrollable=TRUE, sets up DnD, and connects the switch-page signal.
-    return;
+	$self->manager(Shutter::App::Core::SessionManager->new(_common => $self->cli->sc));
+	$self->notebook(Gtk3::Notebook->new);
+	$self->cli->notebook($self->notebook);
+	$self->cli->{_notebook} = $self->notebook;
+
+	# Note: fct_create_session_notebook is called from CLI._initialize_modules
+	# after handlers are ready. It creates the proper Session tab with IconView,
+	# sets scrollable=TRUE, sets up DnD, and connects the switch-page signal.
+	return;
 }
 
 sub create_notebook ($self) {
-    return $self->notebook;
+	return $self->notebook;
 }
 
 sub add_tab ($self, $content, $label) {
-    my $page_num = $self->notebook->append_page($content, $label);
-    $self->notebook->set_current_page($page_num);
-    return $page_num;
+	my $page_num = $self->notebook->append_page($content, $label);
+	$self->notebook->set_current_page($page_num);
+	return $page_num;
 }
 
 1;

@@ -24,7 +24,8 @@ package Shutter::App::Options;
 
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 use Encode::Locale;
 use Encode;
 use Log::Any;
@@ -51,29 +52,30 @@ sub new ($class, $sc, $shf) {
 sub get_options ($self) {
 
 	GetOptions(
-		's|select:s@' => sub { my ($select, $sel_ref) = @_;          $self->{_sc}->set_start_with("select", $sel_ref); $self->{_sc}->set_min(TRUE); },
-		'f|full'      => sub { $self->{_sc}->set_start_with("full"); $self->{_sc}->set_min(TRUE); },
-		'w|window:s' => sub { my ($web, $name) = @_;                    $self->{_sc}->set_start_with("window", $name); $self->{_sc}->set_min(TRUE); },
-		'a|active'   => sub { $self->{_sc}->set_start_with("awindow");  $self->{_sc}->set_min(TRUE); },
+		's|select:s@' => sub { my ($select, $sel_ref) = @_;             $self->{_sc}->set_start_with("select", $sel_ref); $self->{_sc}->set_min(TRUE); },
+		'f|full'      => sub { $self->{_sc}->set_start_with("full");    $self->{_sc}->set_min(TRUE); },
+		'w|window:s'  => sub { my ($web, $name) = @_;                   $self->{_sc}->set_start_with("window", $name); $self->{_sc}->set_min(TRUE); },
+		'a|active'    => sub { $self->{_sc}->set_start_with("awindow"); $self->{_sc}->set_min(TRUE); },
+
 		# No sections for now: https://github.com/shutter-project/shutter/issues/25
 		#'section'    => sub { $self->{_sc}->set_start_with("section");  $self->{_sc}->set_min(TRUE); },
-		'm|menu'     => sub { $self->{_sc}->set_start_with("menu");     $self->{_sc}->set_min(TRUE); },
-		't|tooltip'  => sub { $self->{_sc}->set_start_with("tooltip");  $self->{_sc}->set_min(TRUE); },
-		'web:s'      => sub { my ($web, $url) = @_;                     $self->{_sc}->set_start_with("web", $url); },
+		'm|menu'           => sub { $self->{_sc}->set_start_with("menu");    $self->{_sc}->set_min(TRUE); },
+		't|tooltip'        => sub { $self->{_sc}->set_start_with("tooltip"); $self->{_sc}->set_min(TRUE); },
+		'web:s'            => sub { my ($web, $url) = @_; $self->{_sc}->set_start_with("web", $url); },
 		'gif|gif-select:s' => sub { my ($opt, $coords) = @_; $self->{_sc}->set_start_with("gif_select", $coords); $self->{_sc}->set_min(TRUE); },
-		'gif-window' => sub { $self->{_sc}->set_start_with("gif_window"); $self->{_sc}->set_min(TRUE); },
-		'r|redo'     => sub { $self->{_sc}->set_start_with("redoshot"); $self->{_sc}->set_min(TRUE); },
+		'gif-window'       => sub { $self->{_sc}->set_start_with("gif_window"); $self->{_sc}->set_min(TRUE); },
+		'r|redo'           => sub { $self->{_sc}->set_start_with("redoshot");   $self->{_sc}->set_min(TRUE); },
 
-		'p|profile=s' => sub { my ($p, $profile) = @_; $self->{_sc}->set_profile_to_start_with($profile); },
-		'o|output=s'  => sub { my ($o, $output)  = @_; $self->{_sc}->set_export_filename($output); },
+		'p|profile=s'      => sub { my ($p, $profile) = @_; $self->{_sc}->set_profile_to_start_with($profile); },
+		'o|output=s'       => sub { my ($o, $output) = @_; $self->{_sc}->set_export_filename($output); },
 		'c|include_cursor' => sub { $self->{_sc}->set_include_cursor(TRUE); },
 		'C|remove_cursor'  => sub { $self->{_sc}->set_remove_cursor(TRUE); },
 		'd|delay=s'        => sub { my ($d, $delay) = @_; $self->{_sc}->set_delay($delay); },
 
 		'h|help'               => sub { pod2usage(-verbose => 1); },
 		'v|version'            => sub { print $self->{_sc}->get_version, " ", $self->{_sc}->get_rev, "\n"; exit; },
-		'debug'                => sub { $self->{_sc}->set_debug(TRUE); $self->{_sc}->set_log_level("debug"); },
-		'log-file=s'           => sub { my ($l, $file) = @_; $self->{_sc}->set_log_file($file); },
+		'debug'                => sub { $self->{_sc}->set_debug(TRUE);                                     $self->{_sc}->set_log_level("debug"); },
+		'log-file=s'           => sub { my ($l, $file) = @_;                                               $self->{_sc}->set_log_file($file); },
 		'log-json'             => sub { $self->{_sc}->set_log_json(TRUE); },
 		'log-level=s'          => sub { my ($l, $level) = @_; $self->{_sc}->set_log_level($level); },
 		'clear_cache'          => sub { $self->{_sc}->set_clear_cache(TRUE); },

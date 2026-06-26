@@ -26,7 +26,8 @@ package Shutter::App::Optional::Exif;
 #--------------------------------------
 use utf8;
 use v5.40;
-use feature 'try'; no warnings 'experimental::try';
+use feature 'try';
+no warnings 'experimental::try';
 
 use Glib qw/TRUE FALSE/;
 
@@ -40,8 +41,7 @@ sub new ($class) {
 	try {
 		require Image::ExifTool;
 		$self->{_exiftool} = Image::ExifTool->new;
-	}
-	catch ($e) {
+	} catch ($e) {
 		$self->{_exiftool} = FALSE;
 	}
 

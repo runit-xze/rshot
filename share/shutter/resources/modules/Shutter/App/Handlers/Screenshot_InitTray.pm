@@ -31,53 +31,50 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 
 sub fct_try_init_tray ($self) {
-    my $cli = $self->cli;
-    
-    $cli->{_tray_legacy} = Gtk3::StatusIcon->new();
-    $cli->{_tray_legacy}->set_from_icon_name("shutter-panel");
-    $cli->{_tray_legacy}->set_visible(1);
+	my $cli = $self->cli;
 
-    fct_update_gui() if defined &fct_update_gui;
+	$cli->{_tray_legacy} = Gtk3::StatusIcon->new();
+	$cli->{_tray_legacy}->set_from_icon_name("shutter-panel");
+	$cli->{_tray_legacy}->set_visible(1);
 
-    if ($cli->{_tray_legacy}->is_embedded) {
-        if ($cli->{_tray_libappindicator}) {
-            $cli->{_tray_libappindicator}->set_status('passive');
-            $cli->{_tray_libappindicator} = undef;
-        }
-        $cli->{_tray} = $cli->{_tray_legacy};
-        if (defined &evt_show_systray_statusicon) {
-            $cli->{_tray}->{'hid'} = $cli->{_tray}->signal_connect(
-                'popup-menu' => sub { evt_show_systray_statusicon(@_, $cli->{_tray}) }
-            );
-        }
-        if (defined &evt_activate_systray_statusicon) {
-            $cli->{_tray}->{'hid2'} = $cli->{_tray}->signal_connect(
-                'activate' => sub {
-                    evt_activate_systray_statusicon(@_, $cli->{_tray});
-                    $cli->{_tray};
-                }
-            );
-        }
-    } else {
-        $cli->{_tray_legacy}->set_visible(0);
-        $cli->{_tray_legacy} = undef;
+	fct_update_gui() if defined &fct_update_gui;
 
-        if ($cli->{_appindicator} && !$cli->{_tray_libappindicator}) {
-            # Fallback to AppIndicator.
-            $cli->{_tray_libappindicator} = AppIndicator::Indicator->new("Shutter", "shutter-panel", 'application-status') if defined &AppIndicator::Indicator::new;
-            $cli->{_tray_libappindicator}->set_menu($cli->{_tray_menu}) if $cli->{_tray_libappindicator};
-            $cli->{_tray_libappindicator}->set_status('active') if $cli->{_tray_libappindicator};
-        }
+	if ($cli->{_tray_legacy}->is_embedded) {
+		if ($cli->{_tray_libappindicator}) {
+			$cli->{_tray_libappindicator}->set_status('passive');
+			$cli->{_tray_libappindicator} = undef;
+		}
+		$cli->{_tray} = $cli->{_tray_legacy};
+		if (defined &evt_show_systray_statusicon) {
+			$cli->{_tray}->{'hid'} = $cli->{_tray}->signal_connect('popup-menu' => sub { evt_show_systray_statusicon(@_, $cli->{_tray}) });
+		}
+		if (defined &evt_activate_systray_statusicon) {
+			$cli->{_tray}->{'hid2'} = $cli->{_tray}->signal_connect(
+				'activate' => sub {
+					evt_activate_systray_statusicon(@_, $cli->{_tray});
+					$cli->{_tray};
+				});
+		}
+	} else {
+		$cli->{_tray_legacy}->set_visible(0);
+		$cli->{_tray_legacy} = undef;
 
-        if ($cli->{_tray_libappindicator}) {
-            $cli->{_tray} = $cli->{_tray_libappindicator};
-        } else {
-            $cli->{_tray} = undef;
-        }
-    }
-    return;
+		if ($cli->{_appindicator} && !$cli->{_tray_libappindicator}) {
+
+			# Fallback to AppIndicator.
+			$cli->{_tray_libappindicator} = AppIndicator::Indicator->new("Shutter", "shutter-panel", 'application-status') if defined &AppIndicator::Indicator::new;
+			$cli->{_tray_libappindicator}->set_menu($cli->{_tray_menu})                                                    if $cli->{_tray_libappindicator};
+			$cli->{_tray_libappindicator}->set_status('active')                                                            if $cli->{_tray_libappindicator};
+		}
+
+		if ($cli->{_tray_libappindicator}) {
+			$cli->{_tray} = $cli->{_tray_libappindicator};
+		} else {
+			$cli->{_tray} = undef;
+		}
+	}
+	return;
 }
-
 
 1;
 

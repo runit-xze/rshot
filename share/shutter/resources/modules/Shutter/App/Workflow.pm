@@ -33,30 +33,31 @@ use Moo;
 use Shutter::App::AfterCapturePipeline;
 use Shutter::App::PinToScreen;
 
-has cli => (is => 'ro', required => 1);
-has acp => (is => 'rw');
+has cli  => (is => 'ro', required => 1);
+has acp  => (is => 'rw');
 has pins => (is => 'rw');
 
 sub BUILD ($self, $args) {
-    my $sc = $self->cli->sc;
-    $self->acp(Shutter::App::AfterCapturePipeline->new($sc, $sc->get_gettext, $self->cli->window));
-    $self->pins(Shutter::App::PinToScreen->new);
-    return;
+	my $sc = $self->cli->sc;
+	$self->acp(Shutter::App::AfterCapturePipeline->new($sc, $sc->get_gettext, $self->cli->window));
+	$self->pins(Shutter::App::PinToScreen->new);
+	return;
 }
 
 sub get_workflow_widget ($self) {
-    my ($widget, $save_cb) = $self->acp->build_config_widget;
-    $self->{_save_cb} = $save_cb;
-    return $widget;
+	my ($widget, $save_cb) = $self->acp->build_config_widget;
+	$self->{_save_cb} = $save_cb;
+	return $widget;
 }
 
 sub save_settings ($self) {
-    if ($self->{_save_cb}) {
-        my @steps = $self->{_save_cb}->();
-        $self->acp->set_steps(@steps);
-        # Logic to save to global settings would go here
-    }
-    return;
+	if ($self->{_save_cb}) {
+		my @steps = $self->{_save_cb}->();
+		$self->acp->set_steps(@steps);
+
+		# Logic to save to global settings would go here
+	}
+	return;
 }
 
 1;

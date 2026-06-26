@@ -8,40 +8,42 @@ use Glib qw/TRUE FALSE/;
 
 with 'Shutter::Draw::Tool::Base';
 
-has event         => ( is => 'rw', lazy => 1 );
-has copy_item     => ( is => 'rw', lazy => 1 );
-has end_arrow     => ( is => 'rw' );
-has start_arrow   => ( is => 'rw' );
-has X             => ( is => 'rw', default => sub {0} );
-has Y             => ( is => 'rw', default => sub {0} );
-has width         => ( is => 'rw', default => sub {0} );
-has height        => ( is => 'rw', default => sub {0} );
-has mirrored_w    => ( is => 'rw', default => sub {0} );
-has mirrored_h    => ( is => 'rw', default => sub {0} );
-has arrow_width   => ( is => 'rw', default => sub {4} );
-has arrow_length  => ( is => 'rw', default => sub {5} );
-has arrow_tip_length => ( is => 'rw', default => sub {4} );
-has stroke_color  => ( is => 'rw', lazy => 1, default => sub { shift->drawing_tool->stroke_color } );
-has line_width    => ( is => 'rw', lazy => 1, default => sub { shift->drawing_tool->line_width } );
+has event            => (is => 'rw', lazy => 1);
+has copy_item        => (is => 'rw', lazy => 1);
+has end_arrow        => (is => 'rw');
+has start_arrow      => (is => 'rw');
+has X                => (is => 'rw', default => sub { 0 });
+has Y                => (is => 'rw', default => sub { 0 });
+has width            => (is => 'rw', default => sub { 0 });
+has height           => (is => 'rw', default => sub { 0 });
+has mirrored_w       => (is => 'rw', default => sub { 0 });
+has mirrored_h       => (is => 'rw', default => sub { 0 });
+has arrow_width      => (is => 'rw', default => sub { 4 });
+has arrow_length     => (is => 'rw', default => sub { 5 });
+has arrow_tip_length => (is => 'rw', default => sub { 4 });
+has stroke_color     => (is => 'rw', lazy    => 1, default => sub { shift->drawing_tool->stroke_color });
+has line_width       => (is => 'rw', lazy    => 1, default => sub { shift->drawing_tool->line_width });
 
 sub draw ($self, $cr) {
-    # Handled by GooCanvas2
+
+	# Handled by GooCanvas2
 }
 
 sub on_click ($self, $event) {
-    return $self->drawing_tool->create_line($event, undef, TRUE, FALSE);
+	return $self->drawing_tool->create_line($event, undef, TRUE, FALSE);
 }
 
 sub on_drag ($self, $event) {
-    # Handled by DrawingTool for now
+
+	# Handled by DrawingTool for now
 }
 
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	$dt->deactivate_all($item);
-	$dt->{_current_item} = $item;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x} = $ev->x;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y} = $ev->y;
+	$dt->{_current_item}                                    = $item;
+	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
+	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
 	$dt->{_items}{$item}{'bottom-right-corner'}->{resizing} = TRUE;
 	eval { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
 	if ($@) { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
@@ -69,14 +71,9 @@ sub setup ($self, $event, $copy_item, $end_arrow, $start_arrow) {
 	$dt->{_items}{$item} = $item;
 
 	$dt->{_items}{$item}{line} = GooCanvas2::CanvasPolyline->new(
-		parent     => $dt->canvas->get_root_item,
-		close_path => FALSE,
-		points     => Shutter::Draw::Utils::points_to_canvas_points(
-			$item->get('x'),
-			$item->get('y'),
-			$item->get('x') + $item->get('width'),
-			$item->get('y') + $item->get('height'),
-		),
+		parent                  => $dt->canvas->get_root_item,
+		close_path              => FALSE,
+		points                  => Shutter::Draw::Utils::points_to_canvas_points($item->get('x'), $item->get('y'), $item->get('x') + $item->get('width'), $item->get('y') + $item->get('height'),),
 		'stroke-color-gdk-rgba' => $self->stroke_color,
 		'line-width'            => $self->line_width,
 		'line-cap'              => 'CAIRO_LINE_CAP_ROUND',
@@ -101,8 +98,8 @@ sub setup ($self, $event, $copy_item, $end_arrow, $start_arrow) {
 	$dt->{_items}{$item}{uid}  = $dt->uid;
 	$dt->increase_uid;
 
-	$dt->{_items}{$item}{mirrored_w} = $self->mirrored_w;
-	$dt->{_items}{$item}{mirrored_h} = $self->mirrored_h;
+	$dt->{_items}{$item}{mirrored_w}   = $self->mirrored_w;
+	$dt->{_items}{$item}{mirrored_h}   = $self->mirrored_h;
 	$dt->{_items}{$item}{stroke_color} = $dt->stroke_color;
 
 	$dt->handle_rects('create', $item);
@@ -147,15 +144,15 @@ sub _create_item ($self) {
 	my $dt = $self->drawing_tool;
 
 	return GooCanvas2::CanvasRect->new(
-		parent          => $dt->canvas->get_root_item,
-		x               => $self->X,
-		y               => $self->Y,
-		width           => $self->width,
-		height          => $self->height,
+		parent            => $dt->canvas->get_root_item,
+		x                 => $self->X,
+		y                 => $self->Y,
+		width             => $self->width,
+		height            => $self->height,
 		'fill-color-rgba' => 0,
-		'line-dash'     => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'    => 1,
-		'stroke-color'  => 'gray',
+		'line-dash'       => GooCanvas2::CanvasLineDash->newv([5, 5]),
+		'line-width'      => 1,
+		'stroke-color'    => 'gray',
 	);
 }
 

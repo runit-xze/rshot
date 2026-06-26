@@ -31,41 +31,40 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 
 sub fct_get_current_file ($self) {
-    my $cli = $self->cli;
-    my $notebook = $cli->{_notebook};
-    my $session_screens = $cli->{_session_screens};
+	my $cli             = $self->cli;
+	my $notebook        = $cli->{_notebook};
+	my $session_screens = $cli->{_session_screens};
 
-    #get current page
-    my $curr_page = $notebook->get_nth_page($notebook->get_current_page) if $notebook;
+	#get current page
+	my $curr_page = $notebook->get_nth_page($notebook->get_current_page) if $notebook;
 
-    my $key = undef;
+	my $key = undef;
 
-    #and loop through hash to find the corresponding key
-    if ($curr_page) {
-        foreach my $ckey (keys %$session_screens) {
-            next unless (exists $session_screens->{$ckey}->{'tab_child'});
-            if ($session_screens->{$ckey}->{'tab_child'} == $curr_page) {
-                $key = $ckey;
-                last;
-            }
-        }
-    }
+	#and loop through hash to find the corresponding key
+	if ($curr_page) {
+		foreach my $ckey (keys %$session_screens) {
+			next unless (exists $session_screens->{$ckey}->{'tab_child'});
+			if ($session_screens->{$ckey}->{'tab_child'} == $curr_page) {
+				$key = $ckey;
+				last;
+			}
+		}
+	}
 
-    return $key;
+	return $key;
 }
 
 sub fct_get_latest_tab_key ($self) {
-    my $session_screens = $self->cli->{_session_screens};
+	my $session_screens = $self->cli->{_session_screens};
 
-    my $max_key = 0;
-    foreach my $key (keys %$session_screens) {
-        if ($key =~ /\[(\d+)\]/) {
-            $max_key = $1 if ($1 > $max_key);
-        }
-    }
-    return $max_key + 1;
+	my $max_key = 0;
+	foreach my $key (keys %$session_screens) {
+		if ($key =~ /\[(\d+)\]/) {
+			$max_key = $1 if ($1 > $max_key);
+		}
+	}
+	return $max_key + 1;
 }
-
 
 1;
 

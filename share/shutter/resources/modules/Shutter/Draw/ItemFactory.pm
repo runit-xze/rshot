@@ -8,7 +8,7 @@ has drawing_tool => (is => 'ro', required => 1);
 
 sub _tool_setup {
 	my ($mgr, $tool_name, @setup_args) = @_;
-	my $dt = $mgr->drawing_tool;
+	my $dt         = $mgr->drawing_tool;
 	my $tool_class = $dt->{_canvas_manager}->registry->get_tool($tool_name)
 		or die "Unknown drawing tool: $tool_name";
 	eval "require $tool_class; 1" or die "Could not load $tool_class: $@";
@@ -16,33 +16,30 @@ sub _tool_setup {
 }
 
 sub create_polyline {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
-	my $ev        = shift;
-	my $copy_item = shift;
+	my $mgr         = shift;
+	my $self        = $mgr->drawing_tool;
+	my $ev          = shift;
+	my $copy_item   = shift;
 	my $highlighter = shift;
 
 	require Shutter::Draw::Polyline;
-	my $poly = Shutter::Draw::Polyline->new( app => $self );
+	my $poly = Shutter::Draw::Polyline->new(app => $self);
 	return $poly->setup($ev, $copy_item, $highlighter);
 }
-
 
 sub create_censor {
 	my $mgr = shift;
 	return $mgr->_tool_setup('censor', @_);
 }
 
-
 sub create_pixel_image {
 	my $mgr = shift;
 	return $mgr->_tool_setup('pixelize', @_);
 }
 
-
 sub create_image {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $mgr                  = shift;
+	my $self                 = $mgr->drawing_tool;
 	my $ev                   = shift;
 	my $copy_item            = shift;
 	my $force_orig_size_init = shift;
@@ -56,9 +53,9 @@ sub create_image {
 		#and use the original image size
 		#dnd for example
 		if ($force_orig_size_init) {
-			$x = $ev->x - int($self->{_current_pixbuf}->get_width / 2);
-			$y = $ev->y - int($self->{_current_pixbuf}->get_height / 2);
-			$width = $self->{_current_pixbuf}->get_width;
+			$x      = $ev->x - int($self->{_current_pixbuf}->get_width / 2);
+			$y      = $ev->y - int($self->{_current_pixbuf}->get_height / 2);
+			$width  = $self->{_current_pixbuf}->get_width;
 			$height = $self->{_current_pixbuf}->get_height;
 		} else {
 			$x = $ev->x;
@@ -67,18 +64,22 @@ sub create_image {
 
 		#use source item coordinates
 	} elsif ($copy_item) {
-		$x = $copy_item->get('x') + 20;
-		$y = $copy_item->get('y') + 20;
-		$width = $self->{_items}{$copy_item}->get('width');
+		$x      = $copy_item->get('x') + 20;
+		$y      = $copy_item->get('y') + 20;
+		$width  = $self->{_items}{$copy_item}->get('width');
 		$height = $self->{_items}{$copy_item}->get('height');
 	}
 
-	my $item    = GooCanvas2::CanvasRect->new(
-		parent=>$self->{_canvas}->get_root_item, x=>$x, y=>$y, width=>$width, height=>$height,
+	my $item = GooCanvas2::CanvasRect->new(
+		parent            => $self->{_canvas}->get_root_item,
+		x                 => $x,
+		y                 => $y,
+		width             => $width,
+		height            => $height,
 		'fill-color-rgba' => 0,
-		'line-dash'    => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'   => 1,
-		'stroke-color' => 'gray',
+		'line-dash'       => GooCanvas2::CanvasLineDash->newv([5, 5]),
+		'line-width'      => 1,
+		'stroke-color'    => 'gray',
 	);
 
 	$self->{_current_new_item} = $item unless ($copy_item);
@@ -93,10 +94,10 @@ sub create_image {
 	}
 
 	$self->{_items}{$item}{image} = GooCanvas2::CanvasImage->new(
-		parent=>$self->{_canvas}->get_root_item,
-		pixbuf=>$self->{_items}{$item}{orig_pixbuf},
-		x=>$item->get('x'),
-		y=>$item->get('y'),
+		parent   => $self->{_canvas}->get_root_item,
+		pixbuf   => $self->{_items}{$item}{orig_pixbuf},
+		x        => $item->get('x'),
+		y        => $item->get('y'),
 		'width'  => 2,
 		'height' => 2,
 	);
@@ -136,18 +137,15 @@ sub create_image {
 	return $item;
 }
 
-
 sub create_text {
 	my $mgr = shift;
 	return $mgr->_tool_setup('text', @_);
 }
 
-
 sub create_line {
 	my $mgr = shift;
 	return $mgr->_tool_setup('line', @_);
 }
-
 
 sub create_ellipse {
 	my ($mgr, $ev, $copy_item, $numbered) = @_;
@@ -157,18 +155,15 @@ sub create_ellipse {
 	return $mgr->_tool_setup('ellipse', $ev, $copy_item, $numbered);
 }
 
-
 sub create_rectangle {
 	my $mgr = shift;
 	return $mgr->_tool_setup('rect', @_);
 }
 
-
 # getters and setters
 
-
 sub paste_item {
-	my $mgr = shift;
+	my $mgr  = shift;
 	my $self = $mgr->drawing_tool;
 	my $item = shift;
 
@@ -274,10 +269,9 @@ sub paste_item {
 	return TRUE;
 }
 
-
 sub get_opposite_rect {
-	my $mgr = shift;
-	my $self = $mgr->drawing_tool;
+	my $mgr    = shift;
+	my $self   = $mgr->drawing_tool;
 	my $rect   = shift;
 	my $item   = shift;
 	my $width  = shift;
@@ -335,7 +329,6 @@ sub get_opposite_rect {
 	return FALSE;
 }
 
-
 sub get_parent_item {
 	my ($mgr, $item) = @_;
 	my $self = $mgr->drawing_tool;
@@ -364,9 +357,8 @@ sub get_parent_item {
 	return $parent;
 }
 
-
 sub get_highest_auto_digit {
-	my $self = shift;
+	my $self   = shift;
 	my $number = 0;
 	foreach (keys %{$self->{_items}}) {
 
@@ -385,7 +377,6 @@ sub get_highest_auto_digit {
 
 	return $number;
 }
-
 
 sub get_pixelated_pixbuf_from_canvas {
 	my ($mgr, $item) = @_;
@@ -495,7 +486,6 @@ sub get_pixelated_pixbuf_from_canvas {
 
 }
 
-
 sub get_child_item {
 	my ($mgr, $item) = @_;
 	my $self = $mgr->drawing_tool;
@@ -523,7 +513,5 @@ sub get_child_item {
 
 	return $child;
 }
-
-
 
 1;
