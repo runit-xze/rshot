@@ -74,10 +74,10 @@ sub web ($self) {
 sub dlg_website ($self, $url) {
 
 	#gettext
-	my $d = $self->{_sc}->get_gettext;
+	my $d = $self->{_sc}->gettext_object;
 
 	my $website_dialog =
-		Gtk3::MessageDialog->new($self->{_sc}->get_mainwindow, [qw/modal destroy-with-parent/], 'error', 'close', $d->get("Web capture is no longer supported because gnome-web-photo is obsolete."));
+		Gtk3::MessageDialog->new($self->{_sc}->main_window, [qw/modal destroy-with-parent/], 'error', 'close', $d->get("Web capture is no longer supported because gnome-web-photo is obsolete."));
 	$website_dialog->set_title("Shutter");
 	$website_dialog->run;
 	$website_dialog->destroy();

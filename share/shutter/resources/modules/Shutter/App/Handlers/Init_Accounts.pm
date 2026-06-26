@@ -37,7 +37,7 @@ sub fct_load_accounts ($self, $profilename) {
 	my $shf      = $cli->shf;
 	my $sc       = $cli->sc;
 	my $sd       = $cli->sc->{_sd};
-	my $d        = $cli->sc->get_gettext;
+	my $d        = $cli->sc->gettext_object;
 	my $accounts = $cli->{_accounts};
 
 	#accounts file
@@ -58,7 +58,7 @@ sub fct_load_accounts ($self, $profilename) {
 				if ($shf->file_exists($accounts_xml->{$_}->{path})) {
 
 					#clear cache
-					if (!$sc->get_clear_cache) {
+					if (!$sc->clear_cache) {
 						$accounts->{$_}->{path}                       = $accounts_xml->{$_}->{path};
 						$accounts->{$_}->{module}                     = $accounts_xml->{$_}->{module};
 						$accounts->{$_}->{host}                       = $accounts_xml->{$_}->{host};

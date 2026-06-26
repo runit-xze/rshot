@@ -33,7 +33,7 @@ has cli => (is => 'ro', required => 1);
 
 sub fct_integrate_screenshot_in_notebook ($self, $giofile, $pixbuf, $history = undef, $count = undef) {
 	my $cli                  = $self->cli;
-	my $d                    = $cli->sc->get_gettext;
+	my $d                    = $cli->sc->gettext_object;
 	my $session_screens      = $cli->{_session_screens};
 	my $session_start_screen = $cli->{_session_start_screen};
 	my $notebook             = $cli->{_notebook};

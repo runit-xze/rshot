@@ -44,7 +44,7 @@ sub BUILD ($self, $args) {
 
 	my $window = Gtk3::ApplicationWindow->new($app);
 	$self->_window($window);
-	$sc->set_mainwindow($window);
+	$sc->main_window($window);
 
 	$window->signal_connect('delete-event' => sub { $self->cli->handlers->get('Core')->evt_delete_window('', 'quit') });
 	$window->set_border_width(0);

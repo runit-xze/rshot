@@ -213,63 +213,6 @@ sub ungrab_pointer_and_keyboard ($self, $ungrab_server, $quit_event_handler, $qu
 	return FALSE;
 }
 
-#~ sub get_scrollable_from_drawable {
-#~ my ( $self, $drawable, $x, $y, $width, $height, $cursor, $sleep ) = @_;
-#~
-#~ #save pixbuf to file
-#~ my $pixbuf_save = Shutter::Pixbuf::Save->new( $self->{_sc}, $self->{_sc}->get_mainwindow );
-#~
-#~ my @steps;
-#~ while(1){
-#~
-#~ #create tempfile
-#~ my ( $tmpfh, $tmpfilename ) = tempfile(UNLINK => 1);
-#~
-#~ my ($pixbuf, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = $self->get_pixbuf_from_drawable($drawable, $x, $y, $width, $height, FALSE, 1);
-#~ $pixbuf_save->save_pixbuf_to_file($pixbuf, $tmpfilename, 'miff');
-#~
-#~ push @steps, $tmpfilename;
-#~
-#~ my $curr_index = scalar @steps;
-#~ if($curr_index > 1){
-#~
-#~ my $compare = `compare -metric PSNR $steps[$curr_index-2] $steps[$curr_index-1] null: 2>&1`;
-#~ if ($compare =~ /inf/){
-#~ print "Finish\n";
-#~ last;
-#~ }
-#~ }else{
-#~ my $line_size = 67;
-#~ $y += $height - $line_size;
-#~ $height = $line_size;
-#~ }
-#~
-#~ #cursor can only be on the first page
-#~ $self->{_include_cursor} = FALSE;
-#~
-#~ #next scroll step
-#~ my $xdo = `xdotool click 5`;
-#~
-#~ }
-#~
-#~ my $append_cmd = 'convert';
-#~ foreach(@steps){
-#~ $append_cmd	.= " $_";
-#~ }
-#~
-#~ #create tempfile
-#~ my ( $tmpfh_fin, $tmpfilename_fin ) = tempfile(UNLINK => 1);
-#~ $append_cmd .= " -append $tmpfilename_fin";
-#~
-#~ print $append_cmd."\n";
-#~
-#~ my $append_res = `$append_cmd`;
-#~
-#~ my $app_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($tmpfilename_fin);
-#~ print $app_pixbuf."\n";
-#~ return ($app_pixbuf, 0, 0, 0, 0);
-#~
-#~ }
 
 sub get_pixbuf_from_drawable ($self, $drawable, $x = undef, $y = undef, $width = undef, $height = undef, $region = undef) {
 	my ($pixbuf, $l_cropped, $r_cropped, $t_cropped, $b_cropped) = (0, 0, 0, 0, 0);
@@ -341,11 +284,11 @@ sub get_pixbuf_from_drawable_async ($self, $drawable, $x = undef, $y = undef, $w
 
 	#show notification messages displaying the countdown
 	if ($self->{_delay} && $self->{_notify_timeout}) {
-		my $notify = $self->{_sc}->get_notification_object;
+		my $notify = $self->{_sc}->notification;
 		my $ttw    = $self->{_delay};
 
 		#gettext
-		my $d = $self->{_sc}->get_gettext;
+		my $d = $self->{_sc}->gettext_object;
 
 		#first notification immediately
 		$notify->show(sprintf($d->nget("Screenshot will be taken in %s second", "Screenshot will be taken in %s seconds", $ttw), $ttw), "");
@@ -492,7 +435,7 @@ sub get_pixbuf_from_drawable_async ($self, $drawable, $x = undef, $y = undef, $w
 sub include_cursor ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) {
 
 	require lib;
-	lib->import($self->{_sc}->get_root . "/share/shutter/resources/modules");
+	lib->import($self->{_sc}->shutter_root . "/share/shutter/resources/modules");
 
 	require X11::Protocol;
 
@@ -561,7 +504,7 @@ sub include_cursor ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) {
 		#try to use default cursor if there was an error
 		unless ($cursor_pixbuf) {
 			warn "WARNING: There was an error while getting the default cursor image - using one of our image files\n";
-			my $icons_path = $self->{_sc}->get_root . "/share/shutter/resources/icons";
+			my $icons_path = $self->{_sc}->shutter_root . "/share/shutter/resources/icons";
 			try { $cursor_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($icons_path . "/Normal.cur"); }
 			catch ($e) {
 				warn "ERROR: There was an error while loading the image file: $e\n";

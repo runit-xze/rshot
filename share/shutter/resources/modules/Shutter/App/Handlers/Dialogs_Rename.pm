@@ -35,7 +35,7 @@ has cli => (is => 'ro', required => 1);
 sub dlg_rename ($self, @file_to_rename_keys) {
 	my $cli             = $self->cli;
 	my $window          = $cli->window;
-	my $d               = $cli->sc->get_gettext;
+	my $d               = $cli->sc->gettext_object;
 	my $session_screens = $cli->{_session_screens};
 	my $shf             = $cli->shf;
 	my $sd              = $cli->sc->{_sd};

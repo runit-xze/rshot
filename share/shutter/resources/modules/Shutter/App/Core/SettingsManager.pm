@@ -43,8 +43,8 @@ has '_settings' => (is => 'rw', default  => sub { {} });
 sub save_settings ($self, $profilename = undef) {
 	my $sc  = $self->_common;
 	my $shf = $sc->get_helper_functions;
-	my $sd  = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
-	my $d   = $sc->get_gettext;
+	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
+	my $d   = $sc->gettext_object;
 
 	my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
 	if (defined $profilename && $profilename ne "") {
@@ -52,7 +52,7 @@ sub save_settings ($self, $profilename = undef) {
 	}
 
 	my %settings = %{$self->_settings};
-	$settings{'general'}->{'app_version'} = $sc->get_version . $sc->get_rev;
+	$settings{'general'}->{'app_version'} = $sc->version . $sc->rev;
 
 	eval {
 		my ($tmpfh, $tmpfilename) = tempfile(UNLINK => 1);
@@ -68,9 +68,9 @@ sub save_settings ($self, $profilename = undef) {
 
 sub load_settings ($self, $profilename = undef) {
 	my $sc  = $self->_common;
-	my $d   = $sc->get_gettext;
+	my $d   = $sc->gettext_object;
 	my $shf = $sc->get_helper_functions;
-	my $sd  = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
 
 	my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
 	$settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml" if defined $profilename;
@@ -100,9 +100,9 @@ sub set_setting ($self, $section, $key, $value) {
 
 sub load_accounts ($self, $profilename = undef) {
 	my $sc  = $self->_common;
-	my $d   = $sc->get_gettext;
+	my $d   = $sc->gettext_object;
 	my $shf = $sc->get_helper_functions;
-	my $sd  = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
 
 	my $accountsfile = "$ENV{ HOME }/.shutter/accounts.xml";
 	$accountsfile = "$ENV{ HOME }/.shutter/profiles/$profilename\_accounts.xml" if defined $profilename;
@@ -126,7 +126,7 @@ sub load_accounts ($self, $profilename = undef) {
 	require File::Glob;
 	require File::Basename;
 	require JSON::MaybeXS;
-	my $shutter_root = $sc->get_root;
+	my $shutter_root = $sc->shutter_root;
 	my @sxcu_paths   = ("$shutter_root/share/shutter/resources/system/uploaders/*.sxcu", $ENV{'HOME'} . "/.shutter/uploaders/*.sxcu");
 	my $json         = JSON::MaybeXS->new;
 	foreach my $sxcu_path (@sxcu_paths) {

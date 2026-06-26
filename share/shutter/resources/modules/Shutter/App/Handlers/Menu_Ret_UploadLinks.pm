@@ -36,7 +36,7 @@ sub fct_ret_upload_links_menu ($self, $key, $menu_links) {
 	my $session_screens = $cli->{_session_screens};
 	my $clipboard       = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
 
-	my $traytheme = $sc->get_theme;
+	my $traytheme = $sc->icontheme;
 
 	if (defined $menu_links) {
 		foreach my $child ($menu_links->get_children) {

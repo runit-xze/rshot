@@ -48,7 +48,7 @@ sub fct_check_valid_mime_type {
 
 sub fct_drop_handler ($self, $widget, $context, $x, $y, $selection, $info, $time) {
 	my $cli = $self->cli;
-	my $d   = $cli->sc->get_gettext;
+	my $d   = $cli->sc->gettext_object;
 
 	my $type = $selection->get_target->name;
 	return unless $type eq 'text/uri-list';
@@ -125,7 +125,7 @@ sub fct_is_uri_in_session ($self, $giofile, $jump) {
 sub fct_load_session ($self) {
 	my $cli                  = $self->cli;
 	my $shf                  = $cli->shf;
-	my $d                    = $cli->sc->get_gettext;
+	my $d                    = $cli->sc->gettext_object;
 	my $sd                   = $cli->sc->{_sd};
 	my $status               = $cli->{_status};
 	my $session_start_screen = $cli->{_session_start_screen};
@@ -184,7 +184,7 @@ sub fct_load_session ($self) {
 sub fct_open_files ($self, @new_files) {
 	my $cli    = $self->cli;
 	my $shf    = $cli->shf;
-	my $d      = $cli->sc->get_gettext;
+	my $d      = $cli->sc->gettext_object;
 	my $status = $cli->{_status};
 
 	return FALSE if scalar(@new_files) < 1;

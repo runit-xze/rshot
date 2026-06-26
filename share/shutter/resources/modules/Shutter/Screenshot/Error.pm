@@ -89,13 +89,13 @@ sub show_dialog ($self, $detailed_error_text = '') {
 	#load modules at custom path
 	#--------------------------------------
 	require lib;
-	lib->import($self->{_sc}->get_root . "/share/shutter/resources/modules");
+	lib->import($self->{_sc}->shutter_root . "/share/shutter/resources/modules");
 	require Shutter::App::SimpleDialogs;
 
-	my $sd = Shutter::App::SimpleDialogs->new($self->{_sc}->get_mainwindow);
+	my $sd = Shutter::App::SimpleDialogs->new($self->{_sc}->main_window);
 
 	#gettext
-	my $d = $self->{_sc}->get_gettext;
+	my $d = $self->{_sc}->gettext_object;
 
 	my $response;
 	my $status_text = $d->get("Error while taking the screenshot.");

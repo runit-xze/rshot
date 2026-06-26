@@ -42,7 +42,7 @@ sub setup_highlighter ($self) {
 				$self->{_c}{'cw'}{'height'} / $self->{_dpi_scale} + 6,
 			);
 
-			print $self->{_c}{'cw'}{'window'}->get_name, "\n" if $self->{_sc}->get_debug;
+			print $self->{_c}{'cw'}{'window'}->get_name, "\n" if $self->{_sc}->debug;
 
 			my $text = Glib::Markup::escape_text($self->{_c}{'cw'}{'window'}->get_name);
 			utf8::decode $text;
@@ -63,7 +63,7 @@ sub setup_highlighter ($self) {
 				if (scalar @{$self->{_c}{'cw'}{$xwindow}} <= 1) {
 					$icon = Gtk3::Widget::render_icon(Gtk3::Invisible->new, "gtk-dialog-error", 'dialog');
 
-					my $d = $self->{_sc}->get_gettext;
+					my $d = $self->{_sc}->gettext_object;
 					$text     = $d->get("No subwindow detected");
 					$sec_text = "\n" . $d->get("Maybe this window is using client-side windows (or similar).\nShutter is not yet able to query the tree information of such windows.");
 

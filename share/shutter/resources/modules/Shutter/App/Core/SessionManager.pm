@@ -51,8 +51,8 @@ sub fct_integrate_screenshot_in_notebook ($self, $giofile, $pixbuf, $history, $c
 	my $session_start_screen = $self->_session_start_screen;
 	my $sc                   = $self->_common;
 	my $shf                  = $sc->get_helper_functions;
-	my $sd                   = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
-	my $d                    = $sc->get_gettext;
+	my $sd                   = Shutter::App::SimpleDialogs->new($sc->main_window);
+	my $d                    = $sc->gettext_object;
 
 	return FALSE unless $giofile;
 	unless ($giofile->query_exists) {

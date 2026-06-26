@@ -49,12 +49,12 @@ sub new ($class, $sc) {
 
 sub create_toolbar ($self) {
 
-	my $d            = $self->{_common}->get_gettext;
-	my $window       = $self->{_common}->get_mainwindow;
-	my $shutter_root = $self->{_common}->get_root;
+	my $d            = $self->{_common}->gettext_object;
+	my $window       = $self->{_common}->main_window;
+	my $shutter_root = $self->{_common}->shutter_root;
 
 	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
+	my $icontheme = $self->{_common}->icontheme;
 
 	#button redoshot
 	#--------------------------------------
@@ -287,12 +287,12 @@ sub create_toolbar ($self) {
 
 sub create_btoolbar ($self) {
 
-	my $d            = $self->{_common}->get_gettext;
-	my $window       = $self->{_common}->get_mainwindow;
-	my $shutter_root = $self->{_common}->get_root;
+	my $d            = $self->{_common}->gettext_object;
+	my $window       = $self->{_common}->main_window;
+	my $shutter_root = $self->{_common}->shutter_root;
 
 	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
+	my $icontheme = $self->{_common}->icontheme;
 
 	#expanding separator
 	#--------------------------------------

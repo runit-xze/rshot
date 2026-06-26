@@ -37,7 +37,7 @@ has cli => (is => 'ro', required => 1);
 sub fct_clipboard ($self, $widget = undef, $mode = 'image') {
 	my $cli                  = $self->cli;
 	my $h                    = $cli->handlers;
-	my $d                    = $cli->sc->get_gettext;
+	my $d                    = $cli->sc->gettext_object;
 	my $clipboard            = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
 	my $session_start_screen = $cli->{_session_start_screen};
 	my $session_screens      = $cli->{_session_screens};
@@ -120,7 +120,7 @@ sub fct_clipboard ($self, $widget = undef, $mode = 'image') {
 sub fct_clipboard_import ($self) {
 	my $cli             = $self->cli;
 	my $h               = $cli->handlers;
-	my $d               = $cli->sc->get_gettext;
+	my $d               = $cli->sc->gettext_object;
 	my $clipboard       = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
 	my $saveDir_button  = $cli->{_saveDir_button};
 	my $save_no_active  = $cli->{_save_no_active};
@@ -193,7 +193,7 @@ sub fct_fullscreen ($self, $widget = undef) {
 sub fct_redo ($self) {
 	my $cli             = $self->cli;
 	my $h               = $cli->handlers;
-	my $d               = $cli->sc->get_gettext;
+	my $d               = $cli->sc->gettext_object;
 	my $sd              = $cli->sc->{_sd};
 	my $session_screens = $cli->{_session_screens};
 
@@ -238,7 +238,7 @@ sub fct_redo ($self) {
 sub fct_undo ($self) {
 	my $cli             = $self->cli;
 	my $h               = $cli->handlers;
-	my $d               = $cli->sc->get_gettext;
+	my $d               = $cli->sc->gettext_object;
 	my $sd              = $cli->sc->{_sd};
 	my $session_screens = $cli->{_session_screens};
 

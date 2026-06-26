@@ -50,8 +50,8 @@ sub new ($class, $sc) {
 
 		#notification window (borderless gtk window)
 		$self->{_notifications_window} = Gtk3::Window->new('popup');
-		if ($self->{_sc}->get_mainwindow->get_screen->is_composited) {
-			my $screen = $self->{_sc}->get_mainwindow->get_screen;
+		if ($self->{_sc}->main_window->get_screen->is_composited) {
+			my $screen = $self->{_sc}->main_window->get_screen;
 
 			# Glib::Object::Introspection doesn't support method call via
 			# cross-package inheritance, call it as a free function instead
@@ -68,7 +68,7 @@ sub new ($class, $sc) {
 		$self->{_notifications_window}->add_events('GDK_ENTER_NOTIFY_MASK');
 
 		#shape the window
-		my $pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($self->{_sc}->get_root . "/share/shutter/resources/icons/notify.svg");
+		my $pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($self->{_sc}->shutter_root . "/share/shutter/resources/icons/notify.svg");
 
 		#~ my ($pixmap, $mask) = $pixbuf->render_pixmap_and_mask (1);
 		#~ $self->{_notifications_window}->shape_combine_mask($mask, 0, 0);
@@ -99,7 +99,7 @@ sub new ($class, $sc) {
 				my ($x, $y) = $self->{_notifications_window}->get_position;
 
 				#obtain current colors and font_desc from the main window
-				my $style     = $self->{_sc}->get_mainwindow->get_style_context;
+				my $style     = $self->{_sc}->main_window->get_style_context;
 				my $sel_bg    = Gtk3::Gdk::RGBA::parse('#131313');
 				my $font_fam  = $style->get_font('normal')->get_family;
 				my $font_size = $style->get_font('normal')->get_size / Pango::SCALE;
@@ -127,7 +127,7 @@ sub new ($class, $sc) {
 
 				$cr->set_operator('source');
 
-				if ($self->{_sc}->get_mainwindow->get_screen->is_composited) {
+				if ($self->{_sc}->main_window->get_screen->is_composited) {
 					$cr->set_source_rgba(1.0, 1.0, 1.0, 0);
 					Gtk3::Gdk::cairo_set_source_pixbuf($cr, $pixbuf, 0, 0);
 					$cr->paint;

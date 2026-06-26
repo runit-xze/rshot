@@ -51,7 +51,7 @@ sub new ($class, $shutter_common, $include_cursor, $delay, $notify_timeout) {
 
 sub select_auto ($self, $x, $y, $width, $height) {
 
-	my $d = $self->{_sc}->get_gettext;
+	my $d = $self->{_sc}->gettext_object;
 
 	my $output;
 	if ($x >= 0 && $y >= 0 && $width && $height) {

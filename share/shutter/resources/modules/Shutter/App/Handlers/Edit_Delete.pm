@@ -33,7 +33,7 @@ has cli => (is => 'ro', required => 1);
 sub fct_delete ($self, $key = undef, $action = undef) {
 	my $cli                  = $self->cli;
 	my $h                    = $cli->handlers;
-	my $d                    = $cli->sc->get_gettext;
+	my $d                    = $cli->sc->gettext_object;
 	my $sd                   = $cli->sc->{_sd};
 	my $ask_on_delete_active = $cli->{_ask_on_delete_active};
 	my $session_screens      = $cli->{_session_screens};
@@ -172,7 +172,7 @@ sub fct_delete ($self, $key = undef, $action = undef) {
 sub fct_remove ($self, $key = undef, $action = undef) {
 	my $cli                    = $self->cli;
 	my $h                      = $cli->handlers;
-	my $d                      = $cli->sc->get_gettext;
+	my $d                      = $cli->sc->gettext_object;
 	my $delete_on_close_active = $cli->{_delete_on_close_active};
 	my $session_screens        = $cli->{_session_screens};
 	my $session_start_screen   = $cli->{_session_start_screen};

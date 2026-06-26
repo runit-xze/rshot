@@ -105,7 +105,7 @@ sub fct_ret_program_menu ($self, $menu_programs) {
 			my $icon_pixbuf = undef;
 			my ($iw, $ih) = $shf->icon_size('menu');
 			eval {
-				my $icon_info = $sc->get_theme->choose_icon($icon->get_names, $ih, []);
+				my $icon_info = $sc->icontheme->choose_icon($icon->get_names, $ih, []);
 				$icon_pixbuf = $icon_info->load_icon if $icon_info;
 			};
 			if ($@) {
@@ -139,7 +139,7 @@ sub fct_ret_program_menu ($self, $menu_programs) {
 sub fct_ret_tray_menu ($self) {
 	my $cli             = $self->cli;
 	my $sc              = $cli->sc;
-	my $d               = $cli->sc->get_gettext;
+	my $d               = $cli->sc->gettext_object;
 	my $shf             = $cli->shf;
 	my $lp              = $cli->{_lp};
 	my $shutter_root    = $cli->shutter_root;
@@ -147,7 +147,7 @@ sub fct_ret_tray_menu ($self) {
 	my $gnome_web_photo = $cli->{_gnome_web_photo};
 	my $tray_menu       = $cli->{_tray_menu};
 
-	my $traytheme = $sc->get_theme;
+	my $traytheme = $sc->icontheme;
 	my $menu_tray = Gtk3::Menu->new();
 
 	#selection
@@ -166,7 +166,7 @@ sub fct_update_tray_menu ($self, $screen) {
 	my $sc        = $cli->sc;
 	my $tray_menu = $cli->{_tray_menu};
 
-	if ($sc->get_debug) {
+	if ($sc->debug) {
 		print "\nfct_update_tray_menu was called by $screen\n";
 	}
 

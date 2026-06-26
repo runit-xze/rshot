@@ -40,7 +40,7 @@ has cli => (is => 'ro', required => 1);
 sub fct_screenshot_exists ($self, $key) {
 	my $cli             = $self->cli;
 	my $session_screens = $cli->{_session_screens};
-	my $d               = $cli->sc->get_gettext;
+	my $d               = $cli->sc->gettext_object;
 
 	#check if file still exists
 	unless ($session_screens->{$key}->{'giofile'}->query_exists) {
@@ -68,7 +68,7 @@ sub fct_update_tab ($self, $key, $pixbuf = undef, $giofile = undef, $force_thumb
 	my $lp_ne                   = $cli->{_lp_ne};
 	my $session_start_screen    = $cli->{_session_start_screen};
 	my $sd                      = $cli->sc->{_sd};
-	my $d                       = $cli->sc->get_gettext;
+	my $d                       = $cli->sc->gettext_object;
 	my $notebook                = $cli->{_notebook};
 	my $sp                      = $cli->{_sp};
 	my $ask_on_fs_delete_active = $cli->{_ask_on_fs_delete_active};
@@ -97,11 +97,11 @@ sub fct_update_tab ($self, $key, $pixbuf = undef, $giofile = undef, $force_thumb
 				&& !$giofile)
 			{
 				print "Updating fileinfos REJECTED for key: $key (not modified)\n"
-					if $sc->get_debug;
+					if $sc->debug;
 				return TRUE;
 			}
 
-			print "Updating fileinfos for key: $key\n" if $sc->get_debug;
+			print "Updating fileinfos for key: $key\n" if $sc->debug;
 
 			#FILEINFO
 			#--------------------------------------

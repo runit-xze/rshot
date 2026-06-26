@@ -67,7 +67,7 @@ sub fct_email ($self) {
 
 sub fct_open_with_program ($self, $app) {
 	my $cli                  = $self->cli;
-	my $d                    = $cli->sc->get_gettext;
+	my $d                    = $cli->sc->gettext_object;
 	my $session_start_screen = $cli->{_session_start_screen};
 	my $session_screens      = $cli->{_session_screens};
 

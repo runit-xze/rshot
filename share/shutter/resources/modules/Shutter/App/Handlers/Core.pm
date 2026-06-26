@@ -36,7 +36,7 @@ has cli => (is => 'ro', required => 1);
 
 sub evt_value_changed ($self, $widget, $reason) {
 	my $sc = $self->cli->sc;
-	my $d  = $sc->get_gettext;
+	my $d  = $sc->gettext_object;
 
 	if ($reason eq 'transp_toggled') {
 		my $im_colors_active = $self->cli->{_im_colors_active};
@@ -49,7 +49,7 @@ sub evt_value_changed ($self, $widget, $reason) {
 
 sub evt_take_screenshot ($self, $widget = undef, $data = undef, $folder_from_config = undef, $extra = undef) {
 	my $sc            = $self->cli->sc;
-	my $d             = $sc->get_gettext;
+	my $d             = $sc->gettext_object;
 	my $window        = $self->cli->window;
 	my $hide_time     = $self->cli->{_hide_time};
 	my $hide_active   = $self->cli->{_hide_active};
@@ -68,7 +68,7 @@ sub evt_take_screenshot ($self, $widget = undef, $data = undef, $folder_from_con
 		($window->{x}, $window->{y}) = $window->get_position;
 	}
 
-	my $notify = $sc->get_notification_object;
+	my $notify = $sc->notification;
 	$notify->close;
 
 	$self->fct_control_signals('block');
@@ -140,7 +140,7 @@ sub evt_notebook_switch ($self, $widget, $page) {
 
 sub evt_delete_window ($self, $widget, $reason) {
 	if ($reason eq 'quit') {
-		$self->cli->sc->set_exit_after_capture(TRUE);
+		$self->cli->sc->exit_after_capture(TRUE);
 	}
 	$self->cli->app->quit;
 	return;

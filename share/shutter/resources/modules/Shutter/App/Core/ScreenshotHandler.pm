@@ -38,9 +38,9 @@ has '_common' => (is => 'ro', required => 1);
 sub take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	my $sc            = $self->_common;
 	my $shf           = $sc->get_helper_functions;
-	my $d             = $sc->get_gettext;
-	my $sd            = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
-	my $window        = $sc->get_mainwindow;
+	my $d             = $sc->gettext_object;
+	my $sd            = Shutter::App::SimpleDialogs->new($sc->main_window);
+	my $window        = $sc->main_window;
 	my $hide_active   = $sc->get_hide_active;
 	my $x11_supported = $sc->get_x11_supported;
 	my $is_hidden     = $sc->get_is_hidden;
@@ -57,7 +57,7 @@ sub take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 		($window->{x}, $window->{y}) = $window->get_position;
 	}
 
-	my $notify = $sc->get_notification_object;
+	my $notify = $sc->notification;
 	$notify->close;
 
 	fct_control_signals('block');

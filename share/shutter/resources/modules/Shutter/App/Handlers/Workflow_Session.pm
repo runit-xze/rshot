@@ -35,7 +35,7 @@ sub fct_create_session_notebook ($self) {
 	my $cli                  = $self->cli;
 	my $notebook             = $cli->{_notebook};
 	my $session_start_screen = $cli->{_session_start_screen};
-	my $d                    = $cli->sc->get_gettext;
+	my $d                    = $cli->sc->gettext_object;
 
 	#~ $notebook->set( 'homogeneous' => TRUE );
 	$notebook->set('scrollable' => TRUE) if $notebook;

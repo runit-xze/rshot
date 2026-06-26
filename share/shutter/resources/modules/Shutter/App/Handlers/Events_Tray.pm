@@ -32,7 +32,7 @@ has cli => (is => 'ro', required => 1);
 
 sub evt_accounts ($self, $tree, $path, $column) {
 	my $cli = $self->cli;
-	my $d   = $cli->sc->get_gettext;
+	my $d   = $cli->sc->gettext_object;
 	my $shf = $cli->shf;
 
 	#open browser if register url is clicked
@@ -49,7 +49,7 @@ sub evt_activate_systray_statusicon ($self, $widget, $data, $tray) {
 	my $cli = $self->cli;
 	my $sc  = $cli->sc;
 
-	if ($sc->get_debug) {
+	if ($sc->debug) {
 		print "\n$data was emitted by widget $widget\n";
 	}
 
@@ -141,7 +141,7 @@ sub evt_show_systray ($self, $widget, $data) {
 	my $window    = $cli->window;
 	my $tray_menu = $cli->{_tray_menu};
 
-	if ($sc->get_debug) {
+	if ($sc->debug) {
 		print "\n$data was emitted by widget $widget\n";
 	}
 
@@ -172,7 +172,7 @@ sub evt_show_systray_statusicon ($self, $widget, $button, $time, $tray) {
 	my $sc        = $self->cli->sc;
 	my $tray_menu = $self->cli->{_tray_menu};
 
-	if ($sc->get_debug) {
+	if ($sc->debug) {
 		print "\n$button, $time was emitted by widget $widget\n";
 	}
 

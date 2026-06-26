@@ -33,7 +33,7 @@ has cli => (is => 'ro', required => 1);
 sub fct_ret_window_menu ($self) {
 	my $cli          = $self->cli;
 	my $sc           = $cli->sc;
-	my $d            = $cli->sc->get_gettext;
+	my $d            = $cli->sc->gettext_object;
 	my $shf          = $cli->shf;
 	my $lp           = $cli->{_lp};
 	my $shutter_root = $cli->shutter_root;
@@ -46,7 +46,7 @@ sub fct_ret_window_menu ($self) {
 	return $menu_windows unless $wnck_screen;
 
 	my $active_workspace = $wnck_screen->get_active_workspace;
-	my $icontheme        = $sc->get_theme;
+	my $icontheme        = $sc->icontheme;
 
 	#add item for active window
 	my $active_window_item_image;
@@ -102,7 +102,7 @@ sub fct_ret_window_menu ($self) {
 sub fct_ret_workspace_menu ($self, $init) {
 	my $cli           = $self->cli;
 	my $sc            = $cli->sc;
-	my $d             = $cli->sc->get_gettext;
+	my $d             = $cli->sc->gettext_object;
 	my $x11_supported = $cli->{_x11_supported};
 	my $settings_xml  = $cli->{_settings_xml};
 
@@ -132,7 +132,7 @@ sub fct_ret_workspace_menu ($self, $init) {
 	foreach my $space (@workspaces) {
 		next unless defined $space;
 
-		print "Current window manager: ", $wm_name, "\n" if $sc->get_debug;
+		print "Current window manager: ", $wm_name, "\n" if $sc->debug;
 		if ($wm_name =~ /compiz/i) {
 
 			# ... (compiz viewport logic) ...

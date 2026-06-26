@@ -49,11 +49,11 @@ sub new ($class, $sc) {
 
 sub create_menu ($self) {
 
-	my $d            = $self->{_common}->get_gettext;
-	my $shutter_root = $self->{_common}->get_root;
+	my $d            = $self->{_common}->gettext_object;
+	my $shutter_root = $self->{_common}->shutter_root;
 
 	my $accel_group = Gtk3::AccelGroup->new;
-	$self->{_common}->get_mainwindow->add_accel_group($accel_group);
+	$self->{_common}->main_window->add_accel_group($accel_group);
 
 	#MenuBar
 	$self->{_menubar} = Gtk3::MenuBar->new();
@@ -98,7 +98,7 @@ sub create_menu ($self) {
 sub fct_ret_file_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
+	my $icontheme = $self->{_common}->icontheme;
 
 	$self->{_menu_file} = Gtk3::Menu->new();
 
@@ -194,7 +194,7 @@ sub fct_ret_file_menu ($self, $accel_group, $d, $shutter_root) {
 sub fct_ret_edit_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
+	my $icontheme = $self->{_common}->icontheme;
 
 	$self->{_menu_edit} = Gtk3::Menu->new();
 
@@ -250,7 +250,7 @@ sub fct_ret_edit_menu ($self, $accel_group, $d, $shutter_root) {
 sub fct_ret_view_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
+	my $icontheme = $self->{_common}->icontheme;
 
 	$self->{_menu_view} = Gtk3::Menu->new();
 
@@ -296,7 +296,7 @@ sub fct_ret_view_menu ($self, $accel_group, $d, $shutter_root) {
 sub fct_ret_session_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
+	my $icontheme = $self->{_common}->icontheme;
 
 	$self->{_menu_session} = Gtk3::Menu->new();
 
@@ -324,7 +324,7 @@ sub fct_ret_session_menu ($self, $accel_group, $d, $shutter_root) {
 sub fct_ret_help_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
+	my $icontheme = $self->{_common}->icontheme;
 
 	$self->{_menu_help} = Gtk3::Menu->new();
 
@@ -370,7 +370,7 @@ sub fct_ret_help_menu ($self, $accel_group, $d, $shutter_root) {
 sub fct_ret_new_menu ($self, $accel_group, $d, $shutter_root) {
 
 	#Icontheme
-	my $icontheme = $self->{_common}->get_theme;
+	my $icontheme = $self->{_common}->icontheme;
 
 	$self->{_menu_new} = Gtk3::Menu->new;
 
@@ -513,7 +513,7 @@ sub fct_ret_actions_menu_large ($self, $accel_group, $d, $shutter_root) {
 }
 
 sub _build_actions_menu ($self, $accel_group, $d, $shutter_root, $prefix) {
-	my $icontheme  = $self->{_common}->get_theme;
+	my $icontheme  = $self->{_common}->icontheme;
 	my $with_accel = !$prefix;
 
 	my $menu_key    = $prefix ? "_menu_${prefix}actions" : '_menu_actions';

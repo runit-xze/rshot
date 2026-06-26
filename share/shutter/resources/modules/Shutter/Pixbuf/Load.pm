@@ -64,11 +64,11 @@ sub load ($self, $filename, $width = undef, $height = undef, $sratio = undef, $r
 		unless (defined $self->{_no_error_dialog} && $self->{_no_error_dialog}) {
 
 			#import shutter dialogs
-			my $current_window = $self->{_window} || $self->{_common}->get_mainwindow;
+			my $current_window = $self->{_window} || $self->{_common}->main_window;
 			my $sd             = Shutter::App::SimpleDialogs->new($current_window);
 
 			#gettext variable
-			my $d = $self->{_common}->get_gettext;
+			my $d = $self->{_common}->gettext_object;
 
 			#parse filename
 			my ($name, $folder, $type) = fileparse($filename, qr/\.[^.]*/);

@@ -58,9 +58,8 @@ ok(eval { require Shutter::Draw::IOManager; 1 }, "Loaded IOManager") or diag $@;
 {
 
 	package MockSC;
-	sub get_rusf { undef }
-	sub set_rusf { 1 }
-	sub get_root { '/tmp' }
+	sub shutter_root { '/tmp' }
+	sub rusf { undef }
 }
 {
 

@@ -35,7 +35,7 @@ has cli => (is => 'ro', required => 1);
 sub dlg_profile_name ($self, $curr_profile_name, $combobox_settings_profiles) {
 	my $cli    = $self->cli;
 	my $window = $cli->window;
-	my $d      = $cli->sc->get_gettext;
+	my $d      = $cli->sc->gettext_object;
 	my $shf    = $cli->shf;
 	my $sd     = $cli->sc->{_sd};
 
@@ -108,7 +108,7 @@ sub dlg_profile_name ($self, $curr_profile_name, $combobox_settings_profiles) {
 
 sub dlg_upload_error_message ($self, $status, $max_filesize) {
 	my $cli = $self->cli;
-	my $d   = $cli->sc->get_gettext;
+	my $d   = $cli->sc->gettext_object;
 
 	#dialogs (main window != parent window)
 	my $sd = Shutter::App::SimpleDialogs->new($cli->window);
@@ -133,7 +133,7 @@ sub dlg_upload ($self, @files_to_upload) {
 	my $cli       = $self->cli;
 	my $sc        = $cli->sc;
 	my $shf       = $cli->shf;
-	my $d         = $sc->get_gettext;
+	my $d         = $sc->gettext_object;
 	my $window    = $cli->window;
 	my $clipboard = Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern('CLIPBOARD', 0));
 
@@ -243,18 +243,18 @@ sub dlg_upload ($self, @files_to_upload) {
 
 	$hosting_dialog->show_all;
 
-	if (defined $sc->get_ruu_tab) {
-		$unotebook->set_current_page($sc->get_ruu_tab);
+	if (defined $sc->ruu_tab) {
+		$unotebook->set_current_page($sc->ruu_tab);
 	}
 
-	if (defined $sc->get_ruu_hosting) {
-		$hosting->set_active($sc->get_ruu_hosting);
+	if (defined $sc->ruu_hosting) {
+		$hosting->set_active($sc->ruu_hosting);
 	} else {
 		$hosting->set_active(0);
 	}
 
-	if (defined $sc->get_ruu_places && $shf->folder_exists($sc->get_ruu_places)) {
-		$places_fc->set_current_folder($sc->get_ruu_places);
+	if (defined $sc->ruu_places && $shf->folder_exists($sc->ruu_places)) {
+		$places_fc->set_current_folder($sc->ruu_places);
 	}
 
 	while (my $hosting_response = $hosting_dialog->run) {
@@ -294,9 +294,9 @@ sub dlg_upload ($self, @files_to_upload) {
 
 				my $uploader;
 				if ($hosting_module eq 'ShareX') {
-					$uploader = "Shutter::Upload::ShareX"->new($hosting_path, $sc->get_debug, $sc->get_root, $d, $window, $sc->get_version);
+					$uploader = "Shutter::Upload::ShareX"->new($hosting_path, $sc->debug, $sc->shutter_root, $d, $window, $sc->version);
 				} else {
-					$uploader = $hosting_module->new($hosting_host, $sc->get_debug, $sc->get_root, $d, $window, $sc->get_version);
+					$uploader = $hosting_module->new($hosting_host, $sc->debug, $sc->shutter_root, $d, $window, $sc->version);
 				}
 
 				if ($uploader->init($hosting_username)) {
@@ -335,9 +335,9 @@ sub dlg_upload ($self, @files_to_upload) {
 				# Places export logic
 			}
 
-			$sc->set_ruu_tab($unotebook->get_current_page);
-			$sc->set_ruu_hosting($hosting->get_active);
-			$sc->set_ruu_places($places_fc->get_filename);
+			$sc->ruu_tab($unotebook->get_current_page);
+			$sc->ruu_hosting($hosting->get_active);
+			$sc->ruu_places($places_fc->get_filename);
 
 			$upload_button->set_sensitive(TRUE);
 			$close_button->set_sensitive(TRUE);
@@ -352,7 +352,7 @@ sub dlg_upload ($self, @files_to_upload) {
 
 sub dlg_upload_error_message_gnome_vfs ($self, $target_giofile, $result) {
 	my $cli = $self->cli;
-	my $d   = $cli->sc->get_gettext;
+	my $d   = $cli->sc->gettext_object;
 	my $shf = $cli->shf;
 
 	#dialogs (main window != parent window)

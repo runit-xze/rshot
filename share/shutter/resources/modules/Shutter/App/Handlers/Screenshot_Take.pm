@@ -49,7 +49,7 @@ sub evt_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	my $cli                    = $self->cli;
 	my $sc                     = $cli->sc;
 	my $window                 = $cli->window;
-	my $d                      = $cli->sc->get_gettext;
+	my $d                      = $cli->sc->gettext_object;
 	my $hide_active            = $cli->{_hide_active};
 	my $notify_ptimeout_active = $cli->{_notify_ptimeout_active};
 	my $menu_delay             = $cli->{_menu_delay};
@@ -82,7 +82,7 @@ sub evt_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	}
 
 	#close last message displayed
-	my $notify = $sc->get_notification_object;
+	my $notify = $sc->notification;
 	$notify->close if $notify;
 
 	#disable signal-handler
@@ -124,7 +124,7 @@ sub evt_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 
 		#show notification messages displaying the countdown
 		if ($notify_ptimeout_active && $notify_ptimeout_active->get_active) {
-			my $notify = $sc->get_notification_object;
+			my $notify = $sc->notification;
 			my $ttw    = $menu_delay->get_value;
 
 			#first notification immediately
@@ -215,7 +215,7 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	my $lp   = $cli->{_lp};
 	my $acp  = $cli->{acp};
 	my $pins = $cli->{pins};
-	my $d    = $sc->get_gettext;
+	my $d    = $sc->gettext_object;
 	my $sm   = $cli->{settings_manager};
 
 	# Get settings from SettingsManager
@@ -271,7 +271,7 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	try { $wnck_screen = Wnck::Screen::get_default(); } catch ($e) {
 	}
 
-	print "\n$data was emitted by widget " . ($widget // 'none') . "\n" if $sc->get_debug;
+	print "\n$data was emitted by widget " . ($widget // 'none') . "\n" if $sc->debug;
 
 	# screenshot(pixbuf) and screenshot name
 	my $screenshot       = undef;
@@ -282,9 +282,9 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	# Mock Capture Mode
 	my $filetype_value;
 
-	if ($sc->get_mock_capture) {
-		print "Mock Capture Mode enabled - using static test image\n" if $sc->get_debug;
-		$screenshot = Gtk3::Gdk::Pixbuf->new_from_file($sc->get_root . "/share/shutter/resources/icons/web_image.svg");
+	if ($sc->mock_capture) {
+		print "Mock Capture Mode enabled - using static test image\n" if $sc->debug;
+		$screenshot = Gtk3::Gdk::Pixbuf->new_from_file($sc->shutter_root . "/share/shutter/resources/icons/web_image.svg");
 
 		$quality_value  = 90;
 		$filetype_value = "png";
@@ -327,8 +327,8 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 
 	#delay
 	unless ($data eq "menu" || $data eq "tray_menu" || $data eq "tooltip" || $data eq "tray_tooltip") {
-		if (defined $sc->get_delay) {
-			$delay_value = int $sc->get_delay;
+		if (defined $sc->delay) {
+			$delay_value = int $sc->delay;
 		} else {
 			$delay_value = int($delay_value // 0);
 		}
@@ -337,9 +337,9 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	}
 
 	#cursor
-	if ($sc->get_include_cursor) {
-		$include_cursor = $sc->get_include_cursor;
-	} elsif ($sc->get_remove_cursor) {
+	if ($sc->include_cursor) {
+		$include_cursor = $sc->include_cursor;
+	} elsif ($sc->remove_cursor) {
 		$include_cursor = FALSE;
 	} else {
 		$include_cursor = $cursor_active;
@@ -430,8 +430,8 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 			}
 			return FALSE;
 		} else {
-			if ($sc->get_export_filename) {
-				my ($short, $folder_path, $ext) = fileparse($shf->switch_home_in_file($shf->utf8_decode($sc->get_export_filename)), qr/\.[^.]*/);
+			if ($sc->export_filename) {
+				my ($short, $folder_path, $ext) = fileparse($shf->switch_home_in_file($shf->utf8_decode($sc->export_filename)), qr/\.[^.]*/);
 				$filetype_value = $ext;
 				$filetype_value =~ s/\.//;
 				$short = strftime $short, localtime;
@@ -473,7 +473,7 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 		if ($giofile->query_exists) {
 
 			# Integrate into session
-			unless ($sc->get_no_session) {
+			unless ($sc->no_session) {
 				$cli->handlers->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook($giofile, $screenshot, $screenshooter);
 			}
 
@@ -501,14 +501,14 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 
 		$cli->handlers->get('Core')->fct_control_main_window('show', $present_after_active->get_active);
 
-		if ($sc->get_exit_after_capture) {
+		if ($sc->exit_after_capture) {
 			$cli->handlers->get('Core')->evt_delete_window('', 'quit');
 		}
 
 		return TRUE;
 	};
 
-	if ($sc->get_mock_capture) {
+	if ($sc->mock_capture) {
 		return $post_capture_cb->($screenshot);
 	}
 

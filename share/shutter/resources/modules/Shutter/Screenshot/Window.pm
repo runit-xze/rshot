@@ -95,7 +95,7 @@ sub BUILD ($self, $args) {
 	$self->{_x11}{ext_shape} = $self->{_x11}->init_extension('SHAPE');
 
 	#main window
-	$self->{_main_gtk_window} = $self->_sc->get_mainwindow;
+	$self->{_main_gtk_window} = $self->_sc->main_window;
 	$self->{_dpi_scale}       = $self->{_main_gtk_window}->get('scale-factor');
 
 	#only used when selecting a window

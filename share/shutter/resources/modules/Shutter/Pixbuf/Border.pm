@@ -55,7 +55,7 @@ sub create_border ($self, $pixbuf, $width, $color) {
 	#copy source pixbuf to new pixbuf
 	try { $pixbuf->copy_area(0, 0, $pixbuf->get_width, $pixbuf->get_height, $tmp_pbuf, $width, $width); }
 	catch ($e) {
-		print "create border failed: $e\n" if $self->_common->get_debug;
+		print "create border failed: $e\n" if $self->_common->debug;
 		return $pixbuf;
 	}
 

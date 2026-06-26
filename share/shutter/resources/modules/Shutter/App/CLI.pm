@@ -107,10 +107,10 @@ sub run ($self) {
 
 sub _setup_logging ($self) {
 	my $sc    = $self->sc;
-	my $level = $sc->get_log_level // 'info';
+	my $level = $sc->log_level // 'info';
 
-	if ($sc->get_log_file) {
-		Log::Any::Adapter->set('File', $sc->get_log_file, log_level => $level);
+	if ($sc->log_file) {
+		Log::Any::Adapter->set('File', $sc->log_file, log_level => $level);
 	} else {
 		Log::Any::Adapter->set("Stderr", log_level => "debug");
 	}
@@ -223,14 +223,14 @@ sub _register_actions ($self) {
 	my $window = $self->window;
 
 	my @actions = (
-		['exitac',         undef, sub { $sc->set_exit_after_capture(TRUE) }],
-		['exfilename',     's',   sub { $sc->set_export_filename($_[1]->get_string) }],
-		['delay',          's',   sub { $sc->set_delay($_[1]->get_string) }],
-		['include_cursor', undef, sub { $sc->set_include_cursor(TRUE); $sc->set_remove_cursor(FALSE); }],
-		['remove_cursor',  undef, sub { $sc->set_remove_cursor(TRUE);  $sc->set_include_cursor(FALSE); }],
-		['nosession',      undef, sub { $sc->set_no_session(TRUE) }],
-		['mock-capture',   undef, sub { $sc->set_mock_capture(TRUE) }],
-		['profile',        's',   sub { $sc->set_profile_to_start_with($_[1]->get_string) }],
+		['exitac',         undef, sub { $sc->exit_after_capture(TRUE) }],
+		['exfilename',     's',   sub { $sc->export_filename($_[1]->get_string) }],
+		['delay',          's',   sub { $sc->delay($_[1]->get_string) }],
+		['include_cursor', undef, sub { $sc->include_cursor(TRUE); $sc->remove_cursor(FALSE); }],
+		['remove_cursor',  undef, sub { $sc->remove_cursor(TRUE);  $sc->include_cursor(FALSE); }],
+		['nosession',      undef, sub { $sc->no_session(TRUE) }],
+		['mock-capture',   undef, sub { $sc->mock_capture(TRUE) }],
+		['profile',        's',   sub { $sc->profile_to_start_with($_[1]->get_string) }],
 		[
 			'showmainwindow',
 			undef,
@@ -260,14 +260,14 @@ sub _register_actions ($self) {
 
 sub _handle_remote_activation ($self) {
 	my ($cmdname, $extra) = $self->sc->get_start_with;
-	my $profile        = $self->sc->get_profile_to_start_with;
-	my $exitac         = $self->sc->get_exit_after_capture;
-	my $exfilename     = $self->sc->get_export_filename;
-	my $delay          = $self->sc->get_delay;
-	my $include_cursor = $self->sc->get_include_cursor;
-	my $remove_cursor  = $self->sc->get_remove_cursor;
-	my $nosession      = $self->sc->get_no_session;
-	my $mock_capture   = $self->sc->get_mock_capture;
+	my $profile        = $self->sc->profile_to_start_with;
+	my $exitac         = $self->sc->exit_after_capture;
+	my $exfilename     = $self->sc->export_filename;
+	my $delay          = $self->sc->delay;
+	my $include_cursor = $self->sc->include_cursor;
+	my $remove_cursor  = $self->sc->remove_cursor;
+	my $nosession      = $self->sc->no_session;
+	my $mock_capture   = $self->sc->mock_capture;
 
 	$self->log->debug("Handling activation: cmd=" . ($cmdname // 'none'));
 

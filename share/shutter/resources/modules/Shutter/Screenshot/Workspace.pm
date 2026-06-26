@@ -71,7 +71,7 @@ around BUILDARGS => sub {
 
 sub workspaces_async ($self) {
 
-	my $d = $self->{_sc}->get_gettext;
+	my $d = $self->{_sc}->gettext_object;
 
 	my $active_workspace = $self->{_wnck_screen}->get_active_workspace;
 

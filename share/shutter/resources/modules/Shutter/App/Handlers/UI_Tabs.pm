@@ -116,7 +116,7 @@ sub fct_update_profile_selectors ($self, $combobox_settings_profiles, $current_p
 	my $tray_menu = $cli->{_tray_menu};
 	my $sm        = $cli->{_sm};
 	my $status    = $cli->{_status};
-	my $d         = $cli->sc->get_gettext;
+	my $d         = $cli->sc->gettext_object;
 
 	#populate quick selector as well
 	if (scalar @{$current_profiles_ref} > 0) {

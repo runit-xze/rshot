@@ -145,7 +145,7 @@ sub find_current_child_window ($self, $event, $xwindow, $xparent, $depth = undef
 				#~ print $self->{_c}{'cw'}{'x'}, " - ",
 				#~ $self->{_c}{'cw'}{'y'}, " - ",
 				#~ $self->{_c}{'cw'}{'width'}, " - ",
-				#~ $self->{_c}{'cw'}{'height'}, " \n " if $self->{_sc}->get_debug;
+				#~ $self->{_c}{'cw'}{'height'}, " \n " if $self->{_sc}->debug;
 
 				#check next depth
 				unless ($gdk_window->get_xid == $xwindow) {

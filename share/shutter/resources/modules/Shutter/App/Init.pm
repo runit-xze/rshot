@@ -107,10 +107,10 @@ sub initialize ($cli) {
 	$cli->{upload_manager} = $upload_manager;
 
 	# Initialize notifications
-	$sc->set_notification_object(Shutter::App::Notification->new);
+	$sc->notification(Shutter::App::Notification->new);
 
 	# Create UI components
-	my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+	my $sd = Shutter::App::SimpleDialogs->new($sc->main_window);
 	$cli->{_sd} = $sd;
 	$sc->{_sd}  = $sd;    # handlers read it via $cli->sc->{_sd}
 
@@ -124,7 +124,7 @@ sub initialize ($cli) {
 	$cli->{_lp_ne} = $lp_ne;
 
 	# Create after-capture pipeline
-	my $d   = $sc->get_gettext;
+	my $d   = $sc->gettext_object;
 	my $acp = Shutter::App::AfterCapturePipeline->new($sc, $d, $cli->window);
 	$cli->{acp} = $acp;
 

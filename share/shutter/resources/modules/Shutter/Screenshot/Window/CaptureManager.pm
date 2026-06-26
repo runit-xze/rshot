@@ -233,7 +233,7 @@ sub _capture_noninteractive ($self, $f, $initevent) {
 
 			#set name of the captured window
 			#e.g. for use in wildcards
-			my $d = $self->{_sc}->get_gettext;
+			my $d = $self->{_sc}->gettext_object;
 
 			if (($self->{_mode} eq "window" || $self->{_mode} eq "tray_window" || $self->{_mode} eq "awindow" || $self->{_mode} eq "tray_awindow")) {
 

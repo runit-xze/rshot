@@ -36,7 +36,7 @@ sub dlg_open ($self, $widget, $data) {
 	my $cli             = $self->cli;
 	my $sc              = $cli->sc;
 	my $window          = $cli->window;
-	my $d               = $sc->get_gettext;
+	my $d               = $sc->gettext_object;
 	my $lp_ne           = $cli->{_lp_ne};
 	my $shf             = $cli->shf;
 	my $session_screens = $cli->{_session_screens};
@@ -44,7 +44,7 @@ sub dlg_open ($self, $widget, $data) {
 	my $sm              = $cli->{_sm};
 
 	print "\n$data was emitted by widget $widget\n"
-		if $sc->get_debug && defined $data && defined $widget;
+		if $sc->debug && defined $data && defined $widget;
 
 	#do we need to open a filechooserdialog?
 	#maybe we open a recently opened file that is
@@ -106,8 +106,8 @@ sub dlg_open ($self, $widget, $data) {
 		my $key = fct_get_current_file() if defined &fct_get_current_file;
 
 		#go to recently used folder
-		if (defined $sc->get_ruof && $shf->folder_exists($sc->get_ruof)) {
-			$fs->set_current_folder_uri($sc->get_ruof);
+		if (defined $sc->ruof && $shf->folder_exists($sc->ruof)) {
+			$fs->set_current_folder_uri($sc->ruof);
 		} else {
 			if ($key && $session_screens->{$key} && $session_screens->{$key}->{'long'}) {
 				$fs->set_filename($session_screens->{$key}->{'long'});
@@ -126,7 +126,7 @@ sub dlg_open ($self, $widget, $data) {
 			#keep folder in mind
 			if ($new_files[0]) {
 				my ($oshort, $ofolder, $oext) = fileparse($new_files[0], qr/\.[^.]*/);
-				$sc->set_ruof($ofolder) if defined $ofolder;
+				$sc->ruof($ofolder) if defined $ofolder;
 			}
 
 			$fs->destroy();
@@ -137,7 +137,7 @@ sub dlg_open ($self, $widget, $data) {
 	} else {
 		if ($sm && $sm->{_menu_recent} && $sm->{_menu_recent}->get_current_item) {
 			print "Trying to open file via RecentChooserMenu ", $sm->{_menu_recent}->get_current_item->get_uri, "\n"
-				if $sc->get_debug;
+				if $sc->debug;
 			push @new_files, $sm->{_menu_recent}->get_current_item->get_uri;
 		}
 	}
@@ -153,7 +153,7 @@ sub dlg_save_as ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) {
 	my $cli             = $self->cli;
 	my $sc              = $cli->sc;
 	my $window          = $cli->window;
-	my $d               = $sc->get_gettext;
+	my $d               = $sc->gettext_object;
 	my $shf             = $cli->shf;
 	my $session_screens = $cli->{_session_screens};
 	my $saveDir_button  = $cli->{_saveDir_button};
@@ -174,8 +174,8 @@ sub dlg_save_as ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) {
 	($short, $folder, $ext) = fileparse($rfilename, qr/\.[^.]*/) if defined $rfilename;
 
 	#go to recently used folder
-	if (defined $sc->get_rusf && $shf->folder_exists($sc->get_rusf)) {
-		$fs->set_current_folder($sc->get_rusf);
+	if (defined $sc->rusf && $shf->folder_exists($sc->rusf)) {
+		$fs->set_current_folder($sc->rusf);
 		$fs->set_current_name($short . $ext);
 	} elsif (defined $key
 		&& defined $session_screens->{$key}->{'is_unsaved'}
@@ -337,7 +337,7 @@ sub dlg_save_as ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) {
 		my ($short_tmp, $folder_tmp, $ext_tmp) = fileparse($filename, qr/\.[^.]*/);
 
 		#keep selected folder in mind
-		$sc->set_rusf($folder_tmp);
+		$sc->rusf($folder_tmp);
 
 		#handle file format
 		my $choosen_format = $combobox_save_as_type->get_active_text;

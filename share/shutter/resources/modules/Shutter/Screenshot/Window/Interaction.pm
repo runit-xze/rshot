@@ -40,14 +40,14 @@ sub _capture_interactive ($self, $f, $active_workspace, $initevent) {
 				#BUTTON-PRESS
 			} elsif ($event->type eq 'button-press') {
 				print "Type: " . $event->type . "\n"
-					if (defined $event && $self->{_sc}->get_debug);
+					if (defined $event && $self->{_sc}->debug);
 
 				#user selects window or section
 				$self->select_window($event, $active_workspace);
 
 				#BUTTON-RELEASE
 			} elsif ($event->type eq 'button-release') {
-				print "Type: " . $event->type . "\n" if (defined $event && $self->{_sc}->get_debug);
+				print "Type: " . $event->type . "\n" if (defined $event && $self->{_sc}->debug);
 
 				my ($xp, $yp, $wp, $hp, $xc, $yc, $wc, $hc) = (0, 0, 0, 0, 0, 0, 0, 0);
 
@@ -166,7 +166,7 @@ sub _capture_interactive ($self, $f, $active_workspace, $initevent) {
 				#MOTION-NOTIFY
 			} elsif ($event->type eq 'motion-notify') {
 				print "Type: " . $event->type . "\n"
-					if (defined $event && $self->{_sc}->get_debug);
+					if (defined $event && $self->{_sc}->debug);
 
 				#user selects window or section
 				$self->select_window($event, $active_workspace);

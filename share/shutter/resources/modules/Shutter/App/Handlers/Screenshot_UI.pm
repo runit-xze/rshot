@@ -102,7 +102,7 @@ sub evt_notebook_switch ($self, $widget, $pointer, $int) {
 sub evt_value_changed ($self, $widget, $data) {
 	my $cli                = $self->cli;
 	my $sc                 = $cli->sc;
-	my $d                  = $cli->sc->get_gettext;
+	my $d                  = $cli->sc->gettext_object;
 	my $window             = $cli->window;
 	my $css_provider_alpha = $cli->{_css_provider_alpha};
 	my $shutter_root       = $cli->shutter_root;
@@ -111,7 +111,7 @@ sub evt_value_changed ($self, $widget, $data) {
 	$widget ||= "undef";
 
 	print "\n$data was emitted by widget $widget\n"
-		if $sc->get_debug;
+		if $sc->debug;
 
 	return FALSE unless $data;
 
@@ -210,11 +210,11 @@ sub evt_value_changed ($self, $widget, $data) {
 	#quality value changed
 	if ($data eq "qvalue_changed") {
 		my $settings = undef;
-		if (defined $sc->get_globalsettings_object) {
-			$settings = $sc->get_globalsettings_object;
+		if (defined $sc->global_settings) {
+			$settings = $sc->global_settings;
 		} else {
 			$settings = Shutter::App::GlobalSettings->new();
-			$sc->set_globalsettings_object($settings);
+			$sc->global_settings($settings);
 		}
 		my $combobox_type = $cli->{_combobox_type};
 		my $scale         = $cli->{_scale};
@@ -283,9 +283,9 @@ sub evt_value_changed ($self, $widget, $data) {
 	if ($data eq "ns_changed") {
 		my $combobox_ns = $cli->{_combobox_ns};
 		if ($combobox_ns->get_active == 0) {
-			$sc->set_notification_object(Shutter::App::Notification->new);
+			$sc->notification(Shutter::App::Notification->new);
 		} else {
-			$sc->set_notification_object(Shutter::App::ShutterNotification->new($sc));
+			$sc->notification(Shutter::App::ShutterNotification->new($sc));
 		}
 	}
 

@@ -36,8 +36,8 @@ has '_common' => (is => 'ro', required => 1);
 
 sub upload_file ($self, $key, $upload_type) {
 	my $sc = $self->_common;
-	my $d  = $sc->get_gettext;
-	my $sd = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+	my $d  = $sc->gettext_object;
+	my $sd = Shutter::App::SimpleDialogs->new($sc->main_window);
 
 	return FALSE unless $key;
 	return FALSE unless exists $sc->cli->{_session_screens}->{$key};

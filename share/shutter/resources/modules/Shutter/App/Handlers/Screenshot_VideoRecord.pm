@@ -24,7 +24,7 @@ sub evt_video_record ($self, $widget, $data, $folder_from_config, $extra) {
 	my $cli           = $self->cli;
 	my $sc            = $cli->sc;
 	my $window        = $cli->window;
-	my $d             = $sc->get_gettext;
+	my $d             = $sc->gettext_object;
 	my $x11_supported = $cli->{_x11_supported};
 	my $hide_active   = $cli->{_hide_active};
 
@@ -40,7 +40,7 @@ sub evt_video_record ($self, $widget, $data, $folder_from_config, $extra) {
 		($window->{x}, $window->{y}) = $window->get_position;
 	}
 
-	my $notify = $sc->get_notification_object;
+	my $notify = $sc->notification;
 	$notify->close if $notify;
 
 	$cli->handlers->get('Core')->fct_control_signals('block');
@@ -179,8 +179,8 @@ sub _begin_recording ($self, $data, $region, $folder_from_config) {
 
 	# Determine output path
 	my $output_path;
-	if ($sc->get_export_filename) {
-		my ($short, $folder_path, $ext) = fileparse($shf->switch_home_in_file($shf->utf8_decode($sc->get_export_filename)), qr/\.[^.]*/);
+	if ($sc->export_filename) {
+		my ($short, $folder_path, $ext) = fileparse($shf->switch_home_in_file($shf->utf8_decode($sc->export_filename)), qr/\.[^.]*/);
 		$short = strftime $short, localtime;
 		$short =~ s/(\/|\#)/-/g;
 		$output_path = $folder_path . $short . ".mp4";
@@ -265,7 +265,7 @@ sub _on_recording_done ($self, $video_path) {
 
 	if (!$video_path || !-e $video_path) {
 		my $sd = Shutter::App::SimpleDialogs->new;
-		$sd->dlg_error_message($sc->get_gettext->get("Failed to assemble Video."), $sc->get_gettext->get("Failed"));
+		$sd->dlg_error_message($sc->gettext_object->get("Failed to assemble Video."), $sc->gettext_object->get("Failed"));
 		$cli->handlers->get('Core')->fct_control_main_window('show');
 		return;
 	}
@@ -284,7 +284,7 @@ sub _on_recording_done ($self, $video_path) {
 	} catch ($e) {
 	}
 
-	unless ($sc->get_no_session) {
+	unless ($sc->no_session) {
 		$cli->handlers->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook($giofile, $thumb_pixbuf);
 	}
 

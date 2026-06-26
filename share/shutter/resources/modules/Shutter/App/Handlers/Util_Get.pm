@@ -49,7 +49,7 @@ sub fct_get_next_filename ($self, $filename_value, $folder, $filetype_value) {
 	my $sc  = $cli->sc;
 	my $shf = $cli->shf;
 	my $sd  = $cli->sc->{_sd};
-	my $d   = $cli->sc->get_gettext;
+	my $d   = $cli->sc->gettext_object;
 
 	#remove possible dots
 	$filetype_value =~ s/\.//;
@@ -76,7 +76,7 @@ sub fct_get_next_filename ($self, $filename_value, $folder, $filetype_value) {
 		}
 
 		#prepare filename
-		print "---$r_counter Rs used in wild-card\n" if $sc->get_debug;
+		print "---$r_counter Rs used in wild-card\n" if $sc->debug;
 		my $marks = "";
 
 		# Md5 will contain a salt (shutter) and a seconds since 1970
@@ -97,7 +97,7 @@ sub fct_get_next_filename ($self, $filename_value, $folder, $filetype_value) {
 		my $n_counter = length($1);
 
 		#prepare filename
-		print "$n_counter Ns used in wild-card\n" if $sc->get_debug;
+		print "$n_counter Ns used in wild-card\n" if $sc->debug;
 
 		my $filename_template = quotemeta $filename_value;
 
@@ -109,7 +109,7 @@ sub fct_get_next_filename ($self, $filename_value, $folder, $filetype_value) {
 		my $search_pattern = qr/$filename_template\.$filetype_value/;
 
 		print "Searching for files with pattern: $search_pattern\n"
-			if $sc->get_debug;
+			if $sc->debug;
 
 		#get_all files from directory
 		my $dir        = Glib::IO::File::new_for_path($folder);
@@ -128,7 +128,7 @@ sub fct_get_next_filename ($self, $filename_value, $folder, $filetype_value) {
 					if ($curr_value && $curr_value > $next_count) {
 						$next_count = $curr_value;
 						print "$next_count is currently greatest value...\n"
-							if $sc->get_debug;
+							if $sc->debug;
 					}
 				}
 			}
@@ -162,7 +162,7 @@ sub fct_get_next_filename ($self, $filename_value, $folder, $filetype_value) {
 			$new_giofile    = Glib::IO::File::new_for_path($folder);
 			$new_giofile    = $new_giofile->get_child("$filename_value.$filetype_value");
 			print "Checking new uri: " . $new_giofile->get_path . "\n"
-				if $sc->get_debug;
+				if $sc->debug;
 		}
 	}
 
@@ -173,7 +173,7 @@ sub fct_get_program_model ($self) {
 	my $cli       = $self->cli;
 	my $sc        = $cli->sc;
 	my $shf       = $cli->shf;
-	my $d         = $sc->get_gettext;
+	my $d         = $sc->gettext_object;
 	my $goocanvas = $cli->{_goocanvas};
 
 	my $model = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::Scalar');
@@ -182,9 +182,9 @@ sub fct_get_program_model ($self) {
 	if ($goocanvas) {
 		my $icon_pixbuf = undef;
 		my $icon        = 'shutter';
-		if ($sc->get_theme->has_icon($icon)) {
+		if ($sc->icontheme->has_icon($icon)) {
 			my ($iw, $ih) = $shf->icon_size('menu');
-			eval { $icon_pixbuf = $sc->get_theme->load_icon($icon, $ih, 'generic-fallback'); };
+			eval { $icon_pixbuf = $sc->icontheme->load_icon($icon, $ih, 'generic-fallback'); };
 			if ($@) {
 				print "\nWARNING: Could not load icon $icon: $@\n";
 				$icon_pixbuf = undef;
@@ -220,7 +220,7 @@ sub fct_get_program_model ($self) {
 		if ($icon) {
 			my ($iw, $ih) = $shf->icon_size('menu');
 			eval {
-				my $icon_info = $sc->get_theme->choose_icon($icon->get_names, $ih, []);
+				my $icon_info = $sc->icontheme->choose_icon($icon->get_names, $ih, []);
 				$icon_pixbuf = $icon_info->load_icon if $icon_info;
 			};
 			if ($@) {

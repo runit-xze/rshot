@@ -34,7 +34,7 @@ has cli => (is => 'ro', required => 1);
 sub fct_apply_plugin ($self, $plugin_name, $key = undef) {
 	my $cli             = $self->cli;
 	my $h               = $cli->handlers;
-	my $d               = $cli->sc->get_gettext;
+	my $d               = $cli->sc->gettext_object;
 	my $session_screens = $cli->{_session_screens};
 	my $lp              = $cli->{_lp};
 

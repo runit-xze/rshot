@@ -282,7 +282,7 @@ sub BUILD {
 	$self->_font(DEFAULT_FONT);
 
 	#obtain current colors and font_desc from the main window
-	$self->_style($self->_sc->get_mainwindow->get_style_context);
+	$self->_style($self->_sc->main_window->get_style_context);
 	$self->_style_bg($self->_style->get_background_color('selected'));
 	$self->_style_bg->alpha(1);
 
@@ -307,9 +307,9 @@ sub BUILD {
 
 	$self->_start_time(undef);
 
-	$self->_stipple_pixbuf(Gtk3::Gdk::Pixbuf->new_from_file($self->_sc->get_root . '/share/shutter/resources/gui/stipple.png'));
+	$self->_stipple_pixbuf(Gtk3::Gdk::Pixbuf->new_from_file($self->_sc->shutter_root . '/share/shutter/resources/gui/stipple.png'));
 
-	print "DrawingTool initialized\n" if $self->_sc->get_debug;
+	print "DrawingTool initialized\n" if $self->_sc->debug;
 
 	require Shutter::Draw::ToolbarManager;
 	$self->_toolbar_manager(Shutter::Draw::ToolbarManager->new(drawing_tool => $self));
@@ -471,12 +471,10 @@ sub utf8_decode {
 	return $string;
 }
 
-sub check_valid_mime_type {
-	my ($self, $mime_type) = @_;
+sub check_valid_mime_type ($self, $mime_type) {
 	foreach my $format (Gtk3::Gdk::Pixbuf::get_formats()) {
 		foreach my $mime (@{$format->get_mime_types}) {
-			return TRUE if $mime_type eq $mime_type;
-			last;
+			return TRUE if $mime_type eq $mime;
 		}
 	}
 

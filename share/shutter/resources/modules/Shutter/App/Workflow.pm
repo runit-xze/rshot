@@ -39,7 +39,7 @@ has pins => (is => 'rw');
 
 sub BUILD ($self, $args) {
 	my $sc = $self->cli->sc;
-	$self->acp(Shutter::App::AfterCapturePipeline->new($sc, $sc->get_gettext, $self->cli->window));
+	$self->acp(Shutter::App::AfterCapturePipeline->new($sc, $sc->gettext_object, $self->cli->window));
 	$self->pins(Shutter::App::PinToScreen->new);
 	return;
 }

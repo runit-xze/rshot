@@ -49,8 +49,8 @@ around BUILDARGS => sub ($orig, $class, @args) {
 sub show ($self) {
 
 	my $shf          = Shutter::App::HelperFunctions->new($self->_sc);
-	my $shutter_root = $self->_sc->get_root;
-	my $d            = $self->_sc->get_gettext;
+	my $shutter_root = $self->_sc->shutter_root;
+	my $d            = $self->_sc->gettext_object;
 
 	#everything is stored in external files, so it is easier to maintain
 	my $all_hint = "";

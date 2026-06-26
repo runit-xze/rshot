@@ -68,7 +68,7 @@ sub fct_ret_profile_menu ($self, $combobox_settings_profiles, $current_profiles_
 
 sub fct_ret_web_menu ($self) {
 	my $cli          = $self->cli;
-	my $d            = $cli->sc->get_gettext;
+	my $d            = $cli->sc->gettext_object;
 	my $settings_xml = $cli->{_settings_xml};
 
 	my $menu_web = Gtk3::Menu->new;

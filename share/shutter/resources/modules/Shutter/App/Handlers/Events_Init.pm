@@ -35,7 +35,7 @@ sub fct_add_file_monitor ($self, $key) {
 	my $session_screens = $cli->{_session_screens};
 	my $sc              = $cli->sc;
 	my $sd              = $cli->sc->{_sd};
-	my $d               = $cli->sc->get_gettext;
+	my $d               = $cli->sc->gettext_object;
 
 	return FALSE unless exists $session_screens->{$key};
 
@@ -52,13 +52,13 @@ sub fct_add_file_monitor ($self, $key) {
 				sub {
 					my ($handle, $file1, $file2, $event, $k) = @_;
 
-					print $event. " - $k\n" if $sc->get_debug;
+					print $event. " - $k\n" if $sc->debug;
 
 					if ($event eq 'deleted') {
 
 						my $v = $session_screens->{$k};
 						if ($v && $v->{'giofile'} && -e $v->{'giofile'}->get_path) {
-							print "got event 'deleted', but file $k still exists, ignoring\n" if $sc->get_debug;
+							print "got event 'deleted', but file $k still exists, ignoring\n" if $sc->debug;
 							return;
 						}
 
@@ -73,7 +73,7 @@ sub fct_add_file_monitor ($self, $key) {
 					} elsif ($event eq 'changed') {
 
 						print $session_screens->{$k}->{'giofile'}->get_path . " - " . $event . "\n"
-							if $sc->get_debug;
+							if $sc->debug;
 						$session_screens->{$k}->{'changed'} = TRUE;
 						fct_update_tab($k) if defined &fct_update_tab;
 					}

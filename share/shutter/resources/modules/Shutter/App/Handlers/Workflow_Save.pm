@@ -39,7 +39,7 @@ sub fct_load_settings ($self, $data, $profilename) {
 	my $sc  = $cli->sc;
 	my $shf = $cli->shf;
 	my $sd  = $cli->sc->{_sd};
-	my $d   = $cli->sc->get_gettext;
+	my $d   = $cli->sc->gettext_object;
 
 	# settings and profile-specific UI components are expected to be injected in CLI object
 	# This refactoring is complex due to UI dependencies, keeping minimal implementation
@@ -74,7 +74,7 @@ sub fct_save_settings ($self, $profilename) {
 	my $sc                         = $cli->sc;
 	my $shf                        = $cli->shf;
 	my $sd                         = $cli->sc->{_sd};
-	my $d                          = $cli->sc->get_gettext;
+	my $d                          = $cli->sc->gettext_object;
 	my $combobox_settings_profiles = $cli->{_combobox_settings_profiles};
 
 	# settings file

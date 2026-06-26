@@ -108,7 +108,7 @@ sub select_advanced ($self) {
 	#return value
 	my $output = 5;
 
-	my $d = $self->{_sc}->get_gettext;
+	my $d = $self->{_sc}->gettext_object;
 
 	#window to manipulate the selection
 	$self->{_prop_window} = $self->select_dialog();
@@ -256,7 +256,7 @@ sub select_advanced ($self) {
 
 			if ($self->{_show_help} && $self->{_selector_init}) {
 				my $mon1      = $self->get_current_monitor;
-				my $style     = $self->{_sc}->get_mainwindow->get_style_context;
+				my $style     = $self->{_sc}->main_window->get_style_context;
 				my $sel_bg    = Gtk3::Gdk::RGBA::parse('#131313');
 				my $font_fam  = $style->get_font('normal')->get_family;
 				my $font_size = $style->get_font('normal')->get_size * $self->{_dpi_scale} / Pango::SCALE;
@@ -358,7 +358,7 @@ sub adjust_prop_values ($self) {
 
 sub select_dialog ($self) {
 
-	my $d = $self->{_sc}->get_gettext;
+	my $d = $self->{_sc}->gettext_object;
 
 	my $s = $self->{_selection};
 
@@ -509,7 +509,7 @@ sub select_dialog ($self) {
 
 sub take_screenshot ($self, $s) {
 
-	my $d = $self->{_sc}->get_gettext;
+	my $d = $self->{_sc}->gettext_object;
 
 	my $output;
 

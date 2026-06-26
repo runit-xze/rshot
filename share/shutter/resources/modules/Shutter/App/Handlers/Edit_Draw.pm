@@ -100,7 +100,7 @@ sub fct_draw ($self) {
 
 sub fct_plugin ($self) {
 	my $cli                  = $self->cli;
-	my $d                    = $cli->sc->get_gettext;
+	my $d                    = $cli->sc->gettext_object;
 	my $sd                   = $cli->sc->{_sd};
 	my $session_start_screen = $cli->{_session_start_screen};
 	my $plugins              = $cli->{_plugins} || {};
@@ -160,7 +160,7 @@ sub fct_rename ($self) {
 		return FALSE unless $cli->handlers->get('UI_Status')->fct_screenshot_exists($key);
 
 		print "Renaming of file " . $session_screens->{$key}->{'long'} . " started\n"
-			if $sc->get_debug;
+			if $sc->debug;
 		push(@rename_array, $key);
 
 	} else {
@@ -200,7 +200,7 @@ sub fct_show_in_folder ($self) {
 		return FALSE unless $cli->handlers->get('UI_Status')->fct_screenshot_exists($key);
 
 		print "Showing in filebrowser started  - file: " . $session_screens->{$key}->{'long'} . "\n"
-			if $sc->get_debug;
+			if $sc->debug;
 		push(@show_in_folder_array, $key);
 
 	} else {
@@ -235,7 +235,7 @@ sub fct_execute_plugin ($self, $widget, $arrayref) {
 	my $h               = $cli->handlers;
 	my $sc              = $cli->sc;
 	my $shf             = $cli->shf;
-	my $d               = $sc->get_gettext;
+	my $d               = $sc->gettext_object;
 	my $sd              = $cli->sc->{_sd};
 	my $session_screens = $cli->{_session_screens};
 	my $window          = $cli->window;
@@ -294,7 +294,7 @@ sub fct_execute_plugin ($self, $widget, $arrayref) {
 
 	} else {
 		print "$plugin_value $session_screens->{$key}->{'long'} $session_screens->{$key}->{'width'} $session_screens->{$key}->{'height'} $session_screens->{$key}->{'filetype'} submitted to plugin\n"
-			if $sc->get_debug;
+			if $sc->debug;
 
 		# ... shell plugin execution ...
 	}

@@ -233,7 +233,7 @@ sub parse_xpm_hotspot {
 sub _init_window_and_title ($self) {
 	my $app = $self->drawing_tool;
 
-	$app->_d = $app->_sc->get_gettext;
+	$app->_d = $app->_sc->gettext_object;
 
 	$app->_root = Gtk3::Gdk::get_default_root_window();
 	($app->_root->{x}, $app->_root->{y}, $app->_root->{w}, $app->_root->{h}) = $app->_root->get_geometry;
@@ -273,12 +273,12 @@ sub _load_cursors ($self, $icon_theme) {
 	}
 
 	if ($icon_theme eq 'dark') {
-		$app->_dicons = $app->_sc->get_root . "/share/shutter/resources/icons/drawing_tool";
+		$app->_dicons = $app->_sc->shutter_root . "/share/shutter/resources/icons/drawing_tool";
 	} else {
-		$app->_dicons = $app->_sc->get_root . "/share/shutter/resources/icons/drawing_tool_dark";
+		$app->_dicons = $app->_sc->shutter_root . "/share/shutter/resources/icons/drawing_tool_dark";
 	}
 
-	$app->_icons = $app->_sc->get_root . "/share/shutter/resources/icons";
+	$app->_icons = $app->_sc->shutter_root . "/share/shutter/resources/icons";
 
 	my @cursors = bsd_glob($app->_dicons . "/cursor/*");
 	foreach my $cursor_path (@cursors) {
@@ -496,7 +496,7 @@ sub _finish_startup ($self) {
 sub setup_main_window ($mgr, @args) {
 	my $app = $mgr->drawing_tool;
 
-	print "DrawingTool show called\n" if $app->_sc->get_debug;
+	print "DrawingTool show called\n" if $app->_sc->debug;
 	($app->_filename, $app->_filetype, $app->_mimetype, $app->_name, $app->_is_unsaved, $app->_import_hash, my $icon_theme) = @args;
 
 	$mgr->_init_window_and_title;

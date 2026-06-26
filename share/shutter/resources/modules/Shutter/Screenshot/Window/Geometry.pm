@@ -23,9 +23,9 @@ sub find_wm_window ($self, $xid) {
 
 sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_cropped) {
 
-	print "$l_cropped, $r_cropped, $t_cropped, $b_cropped cropped\n" if $self->{_sc}->get_debug;
+	print "$l_cropped, $r_cropped, $t_cropped, $b_cropped cropped\n" if $self->{_sc}->debug;
 
-	print "Calculating window shape\n" if $self->{_sc}->get_debug;
+	print "Calculating window shape\n" if $self->{_sc}->debug;
 
 	#check if extenstion is available and use it
 	my ($ordering, @r) = (undef, undef);
@@ -41,7 +41,7 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 		my $shf = Shutter::App::HelperFunctions->new($self->{_sc});
 
 		my $shape_path = undef;
-		$shape_path = $self->{_sc}->get_root . "/share/shutter/resources/conf/shape.conf" if $shf->file_exists($self->{_sc}->get_root . "/share/shutter/resources/conf/shape.conf");
+		$shape_path = $self->{_sc}->shutter_root . "/share/shutter/resources/conf/shape.conf" if $shf->file_exists($self->{_sc}->shutter_root . "/share/shutter/resources/conf/shape.conf");
 		$shape_path = "$ENV{'HOME'}/.shutter/shape.conf"                                  if $shf->file_exists("$ENV{'HOME'}/.shutter/shape.conf");
 
 		if (defined $shape_path && $shape_path) {
@@ -59,11 +59,11 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 				}
 				$fh->close;
 			} else {
-				print "Unable to open file $shape_path" if $self->{_sc}->get_debug;
+				print "Unable to open file $shape_path" if $self->{_sc}->debug;
 				return $orig;
 			}
 
-			print "Window shape not detected - using $shape_path\n" if $self->{_sc}->get_debug;
+			print "Window shape not detected - using $shape_path\n" if $self->{_sc}->debug;
 
 			#remove current entry
 			pop @r;
@@ -83,7 +83,7 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 
 		} else {
 
-			print "Unable to locate shape.conf\n" if $self->{_sc}->get_debug;
+			print "Unable to locate shape.conf\n" if $self->{_sc}->debug;
 
 		}
 
@@ -116,7 +116,7 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 			}
 		}
 
-		print "Current $rect[0],$rect[1],$rect[2],$rect[3]\n" if $self->{_sc}->get_debug;
+		print "Current $rect[0],$rect[1],$rect[2],$rect[3]\n" if $self->{_sc}->debug;
 		$bregion->union_rectangle({x => $rect[0], y => $rect[1], width => $rect[2], height => $rect[3]});
 	}
 
@@ -132,7 +132,7 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 		my $len = $bregion->num_rectangles - 1;
 		for my $i (0 .. $len) {
 			my $r = $bregion->get_rectangle($i);
-			print $r->{x} . " " . $r->{y} . " " . $r->{width} . " " . $r->{height} . "\n" if $self->{_sc}->get_debug;
+			print $r->{x} . " " . $r->{y} . " " . $r->{width} . " " . $r->{height} . "\n" if $self->{_sc}->debug;
 
 			next if ($r->{x} > $orig->get_width);
 			next if ($r->{y} > $orig->get_height);

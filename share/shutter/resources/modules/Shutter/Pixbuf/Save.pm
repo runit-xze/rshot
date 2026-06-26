@@ -46,7 +46,7 @@ sub new ($class, $common, $window = undef) {
 	my $self = {_common => $common, _window => $window};
 
 	#import shutter dialogs
-	my $current_window = $self->{_window} || $self->{_common}->get_mainwindow;
+	my $current_window = $self->{_window} || $self->{_common}->main_window;
 	$self->{_dialogs} = Shutter::App::SimpleDialogs->new($current_window);
 	$self->{_lp}      = Shutter::Pixbuf::Load->new($self->{_common}, $current_window);
 	$self->{_quality} = undef;
@@ -64,7 +64,7 @@ sub set_quality_setting ($self, $filetype) {
 	};
 
 	#get quality value from settings if not set
-	if (my $settings = $self->{_common}->get_globalsettings_object) {
+	if (my $settings = $self->{_common}->global_settings) {
 		if (defined $settings->get_image_quality($filetype)) {
 			$self->{_quality} = $settings->get_image_quality($filetype);
 		} else {
@@ -102,7 +102,7 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 	$self->{_quality} = $quality;
 
 	#gettext variable
-	my $d = $self->{_common}->get_gettext;
+	my $d = $self->{_common}->gettext_object;
 
 	#check if we need to rotate the image or set the exif data accordingly
 	my $option = $self->{_lp}->get_option($pixbuf, 'orientation');
@@ -124,7 +124,7 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 
 		$self->set_quality_setting($filetype);
 
-		print "Saving file $filename, $filetype, " . $self->{_quality} . "\n" if $self->{_common}->get_debug;
+		print "Saving file $filename, $filetype, " . $self->{_quality} . "\n" if $self->{_common}->debug;
 
 		eval {
 			$pixbuf->save($filename, 'jpeg', quality => $self->{_quality});
@@ -149,7 +149,7 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 
 		$self->set_quality_setting($filetype);
 
-		print "Saving file $filename, $filetype, " . $self->{_quality} . "\n" if $self->{_common}->get_debug;
+		print "Saving file $filename, $filetype, " . $self->{_quality} . "\n" if $self->{_common}->debug;
 
 		eval { $pixbuf->save($filename, $filetype, "tEXt::Software" => "Shutter", compression => $self->{_quality}); };
 	} elsif ($filetype eq 'bmp') {
@@ -158,7 +158,7 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 
 		$self->set_quality_setting($filetype);
 
-		print "Saving file $filename, $filetype, " . $self->{_quality} . "\n" if $self->{_common}->get_debug;
+		print "Saving file $filename, $filetype, " . $self->{_quality} . "\n" if $self->{_common}->debug;
 
 		eval { $pixbuf->save($filename, $filetype, "tEXt::Software" => "Shutter", quality => $self->{_quality}); };
 
@@ -166,7 +166,7 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 
 		$self->set_quality_setting($filetype);
 
-		print "Saving file $filename, $filetype, " . $self->{_quality} . "\n" if $self->{_common}->get_debug;
+		print "Saving file $filename, $filetype, " . $self->{_quality} . "\n" if $self->{_common}->debug;
 
 		eval { $pixbuf->save($filename, $filetype, quality => $self->{_quality}); };
 
@@ -174,11 +174,11 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 
 		$self->save_pdf_ps_svg($filename, $filetype, $pixbuf);
 
-		print "Saving file $filename, $filetype\n" if $self->{_common}->get_debug;
+		print "Saving file $filename, $filetype\n" if $self->{_common}->debug;
 
 	} else {
 
-		print "Saving file $filename, $filetype, $self->{_quality} (using fallback-mode)\n" if $self->{_common}->get_debug;
+		print "Saving file $filename, $filetype, $self->{_quality} (using fallback-mode)\n" if $self->{_common}->debug;
 
 		#save pixbuf to tempfile
 		my ($tmpfh, $tmpfilename) = tempfile();

@@ -32,7 +32,7 @@ has cli => (is => 'ro', required => 1);
 
 sub fct_set_model_accounts ($self, $accounts_tree, $accounts_model) {
 	my $cli      = $self->cli;
-	my $d        = $cli->sc->get_gettext;
+	my $d        = $cli->sc->gettext_object;
 	my $accounts = $cli->{_accounts};
 
 	my @columns = $accounts_tree->get_columns;
@@ -154,7 +154,7 @@ sub fct_set_model_accounts ($self, $accounts_tree, $accounts_model) {
 
 sub fct_set_model_plugins ($self, $effects_tree) {
 	my $cli = $self->cli;
-	my $d   = $cli->sc->get_gettext;
+	my $d   = $cli->sc->gettext_object;
 
 	#tooltip
 	$effects_tree->set_tooltip_column(3);

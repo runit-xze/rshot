@@ -32,7 +32,7 @@ has cli => (is => 'ro', required => 1);
 
 sub dlg_plugin ($self, @file_to_plugin_keys) {
 	my $cli     = $self->cli;
-	my $d       = $cli->sc->get_gettext;
+	my $d       = $cli->sc->gettext_object;
 	my $window  = $cli->window;
 	my $plugins = $cli->{_plugins} || {};
 	my $shf     = $cli->shf;

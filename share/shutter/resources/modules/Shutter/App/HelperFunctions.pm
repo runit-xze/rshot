@@ -46,11 +46,11 @@ sub new ($class, $common) {
 	my $self = {_common => $common};
 
 	#import shutter dialogs
-	my $current_window = $self->{_common}->get_mainwindow;
+	my $current_window = $self->{_common}->main_window;
 	$self->{_dialogs} = Shutter::App::SimpleDialogs->new($current_window);
 
 	#gettext
-	$self->{_d} = $self->{_common}->get_gettext;
+	$self->{_d} = $self->{_common}->gettext_object;
 
 	bless $self, $class;
 	return $self;
@@ -244,9 +244,9 @@ sub get_program_model ($self) {
 	if ($goocanvas) {
 		my $icon_pixbuf = undef;
 		my $icon        = 'shutter';
-		if ($sc->get_theme->has_icon($icon)) {
+		if ($sc->icontheme->has_icon($icon)) {
 			my ($iw, $ih) = $self->icon_size('menu');
-			eval { $icon_pixbuf = $sc->get_theme->load_icon($icon, $ih, 'generic-fallback'); };
+			eval { $icon_pixbuf = $sc->icontheme->load_icon($icon, $ih, 'generic-fallback'); };
 			if ($@) {
 				$log->warn("Could not load icon $icon: $@");
 				$icon_pixbuf = undef;
@@ -274,7 +274,7 @@ sub get_program_model ($self) {
 		if ($icon) {
 			my ($iw, $ih) = $self->icon_size('menu');
 			eval {
-				my $icon_info = $sc->get_theme->choose_icon($icon->get_names, $ih, []);
+				my $icon_info = $sc->icontheme->choose_icon($icon->get_names, $ih, []);
 				$icon_pixbuf = $icon_info->load_icon if $icon_info;
 			};
 			if ($@) {
@@ -334,7 +334,7 @@ sub fct_iter_programs ($self, $model, $path, $iter, $data, $progname_widget) {
 
 sub load_plugin_tree ($self, $plugins, $lp) {
 	my $effects_model = Gtk3::ListStore->new('Gtk3::Gdk::Pixbuf', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String', 'Glib::String');
-	my $shutter_root  = $self->{_common}->get_root;
+	my $shutter_root  = $self->{_common}->shutter_root;
 
 	foreach my $pkey (sort keys %$plugins) {
 		if ($plugins->{$pkey}->{'binary'}) {

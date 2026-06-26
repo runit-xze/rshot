@@ -36,7 +36,7 @@ sub evt_about ($self) {
 }
 
 sub evt_apply_profile ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) {
-	my $d = $self->cli->sc->get_gettext;
+	my $d = $self->cli->sc->gettext_object;
 
 	if ($combobox_settings_profiles->get_active_text) {
 		$self->cli->{_settings_xml}         = fct_load_settings('profile_load', $combobox_settings_profiles->get_active_text);
@@ -60,7 +60,7 @@ sub evt_bug ($self) {
 
 sub evt_delete_profile ($self, $widget, $combobox_settings_profiles, $current_profiles_ref) {
 	my $shf = $self->cli->shf;
-	my $d   = $self->cli->sc->get_gettext;
+	my $d   = $self->cli->sc->gettext_object;
 	my $sd  = $self->cli->sc->{_sd};
 
 	if ($combobox_settings_profiles->get_active_text) {
@@ -97,7 +97,7 @@ sub evt_delete_window ($self, $widget, $data, $scounter) {
 	my $window                = $self->cli->window;
 
 	print "\n$data was emitted by widget $widget\n"
-		if $sc->get_debug;
+		if $sc->debug;
 
 	if (   $data ne "quit"
 		&& $close_at_close_active
@@ -192,7 +192,7 @@ sub evt_save_as ($self, $widget, $data) {
 	my $session_start_screen = $self->cli->{_session_start_screen};
 
 	print "\n$data was emitted by widget $widget\n"
-		if $sc->get_debug;
+		if $sc->debug;
 
 	my $key = fct_get_current_file();
 

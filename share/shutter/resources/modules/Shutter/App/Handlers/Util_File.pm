@@ -36,7 +36,7 @@ has cli => (is => 'ro', required => 1);
 sub fct_check_installed_plugins ($self) {
 	my $cli          = $self->cli;
 	my $sc           = $cli->sc;
-	my $d            = $sc->get_gettext;
+	my $d            = $sc->gettext_object;
 	my $window       = $cli->window;
 	my $shutter_root = $cli->shutter_root;
 	my $lp           = $cli->{_lp};
@@ -150,7 +150,7 @@ sub fct_check_installed_plugins ($self) {
 							$plugins->{$pkey}->{'pixbuf'}        = $fb_pixbuf_path;
 							$plugins->{$pkey}->{'pixbuf_object'} = $fb_pixbuf;
 						}
-						if ($sc->get_debug) {
+						if ($sc->debug) {
 							print "$plugins->{$pkey}->{'name'} - $plugins->{$pkey}->{'binary'}\n" if defined $plugins->{$pkey}->{'name'};
 						}
 
@@ -217,7 +217,7 @@ sub fct_check_installed_programs ($self) {
 sub fct_check_installed_upload_plugins ($self) {
 	my $cli          = $self->cli;
 	my $sc           = $cli->sc;
-	my $d            = $sc->get_gettext;
+	my $d            = $sc->gettext_object;
 	my $window       = $cli->window;
 	my $shutter_root = $cli->shutter_root;
 	my $shf          = $cli->shf;
@@ -409,7 +409,7 @@ sub fct_parse_filename_wildcards ($self, $filename_value, $screenshooter, $scree
 	my $screenshot_name = $filename_value;
 
 	print "Parsing wildcards for $screenshot_name\n"
-		if $sc->get_debug;
+		if $sc->debug;
 
 	#parse width and height
 	my ($swidth, $sheight) = (0, 0);
@@ -425,14 +425,14 @@ sub fct_parse_filename_wildcards ($self, $filename_value, $screenshooter, $scree
 	}
 
 	print "Parsed \$width and \$height: $screenshot_name\n"
-		if $sc->get_debug;
+		if $sc->debug;
 
 	#parse profile name
 	my $current_pname = ($combobox_settings_profiles && $combobox_settings_profiles->get_active_text) || "";
 	$screenshot_name =~ s/\$profile/$current_pname/g;
 
 	print "Parsed \$profile: $screenshot_name\n"
-		if $sc->get_debug;
+		if $sc->debug;
 
 	#set name
 	#e.g. window or workspace name
@@ -453,7 +453,7 @@ sub fct_parse_filename_wildcards ($self, $filename_value, $screenshooter, $scree
 	}
 
 	print "Parsed \$name: $screenshot_name\n"
-		if $sc->get_debug;
+		if $sc->debug;
 
 	# --- ShareX-style macro templates ---
 	my @lt = localtime(time);
@@ -487,7 +487,7 @@ sub fct_parse_filename_wildcards ($self, $filename_value, $screenshooter, $scree
 	$screenshot_name =~ s/%wh/$sheight/g;
 
 	print "Parsed ShareX macros: $screenshot_name\n"
-		if $sc->get_debug;
+		if $sc->debug;
 
 	return $screenshot_name;
 }
@@ -509,7 +509,7 @@ sub fct_unlink_tempfiles ($self, $key) {
 }
 
 sub fct_validate_filename ($self, $myfilename, $myfilename_hint) {
-	my $d             = $self->cli->sc->get_gettext;
+	my $d             = $self->cli->sc->gettext_object;
 	my @invalid_codes = (47, 92);
 	$myfilename->signal_connect(
 		'key-press-event' => sub {

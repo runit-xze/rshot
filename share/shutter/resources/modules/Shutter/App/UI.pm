@@ -46,7 +46,7 @@ has common => (is => 'ro', required => 1);
 sub create_main_window ($self, $app) {
 	my $sc     = $self->common;
 	my $window = Gtk3::ApplicationWindow->new($app);
-	$sc->set_mainwindow($window);
+	$sc->main_window($window);
 	$window->signal_connect('delete-event' => \&evt_delete_window);
 	$window->set_border_width(0);
 	$window->set_resizable(TRUE);
@@ -61,10 +61,10 @@ sub setup_app_objects ($self) {
 	my $sas = Shutter::App::Autostart->new();
 	my $sm  = Shutter::App::Menu->new($sc);
 	my $st  = Shutter::App::Toolbar->new($sc);
-	my $sd  = Shutter::App::SimpleDialogs->new($sc->get_mainwindow);
+	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
 
 	my $vbox = Gtk3::VBox->new(FALSE, 0);
-	$sc->get_mainwindow->add($vbox);
+	$sc->main_window->add($vbox);
 
 	my $menu    = $sm->create_menu;
 	my $toolbar = $st->create_toolbar;
