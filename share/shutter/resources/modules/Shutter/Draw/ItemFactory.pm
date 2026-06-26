@@ -83,7 +83,7 @@ sub create_image {
 		'stroke-color'    => 'gray',
 	);
 
-	$self->_current_new_item = $item unless ($copy_item);
+	$self->_current_new_item($item) unless ($copy_item);
 	$self->_items->{$item} = $item;
 
 	if ($ev) {
@@ -186,8 +186,8 @@ sub paste_item {
 		if ($pixbuf_save->save_pixbuf_to_file($image, $tmpfilename, 'png')) {
 
 			#set pixbuf vars
-			$self->_current_pixbuf          = $image;
-			$self->_current_pixbuf_filename = $tmpfilename;
+			$self->_current_pixbuf($image);
+			$self->_current_pixbuf_filename($tmpfilename);
 
 			#construct an event and create a new image object
 			my $initevent = Gtk3::Gdk::Event->new('motion-notify');
@@ -205,13 +205,13 @@ sub paste_item {
 			$self->store_to_xdo_stack($nitem, 'create', 'undo');
 
 			#restore saved values
-			$self->_current_pixbuf          = $old_current;
-			$self->_current_pixbuf_filename = $old_filename;
+			$self->_current_pixbuf($old_current);
+			$self->_current_pixbuf_filename($old_filename);
 
 			#uncheck
-			$self->_current_new_item  = undef;
-			$self->_current_item      = undef;
-			$self->_current_copy_item = undef;
+			$self->_current_new_item(undef);
+			$self->_current_item(undef);
+			$self->_current_copy_item(undef);
 
 		}
 
@@ -258,8 +258,8 @@ sub paste_item {
 		#cut instead of copy
 		if ($delete_after) {
 			$self->clear_item_from_canvas($item);
-			$self->_current_item      = undef;
-			$self->_current_copy_item = undef;
+			$self->_current_item(undef);
+			$self->_current_copy_item(undef);
 		}
 
 		#add to undo stack

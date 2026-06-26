@@ -144,11 +144,8 @@ sub store_to_xdo_stack {
 
 	}
 
-	#reset redo
-	if (defined $source && $source eq 'ui') {
-
-		#~ print "no clear\n";
-	} else {
+	#reset redo (only when storing undo, not when storing redo)
+	if ($xdo eq 'undo' && !(defined $source && $source eq 'ui')) {
 		while (defined $self->_redo && scalar @{$self->_redo} > 0) {
 			shift @{$self->_redo};
 		}
@@ -184,8 +181,8 @@ sub xdo_remove {
 			$counter++;
 		}
 
-		#delete from array
-		foreach my $index (@indices) {
+		#delete from array (reverse order to preserve indices)
+		foreach my $index (reverse @indices) {
 			splice(@{$self->_undo}, $index, 1);
 		}
 	} elsif ($xdo eq 'redo') {
@@ -194,8 +191,8 @@ sub xdo_remove {
 			$counter++;
 		}
 
-		#delete from array
-		foreach my $index (@indices) {
+		#delete from array (reverse order to preserve indices)
+		foreach my $index (reverse @indices) {
 			splice(@{$self->_redo}, $index, 1);
 		}
 	}
@@ -388,7 +385,7 @@ sub xdo {
 			$self->_canvas_bg->set('pixbuf' => $do->{'drawing_pixbuf'});
 
 			#save new pixbuf in var
-			$self->_drawing_pixbuf = $do->{'drawing_pixbuf'}->copy;
+			$self->_drawing_pixbuf($do->{'drawing_pixbuf'}->copy);
 
 			#update bounds and bg_rects
 			$self->_canvas_bg_rect->set(
@@ -493,8 +490,8 @@ sub xdo {
 	} elsif ($action eq 'delete' || $action eq 'delete_xdo') {
 
 		#mark as current
-		$self->_current_item     = $item;
-		$self->_current_new_item = undef;
+		$self->_current_item($item);
+		$self->_current_new_item(undef);
 
 		$self->_items->{$item}->set('visibility' => 'visible');
 		$self->handle_rects('update', $self->_items->{$item});

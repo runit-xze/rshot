@@ -731,8 +731,8 @@ sub abort_current_mode {
 sub clear_item_from_canvas {
 	my ($self, $item) = @_;
 
-	$self->_current_item     = undef;
-	$self->_current_new_item = undef;
+	$self->_current_item(undef);
+	$self->_current_new_item(undef);
 
 	if ($item) {
 
@@ -915,8 +915,8 @@ sub deactivate_all {
 
 	}
 
-	$self->_current_item     = undef;
-	$self->_current_new_item = undef;
+	$self->_current_item(undef);
+	$self->_current_new_item(undef);
 
 	return TRUE;
 }
@@ -1006,14 +1006,14 @@ sub gen_thumbnail_on_idle {
 					unless ($no_init) {
 						unless ($button->get_icon_widget) {
 							$button->set_icon_widget(Gtk3::Image->new_from_pixbuf($small_image->get_pixbuf));
-							$self->_current_pixbuf_filename = $name;
+							$self->_current_pixbuf_filename($name);
 							$button->show_all;
 						}
 					}
 
 					$child->signal_connect(
 						'activate' => sub {
-							$self->_current_pixbuf_filename = $name;
+							$self->_current_pixbuf_filename($name);
 							$button->set_icon_widget(Gtk3::Image->new_from_pixbuf($small_image->get_pixbuf));
 							$button->show_all;
 							$self->_canvas->get_window->set_cursor($self->change_cursor_to_current_pixbuf);
@@ -1059,11 +1059,11 @@ sub set_drawing_action {
 sub change_cursor_to_current_pixbuf {
 	my $self = shift;
 
-	$self->_current_mode_descr = "image";
+	$self->_current_mode_descr("image");
 
 	my $cursor = undef;
 
-	$self->_current_pixbuf = $self->_lp->load($self->_current_pixbuf_filename, undef, undef, undef, TRUE);
+	$self->_current_pixbuf($self->_lp->load($self->_current_pixbuf_filename, undef, undef, undef, TRUE));
 	unless ($self->_current_pixbuf) {
 		$cursor = Gtk3::Gdk::Cursor->new_from_pixbuf(Gtk3::Gdk::Display::get_default(), Gtk3::Gdk::Pixbuf->new_from_file($self->_dicons . '/draw-image.svg'), Gtk3::IconSize->lookup('menu'));
 	}

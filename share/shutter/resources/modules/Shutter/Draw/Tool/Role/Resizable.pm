@@ -8,7 +8,7 @@ sub handle_resizing {
 	my ($self, $item, $target, $ev) = @_;
 	my $dt = $self->drawing_tool;
 
-	$dt->_current_mode_descr = "resize";
+	$dt->_current_mode_descr("resize");
 
 	#canvas resizing shape
 	if ($dt->_canvas_bg_rect->{'right-side'} == $item) {

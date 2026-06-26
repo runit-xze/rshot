@@ -23,3 +23,5 @@ test_requires "Test::MockModule";
 test_requires "Test::Strict";
 test_requires "Perl::Critic";
 test_requires "Test::Perl::Critic";
+
+develop_requires "App::CPAN::SBOM";

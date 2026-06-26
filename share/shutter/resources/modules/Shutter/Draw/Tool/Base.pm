@@ -136,7 +136,7 @@ sub on_button_press ($self, $item, $target, $ev, $select) {
 	#~ print "button-press\n";
 
 	#canvas is busy now...
-	$dt->_busy = TRUE;
+	$dt->_busy(TRUE);
 
 	my $cursor = Gtk3::Gdk::Cursor->new('left-ptr');
 
@@ -169,8 +169,8 @@ sub on_button_press ($self, $item, $target, $ev, $select) {
 						}
 
 						#mark as active item
-						$dt->_current_item     = $item;
-						$dt->_current_new_item = undef;
+						$dt->_current_item($item);
+						$dt->_current_new_item(undef);
 
 						$dt->handle_rects('update', $dt->_current_item);
 
@@ -378,7 +378,7 @@ sub on_button_release ($self, $item, $target, $ev) {
 	$dt->release_focus($item, $ev);
 
 	#canvas is idle now...
-	$dt->_busy = FALSE;
+	$dt->_busy(FALSE);
 
 	#we handle some minimum sizes here if the new items are too small
 	#maybe the user just wanted to place an rect or an object on the canvas
@@ -521,7 +521,7 @@ sub on_button_release ($self, $item, $target, $ev) {
 			$dt->deactivate_all($nitem);
 
 			#mark as active item
-			$dt->_current_item = $nitem;
+			$dt->_current_item($nitem);
 
 			$dt->handle_rects('update', $nitem);
 			$dt->handle_embedded('update', $nitem);
@@ -570,7 +570,7 @@ sub on_button_release ($self, $item, $target, $ev) {
 	}
 
 	#uncheck previous active item
-	$dt->_current_new_item = undef;
+	$dt->_current_new_item(undef);
 
 	#unset action flags
 	$item->{dragging}       = FALSE if exists $item->{dragging};

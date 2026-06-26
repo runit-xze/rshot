@@ -17,6 +17,17 @@ map:
 tidy:
 	perltidy -b bin/rshot $$(find share/shutter/resources/modules/ -name "*.pm") $$(find t/ -name "*.t")
 
+sbom:
+	cpan-sbom \
+		--project-directory . \
+		--project-name "RShot" \
+		--project-type application \
+		--project-version "1 (Rev.1876)" \
+		--project-license GPL-3.0-or-later \
+		--project-author "Shutter Contributors" \
+		--project-description "A GTK-based screenshot tool for Linux" \
+		-o bom.json
+
 clean:
 	if [ -d $(srcdir)share/locale ]; then \
 		rm -r $(srcdir)share/locale; \
