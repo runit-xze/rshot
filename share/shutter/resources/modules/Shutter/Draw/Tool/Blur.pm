@@ -32,12 +32,12 @@ sub on_drag ($self, $event) {
 sub on_drag_creation_shape ($self, $item, $target, $ev) {
 	my $dt = $self->drawing_tool;
 	$dt->deactivate_all($item);
-	$dt->{_current_item}                                    = $item;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
-	$dt->{_items}{$item}{'bottom-right-corner'}->{resizing} = TRUE;
-	eval { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
-	if ($@) { $dt->{_canvas}->pointer_grab($dt->{_items}{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
+	$dt->_current_item                                      = $item;
+	$dt->_items->{$item}{'bottom-right-corner'}->{res_x}    = $ev->x;
+	$dt->_items->{$item}{'bottom-right-corner'}->{res_y}    = $ev->y;
+	$dt->_items->{$item}{'bottom-right-corner'}->{resizing} = TRUE;
+	eval { $dt->_canvas->pointer_grab($dt->_items->{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], undef, $ev->time); };
+	if ($@) { $dt->_canvas->pointer_grab($dt->_items->{$item}{'bottom-right-corner'}, ['pointer-motion-mask', 'button-release-mask'], Gtk3::Gdk::Cursor->new('left-ptr'), $ev->time); }
 	$dt->store_to_xdo_stack($item, 'create', 'undo');
 	return TRUE;
 }
@@ -56,28 +56,20 @@ sub setup ($self, $event, $copy_item) {
 	my $item = $self->_create_item;
 
 	$dt->current_new_item($item) unless $self->copy_item;
-	$dt->{_items}{$item} = $item;
+	$dt->_items->{$item} = $item;
 
-	my $blank = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, 2, 2);
-	$blank->fill(0x00000000);
-
-	$dt->{_items}{$item}{pixelize} = GooCanvas2::CanvasImage->new(
-		parent => $dt->canvas->get_root_item,
-		pixbuf => $blank,
-		x      => $item->get('x'),
-		y      => $item->get('y'),
-		width  => 2,
-		height => 2,
+	$dt->_items->{$item}{pixelize} = $dt->_item_factory->create_pixelize_image(
+		$item->get('x'), $item->get('y'), undef, 1,
 	);
 
-	$dt->{_items}{$item}{type} = 'pixelize';
-	$dt->{_items}{$item}{uid}  = $dt->uid;
+	$dt->_items->{$item}{type} = 'pixelize';
+	$dt->_items->{$item}{uid}  = $dt->uid;
 	$dt->increase_uid;
 
 	$dt->handle_rects('create', $item);
 
 	if ($self->copy_item) {
-		$dt->{_items}{$item}{pixelize}->set(
+		$dt->_items->{$item}{pixelize}->set(
 			x      => int $item->get('x'),
 			y      => int $item->get('y'),
 			width  => $item->get('width'),
@@ -87,8 +79,8 @@ sub setup ($self, $event, $copy_item) {
 		$dt->handle_embedded('update', $item, undef, undef, TRUE);
 	}
 
-	$dt->setup_item_signals($dt->{_items}{$item}{pixelize});
-	$dt->setup_item_signals_extra($dt->{_items}{$item}{pixelize});
+	$dt->setup_item_signals($dt->_items->{$item}{pixelize});
+	$dt->setup_item_signals_extra($dt->_items->{$item}{pixelize});
 	$dt->setup_item_signals($item);
 	$dt->setup_item_signals_extra($item);
 
@@ -110,18 +102,7 @@ sub _check_event_and_copy_item ($self) {
 
 sub _create_item ($self) {
 	my $dt = $self->drawing_tool;
-
-	return GooCanvas2::CanvasRect->new(
-		parent            => $dt->canvas->get_root_item,
-		x                 => $self->X,
-		y                 => $self->Y,
-		width             => $self->width,
-		height            => $self->height,
-		'fill-color-rgba' => 0,
-		'line-dash'       => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'      => 1,
-		'stroke-color'    => 'gray',
-	);
+	return $dt->_item_factory->create_bounding_rect($self->X, $self->Y, $self->width, $self->height);
 }
 
 1;

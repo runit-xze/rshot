@@ -136,18 +136,7 @@ sub _check_event_and_copy_item ($self) {
 
 sub _create_item ($self) {
 	my $dt = $self->drawing_tool;
-
-	return GooCanvas2::CanvasRect->new(
-		parent            => $dt->canvas->get_root_item,
-		x                 => $self->X,
-		y                 => $self->Y,
-		width             => $self->width,
-		height            => $self->height,
-		'fill-color-rgba' => 0,
-		'line-dash'       => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'      => 1,
-		'stroke-color'    => 'gray',
-	);
+	return $dt->_item_factory->create_bounding_rect($self->X, $self->Y, $self->width, $self->height);
 }
 
 sub is_text_tool {

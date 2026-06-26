@@ -70,20 +70,12 @@ sub setup ($self, $event, $copy_item, $end_arrow, $start_arrow) {
 	$dt->current_new_item($item) unless $self->copy_item;
 	$dt->_items->{$item} = $item;
 
-	$dt->_items->{$item}{line} = GooCanvas2::CanvasPolyline->new(
-		parent                  => $dt->canvas->get_root_item,
-		close_path              => FALSE,
-		points                  => Shutter::Draw::Utils::points_to_canvas_points($item->get('x'), $item->get('y'), $item->get('x') + $item->get('width'), $item->get('y') + $item->get('height'),),
-		'stroke-color-gdk-rgba' => $self->stroke_color,
-		'line-width'            => $self->line_width,
-		'line-cap'              => 'CAIRO_LINE_CAP_ROUND',
-		'line-join'             => 'CAIRO_LINE_JOIN_ROUND',
-		'end-arrow'             => $self->end_arrow,
-		'start-arrow'           => $self->start_arrow,
-		'arrow-length'          => $self->arrow_length,
-		'arrow-width'           => $self->arrow_width,
-		'arrow-tip-length'      => $self->arrow_tip_length,
-		visibility              => 'hidden',
+	$dt->_items->{$item}{line} = $dt->_item_factory->create_line_polyline(
+		$item->get('x'), $item->get('y'),
+		$item->get('width'), $item->get('height'),
+		$self->stroke_color, $self->line_width,
+		$self->end_arrow, $self->start_arrow,
+		$self->arrow_length, $self->arrow_width, $self->arrow_tip_length,
 	);
 
 	if (defined $self->end_arrow || defined $self->start_arrow) {
@@ -142,18 +134,7 @@ sub _check_event_and_copy_item ($self) {
 
 sub _create_item ($self) {
 	my $dt = $self->drawing_tool;
-
-	return GooCanvas2::CanvasRect->new(
-		parent            => $dt->canvas->get_root_item,
-		x                 => $self->X,
-		y                 => $self->Y,
-		width             => $self->width,
-		height            => $self->height,
-		'fill-color-rgba' => 0,
-		'line-dash'       => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'      => 1,
-		'stroke-color'    => 'gray',
-	);
+	return $dt->_item_factory->create_bounding_rect($self->X, $self->Y, $self->width, $self->height);
 }
 
 1;

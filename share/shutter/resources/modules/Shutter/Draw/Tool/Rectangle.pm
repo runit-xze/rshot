@@ -97,16 +97,9 @@ sub _check_event_and_copy_item ($self) {
 
 sub _create_item ($self) {
 	my $dt = $self->drawing_tool;
-
-	return GooCanvas2::CanvasRect->new(
-		parent                  => $dt->canvas->get_root_item,
-		x                       => $self->X,
-		y                       => $self->Y,
-		width                   => $self->width,
-		height                  => $self->height,
-		'fill-color-gdk-rgba'   => $self->fill_color,
-		'stroke-color-gdk-rgba' => $self->stroke_color,
-		'line-width'            => $self->line_width,
+	return $dt->_item_factory->create_rect_item(
+		$self->X, $self->Y, $self->width, $self->height,
+		$self->fill_color, $self->stroke_color, $self->line_width,
 	);
 }
 

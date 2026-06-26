@@ -3,6 +3,7 @@ use Moo;
 use utf8;
 use v5.40;
 use Glib qw/TRUE FALSE/;
+use GooCanvas2;
 
 has drawing_tool => (is => 'ro', required => 1);
 
@@ -512,6 +513,147 @@ sub get_child_item {
 	#~ }
 
 	return $child;
+}
+
+# Factory methods for canvas item creation
+sub create_bounding_rect {
+	my ($mgr, $x, $y, $w, $h) = @_;
+	return GooCanvas2::CanvasRect->new(
+		parent            => $mgr->drawing_tool->canvas->get_root_item,
+		x                 => $x,
+		y                 => $y,
+		width             => $w,
+		height            => $h,
+		'fill-color-rgba' => 0,
+		'line-dash'       => GooCanvas2::CanvasLineDash->newv([5, 5]),
+		'line-width'      => 1,
+		'stroke-color'    => 'gray',
+	);
+}
+
+sub create_rect_item {
+	my ($mgr, $x, $y, $w, $h, $fill, $stroke, $line_width) = @_;
+	return GooCanvas2::CanvasRect->new(
+		parent                  => $mgr->drawing_tool->canvas->get_root_item,
+		x                       => $x,
+		y                       => $y,
+		width                   => $w,
+		height                  => $h,
+		'fill-color-gdk-rgba'   => $fill,
+		'stroke-color-gdk-rgba' => $stroke,
+		'line-width'            => $line_width,
+	);
+}
+
+sub create_ellipse_item {
+	my ($mgr, $x, $y, $w, $h, $fill, $stroke, $line_width) = @_;
+	return GooCanvas2::CanvasEllipse->new(
+		parent                  => $mgr->drawing_tool->canvas->get_root_item,
+		x                       => $x,
+		y                       => $y,
+		width                   => $w,
+		height                  => $h,
+		'fill-color-gdk-rgba'   => $fill,
+		'stroke-color-gdk-rgba' => $stroke,
+		'line-width'            => $line_width,
+	);
+}
+
+sub create_text_label {
+	my ($mgr, $x, $y, $text, $color, $line_width) = @_;
+	return GooCanvas2::CanvasText->new(
+		parent                => $mgr->drawing_tool->canvas->get_root_item,
+		text                  => $text,
+		x                     => $x,
+		y                     => $y,
+		width                 => -1,
+		anchor                => 'center',
+		'use-markup'          => TRUE,
+		'fill-color-gdk-rgba' => $color,
+		'line-width'          => $line_width,
+	);
+}
+
+sub create_censor_polyline {
+	my ($mgr, $stipple) = @_;
+	return GooCanvas2::CanvasPolyline->new(
+		parent          => $mgr->drawing_tool->canvas->get_root_item,
+		'close-path'    => FALSE,
+		'stroke-pixbuf' => $stipple,
+		'line-width'    => 14,
+		'line-cap'      => 'CAIRO_LINE_CAP_ROUND',
+		'line-join'     => 'CAIRO_LINE_JOIN_ROUND',
+	);
+}
+
+sub create_line_polyline {
+	my ($mgr, $x, $y, $w, $h, $stroke, $line_width, $end_arrow, $start_arrow, $arrow_length, $arrow_width, $arrow_tip_length) = @_;
+	return GooCanvas2::CanvasPolyline->new(
+		parent                  => $mgr->drawing_tool->canvas->get_root_item,
+		close_path              => FALSE,
+		points                  => Shutter::Draw::Utils::points_to_canvas_points($x, $y, $x + $w, $y + $h),
+		'stroke-color-gdk-rgba' => $stroke,
+		'line-width'            => $line_width,
+		'line-cap'              => 'CAIRO_LINE_CAP_ROUND',
+		'line-join'             => 'CAIRO_LINE_JOIN_ROUND',
+		'end-arrow'             => $end_arrow,
+		'start-arrow'           => $start_arrow,
+		'arrow-length'          => $arrow_length,
+		'arrow-width'           => $arrow_width,
+		'arrow-tip-length'      => $arrow_tip_length,
+		visibility              => 'hidden',
+	);
+}
+
+sub create_pixelize_image {
+	my ($mgr, $x, $y, $pixbuf, $blank) = @_;
+	$blank //= 1;
+	if ($blank) {
+		my $b = Gtk3::Gdk::Pixbuf->new('rgb', TRUE, 8, 2, 2);
+		$b->fill(0x00000000);
+		$pixbuf = $b;
+	}
+	return GooCanvas2::CanvasImage->new(
+		parent => $mgr->drawing_tool->canvas->get_root_item,
+		pixbuf => $pixbuf,
+		x      => $x,
+		y      => $y,
+		width  => 2,
+		height => 2,
+	);
+}
+
+sub create_pen_polyline {
+	my ($mgr, $stroke, $line_width) = @_;
+	return GooCanvas2::CanvasPolyline->new(
+		parent                  => $mgr->drawing_tool->canvas->get_root_item,
+		'close-path'            => FALSE,
+		'stroke-color-gdk-rgba' => $stroke,
+		'line-width'            => $line_width,
+		'line-cap'              => 'CAIRO_LINE_CAP_ROUND',
+		'line-join'             => 'CAIRO_LINE_JOIN_ROUND',
+	);
+}
+
+sub create_highlighter_polyline {
+	my ($mgr) = @_;
+	my $hl_color = Gtk3::Gdk::RGBA::parse('#FFFF00');
+	$hl_color->alpha(0.5);
+	return GooCanvas2::CanvasPolyline->new(
+		parent                  => $mgr->drawing_tool->canvas->get_root_item,
+		'close-path'            => FALSE,
+		'stroke-color-gdk-rgba' => $hl_color,
+		'line-width'            => 18,
+		'fill-rule'             => 'CAIRO_FILL_RULE_EVEN_ODD',
+		'line-cap'              => 'CAIRO_LINE_CAP_SQUARE',
+		'line-join'             => 'CAIRO_LINE_JOIN_BEVEL',
+	);
+}
+
+sub increase_uid {
+	my $mgr = shift;
+	my $dt  = $mgr->drawing_tool;
+	$dt->increase_uid;
 }
 
 1;

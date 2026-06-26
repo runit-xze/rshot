@@ -80,30 +80,10 @@ sub _check_event_and_copy_item {
 
 sub _create_item {
 	my $self = shift;
-	my $item;
 	if ($self->highlighter) {
-		my $hl_color = Gtk3::Gdk::RGBA::parse('#FFFF00');
-		$hl_color->alpha(0.5);
-		$item = GooCanvas2::CanvasPolyline->new(
-			'parent'                => $self->app->canvas->get_root_item,
-			'close-path'            => FALSE,
-			'stroke-color-gdk-rgba' => $hl_color,
-			'line-width'            => 18,
-			'fill-rule'             => 'CAIRO_FILL_RULE_EVEN_ODD',
-			'line-cap'              => 'CAIRO_LINE_CAP_SQUARE',
-			'line-join'             => 'CAIRO_LINE_JOIN_BEVEL',
-		);
-	} else {
-		$item = GooCanvas2::CanvasPolyline->new(
-			'parent'                => $self->app->canvas->get_root_item,
-			'close-path'            => FALSE,
-			'stroke-color-gdk-rgba' => $self->stroke_color,
-			'line-width'            => $self->line_width,
-			'line-cap'              => 'CAIRO_LINE_CAP_ROUND',
-			'line-join'             => 'CAIRO_LINE_JOIN_ROUND',
-		);
+		return $self->app->_item_factory->create_highlighter_polyline;
 	}
-	return $item;
+	return $self->app->_item_factory->create_pen_polyline($self->stroke_color, $self->line_width);
 }
 
 1;

@@ -82,15 +82,7 @@ sub _check_event_and_copy_item ($self) {
 
 sub _create_item ($self) {
 	my $dt = $self->drawing_tool;
-
-	return GooCanvas2::CanvasPolyline->new(
-		parent          => $dt->canvas->get_root_item,
-		'close-path'    => FALSE,
-		'stroke-pixbuf' => $dt->stipple_pixbuf,
-		'line-width'    => 14,
-		'line-cap'      => 'CAIRO_LINE_CAP_ROUND',
-		'line-join'     => 'CAIRO_LINE_JOIN_ROUND',
-	);
+	return $dt->_item_factory->create_censor_polyline($dt->stipple_pixbuf);
 }
 
 1;

@@ -101,15 +101,9 @@ sub setup ($self, $event, $copy_item, $numbered) {
 sub _setup_item_ellipse ($self, $item) {
 	my $dt = $self->drawing_tool;
 
-	$item->{ellipse} = GooCanvas2::CanvasEllipse->new(
-		parent                  => $dt->canvas->get_root_item,
-		x                       => $self->X,
-		y                       => $self->Y,
-		width                   => $self->width,
-		height                  => $self->height,
-		'fill-color-gdk-rgba'   => $self->fill_color,
-		'stroke-color-gdk-rgba' => $self->stroke_color,
-		'line-width'            => $self->line_width,
+	$item->{ellipse} = $dt->_item_factory->create_ellipse_item(
+		$self->X, $self->Y, $self->width, $self->height,
+		$self->fill_color, $self->stroke_color, $self->line_width,
 	);
 	return;
 }
@@ -118,16 +112,11 @@ sub _setup_ellipse_numbered ($self, $item) {
 	my $dt     = $self->drawing_tool;
 	my $number = $dt->get_highest_auto_digit + 1;
 
-	my $txt = GooCanvas2::CanvasText->new(
-		parent                => $dt->canvas->get_root_item,
-		text                  => "<span font_desc='" . $dt->font . "' >" . $number . "</span>",
-		x                     => $item->{ellipse}->get('center-x'),
-		y                     => $item->{ellipse}->get('center-y'),
-		width                 => -1,
-		anchor                => 'center',
-		'use-markup'          => TRUE,
-		'fill-color-gdk-rgba' => $self->stroke_color,
-		'line-width'          => $self->line_width,
+	my $txt = $dt->_item_factory->create_text_label(
+		$item->{ellipse}->get('center-x'),
+		$item->{ellipse}->get('center-y'),
+		"<span font_desc='" . $dt->font . "' >" . $number . "</span>",
+		$self->stroke_color, $self->line_width,
 	);
 
 	$txt->{digit} = $number;
@@ -174,18 +163,7 @@ sub _check_event_and_copy_item ($self) {
 
 sub _create_item ($self) {
 	my $dt = $self->drawing_tool;
-
-	return GooCanvas2::CanvasRect->new(
-		parent            => $dt->canvas->get_root_item,
-		x                 => $self->X,
-		y                 => $self->Y,
-		width             => $self->width,
-		height            => $self->height,
-		'fill-color-rgba' => 0,
-		'line-dash'       => GooCanvas2::CanvasLineDash->newv([5, 5]),
-		'line-width'      => 1,
-		'stroke-color'    => 'gray',
-	);
+	return $dt->_item_factory->create_bounding_rect($self->X, $self->Y, $self->width, $self->height);
 }
 
 1;
