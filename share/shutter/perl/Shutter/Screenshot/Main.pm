@@ -432,111 +432,39 @@ sub get_pixbuf_from_drawable_async ($self, $drawable, $x = undef, $y = undef, $w
 }
 
 #code ported and partially borrowed from gnome-screenshot and Gimp
+#
+# Captures the cursor into the screenshot. We use the standard left-pointer
+# cursor image (the GDK fallback) rather than the live cursor; the live cursor
+# would require the XFIXES extension which is not packaged by Debian's
+# libx11-protocol-perl. When libx11-protocol-other-perl (the upstream source
+# for XFIXES) is available in Debian, this can be reverted to the XFIXES path.
 sub include_cursor ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) {
 
-	require lib;
-	lib->import($self->{_sc}->shutter_root . "/share/shutter/perl");
+	my ($window_at_pointer, $root_x, $root_y, $mask) = $gdk_window->get_pointer;
 
-	require X11::Protocol;
+	my $cursor = Gtk3::Gdk::Cursor->new('GDK_LEFT_PTR');
+	my $cursor_pixbuf = $cursor->get_image;
 
-	#X11 protocol and XFIXES ext
-	$self->{_x11} = X11::Protocol->new($ENV{'DISPLAY'});
-	$self->{_x11}{ext_xfixes} = $self->{_x11}->init_extension('XFIXES');
-
-	#pixbuf
-	my $cursor_pixbuf = undef;
-
-	#Cursor position (root window coordinates)
-	my $cursor_pixbuf_xroot = undef;
-	my $cursor_pixbuf_yroot = undef;
-
-	#The "hotspot" position
-	my $cursor_pixbuf_xhot = undef;
-	my $cursor_pixbuf_yhot = undef;
-
-	if ($self->{_x11}{ext_xfixes}) {
-
-		my ($root_x, $root_y, $width, $height, $xhot, $yhot, $serial, $pixels) = $self->{_x11}->XFixesGetCursorImage;
-
-		#packed data string
-		my $data;
-		my $pos = 0;
-		foreach my $y (0 .. $height - 1) {
-			foreach my $x (0 .. $width - 1) {
-				my $argb = unpack 'L', substr($pixels, $pos, 4);
-				my $a    = ($argb >> 24) & 0xFF;
-				my $r    = ($argb >> 16) & 0xFF;
-				my $g    = ($argb >> 8) & 0xFF;
-				my $b    = ($argb >> 0) & 0xFF;
-				$pos += 4;
-
-				#~ print "r:$r,g:$g,b:$b,a:$a\n";
-
-				$r = ($r * 255) / $a if ($a);
-				$g = ($g * 255) / $a if ($a);
-				$b = ($b * 255) / $a if ($a);
-
-				$data .= pack('C*', $r, $g, $b, $a);
-			}
+	#fallback: load default arrow from our bundled icons
+	unless ($cursor_pixbuf) {
+		warn "WARNING: There was an error while getting the default cursor image - using one of our image files\n";
+		my $icons_path = $self->{_sc}->shutter_root . "/share/shutter/resources/icons";
+		try { $cursor_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($icons_path . "/Normal.cur"); }
+		catch ($e) {
+			warn "ERROR: There was an error while loading the image file: $e\n";
 		}
-
-		if ($width > 1 && $height > 1) {
-			$cursor_pixbuf = Gtk3::Gdk::Pixbuf->new_from_data($data, 'rgb', 1, 8, $width, $height - 1, 4 * $width);
-
-			$cursor_pixbuf_xhot = $xhot;
-			$cursor_pixbuf_yhot = $yhot;
-
-			$cursor_pixbuf_xroot = $root_x;
-			$cursor_pixbuf_yroot = $root_y;
-		} else {
-			warn "WARNING: There was an error while getting the cursor image (XFIXESGetCursorImage)\n";
-		}
-
-	} else {
-
-		warn "WARNING: XFIXES extension not found - using a default cursor image\n";
-
-		my ($window_at_pointer, $root_x, $root_y, $mask) = $gdk_window->get_pointer;
-
-		my $cursor = Gtk3::Gdk::Cursor->new('GDK_LEFT_PTR');
-		$cursor_pixbuf = $cursor->get_image;
-
-		#try to use default cursor if there was an error
-		unless ($cursor_pixbuf) {
-			warn "WARNING: There was an error while getting the default cursor image - using one of our image files\n";
-			my $icons_path = $self->{_sc}->shutter_root . "/share/shutter/resources/icons";
-			try { $cursor_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($icons_path . "/Normal.cur"); }
-			catch ($e) {
-				warn "ERROR: There was an error while loading the image file: $e\n";
-			}
-		}
-
-		if ($cursor_pixbuf) {
-			$cursor_pixbuf_xhot = $cursor_pixbuf->get_option('x_hot');
-			$cursor_pixbuf_yhot = $cursor_pixbuf->get_option('y_hot');
-
-			$cursor_pixbuf_xroot = $root_x;
-			$cursor_pixbuf_yroot = $root_y;
-		}
-
 	}
 
 	if ($cursor_pixbuf) {
 
-		#x,y pos (cursor)
-		my $x = $cursor_pixbuf_xroot;
-		my $y = $cursor_pixbuf_yroot;
+		my $cursor_pixbuf_xhot = $cursor_pixbuf->get_option('x_hot');
+		my $cursor_pixbuf_yhot = $cursor_pixbuf->get_option('y_hot');
 
 		#screenshot dimensions saved in a rect (global x, y)
 		my $scshot = Cairo::Region->create({x => $xp, y => $yp, width => $widthp, height => $heightp});
 
-		#see 'man xcursor' for a detailed description
-		#of these values
-		my $xhot = $cursor_pixbuf_xhot;
-		my $yhot = $cursor_pixbuf_yhot;
-
 		#cursor dimensions (global x, y and width and height of the pixbuf)
-		my $cursor = {x => $x, y => $y, width => $cursor_pixbuf->get_width, height => $cursor_pixbuf->get_height};
+		my $cursor = {x => $root_x, y => $root_y, width => $cursor_pixbuf->get_width, height => $cursor_pixbuf->get_height};
 
 		#is the cursor visible in the current screenshot?
 		#(do the rects intersect?)
@@ -549,12 +477,12 @@ sub include_cursor ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) {
 			#
 			#example: moving the cursor to the coords 0, 0
 			#would lead to an error
-			my $dest_x = $x - $xp - $xhot;
-			my $dest_y = $y - $yp - $yhot;
+			my $dest_x = $root_x - $xp - $cursor_pixbuf_xhot;
+			my $dest_y = $root_y - $yp - $cursor_pixbuf_yhot;
 			$dest_x = 0 if $dest_x < 0;
 			$dest_y = 0 if $dest_y < 0;
 
-			$cursor_pixbuf->composite($pixbuf, $dest_x, $dest_y, $cursor->{width}, $cursor->{height}, $x - $xp - $xhot, $y - $yp - $yhot, 1.0, 1.0, 'bilinear', 255);
+			$cursor_pixbuf->composite($pixbuf, $dest_x, $dest_y, $cursor->{width}, $cursor->{height}, $root_x - $xp - $cursor_pixbuf_xhot, $root_y - $yp - $cursor_pixbuf_yhot, 1.0, 1.0, 'bilinear', 255);
 
 		}
 	}
@@ -563,3 +491,5 @@ sub include_cursor ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) {
 }
 
 1;
+
+__END__
