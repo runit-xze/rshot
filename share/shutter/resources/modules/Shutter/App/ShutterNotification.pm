@@ -70,7 +70,7 @@ has _notifications_window => (
 	builder  => '_build__notifications_window',
 );
 
-sub _build__notifications_window ($self) {
+sub _build__notifications_window ($self) { ## no critic (Subroutines::RequireFinalReturn Subroutines::ProhibitUnusedPrivateSubroutines)
 	try {
 		my $win = Gtk3::Window->new('popup');
 		if ($self->_sc->main_window->get_screen->is_composited) {
@@ -184,7 +184,7 @@ sub _build__notifications_window ($self) {
 		return $win;
 	} catch ($e) {
 		$log->warn("ShutterNotification init warning: $e");
-		return undef;
+		return;
 	}
 }
 
@@ -216,7 +216,7 @@ sub show ($self, $summary, $body) {
 	return 0;
 }
 
-sub close ($self, $no_clear = undef) {
+sub close ($self, $no_clear = undef) {    ## no critic (Subroutines::ProhibitBuiltinHomonyms NamingConventions::ProhibitAmbiguousNames)
 
 	unless ($no_clear) {
 		$self->_clear_summary;

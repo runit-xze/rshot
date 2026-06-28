@@ -52,12 +52,12 @@ has _d => (
 	builder  => '_build__d',
 );
 
-sub _build__dialogs ($self) {
+sub _build__dialogs ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	my $current_window = $self->_common->main_window;
 	return Shutter::App::SimpleDialogs->new($current_window);
 }
 
-sub _build__d ($self) {
+sub _build__d ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	return $self->_common->gettext_object;
 }
 

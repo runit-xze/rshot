@@ -42,7 +42,7 @@ has _shf => (
 	builder  => '_build__shf',
 );
 
-sub _build__shf ($self) {
+sub _build__shf ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	return Shutter::App::HelperFunctions->new($self->_common);
 }
 
@@ -633,7 +633,7 @@ sub _build_actions_menu ($self, $accel_group, $d, $shutter_root, $prefix) {
 
 sub set_attr ($self, $name, $value) {
 	my $setter = "_set_$name";
-	$self->$setter($value);
+	return $self->$setter($value);
 }
 
 sub get_attr ($self, $name) {

@@ -1,5 +1,7 @@
 package Shutter::App::Handlers::Screenshot_GifRecord;
 
+## no critic (Subroutines::ProtectPrivateSubs)
+
 use utf8;
 use v5.40;
 use feature 'try';

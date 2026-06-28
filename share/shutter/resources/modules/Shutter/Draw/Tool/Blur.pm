@@ -21,7 +21,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-	return $self->drawing_tool->create_pixel_image($event, undef);
+	return $self->drawing_tool->item_factory->create_pixel_image($event, undef);
 }
 
 sub on_drag ($self, $event) {

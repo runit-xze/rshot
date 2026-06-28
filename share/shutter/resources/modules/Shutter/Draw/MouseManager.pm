@@ -3,7 +3,7 @@ use Moo;
 use utf8;
 use v5.40;
 use Glib qw/TRUE FALSE/;
-use Carp qw(verbose longmess);
+use Carp qw(verbose longmess carp);
 
 has drawing_tool => (is => 'ro', required => 1);
 
@@ -14,8 +14,8 @@ sub event_item_on_motion_notify {
 	my $res;
 	eval { $res = $tool->on_motion_notify($item, $target, $ev); };
 	if (my $e = $@) {
-		warn "Tool crashed on motion_notify: $e";
-		warn "  item=" . (ref($item) // 'undef') . " target=" . (ref($target) // 'undef') . " tool=" . (ref($tool) // 'undef');
+		carp "Tool crashed on motion_notify: $e";
+		carp "  item=" . (ref($item) // 'undef') . " target=" . (ref($target) // 'undef') . " tool=" . (ref($tool) // 'undef');
 		warn longmess("motion_notify error trace");
 		$mgr->drawing_tool->release_focus($item, $ev);
 		return FALSE;
@@ -30,7 +30,7 @@ sub event_item_on_key_press {
 	my $res;
 	eval { $res = $tool->on_key_press($item, $target, $ev); };
 	if (my $e = $@) {
-		warn "Tool crashed on key_press: $e";
+		carp "Tool crashed on key_press: $e";
 		$mgr->drawing_tool->release_focus($item, $ev);
 		return FALSE;
 	}
@@ -44,7 +44,7 @@ sub event_item_on_button_press {
 	my $res;
 	eval { $res = $tool->on_button_press($item, $target, $ev, $select); };
 	if (my $e = $@) {
-		warn "Tool crashed on button_press: $e";
+		carp "Tool crashed on button_press: $e";
 		$mgr->drawing_tool->release_focus($item, $ev);
 		return FALSE;
 	}
@@ -58,7 +58,7 @@ sub event_item_on_button_release {
 	my $res;
 	eval { $res = $tool->on_button_release($item, $target, $ev); };
 	if (my $e = $@) {
-		warn "Tool crashed on button_release: $e";
+		carp "Tool crashed on button_release: $e";
 		$mgr->drawing_tool->release_focus($item, $ev);
 		return FALSE;
 	}

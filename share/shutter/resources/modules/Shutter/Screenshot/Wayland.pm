@@ -1,11 +1,11 @@
+package Shutter::Screenshot::Wayland;
+
 use utf8;
 use v5.40;
 use feature 'try';
 no warnings 'experimental::try';
 use Net::DBus;
 use Net::DBus::Reactor;
-
-package Shutter::Screenshot::Wayland;
 
 sub xdg_portal ($screenshooter, $interactive = 0) {
 	my $reactor = Net::DBus::Reactor->main;

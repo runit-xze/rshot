@@ -532,7 +532,7 @@ sub create_bounding_rect {
 	);
 }
 
-sub create_rect_item {
+sub create_rect_item {    ## no critic (Subroutines::ProhibitManyArgs)
 	my ($mgr, $x, $y, $w, $h, $fill, $stroke, $line_width) = @_;
 	return GooCanvas2::CanvasRect->new(
 		parent                  => $mgr->drawing_tool->canvas->get_root_item,
@@ -546,7 +546,7 @@ sub create_rect_item {
 	);
 }
 
-sub create_ellipse_item {
+sub create_ellipse_item {    ## no critic (Subroutines::ProhibitManyArgs)
 	my ($mgr, $x, $y, $w, $h, $fill, $stroke, $line_width) = @_;
 	return GooCanvas2::CanvasEllipse->new(
 		parent                  => $mgr->drawing_tool->canvas->get_root_item,
@@ -560,7 +560,7 @@ sub create_ellipse_item {
 	);
 }
 
-sub create_text_label {
+sub create_text_label {    ## no critic (Subroutines::ProhibitManyArgs)
 	my ($mgr, $x, $y, $text, $color, $line_width) = @_;
 	return GooCanvas2::CanvasText->new(
 		parent                => $mgr->drawing_tool->canvas->get_root_item,
@@ -587,7 +587,7 @@ sub create_censor_polyline {
 	);
 }
 
-sub create_line_polyline {
+sub create_line_polyline {    ## no critic (Subroutines::ProhibitManyArgs)
 	my ($mgr, $x, $y, $w, $h, $stroke, $line_width, $end_arrow, $start_arrow, $arrow_length, $arrow_width, $arrow_tip_length) = @_;
 	return GooCanvas2::CanvasPolyline->new(
 		parent                  => $mgr->drawing_tool->canvas->get_root_item,
@@ -654,7 +654,7 @@ sub create_highlighter_polyline {
 sub increase_uid {
 	my $mgr = shift;
 	my $dt  = $mgr->drawing_tool;
-	$dt->increase_uid;
+	return $dt->increase_uid;
 }
 
 1;

@@ -27,6 +27,7 @@ no warnings 'experimental::try';
 use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
+use Encode;
 
 has cli => (is => 'ro', required => 1);
 

@@ -19,7 +19,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-	return $self->drawing_tool->create_censor($event, undef);
+	return $self->drawing_tool->item_factory->create_censor($event, undef);
 }
 
 sub on_drag ($self, $event) {

@@ -69,7 +69,7 @@ sub show ($self, $summary, $body, $nid = undef) {
 	return $self->_nid;
 }
 
-sub close ($self, $nid = undef) {
+sub close ($self, $nid = undef) {    ## no critic (Subroutines::ProhibitBuiltinHomonyms NamingConventions::ProhibitAmbiguousNames)
 	$nid //= $self->_nid;
 
 	#close notification

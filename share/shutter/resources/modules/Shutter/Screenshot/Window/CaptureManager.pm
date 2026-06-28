@@ -125,7 +125,7 @@ sub redo_capture_async ($self) {
 	return $f;
 }
 
-sub _capture_noninteractive ($self, $f, $initevent) {
+sub _capture_noninteractive ($self, $f, $initevent) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 
 	my ($xp, $yp, $wp, $hp, $xc, $yc, $wc, $hc) = (0, 0, 0, 0, 0, 0, 0, 0);
 
@@ -289,7 +289,7 @@ sub _capture_noninteractive ($self, $f, $initevent) {
 	return;
 }
 
-sub _init_capture_state ($self) {
+sub _init_capture_state ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 
 	$self->{_c}                     = ();
 	$self->{_c}{'ws'}               = undef;

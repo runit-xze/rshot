@@ -19,7 +19,7 @@ sub on_drag_creation_shape ($self, $item, $target, $ev) {
 }
 
 sub on_click_creation ($self, $item, $target, $ev) {
-	return $self->drawing_tool->create_image($ev, undef);
+	return $self->drawing_tool->item_factory->create_image($ev, undef);
 }
 
 1;

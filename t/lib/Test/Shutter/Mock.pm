@@ -97,6 +97,32 @@ BEGIN {
         sub import { }
     }
     
+    # Mock Pango - Text rendering library
+    {
+        package Pango;
+        our $VERSION = '1.227';
+        use constant SCALE => 1024;
+        sub import { }
+    }
+    
+    # Mock Pango::Layout
+    {
+        package Pango::Layout;
+        sub new { return bless {}, shift; }
+        sub set_text { }
+        sub set_font_description { }
+        sub get_pixel_size { return (100, 20); }
+    }
+    
+    # Mock Pango::FontDescription
+    {
+        package Pango::FontDescription;
+        sub new { return bless {}, shift; }
+        sub from_string { return bless {}, shift; }
+        sub set_size { }
+        sub set_family { }
+    }
+    
     # Mock Log::Any
     {
         package Log::Any;
@@ -138,6 +164,9 @@ BEGIN {
     $INC{'Glib/Object/Introspection.pm'} = __FILE__;
     $INC{'Glib/Object/Subclass.pm'} = __FILE__;
     $INC{'Log/Any.pm'} = __FILE__;
+    $INC{'Pango.pm'} = __FILE__;
+    $INC{'Pango/Layout.pm'} = __FILE__;
+    $INC{'Pango/FontDescription.pm'} = __FILE__;
 }
 
 1;

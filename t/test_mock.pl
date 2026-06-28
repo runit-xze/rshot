@@ -1,4 +1,4 @@
-## no critic (Subroutines::RequireFinalReturn)
+## no critic (Subroutines::RequireFinalReturn Subroutines::ProhibitBuiltinHomonyms Modules::RequireExplicitPackage Modules::RequireFilenameMatchesPackage)
 use strict;
 use warnings;
 

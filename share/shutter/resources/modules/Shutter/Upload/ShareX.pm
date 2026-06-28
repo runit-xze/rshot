@@ -26,7 +26,7 @@ sub BUILD ($self) {
 	my $json = JSON::MaybeXS->new;
 	eval {
 		open(my $fh, '<', $self->sxcu_path) or die "Cannot open " . $self->sxcu_path;
-		my $json_text = do { local $/; <$fh> };
+		my $json_text = do { local $/ = undef; <$fh> };
 		close($fh);
 		$self->_sxcu($json->decode($json_text));
 	};

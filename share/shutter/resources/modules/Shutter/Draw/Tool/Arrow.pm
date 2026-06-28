@@ -30,7 +30,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-	return $self->drawing_tool->create_line($event, undef, TRUE, FALSE);
+	return $self->drawing_tool->item_factory->create_line($event, undef, TRUE, FALSE);
 }
 
 sub on_drag ($self, $event) {

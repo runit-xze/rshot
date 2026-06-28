@@ -61,7 +61,7 @@ has '_root' => (
 	builder => 1,
 );
 
-sub _build__root ($self) {
+sub _build__root ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	my $window = Gtk3::Window->new('toplevel');
 	my $root;
 	try {
@@ -82,7 +82,7 @@ has '_wnck_screen' => (
 	builder => 1,
 );
 
-sub _build__wnck_screen ($self) {
+sub _build__wnck_screen ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	return unless $self->_root;
 	my $scr = Wnck::Screen::get_default();
 	$scr->force_update();
@@ -94,7 +94,7 @@ has '_wm_manager_name' => (
 	builder => 1,
 );
 
-sub _build__wm_manager_name ($self) {
+sub _build__wm_manager_name ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	return unless $self->_root;
 	my $wm = $self->_gdk_screen->get_window_manager_name;
 	if ($self->_wnck_screen->can('get_window_manager_name')) {
@@ -108,7 +108,7 @@ has '_workspaces' => (
 	builder => 1,
 );
 
-sub _build__workspaces ($self) {
+sub _build__workspaces ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	return [] unless $self->_root;
 	my @ws;
 	for (my $wcount = 0 ; $wcount < $self->_wnck_screen->get_workspace_count ; $wcount++) {

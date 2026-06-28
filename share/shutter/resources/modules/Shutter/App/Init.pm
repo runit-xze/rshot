@@ -158,7 +158,7 @@ sub _mock_widget ($val) {
 	return bless {val => $val}, 'MockWidget';
 }
 
-package MockWidget {
+package MockWidget {    ## no critic (Modules::ProhibitMultiplePackages)
 	sub get_active      { return shift->{val} }
 	sub get_value       { return shift->{val} }
 	sub get_text        { return shift->{val} }

@@ -21,7 +21,7 @@
 ###################################################
 
 # Native Gtk3::IconSize doesn't work for some reason
-package Gtk3::IconSize;
+package Gtk3::IconSize;    ## no critic (Modules::ProhibitMultiplePackages Modules::RequireFilenameMatchesPackage)
 
 use v5.40;
 use feature "try";
@@ -482,23 +482,23 @@ sub check_valid_mime_type ($self, $mime_type) {
 }
 
 # Public accessor methods (wrappers around Moo attributes)
-sub gettext         { shift->_d }
-sub dicons          { shift->_dicons }
-sub line_spin_w     { shift->_line_spin_w }
-sub line_spin_wh    { shift->_line_spin_wh }
-sub stroke_color_w  { shift->_stroke_color_w }
-sub stroke_color_wh { shift->_stroke_color_wh }
-sub fill_color_w    { shift->_fill_color_w }
-sub fill_color_wh   { shift->_fill_color_wh }
-sub font_btn_w      { shift->_font_btn_w }
-sub font_btn_wh     { shift->_font_btn_wh }
+sub gettext         { return shift->_d }
+sub dicons          { return shift->_dicons }
+sub line_spin_w     { return shift->_line_spin_w }
+sub line_spin_wh    { return shift->_line_spin_wh }
+sub stroke_color_w  { return shift->_stroke_color_w }
+sub stroke_color_wh { return shift->_stroke_color_wh }
+sub fill_color_w    { return shift->_fill_color_w }
+sub fill_color_wh   { return shift->_fill_color_wh }
+sub font_btn_w      { return shift->_font_btn_w }
+sub font_btn_wh     { return shift->_font_btn_wh }
 
-sub icons          { shift->_icons }
-sub clipboard      { shift->_clipboard }
-sub items          { shift->_items }
-sub drawing_window { shift->_drawing_window }
-sub canvas         { shift->_canvas }
-sub stipple_pixbuf { shift->_stipple_pixbuf }
+sub icons          { return shift->_icons }
+sub clipboard      { return shift->_clipboard }
+sub items          { return shift->_items }
+sub drawing_window { return shift->_drawing_window }
+sub canvas         { return shift->_canvas }
+sub stipple_pixbuf { return shift->_stipple_pixbuf }
 
 sub cut {
 	my ($self, @args) = @_;
@@ -580,8 +580,18 @@ sub increase_uid {
 }
 
 sub uimanager { return shift->_uimanager }
-
 sub toolbar_manager { return shift->_toolbar_manager }
+sub item_factory { return shift->_item_factory }
+sub settings_manager { return shift->_settings_manager }
+sub mouse_manager { return shift->_mouse_manager }
+sub macro_manager { return shift->_macro_manager }
+sub canvas_manager { return shift->_canvas_manager }
+sub property_manager { return shift->_property_manager }
+sub io_manager { return shift->_io_manager }
+sub state_manager { return shift->_state_manager }
+sub undo_manager { return shift->_undo_manager }
+sub context_menu_manager { return shift->_context_menu_manager }
+sub canvas_overlays { return shift->_canvas_overlays }
 
 # Methods consolidated from Shutter::Draw::LegacyDelegators
 sub load_settings {

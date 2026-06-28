@@ -17,12 +17,12 @@ has '_dialogs' => (is => 'rwp', lazy => 1, builder => '_build__dialogs');
 has '_lp'      => (is => 'rwp', lazy => 1, builder => '_build__lp');
 has '_quality' => (is => 'rwp');
 
-sub _build__dialogs ($self) {
+sub _build__dialogs ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	my $current_window = $self->_window || $self->_common->main_window;
 	return Shutter::App::SimpleDialogs->new($current_window);
 }
 
-sub _build__lp ($self) {
+sub _build__lp ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	my $current_window = $self->_window || $self->_common->main_window;
 	return Shutter::Pixbuf::Load->new($self->_common, $current_window);
 }

@@ -24,7 +24,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-	return $self->drawing_tool->create_text($event, undef);
+	return $self->drawing_tool->item_factory->create_text($event, undef);
 }
 
 sub on_drag ($self, $event) {

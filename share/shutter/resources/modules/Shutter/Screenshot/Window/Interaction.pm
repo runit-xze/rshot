@@ -14,7 +14,7 @@ requires qw(
 	get_shape
 );
 
-sub _capture_interactive ($self, $f, $active_workspace, $initevent) {
+sub _capture_interactive ($self, $f, $active_workspace, $initevent) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 
 	$self->select_window($initevent, $active_workspace);
 

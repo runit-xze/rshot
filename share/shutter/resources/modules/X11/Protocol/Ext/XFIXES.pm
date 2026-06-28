@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License along
 # with X11-Protocol-Other.  If not, see <http://www.gnu.org/licenses/>.
 
-BEGIN { require 5 }
-
 package X11::Protocol::Ext::XFIXES;
+
+BEGIN { require 5 }
 
 use v5.40;
 use feature "try";

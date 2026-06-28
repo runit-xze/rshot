@@ -47,7 +47,7 @@ has '_timeout' => (is => 'rw');
 has '_width'   => (is => 'rw');
 has '_shf'     => (is => 'lazy', builder => 1);
 
-sub _build__shf {
+sub _build__shf {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	my $self = shift;
 	return Shutter::App::HelperFunctions->new($self->_sc);
 }

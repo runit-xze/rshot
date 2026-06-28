@@ -7,7 +7,7 @@ requires qw(
 	drawing_tool
 );
 
-sub _handle_autoscroll {
+sub _handle_autoscroll {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	my ($self, $item, $ev) = @_;
 	my $dt = $self->drawing_tool;
 

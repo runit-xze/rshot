@@ -37,7 +37,7 @@ has _exiftool => (
 	lazy     => 1,
 );
 
-sub _build__exiftool ($self) {
+sub _build__exiftool ($self) { ## no critic (Subroutines::RequireFinalReturn Subroutines::ProhibitUnusedPrivateSubroutines)
 	try {
 		require Image::ExifTool;
 		return Image::ExifTool->new;

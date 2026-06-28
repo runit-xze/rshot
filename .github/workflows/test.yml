@@ -1,0 +1,85 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Perl
+      uses: shogo82148/actions-setup-perl@v1
+      with:
+        perl-version: '5.40'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libgtk-3-dev \
+          libglib2.0-dev \
+          libcairo2-dev \
+          libpango1.0-dev \
+          libgoocanvas-2.0-dev \
+          libwnck-3-dev \
+          libxml2-dev \
+          libdbus-1-dev \
+          xvfb
+    
+    - name: Install Carton
+      run: cpanm --notest Carton
+    
+    - name: Install Perl dependencies
+      run: carton install --deployment
+    
+    - name: Run tests with coverage
+      run: |
+        xvfb-run -a carton exec -- perl -MDevel::Cover=-coverage,statement,branch,condition,path,subroutine -Ilib -Ishare/shutter/resources/modules -e 'use TAP::Harness; my $harness = TAP::Harness->new({verbosity => 1}); $harness->runtests(glob("t/*.t"), glob("t/*/*.t"));'
+    
+    - name: Generate coverage report
+      run: carton exec -- cover -report html_basic
+    
+    - name: Upload coverage to artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: cover_db/
+    
+    - name: Check coverage threshold
+      run: |
+        COVERAGE=$(carton exec -- cover -report text | grep -oP 'Total\s+\K\d+\.\d+' | head -1)
+        echo "Coverage: $COVERAGE%"
+        if (( $(echo "$COVERAGE < 80.0" | bc -l) )); then
+          echo "ERROR: Coverage $COVERAGE% is below 80% threshold"
+          exit 1
+        fi
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Perl
+      uses: shogo82148/actions-setup-perl@v1
+      with:
+        perl-version: '5.40'
+    
+    - name: Install Carton
+      run: cpanm --notest Carton
+    
+    - name: Install dependencies
+      run: carton install --deployment
+    
+    - name: Run Perl::Critic
+      run: carton exec -- perlcritic --severity 3 --verbose 8 share/shutter/resources/modules/Shutter/
+    
+    - name: Check code formatting
+      run: |
+        carton exec -- perltidy --check-syntax --standard-error-output share/shutter/resources/modules/Shutter/**/*.pm

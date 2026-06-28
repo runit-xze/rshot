@@ -19,6 +19,8 @@
 
 package Shutter::App::Handlers::Screenshot_Take;
 
+## no critic (Subroutines::ProtectPrivateSubs)
+
 use warnings;
 use utf8;
 use Future;
@@ -524,7 +526,7 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	}
 }
 
-package MockScreenshooter {
+package MockScreenshooter {    ## no critic (Modules::ProhibitMultiplePackages)
 	sub new             { return bless {}, shift }
 	sub get_mode        { return "mock" }
 	sub get_action_name { return "mock_action" }

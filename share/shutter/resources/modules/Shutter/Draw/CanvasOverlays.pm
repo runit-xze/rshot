@@ -1,5 +1,7 @@
 package Shutter::Draw::CanvasOverlays;
 
+## no critic (NamingConventions::ProhibitAmbiguousNames)
+
 use utf8;
 use v5.40;
 use Moo;
@@ -88,7 +90,7 @@ sub handle_item_handles {
 }
 
 # Handle embedded items within parent rect
-sub handle_embedded {
+sub handle_embedded {    ## no critic (Subroutines::ProhibitManyArgs)
 	my ($self, $action, $item, $new_width, $new_height, $force_show) = @_;
 	return FALSE unless ($item && exists $self->items->{$item});
 
@@ -129,7 +131,7 @@ sub _make_handle_rect {
 	);
 }
 
-sub _create_item_handles {
+sub _create_item_handles {    ## no critic (Subroutines::ProhibitManyArgs)
 	my ($self, $item, $x, $y, $width, $height, $middle_h, $middle_v) = @_;
 
 	# Create all 8 handles
@@ -193,7 +195,7 @@ sub _delete_item_handles {
 	return;
 }
 
-sub _update_item_handle_positions {
+sub _update_item_handle_positions {    ## no critic (Subroutines::ProhibitManyArgs)
 	my ($self, $item, $x, $y, $width, $height, $visibility) = @_;
 	my $middle_h = $x + $width / 2;
 	my $middle_v = $y + $height / 2;

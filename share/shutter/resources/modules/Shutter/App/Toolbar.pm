@@ -42,7 +42,7 @@ has _shf => (
 	builder  => '_build__shf',
 );
 
-sub _build__shf ($self) {
+sub _build__shf ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	return Shutter::App::HelperFunctions->new($self->_common);
 }
 

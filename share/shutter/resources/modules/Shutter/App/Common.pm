@@ -118,7 +118,7 @@ sub BUILD ($self, $args) {
 	return;
 }
 
-sub _setup_icontheme ($self) {
+sub _setup_icontheme ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 
 	my $theme = Gtk3::IconTheme::get_default();
 	$theme->append_search_path($self->shutter_root . "/share/icons");

@@ -8,7 +8,7 @@ has drawing_tool => (is => 'ro', required => 1);
 has '_undo'      => (is => 'rw', default => sub { [] });
 has '_redo'      => (is => 'rw', default => sub { [] });
 
-sub store_to_xdo_stack {
+sub store_to_xdo_stack {    ## no critic (Subroutines::ProhibitManyArgs)
 	my ($mgr, $item, $action, $xdo, $opt1, $source) = @_;
 
 	#opt1 is currently only used when cropping the image

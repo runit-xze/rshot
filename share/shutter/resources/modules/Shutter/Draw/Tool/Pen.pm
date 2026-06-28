@@ -13,7 +13,7 @@ sub draw ($self, $cr) {
 }
 
 sub on_click ($self, $event) {
-	return $self->drawing_tool->create_polyline($event, undef, FALSE);
+	return $self->drawing_tool->item_factory->create_polyline($event, undef, FALSE);
 }
 
 sub on_drag ($self, $event) {

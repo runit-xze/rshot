@@ -60,7 +60,7 @@ has _steps => (
 	builder  => '_build__steps',
 );
 
-sub _build__steps ($self) {
+sub _build__steps ($self) {    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 	return [];
 }
 

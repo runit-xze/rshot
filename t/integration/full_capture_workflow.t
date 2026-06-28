@@ -4,23 +4,19 @@ use strict;
 use warnings;
 use v5.40;
 use Test::More;
-use Test::MockModule;
 use File::Temp qw(tempdir tempfile);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
-
 # Integration test for full capture workflow
 # Tests the complete flow from capture to save/upload
+# Requires DISPLAY environment variable (X11 or Wayland)
+
+BEGIN {
+    unless ($ENV{DISPLAY}) {
+        plan skip_all => 'Integration tests require DISPLAY environment variable';
+    }
+}
 
 subtest 'Full screen capture workflow' => sub {
     plan tests => 10;
