@@ -56,6 +56,7 @@ use Shutter::App::Core::SettingsManager;
 use Shutter::App::Core::ScreenshotHandler;
 use Shutter::App::Core::UploadManager;
 use Shutter::App::Core::WidgetStub;
+use Shutter::App::Core::FileSystemAPI;
 use Shutter::App::Notification;
 
 use Glib qw/TRUE FALSE/;

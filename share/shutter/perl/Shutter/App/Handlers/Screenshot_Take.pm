@@ -288,6 +288,104 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	# Mock Capture Mode
 	my $filetype_value;
 
+	my $post_capture_cb = sub {
+		my ($screenshot) = @_;
+
+		unless ($screenshot) {
+			$sd->dlg_error_message($d->get("Error while taking the screenshot."), $d->get("Failed"));
+			$cli->handlers->get('Core')->fct_control_main_window('show');
+			return FALSE;
+		}
+
+		my $giofile = undef;
+		my $error   = Shutter::Screenshot::Error->new($sc, $screenshot, $data, $extra);
+		if ($error->is_error) {
+			my $detailed_error_text = $screenshooter ? $screenshooter->get_error_text : '';
+			my ($response, $status_text) = $error->show_dialog($detailed_error_text);
+			if ($error->is_aborted_by_user) {
+				$cli->handlers->get('Core')->fct_control_main_window('show', $present_after_active->get_active);
+			} else {
+				$cli->handlers->get('Core')->fct_control_main_window('show');
+			}
+			return FALSE;
+		} else {
+			if ($sc->export_filename) {
+				my ($short, $folder_path, $ext) = fileparse($shf->switch_home_in_file($shf->utf8_decode($sc->export_filename)), qr/\.[^.]*/);
+				$filetype_value = $ext;
+				$filetype_value =~ s/\.//;
+				$short = strftime $short, localtime;
+				$short =~ s/(\/|\#)/-/g;
+				my $tmp_filename = $folder_path . $short . $ext;
+				$tmp_filename = File::Spec->rel2abs($tmp_filename) unless File::Spec->file_name_is_absolute($tmp_filename);
+				$tmp_filename = $cli->handlers->get('Util_File')->fct_parse_filename_wildcards($tmp_filename, $screenshooter, $screenshot);
+				$giofile      = Glib::IO::File::new_for_path($tmp_filename);
+			} else {
+				$filename_value = $shf->utf8_decode(strftime $filename_value, localtime);
+				$filename_value =~ s/(\/|\#)/-/g;
+				$filename_value = $cli->handlers->get('Util_File')->fct_parse_filename_wildcards($filename_value, $screenshooter, $screenshot);
+				$giofile        = $cli->handlers->get('Util_Get')->fct_get_next_filename($filename_value, $folder, $filetype_value);
+			}
+
+			unless ($giofile) {
+				$sd->dlg_error_message($d->get("There was an error determining the filename."), $d->get("Failed"));
+				$cli->handlers->get('Core')->fct_control_main_window('show');
+				return FALSE;
+			}
+
+			$screenshot_name = $shf->utf8_decode(uri_unescape($giofile->get_path));
+			$screenshot_name = "/" . $giofile->get_basename unless $screenshot_name;
+			$giofile         = Glib::IO::File::new_for_path($screenshot_name);
+
+			# Bordereffect
+			if ($bordereffect_active->get_active) {
+				my $pbuf_border = Shutter::Pixbuf::Border->new($sc);
+				$screenshot = $pbuf_border->create_border($screenshot, $bordereffect->get_value, $bordereffect_cbtn->get_color);
+			}
+
+			# Save pixbuf
+			unless ($sp->save_pixbuf_to_file($screenshot, $screenshot_name, $filetype_value, $quality_value)) {
+				$cli->handlers->get('Core')->fct_control_main_window('show');
+				return FALSE;
+			}
+		}
+
+		if ($giofile->query_exists) {
+
+			# Integrate into session
+			unless ($sc->no_session) {
+				$cli->handlers->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook($giofile, $screenshot, $screenshooter);
+			}
+
+			# After Capture Pipeline
+			if ($acp && $acp->get_steps) {
+				my $upload_link_container = \ '';
+				$acp->execute({
+						filename    => $screenshot_name,
+						pixbuf      => $screenshot,
+						clipboard   => $clipboard,
+						upload_link => \$upload_link_container,
+						editor_cb   => sub {
+							$cli->handlers->get('Upload_Main')->fct_open_with_program(@_);
+						},
+						upload_cb => sub {
+							$cli->handlers->get('Dialogs_Upload')->fct_upload();
+						},
+						pin_cb => sub {
+							my ($pbuf) = @_;
+							$pins->pin($pbuf, $sc) if $pins;
+						},
+					});
+			}
+		}
+
+		$cli->handlers->get('Core')->fct_control_main_window('show', $present_after_active->get_active);
+
+		if ($sc->exit_after_capture) {
+			$cli->handlers->get('Core')->evt_delete_window('', 'quit');
+		}
+
+		return TRUE;
+	};
 	if ($sc->mock_capture) {
 		print "Mock Capture Mode enabled - using static test image\n" if $sc->debug;
 		$screenshot = Gtk3::Gdk::Pixbuf->new_from_file($sc->shutter_root . "/share/shutter/resources/icons/web_image.svg");
@@ -433,108 +531,9 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 		$screenshot    = $screenshooter->dlg_website($extra);
 	}
 
-	my $post_capture_cb = sub {
-		my ($screenshot) = @_;
 
-		unless ($screenshot) {
-			$sd->dlg_error_message($d->get("Error while taking the screenshot."), $d->get("Failed"));
-			$cli->handlers->get('Core')->fct_control_main_window('show');
-			return FALSE;
-		}
 
-		my $giofile = undef;
-		my $error   = Shutter::Screenshot::Error->new($sc, $screenshot, $data, $extra);
-		if ($error->is_error) {
-			my $detailed_error_text = $screenshooter ? $screenshooter->get_error_text : '';
-			my ($response, $status_text) = $error->show_dialog($detailed_error_text);
-			if ($error->is_aborted_by_user) {
-				$cli->handlers->get('Core')->fct_control_main_window('show', $present_after_active->get_active);
-			} else {
-				$cli->handlers->get('Core')->fct_control_main_window('show');
-			}
-			return FALSE;
-		} else {
-			if ($sc->export_filename) {
-				my ($short, $folder_path, $ext) = fileparse($shf->switch_home_in_file($shf->utf8_decode($sc->export_filename)), qr/\.[^.]*/);
-				$filetype_value = $ext;
-				$filetype_value =~ s/\.//;
-				$short = strftime $short, localtime;
-				$short =~ s/(\/|\#)/-/g;
-				my $tmp_filename = $folder_path . $short . $ext;
-				$tmp_filename = File::Spec->rel2abs($tmp_filename) unless File::Spec->file_name_is_absolute($tmp_filename);
-				$tmp_filename = $cli->handlers->get('Util_File')->fct_parse_filename_wildcards($tmp_filename, $screenshooter, $screenshot);
-				$giofile      = Glib::IO::File::new_for_path($tmp_filename);
-			} else {
-				$filename_value = $shf->utf8_decode(strftime $filename_value, localtime);
-				$filename_value =~ s/(\/|\#)/-/g;
-				$filename_value = $cli->handlers->get('Util_File')->fct_parse_filename_wildcards($filename_value, $screenshooter, $screenshot);
-				$giofile        = $cli->handlers->get('Util_Get')->fct_get_next_filename($filename_value, $folder, $filetype_value);
-			}
-
-			unless ($giofile) {
-				$sd->dlg_error_message($d->get("There was an error determining the filename."), $d->get("Failed"));
-				$cli->handlers->get('Core')->fct_control_main_window('show');
-				return FALSE;
-			}
-
-			$screenshot_name = $shf->utf8_decode(uri_unescape($giofile->get_path));
-			$screenshot_name = "/" . $giofile->get_basename unless $screenshot_name;
-			$giofile         = Glib::IO::File::new_for_path($screenshot_name);
-
-			# Bordereffect
-			if ($bordereffect_active->get_active) {
-				my $pbuf_border = Shutter::Pixbuf::Border->new($sc);
-				$screenshot = $pbuf_border->create_border($screenshot, $bordereffect->get_value, $bordereffect_cbtn->get_color);
-			}
-
-			# Save pixbuf
-			unless ($sp->save_pixbuf_to_file($screenshot, $screenshot_name, $filetype_value, $quality_value)) {
-				$cli->handlers->get('Core')->fct_control_main_window('show');
-				return FALSE;
-			}
-		}
-
-		if ($giofile->query_exists) {
-
-			# Integrate into session
-			unless ($sc->no_session) {
-				$cli->handlers->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook($giofile, $screenshot, $screenshooter);
-			}
-
-			# After Capture Pipeline
-			if ($acp && $acp->get_steps) {
-				my $upload_link_container = \ '';
-				$acp->execute({
-						filename    => $screenshot_name,
-						pixbuf      => $screenshot,
-						clipboard   => $clipboard,
-						upload_link => \$upload_link_container,
-						editor_cb   => sub {
-							$cli->handlers->get('Upload_Main')->fct_open_with_program(@_);
-						},
-						upload_cb => sub {
-							$cli->handlers->get('Dialogs_Upload')->fct_upload();
-						},
-						pin_cb => sub {
-							my ($pbuf) = @_;
-							$pins->pin($pbuf, $sc) if $pins;
-						},
-					});
-			}
-		}
-
-		$cli->handlers->get('Core')->fct_control_main_window('show', $present_after_active->get_active);
-
-		if ($sc->exit_after_capture) {
-			$cli->handlers->get('Core')->evt_delete_window('', 'quit');
-		}
-
-		return TRUE;
-	};
-
-	if ($sc->mock_capture) {
-		return $post_capture_cb->($screenshot);
-	}
+POST_CAPTURE:
 
 	if (eval { $screenshot->isa('Future') }) {
 		$screenshot->then(
@@ -547,5 +546,3 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 		return $post_capture_cb->($screenshot);
 	}
 }
-
-1;

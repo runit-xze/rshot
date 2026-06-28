@@ -50,9 +50,9 @@ install: all
 	cp -r $(srcdir)share/shutter/perl/Shutter $(perl5dir)/
 	install -d $(perl5dir)/X11/Protocol/Ext
 	install -m644 $(srcdir)share/shutter/perl/X11/Protocol/Ext/XFIXES.pm $(perl5dir)/X11/Protocol/Ext/XFIXES.pm
-	# Data resources -> /usr/local/share/shutter/ (icons, credits, license, po, etc.)
-	install -d $(prefix)/share/shutter
-	cp -r $(srcdir)share/shutter/resources/. $(prefix)/share/shutter/
+	# Data resources -> /usr/local/share/shutter/resources/ (icons, credits, license, po, etc.)
+	install -d $(prefix)/share/shutter/resources
+	cp -r $(srcdir)share/shutter/resources/. $(prefix)/share/shutter/resources/
 
 uninstall:
 	rm -f $(prefix)/bin/rshot

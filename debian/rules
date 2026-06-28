@@ -64,8 +64,8 @@ override_dh_auto_install:
 	#   bin, man, icons, locale, desktop -> standard FHS locations
 	install -d $(CURDIR)/debian/rshot/usr/share/perl5
 	cp -r $(CURDIR)/share/shutter/perl/Shutter $(CURDIR)/debian/rshot/usr/share/perl5/
-	install -d $(CURDIR)/debian/rshot/usr/share/shutter
-	cp -r $(CURDIR)/share/shutter/resources/. $(CURDIR)/debian/rshot/usr/share/shutter/
+	install -d $(CURDIR)/debian/rshot/usr/share/shutter/resources
+	cp -r $(CURDIR)/share/shutter/resources/. $(CURDIR)/debian/rshot/usr/share/shutter/resources/
 	# GPL-3 license text is provided by /usr/share/common-licenses/GPL-3
 	# on all Debian systems; shipping a private copy is redundant.
 	rm -f $(CURDIR)/debian/rshot/usr/share/shutter/license/gplv3
