@@ -1,0 +1,8 @@
+{"id":"bc43fdb1-fd7b-4dfb-8af8-b0a1600c8a67","ts":"2026-06-28T02:06:27.103Z","path":"/home/ashley/shutter/.github/workflows/test.yml","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"d0db5b70-8d19-4421-b393-37b735896575","ts":"2026-06-28T04:35:26.198Z","path":"/home/ashley/shutter/t/Shutter/App/CLI.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"684684aa-b2dd-4f1d-8c60-0497d67b08a2","ts":"2026-06-28T04:35:58.914Z","path":"/home/ashley/shutter/t/Shutter/App/CLI.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"e11cf20d-6a9f-484f-808e-e9a64487fc37","ts":"2026-06-28T05:13:37.058Z","path":"/home/ashley/shutter/t/Shutter/App/gif_record_handler.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"44be41d6-2ca6-40bd-99ae-9f7430f1bf3c","ts":"2026-06-28T05:17:11.890Z","path":"/home/ashley/shutter/t/lib/Test/Shutter/Mock.pm","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"6bbbe595-cf56-4811-8723-338a297cdc60","ts":"2026-06-28T05:17:17.138Z","path":"/home/ashley/shutter/t/lib/Test/Shutter/Mock.pm","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"6e2f97d9-f657-46a8-8921-a617eb014cad","ts":"2026-06-28T05:17:26.749Z","path":"/home/ashley/shutter/t/lib/Test/Shutter/Mock.pm","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"09416193-f22b-4d48-b736-099fed547295","ts":"2026-06-28T05:18:52.425Z","path":"/home/ashley/shutter/t/integration/full_capture_workflow.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
