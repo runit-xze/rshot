@@ -175,7 +175,6 @@ sub _show_countdown ($self, $region, $on_done) {
 sub _begin_recording ($self, $data, $region, $folder_from_config) {
 	my $cli = $self->cli;
 	my $sc  = $cli->sc;
-	print STDERR "[DEBUG] _begin_recording called\n";
 	my $shf = $cli->shf;
 	my $sm  = $cli->{settings_manager};
 
@@ -201,7 +200,6 @@ sub _begin_recording ($self, $data, $region, $folder_from_config) {
 		$output_path = $shf->utf8_decode(uri_unescape($giofile->get_path));
 	}
 
-	print STDERR "[DEBUG] Output path generated: " . ($output_path // 'undef') . "\n";
 
 	my $recorder = Shutter::Screenshot::GifRecorder->new(
 		_common  => $sc,
@@ -215,16 +213,13 @@ sub _begin_recording ($self, $data, $region, $folder_from_config) {
 		});
 
 	$self->_recorder($recorder);
-	print STDERR "[DEBUG] Calling recorder->start()\n";
 	$recorder->start();
 
-	print STDERR "[DEBUG] Calling _show_stop_ui()\n";
 	$self->_show_stop_ui();
 	return;
 }
 
 sub _show_stop_ui ($self) {
-	print STDERR "[DEBUG] _show_stop_ui: creating window\n";
 
 	# Floating mini-window for Stop
 	my $stop_win = Gtk3::Window->new('toplevel');
@@ -245,7 +240,6 @@ sub _show_stop_ui ($self) {
 	$stop_win->add($button);
 	$stop_win->show_all;
 
-	print STDERR "[DEBUG] _show_stop_ui: getting monitor geometry\n";
 
 	# Place it somewhere visible, like bottom right
 	my $screen = $stop_win->get_screen;
@@ -254,7 +248,6 @@ sub _show_stop_ui ($self) {
 	$stop_win->move($geom->{x} + $geom->{width} - 150, $geom->{y} + $geom->{height} - 100);
 
 	$self->_stop_window($stop_win);
-	print STDERR "[DEBUG] _show_stop_ui: done\n";
 	return;
 }
 
