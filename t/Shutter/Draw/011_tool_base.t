@@ -1,3 +1,4 @@
+## no critic (Subroutines::ProhibitExplicitReturnUndef ValuesAndExpressions::ProhibitVersionStrings Modules::ProhibitMultiplePackages Subroutines::ProhibitBuiltinHomonyms Modules::RequireEndWithOne Modules::RequireExplicitPackage Modules::RequireFilenameMatchesPackage NamingConventions::ProhibitAmbiguousNames BuiltinFunctions::ProhibitUniversalIsa)
 use 5.010;
 use strict;
 use warnings;
@@ -167,6 +168,7 @@ sub _make_event {
 sub _cleanup {
 	my ($mock_dt) = @_;
 	$mock_dt->unmock_all() if $mock_dt;
+	return;
 }
 
 # Suppress "Argument isn't numeric in numeric ge" warnings from >= comparisons

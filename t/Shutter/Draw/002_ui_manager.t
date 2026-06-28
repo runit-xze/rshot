@@ -1,3 +1,4 @@
+## no critic (Modules::RequireEndWithOne Modules::RequireExplicitPackage)
 use 5.020;    # List::Util >= 1.33
 use strict;
 use warnings;

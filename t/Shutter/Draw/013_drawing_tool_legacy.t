@@ -1,3 +1,4 @@
+## no critic (Subroutines::ProhibitExplicitReturnUndef ValuesAndExpressions::ProhibitVersionStrings Modules::ProhibitMultiplePackages Subroutines::ProhibitBuiltinHomonyms Modules::RequireEndWithOne Modules::RequireExplicitPackage Modules::RequireFilenameMatchesPackage NamingConventions::ProhibitAmbiguousNames BuiltinFunctions::ProhibitUniversalIsa)
 use 5.010;
 use strict;
 use warnings;
@@ -116,6 +117,7 @@ sub _build_dt {
 sub _cleanup_dt {
 	my $dt = shift;
 	$dt->{_mock_handle_rects}->unmock_all() if $dt->{_mock_handle_rects};
+	return;
 }
 
 package MockCanvas {

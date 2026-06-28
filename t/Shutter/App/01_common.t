@@ -1,3 +1,4 @@
+## no critic (Modules::RequireEndWithOne Modules::RequireExplicitPackage)
 use 5.010;
 use strict;
 use warnings;
@@ -206,7 +207,7 @@ subtest "Getters and setters" => sub {
 
 done_testing();
 
-sub _get_common_object {
+sub _get_common_object {    ## no critic (Subroutines::ProhibitManyArgs)
 	my ($root, $main_window, $name, $version, $revision, $pid) = @_;
 
 	return Shutter::App::Common->new(

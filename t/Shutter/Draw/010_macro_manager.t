@@ -1,3 +1,4 @@
+## no critic (Subroutines::ProhibitExplicitReturnUndef ValuesAndExpressions::ProhibitVersionStrings Modules::ProhibitMultiplePackages Subroutines::ProhibitBuiltinHomonyms Modules::RequireEndWithOne Modules::RequireExplicitPackage Modules::RequireFilenameMatchesPackage NamingConventions::ProhibitAmbiguousNames BuiltinFunctions::ProhibitUniversalIsa)
 use 5.010;
 use strict;
 use warnings;

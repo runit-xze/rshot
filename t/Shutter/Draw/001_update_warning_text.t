@@ -1,4 +1,4 @@
-## no critic (Subroutines::RequireFinalReturn)
+## no critic (Subroutines::RequireFinalReturn Modules::RequireEndWithOne Modules::RequireExplicitPackage Modules::RequireFilenameMatchesPackage NamingConventions::ProhibitAmbiguousNames)
 
 use 5.010;
 use strict;

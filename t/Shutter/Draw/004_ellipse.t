@@ -1,3 +1,4 @@
+## no critic (Modules::RequireEndWithOne Modules::RequireExplicitPackage Modules::RequireFilenameMatchesPackage)
 use 5.010;
 use strict;
 use warnings;

@@ -1,3 +1,4 @@
+## no critic (Modules::RequireEndWithOne Modules::RequireExplicitPackage RegularExpressions::RequireExtendedFormatting)
 use 5.010;
 use strict;
 use warnings;
@@ -54,8 +55,9 @@ sub _install_statusbar_mocks {
 	# push_tool_help_to_statusbar delegates to toolbar_manager — route back to state_manager
 	$_mock_dt_sm->mock('push_tool_help_to_statusbar', sub {
 		my $dt = shift;
-		$dt->{_state_manager}->push_tool_help_to_statusbar(@_);
+		return $dt->{_state_manager}->push_tool_help_to_statusbar(@_);
 	});
+	return;
 }
 
 BEGIN { _install_statusbar_mocks(); }
