@@ -1,0 +1,15 @@
+{"id":"9d655ad1-4af3-4973-b29d-793f92b25887","ts":"2026-06-28T04:35:46.349Z","path":"/home/ashley/shutter/t/lib/Test/Shutter/Mock.pm","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"56945d3f-aa20-4218-9d48-31c362d807b0","ts":"2026-06-28T04:36:13.299Z","path":"/home/ashley/shutter/t/lib/Test/Shutter/Mock.pm","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"9ed3912a-7129-468f-a569-eadaa158bc83","ts":"2026-06-28T04:36:27.892Z","path":"/home/ashley/shutter/t/00-load.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"dac6c6d6-343f-4189-a4c0-fd3c7df671bb","ts":"2026-06-28T04:38:56.299Z","path":"/home/ashley/shutter/t/lib/Test/Shutter/Mock.pm","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"b86bc087-4a66-4ff9-98e7-b09f907deb2b","ts":"2026-06-28T04:39:17.557Z","path":"/home/ashley/shutter/t/Shutter/App/HelperFunctions.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"d969e1c9-637b-4fa4-970f-2109a7ac3159","ts":"2026-06-28T04:39:41.773Z","path":"/home/ashley/shutter/t/lib/Test/Shutter/Mock.pm","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"c2c41c04-2518-4774-9a28-24587a40fabc","ts":"2026-06-28T04:41:26.141Z","path":"/home/ashley/shutter/t/Shutter/App/Menu.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"94545a44-aa7c-4e1e-b3ce-b79e7cfd8d67","ts":"2026-06-28T04:41:37.946Z","path":"/home/ashley/shutter/t/Shutter/App/Notification.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"f578b152-a6f9-482f-838b-9d707286427c","ts":"2026-06-28T04:41:55.014Z","path":"/home/ashley/shutter/t/Shutter/App/SimpleDialogs.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"1c170635-ef9a-4668-b59c-1e263c5cbe92","ts":"2026-06-28T04:42:11.247Z","path":"/home/ashley/shutter/t/Shutter/App/Workflow.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"7c0f33aa-02c6-4c23-be9d-6759e377d3f1","ts":"2026-06-28T04:42:32.179Z","path":"/home/ashley/shutter/t/Shutter/App/01_common.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"95ffe772-53f8-4fdc-88ad-035167f398ab","ts":"2026-06-28T04:42:48.107Z","path":"/home/ashley/shutter/t/Shutter/App/03_helper_functions.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"2c292d6b-9573-4a85-8f9b-b00cff91dd53","ts":"2026-06-28T04:42:59.795Z","path":"/home/ashley/shutter/t/Shutter/App/pipeline_no_pixbuf.t","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"bba04a21-e4db-4694-88f4-1d30989ffa24","ts":"2026-06-28T04:43:29.445Z","path":"/home/ashley/shutter/t/lib/Test/Shutter/Mock.pm","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
+{"id":"81a67978-cdf6-490d-81b2-1624431b3587","ts":"2026-06-28T04:44:39.920Z","path":"/home/ashley/shutter/TEST_SUITE_SUMMARY.md","version":"1.0.0","taskID":"fb984933-b358-426a-915e-50415a0f7afb"}
