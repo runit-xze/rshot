@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use utf8;
 use Moo;
+use v5.40;
 use IPC::Run3;
 use Log::Any qw($log);
 use POSIX ();

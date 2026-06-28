@@ -44,7 +44,7 @@ sub fct_apply_plugin ($self, $plugin_name, $key = undef) {
 
 	if ($key && $session_screens->{$key} && $session_screens->{$key}->{'long'}) {
 		my $plugin_file = Shutter::App::Directories::get_plugins_dir() . "/$plugin_name";
-		if (-f $plugin_file) {
+		if (Shutter::App::Core::FileSystemAPI->new->is_regular_file($plugin_file)) {
 
 			# Execute plugin logic
 			# ...

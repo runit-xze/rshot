@@ -131,8 +131,8 @@ sub save_settings {
 	eval {
 
 		#save to file
-		require Path::Tiny;
-		Path::Tiny::path($settingsfile)->spew_utf8(XMLout(\%settings));
+		require Shutter::App::Core::FileSystemAPI;
+		Shutter::App::Core::FileSystemAPI->new->spew_utf8($settingsfile, XMLout(\%settings));
 
 	};
 	if ($@) {

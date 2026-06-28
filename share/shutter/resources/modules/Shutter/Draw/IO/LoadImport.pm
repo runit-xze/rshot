@@ -98,14 +98,14 @@ sub import_from_filesystem ($self, $button, $parent = undef, $directory = undef)
 	my $ff = FALSE;
 
 	my @objects = bsd_glob("$dobjects/*");
-	foreach my $name (sort { -d $a <=> -d $b } @objects) {
+	foreach my $name (sort { Shutter::App::Core::FileSystemAPI->new->is_directory($a) <=> Shutter::App::Core::FileSystemAPI->new->is_directory($b) } @objects) {
 
 		#parse filename
 		my ($short, $folder, $type) = fileparse($name, qr/\.[^.]*/);
 
 		#if current object is a directory we call the current sub
 		#recursively
-		if (-d $name) {
+		if (Shutter::App::Core::FileSystemAPI->new->is_directory($name)) {
 
 			#objects from each directory are sorted (files first)
 			#we display a separator when the first directory is listed

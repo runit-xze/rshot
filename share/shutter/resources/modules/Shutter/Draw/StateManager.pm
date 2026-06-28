@@ -15,8 +15,8 @@ sub quit {
 
 	#save settings to a file in the shutter folder
 	#is there already a .shutter folder?
-	mkdir("$ENV{ 'HOME' }/.shutter")
-		unless (-d "$ENV{ 'HOME' }/.shutter");
+	Shutter::App::Core::FileSystemAPI->new->make_dir("$ENV{ 'HOME' }/.shutter")
+		unless (Shutter::App::Core::FileSystemAPI->new->is_directory("$ENV{ 'HOME' }/.shutter"));
 
 	if ($show_warning && (defined $self->_undo && scalar(@{$self->_undo}) > 0)) {
 

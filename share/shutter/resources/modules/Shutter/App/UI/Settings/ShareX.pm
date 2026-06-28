@@ -33,7 +33,7 @@ sub BUILD ($self, $args) {
 	my $sc = $self->cli->sc;
 	my $d  = $sc->gettext_object;
 
-	make_path($self->_uploaders_dir) unless -d $self->_uploaders_dir;
+	make_path($self->_uploaders_dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($self->_uploaders_dir);
 
 	my $vbox_main = Gtk3::VBox->new(FALSE, 12);
 	$vbox_main->set_border_width(5);
@@ -133,9 +133,9 @@ sub _refresh_list ($self) {
 		my $type     = $item->{type};
 		my $basename = basename($file);
 		my $name     = $basename;
-		require Path::Tiny;
+		require Shutter::App::Core::FileSystemAPI;
 		try {
-			my $content = Path::Tiny::path($file)->slurp_utf8;
+			my $content = Shutter::App::Core::FileSystemAPI->new->slurp_utf8($file);
 			my $data = $json->decode($content);
 				$name = $data->{Name} if $data->{Name};
 			} catch ($e) {
@@ -182,7 +182,7 @@ sub _delete_uploader ($self) {
 		my $path = $model->get_value($iter, 3);
 		my $type = $model->get_value($iter, 2);
 		if ($type eq 'Custom') {
-			unlink($path) if -e $path;
+			Shutter::App::Core::FileSystemAPI->new->remove($path) if Shutter::App::Core::FileSystemAPI->new->path_exists($path);
 			$self->_refresh_list();
 		}
 	}

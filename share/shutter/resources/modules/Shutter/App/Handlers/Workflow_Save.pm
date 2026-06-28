@@ -61,7 +61,7 @@ sub fct_load_settings ($self, $data, $profilename) {
 		};
 		if ($@) {
 			$sd->dlg_error_message("$@", $d->get("Settings could not be restored!"));
-			unlink $settingsfile;
+			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($settingsfile);
 		} else {
 			$self->fct_show_status_message(1, $d->get("Settings loaded successfully")) if defined &fct_show_status_message;
 		}

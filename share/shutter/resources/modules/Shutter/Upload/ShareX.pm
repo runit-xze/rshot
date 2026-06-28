@@ -23,8 +23,8 @@ has _sxcu           => (is => 'rw');
 sub BUILD ($self, $args) {
 	my $json = JSON::MaybeXS->new;
 	eval {
-		require Path::Tiny;
-		my $json_text = Path::Tiny::path($self->sxcu_path)->slurp_utf8;
+		require Shutter::App::Core::FileSystemAPI;
+		my $json_text = Shutter::App::Core::FileSystemAPI->new->slurp_utf8($self->sxcu_path);
 		$self->_sxcu($json->decode($json_text));
 	};
 	if ($@) {
@@ -34,7 +34,7 @@ sub BUILD ($self, $args) {
 }
 
 sub upload ($self, $upload_filename) {
-	return (success => 0, error => "File not found")      unless -e $upload_filename;
+	return (success => 0, error => "File not found")      unless Shutter::App::Core::FileSystemAPI->new->path_exists($upload_filename);
 	return (success => 0, error => "Failed to load sxcu") unless $self->_sxcu;
 
 	require Shutter::App::Core::NetworkAPI;
@@ -120,9 +120,9 @@ sub upload ($self, $upload_filename) {
 				my $tmpfile = File::Temp::tempnam('/tmp', 'shutter_qr_') . '.png';
 				require Shutter::App::Core::SecureSystemCommandAPI;
 				Shutter::App::Core::SecureSystemCommandAPI->new->capture('qrencode', '-o', $tmpfile, '-s', '5', $final_url);
-				if (-f $tmpfile) {
+				if (Shutter::App::Core::FileSystemAPI->new->is_regular_file($tmpfile)) {
 					$self->_show_qr_dialog($tmpfile, $final_url);
-					unlink $tmpfile;
+					Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($tmpfile);
 				}
 			}
 
@@ -139,7 +139,7 @@ sub upload ($self, $upload_filename) {
 }
 
 sub _show_qr_dialog ($self, $qr_path, $url) {
-	return unless -f $qr_path;
+	return unless Shutter::App::Core::FileSystemAPI->new->is_regular_file($qr_path);
 	return unless $self->main_gtk_window;
 
 	my $dialog = Gtk3::Dialog->new('Upload Complete - QR Code', $self->main_gtk_window, [qw/destroy-with-parent/], 'gtk-ok' => 'accept');

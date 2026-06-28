@@ -39,7 +39,7 @@ use constant {
 };
 
 sub create_if_not_exists ($dir) {
-	mkdir $dir unless -d $dir && -r $dir;
+	Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($dir) && Shutter::App::Core::FileSystemAPI->new->is_path_readable($dir);
 
 	return $dir;
 }
@@ -67,8 +67,8 @@ sub create_hidden_home_dir_if_not_exist {
 	my $hidden_dir          = $ENV{HOME} . "/" . HIDDEN_SHUTTER_DIR;
 	my $hidden_profiles_dir = "$hidden_dir" . "/" . PROFILES_DIR;
 
-	mkdir $hidden_dir          unless -d $hidden_dir;
-	mkdir $hidden_profiles_dir unless -d $hidden_profiles_dir;
+	Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($hidden_dir)          unless Shutter::App::Core::FileSystemAPI->new->is_directory($hidden_dir);
+	Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($hidden_profiles_dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($hidden_profiles_dir);
 
 	return TRUE;
 }

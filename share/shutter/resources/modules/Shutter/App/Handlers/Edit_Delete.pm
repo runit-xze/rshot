@@ -76,7 +76,7 @@ sub fct_delete ($self, $key = undef, $action = undef) {
 			$session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
 		}
 
-		#unlink undo and redo files
+		#Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove(undo) and redo files
 		$h->get('Util_File')->fct_unlink_tempfiles($key);
 
 		delete $session_screens->{$key};
@@ -152,7 +152,7 @@ sub fct_delete ($self, $key = undef, $action = undef) {
 				$session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
 			}
 
-			#unlink undo and redo files
+			#Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove(undo) and redo files
 			$h->get('Util_File')->fct_unlink_tempfiles($key);
 
 			delete $session_screens->{$key};
@@ -210,7 +210,7 @@ sub fct_remove ($self, $key = undef, $action = undef) {
 			$session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
 		}
 
-		#unlink undo and redo files
+		#Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove(undo) and redo files
 		$h->get('Util_File')->fct_unlink_tempfiles($key);
 
 		delete $session_screens->{$key};
@@ -265,7 +265,7 @@ sub fct_remove ($self, $key = undef, $action = undef) {
 				$session_start_screen->{'first_page'}->{'model'}->remove($session_screens->{$key}->{'iter'});
 			}
 
-			#unlink undo and redo files
+			#Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove(undo) and redo files
 			$h->get('Util_File')->fct_unlink_tempfiles($key);
 
 			delete $session_screens->{$key};

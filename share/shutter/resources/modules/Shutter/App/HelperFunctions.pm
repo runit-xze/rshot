@@ -113,14 +113,14 @@ sub nautilus_sendto ($self, $user_data) {
 sub file_exists ($self, $filename) {
 	return FALSE unless $filename;
 	$filename = $self->switch_home_in_file($filename);
-	return TRUE if (-f $filename && -r $filename);
+	return TRUE if (Shutter::App::Core::FileSystemAPI->new->is_regular_file($filename) && Shutter::App::Core::FileSystemAPI->new->is_path_readable($filename));
 	return FALSE;
 }
 
 sub folder_exists ($self, $folder) {
 	return FALSE unless $folder;
 	$folder = $self->switch_home_in_file($folder);
-	return TRUE if (-d $folder && -r $folder);
+	return TRUE if (Shutter::App::Core::FileSystemAPI->new->is_directory($folder) && Shutter::App::Core::FileSystemAPI->new->is_path_readable($folder));
 	return FALSE;
 }
 

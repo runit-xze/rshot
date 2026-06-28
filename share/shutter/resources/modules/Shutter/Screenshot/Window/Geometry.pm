@@ -48,9 +48,9 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 
 			my @fregion;
 
-			require Path::Tiny;
+			require Shutter::App::Core::FileSystemAPI;
 			my $success = eval {
-				my @lines = Path::Tiny::path($shape_path)->lines_utf8({ chomp => 1 });
+				my @lines = Shutter::App::Core::FileSystemAPI->new->lines_utf8($shape_path, { chomp => 1 });
 				for my $line (@lines) {
 					next if $line =~ /^#/;
 					push @fregion, $line;

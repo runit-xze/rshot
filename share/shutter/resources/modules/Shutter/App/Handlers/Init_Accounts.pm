@@ -50,7 +50,7 @@ sub fct_load_accounts ($self, $profilename) {
 		eval { $accounts_xml = XMLin(IO::File->new($accountsfile)) };
 		if ($@) {
 			$sd->dlg_error_message($@, $d->get("Account-settings could not be restored!"));
-			unlink $accountsfile;
+			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($accountsfile);
 		} else {
 			foreach (keys %{$accounts_xml}) {
 

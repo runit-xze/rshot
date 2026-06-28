@@ -266,7 +266,7 @@ sub _on_recording_done ($self, $video_path) {
 	require Shutter::App::Core::ClipboardAPI;
 	my $clipboard = Shutter::App::Core::ClipboardAPI->new;
 
-	if (!$video_path || !-e $video_path) {
+	if (!$video_path || !Shutter::App::Core::FileSystemAPI->new->path_exists($video_path)) {
 		my $sd = Shutter::App::SimpleDialogs->new;
 		$sd->dlg_error_message($sc->gettext_object->get("Failed to assemble Video."), $sc->gettext_object->get("Failed"));
 		$cli->handlers->get('Core')->fct_control_main_window('show');
@@ -281,9 +281,9 @@ sub _on_recording_done ($self, $video_path) {
 		my $thumb_path = "$video_path.thumb.png";
 		require Shutter::App::Core::SecureSystemCommandAPI;
 		Shutter::App::Core::SecureSystemCommandAPI->new->capture('ffmpeg', '-y', '-i', $video_path, '-vframes', '1', $thumb_path);
-		if (-e $thumb_path) {
+		if (Shutter::App::Core::FileSystemAPI->new->path_exists($thumb_path)) {
 			$thumb_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($thumb_path);
-			unlink $thumb_path;
+			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($thumb_path);
 		}
 	} catch ($e) {
 	}

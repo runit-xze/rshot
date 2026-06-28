@@ -10,7 +10,7 @@ use HTTP::Request::Common qw(POST);
 has userhash => (is => 'rw', default => sub { '' });
 
 sub upload ($self, $file) {
-	return (success => 0, error => "File not found") unless -e $file;
+	return (success => 0, error => "File not found") unless Shutter::App::Core::FileSystemAPI->new->path_exists($file);
 
 	require Shutter::App::Core::NetworkAPI;
 	my $api = Shutter::App::Core::NetworkAPI->new(timeout => 30);

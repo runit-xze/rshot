@@ -57,7 +57,7 @@ sub fct_add_file_monitor ($self, $key) {
 					if ($event eq 'deleted') {
 
 						my $v = $session_screens->{$k};
-						if ($v && $v->{'giofile'} && -e $v->{'giofile'}->get_path) {
+						if ($v && $v->{'giofile'} && Shutter::App::Core::FileSystemAPI->new->path_exists($v->{'giofile'}->get_path)) {
 							print "got event 'deleted', but file $k still exists, ignoring\n" if $sc->debug;
 							return;
 						}

@@ -152,7 +152,7 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 		}
 
 		$imagemagick_result = $self->use_imagemagick_to_save($tmpfilename, $filename);
-		unlink $tmpfilename;
+		Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($tmpfilename);
 	}
 
 	if ($@ || $imagemagick_result) {

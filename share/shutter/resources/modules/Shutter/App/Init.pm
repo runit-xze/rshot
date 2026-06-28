@@ -79,7 +79,7 @@ sub initialize ($cli) {
 	$cli->{_notify_ptimeout_active} = _mock_widget(FALSE);
 	$cli->{_is_hidden}              = FALSE;
 
-	if (-e '/.flatpak-info') {
+	if (Shutter::App::Core::FileSystemAPI->new->path_exists('/.flatpak-info')) {
 		$cli->{_x11_supported} = FALSE;
 	} else {
 		$cli->{_x11_supported} = ($ENV{XDG_SESSION_TYPE} // '') eq "wayland" ? FALSE : TRUE;

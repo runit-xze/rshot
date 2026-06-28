@@ -80,7 +80,7 @@ sub load_settings ($self, $profilename = undef) {
 		eval { $settings_xml = XMLin(IO::File->new($settingsfile), ForceArray => 0, KeyAttr => [], KeepRoot => 1); };
 		if ($@) {
 			$sd->dlg_error_message($@, $d->get("Settings could not be restored!"));
-			unlink $settingsfile;
+			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($settingsfile);
 		}
 	}
 	$self->_settings($settings_xml);
@@ -113,7 +113,7 @@ sub load_accounts ($self, $profilename = undef) {
 		eval { $accounts_xml = XMLin(IO::File->new($accountsfile)) };
 		if ($@) {
 			$sd->dlg_error_message($@, $d->get("Account-settings could not be restored!"));
-			unlink $accountsfile;
+			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($accountsfile);
 		} else {
 			foreach my $ac (keys %{$accounts_xml}) {
 				if ($shf->file_exists($accounts_xml->{$ac}->{path})) {
@@ -132,12 +132,12 @@ sub load_accounts ($self, $profilename = undef) {
 	foreach my $sxcu_path (@sxcu_paths) {
 		my @sxcus = File::Glob::bsd_glob($sxcu_path);
 		foreach my $ukey (@sxcus) {
-			if (-f $ukey) {
+			if (Shutter::App::Core::FileSystemAPI->new->is_regular_file($ukey)) {
 				my ($name, $folder, $type) = File::Basename::fileparse($ukey, qr/\.[^.]*/);
 
 				eval {
-					require Path::Tiny;
-					my $json_text = Path::Tiny::path($ukey)->slurp_utf8;
+					require Shutter::App::Core::FileSystemAPI;
+					my $json_text = Shutter::App::Core::FileSystemAPI->new->slurp_utf8($ukey);
 					my $sxcu = $json->decode($json_text);
 
 					my $display_name = $sxcu->{Name} || $name;

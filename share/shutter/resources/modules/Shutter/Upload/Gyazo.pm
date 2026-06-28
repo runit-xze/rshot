@@ -6,7 +6,7 @@ use Moo;
 with 'Shutter::Upload::Role::Uploader';
 
 sub upload ($self, $file) {
-	return (success => 0, error => "File not found") unless -e $file;
+	return (success => 0, error => "File not found") unless Shutter::App::Core::FileSystemAPI->new->path_exists($file);
 
 	require WebService::Gyazo::B;
 	my $client = WebService::Gyazo::B->new();

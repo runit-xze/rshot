@@ -66,8 +66,8 @@ sub evt_delete_profile ($self, $widget, $combobox_settings_profiles, $current_pr
 	if ($combobox_settings_profiles->get_active_text) {
 		my $active_text  = $combobox_settings_profiles->get_active_text;
 		my $active_index = $combobox_settings_profiles->get_active;
-		unlink("$ENV{'HOME'}/.shutter/profiles/" . $active_text . ".xml");
-		unlink("$ENV{'HOME'}/.shutter/profiles/" . $active_text . "_accounts.xml");
+		Shutter::App::Core::FileSystemAPI->new->remove("$ENV{'HOME'}/.shutter/profiles/" . $active_text . ".xml");
+		Shutter::App::Core::FileSystemAPI->new->remove("$ENV{'HOME'}/.shutter/profiles/" . $active_text . "_accounts.xml");
 
 		unless ($shf->file_exists("$ENV{'HOME'}/.shutter/profiles/" . $active_text . ".xml")
 			|| $shf->file_exists("$ENV{'HOME'}/.shutter/profiles/" . $active_text . "_accounts.xml"))

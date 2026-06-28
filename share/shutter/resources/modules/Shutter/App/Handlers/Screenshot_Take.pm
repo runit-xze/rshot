@@ -22,6 +22,7 @@ package Shutter::App::Handlers::Screenshot_Take;
 ## no critic (Subroutines::ProtectPrivateSubs)
 
 use warnings;
+require Shutter::App::Core::FileSystemAPI;
 use utf8;
 use Future;
 use v5.40;
@@ -309,7 +310,7 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 
 		# $folder = Shutter::App::Directories::get_cache_dir(); # FIXME: Directories.pm might not be loaded
 		$folder = "/tmp/shutter_cache";
-		mkdir $folder unless -d $folder;
+		Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($folder) unless Shutter::App::Core::FileSystemAPI->new->is_directory($folder);
 	}
 
 	#determine current file type

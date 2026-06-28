@@ -74,7 +74,7 @@ sub fct_check_installed_plugins ($self) {
 	foreach my $plugin_path (@plugin_paths) {
 		my @p_list = bsd_glob($plugin_path);
 		foreach my $pkey (@p_list) {
-			if (-d $pkey) {
+			if (Shutter::App::Core::FileSystemAPI->new->is_directory($pkey)) {
 				my $dir_name = $pkey;
 
 				#parse filename
@@ -346,12 +346,12 @@ sub fct_check_installed_upload_plugins ($self) {
 	foreach my $sxcu_path (@sxcu_paths) {
 		my @sxcus = bsd_glob($sxcu_path);
 		foreach my $ukey (@sxcus) {
-			if (-f $ukey) {
+			if (Shutter::App::Core::FileSystemAPI->new->is_regular_file($ukey)) {
 				my ($name, $folder, $type) = fileparse($ukey, qr/\.[^.]*/);
 
 				eval {
-					require Path::Tiny;
-					my $json_text = Path::Tiny::path($ukey)->slurp_utf8;
+					require Shutter::App::Core::FileSystemAPI;
+					my $json_text = Shutter::App::Core::FileSystemAPI->new->slurp_utf8($ukey);
 					my $sxcu = $json->decode($json_text);
 
 					my $display_name = $sxcu->{Name} || $name;
@@ -498,11 +498,11 @@ sub fct_unlink_tempfiles ($self, $key) {
 
 	if ($session_screens->{$key}) {
 		foreach my $tmpf (@{$session_screens->{$key}->{'undo'} // []}) {
-			unlink $tmpf;
+			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($tmpf);
 		}
 
 		foreach my $tmpf (@{$session_screens->{$key}->{'redo'} // []}) {
-			unlink $tmpf;
+			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($tmpf);
 		}
 	}
 

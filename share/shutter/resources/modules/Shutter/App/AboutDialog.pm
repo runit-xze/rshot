@@ -52,11 +52,11 @@ sub show ($self) {
 	my $shutter_root = $self->_sc->shutter_root;
 	my $d            = $self->_sc->gettext_object;
 
-	require Path::Tiny;
-	my $all_hint = Path::Tiny::path("$shutter_root/share/shutter/resources/license/gplv3_hint")->slurp_utf8;
-	my $all_gpl  = Path::Tiny::path("$shutter_root/share/shutter/resources/license/gplv3")->slurp_utf8;
-	my @all_dev  = Path::Tiny::path("$shutter_root/share/shutter/resources/credits/dev")->lines_utf8({ chomp => 1 });
-	my @all_art  = Path::Tiny::path("$shutter_root/share/shutter/resources/credits/art")->lines_utf8({ chomp => 1 });
+	require Shutter::App::Core::FileSystemAPI;
+	my $all_hint = Shutter::App::Core::FileSystemAPI->new->slurp_utf8("$shutter_root/share/shutter/resources/license/gplv3_hint");
+	my $all_gpl  = Shutter::App::Core::FileSystemAPI->new->slurp_utf8("$shutter_root/share/shutter/resources/license/gplv3");
+	my @all_dev  = Shutter::App::Core::FileSystemAPI->new->lines_utf8("$shutter_root/share/shutter/resources/credits/dev", { chomp => 1 });
+	my @all_art  = Shutter::App::Core::FileSystemAPI->new->lines_utf8("$shutter_root/share/shutter/resources/credits/art", { chomp => 1 });
 
 	my @lines = ("rshot v1", "", "Original Developers:", @all_dev, "", "Artists:", @all_art, "", "Special Thanks:", "runit", "Google", "Anthropic", "for making this possible!");
 

@@ -114,7 +114,7 @@ sub stop ($self) {
 		waitpid($pid, 0);
 	}
 
-	if (-f $self->output) {
+	if (Shutter::App::Core::FileSystemAPI->new->is_regular_file($self->output)) {
 		$self->on_done->($self->output);
 	} else {
 		$self->on_done->(undef);

@@ -136,7 +136,7 @@ sub fct_init_unsaved_files ($self) {
 		utf8::decode $unsaved_file;
 		if (defined &fct_get_key_by_filename) {
 			unless (fct_get_key_by_filename($unsaved_file)) {
-				unlink $unsaved_file;
+				Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($unsaved_file);
 			}
 		}
 	}

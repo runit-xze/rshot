@@ -74,7 +74,7 @@ sub fct_drop_handler ($self, $widget, $context, $x, $y, $selection, $info, $time
 
 	if (@sxcu_files) {
 		my $uploaders_dir = $ENV{'HOME'} . '/.shutter/uploaders';
-		mkdir $uploaders_dir unless -d $uploaders_dir;
+		Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($uploaders_dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($uploaders_dir);
 		my $imported = 0;
 		foreach my $sxcu (@sxcu_files) {
 			my $name = basename($sxcu);
@@ -175,7 +175,7 @@ sub fct_load_session ($self) {
 	};
 	if ($@) {
 		$sd->dlg_error_message("$@", $d->get("Session could not be restored!"));
-		unlink $sessionfile;
+		Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($sessionfile);
 	}
 
 	return TRUE;

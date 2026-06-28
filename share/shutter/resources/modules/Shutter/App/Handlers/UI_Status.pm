@@ -220,20 +220,20 @@ sub fct_update_tab ($self, $key, $pixbuf = undef, $giofile = undef, $force_thumb
 
 			#UNDO / REDO
 			if (defined $xdo && $xdo eq 'block') {
-				unlink $tmpfilename;
+				Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($tmpfilename);
 			} elsif (defined $xdo && $xdo eq 'clear') {
 				while (defined $session_screens->{$key}->{'undo'} && scalar @{$session_screens->{$key}->{'undo'}} > 0) {
-					unlink shift @{$session_screens->{$key}->{'undo'}};
+					Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove(shift) @{$session_screens->{$key}->{'undo'}};
 				}
 				while (defined $session_screens->{$key}->{'redo'} && scalar @{$session_screens->{$key}->{'redo'}} > 0) {
-					unlink shift @{$session_screens->{$key}->{'redo'}};
+					Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove(shift) @{$session_screens->{$key}->{'redo'}};
 				}
 				push @{$session_screens->{$key}->{'undo'}}, $tmpfilename;
 				cp($session_screens->{$key}->{'long'}, $tmpfilename);
 			} else {
 				if (!defined $xdo) {
 					while (defined $session_screens->{$key}->{'redo'} && scalar @{$session_screens->{$key}->{'redo'}} > 0) {
-						unlink shift @{$session_screens->{$key}->{'redo'}};
+						Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove(shift) @{$session_screens->{$key}->{'redo'}};
 					}
 				}
 				push @{$session_screens->{$key}->{'undo'}}, $tmpfilename;
