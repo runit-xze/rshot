@@ -289,7 +289,7 @@ sub fct_undo ($self) {
 }
 
 sub fct_zoom_100 ($self) {
-	my $key             = $self->$self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
+	my $key             = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 	my $session_screens = $self->cli->{_session_screens};
 	if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
 		$session_screens->{$key}->{'image'}->set_zoom(1);
@@ -298,7 +298,7 @@ sub fct_zoom_100 ($self) {
 }
 
 sub fct_zoom_best ($self) {
-	my $key             = $self->$self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
+	my $key             = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 	my $session_screens = $self->cli->{_session_screens};
 	if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
 		$session_screens->{$key}->{'image'}->set_fitting(TRUE);
@@ -307,7 +307,7 @@ sub fct_zoom_best ($self) {
 }
 
 sub fct_zoom_in ($self) {
-	my $key             = $self->$self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
+	my $key             = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 	my $session_screens = $self->cli->{_session_screens};
 	if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
 		$session_screens->{$key}->{'image'}->zoom_in;
@@ -316,7 +316,7 @@ sub fct_zoom_in ($self) {
 }
 
 sub fct_zoom_out ($self) {
-	my $key             = $self->$self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
+	my $key             = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 	my $session_screens = $self->cli->{_session_screens};
 	if ($key && $session_screens->{$key} && $session_screens->{$key}->{'image'}) {
 		$session_screens->{$key}->{'image'}->zoom_out;

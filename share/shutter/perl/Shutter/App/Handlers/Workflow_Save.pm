@@ -26,90 +26,47 @@ use feature 'try';
 no warnings 'experimental::try';
 
 use Moo;
-use Shutter::App::Directories;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
-use XML::Simple;
-use IO::File;
-use File::Temp qw(tempfile);
-use File::Copy qw(move);
+use Log::Any;
+
+my $log = Log::Any->get_logger;
 
 has cli => (is => 'ro', required => 1);
 
 sub fct_load_settings ($self, $data, $profilename) {
 	my $cli = $self->cli;
-	my $sc  = $cli->sc;
-	my $shf = $cli->shf;
-	my $sd  = $cli->sc->{_sd};
 	my $d   = $cli->sc->gettext_object;
 
-	# settings and profile-specific UI components are expected to be injected in CLI object
-	# This refactoring is complex due to UI dependencies, keeping minimal implementation
-	# to maintain functionality for now.
+	my $settings_xml = $cli->settings_manager->load_settings($profilename);
 
-	my $settingsfile = Shutter::App::Directories::get_settings_file();
-	$settingsfile = Shutter::App::Directories::get_profile_settings_file($profilename)
-		if (defined $profilename);
-
-	my $settings_xml;
-	if ($shf->file_exists($settingsfile)) {
-		eval {
-			$settings_xml = XMLin(IO::File->new($settingsfile));
-
-			# ... UI updating logic ...
-			$self->cli->handlers->get('Init_Accounts')->fct_load_accounts($profilename);
-		};
-		if ($@) {
-			$sd->dlg_error_message("$@", $d->get("Settings could not be restored!"));
-			Shutter::App::Core::FileSystemAPI->new->remove($settingsfile);
-		} else {
-			$cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("Settings loaded successfully"));
-		}
+	if (defined $profilename && $profilename ne "") {
+		$self->cli->handlers->get('Init_Accounts')->fct_load_accounts($profilename);
 	}
+
+	if ($settings_xml && %{$settings_xml}) {
+		$cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("Settings loaded successfully"));
+	}
+
 	return $settings_xml;
 }
 
-sub fct_save_settings ($self, $profilename) {
-	my $cli                        = $self->cli;
-	my $sc                         = $cli->sc;
-	my $shf                        = $cli->shf;
-	my $sd                         = $cli->sc->{_sd};
-	my $d                          = $cli->sc->gettext_object;
-	my $combobox_settings_profiles = $cli->{_combobox_settings_profiles};
+sub fct_save_settings ($self, $profilename = undef) {
+	my $cli = $self->cli;
+	my $d   = $cli->sc->gettext_object;
 
-	# settings file
-	my $settingsfile = Shutter::App::Directories::get_settings_file();
-	if (defined $profilename && $profilename ne "") {
-		$settingsfile = Shutter::App::Directories::get_profile_settings_file($profilename);
+	if (!defined $cli->settings_manager) {
+		$log->error('SettingsManager is not initialized; cannot save settings');
+		return FALSE;
 	}
 
-	# session file
-	my $sessionfile = Shutter::App::Directories::get_session_file();
-
-	# accounts file
-	my $accountsfile = Shutter::App::Directories::get_accounts_file();
-	if (defined $profilename && $profilename ne "") {
-		$accountsfile = Shutter::App::Directories::get_profile_accounts_file($profilename);
+	my $saved = $cli->settings_manager->save_settings($profilename);
+	if (!$saved) {
+		$log->error('SettingsManager->save_settings returned FALSE');
+		return FALSE;
 	}
 
-	my %settings;
-
-	# ... logic to populate %settings ...
-
-	#save settings
-	eval {
-		my ($tmpfh, $tmpfilename) = tempfile(UNLINK => 1);
-		XMLout(\%settings, OutputFile => $tmpfilename);
-		move($tmpfilename, $settingsfile);
-	};
-	if ($@) {
-		$sd->dlg_error_message("$@", $d->get("Settings could not be saved!"));
-	} else {
-		$cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("Settings saved successfully!"));
-	}
-
-	# ... logic to save session and accounts ...
-
+	$cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("Settings saved successfully!"));
 	return TRUE;
 }
 
@@ -123,7 +80,15 @@ Shutter::App::Handlers::Workflow_Save - Workflow save handlers
 
 =head1 DESCRIPTION
 
-Extracted from bin/shutter.
-Migrated to use the CLI object for state access instead of package globals.
+Save and load application settings via Shutter::App::Core::SettingsManager.
 
+The legacy bin/shutter version of these functions fanned out to ~60 widget
+getters/setters; that approach is not portable to the Moo-based UI refactor.
+Settings persistence now goes through the central SettingsManager, which
+holds settings in a hashref updated via C<< $cli->settings_manager->set_setting >>
+and serialized on save.
+
+Custom uploaders (.sxcu) live on disk in the uploaders directory and are
+loaded by SettingsManager::load_accounts on every startup, so they survive
+without an explicit save path.
 =cut

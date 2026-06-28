@@ -55,7 +55,7 @@ sub upload_file ($self, $key, $upload_type) {
 			'direct_link' => $upload_result{url},
 			'menuentry'   => 'Catbox.moe',
 		};
-		fct_show_status_message(1, $d->get("File uploaded successfully"));
+		$self->cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("File uploaded successfully"));
 		return $upload_result{url};
 	} else {
 		$sd->dlg_error_message($upload_result{error}, $d->get("Upload failed"));

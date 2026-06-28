@@ -52,7 +52,7 @@ sub take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	}
 
 	if ($hide_active->get_active && $data ne "web" && $data ne "tray_web" && !$is_hidden && !$selfcapture) {
-		fct_control_main_window('hide');
+		$self->cli->handlers->get('Core')->fct_control_main_window('hide');
 	} else {
 		($window->{x}, $window->{y}) = $window->get_position;
 	}
@@ -60,19 +60,19 @@ sub take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	my $notify = $sc->notification;
 	$notify->close;
 
-	fct_control_signals('block');
+	$self->cli->handlers->get('Core')->fct_control_signals('block');
 
 	if ($data eq "web" || $data eq "tray_web") {
-		fct_take_screenshot($widget, $data, $folder_from_config, $extra);
-		fct_control_signals('unblock');
+		$self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
+		$self->cli->handlers->get('Core')->fct_control_signals('unblock');
 		return TRUE;
 	}
 
 	unless ($x11_supported) {
 		my $sd_tmp = Shutter::App::SimpleDialogs->new;
 		$sd_tmp->dlg_error_message($d->get("Can't take screenshots without X11 server"), $d->get("Failed"));
-		fct_control_signals('unblock');
-		fct_control_main_window('show');
+		$self->cli->handlers->get('Core')->fct_control_signals('unblock');
+		$self->cli->handlers->get('Core')->fct_control_main_window('show');
 		return TRUE;
 	}
 
@@ -110,8 +110,8 @@ sub take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 		Glib::Timeout->add(
 			$sc->get_menu_delay->get_value * 1000,
 			sub {
-				fct_take_screenshot($widget, $data, $folder_from_config, $extra);
-				fct_control_signals('unblock');
+				$self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
+				$self->cli->handlers->get('Core')->fct_control_signals('unblock');
 				return FALSE;
 			});
 	} else {
@@ -126,8 +126,8 @@ sub take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 		Glib::Timeout->add(
 			$sc->get_hide_time->get_value,
 			sub {
-				fct_take_screenshot($widget, $data, $folder_from_config, $extra);
-				fct_control_signals('unblock');
+				$self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
+				$self->cli->handlers->get('Core')->fct_control_signals('unblock');
 				return FALSE;
 			});
 	}

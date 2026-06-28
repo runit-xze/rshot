@@ -74,19 +74,19 @@ sub evt_take_screenshot ($self, $widget = undef, $data = undef, $folder_from_con
 	$self->fct_control_signals('block');
 
 	if ($data eq "web" || $data eq "tray_web") {
-		$self->$self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
+		$self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
 		$self->fct_control_signals('unblock');
 		return TRUE;
 	}
 
 	if ($data =~ /^gif_select|^tray_gif_select|^gif_window|^tray_gif_window/) {
-		$self->$self->cli->handlers->get('Screenshot_GifRecord')->evt_gif_record($widget, $data, $folder_from_config, $extra);
+		$self->cli->handlers->get('Screenshot_GifRecord')->evt_gif_record($widget, $data, $folder_from_config, $extra);
 		$self->fct_control_signals('unblock');
 		return TRUE;
 	}
 
 	if ($data =~ /^video_select|^tray_video_select|^video_window|^tray_video_window/) {
-		$self->$self->cli->handlers->get('Screenshot_VideoRecord')->evt_video_record($widget, $data, $folder_from_config, $extra);
+		$self->cli->handlers->get('Screenshot_VideoRecord')->evt_video_record($widget, $data, $folder_from_config, $extra);
 		$self->fct_control_signals('unblock');
 		return TRUE;
 	}
@@ -116,7 +116,7 @@ sub evt_take_screenshot ($self, $widget = undef, $data = undef, $folder_from_con
 		Glib::Timeout->add(
 			$menu_delay->get_value * 1000,
 			sub {
-				$self->$self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
+				$self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
 				$self->fct_control_signals('unblock');
 				return FALSE;
 			});
@@ -124,7 +124,7 @@ sub evt_take_screenshot ($self, $widget = undef, $data = undef, $folder_from_con
 		Glib::Timeout->add(
 			$hide_time->get_value,
 			sub {
-				$self->$self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
+				$self->cli->handlers->get('Screenshot_Take')->fct_take_screenshot($widget, $data, $folder_from_config, $extra);
 				$self->fct_control_signals('unblock');
 				return FALSE;
 			});
@@ -154,7 +154,7 @@ sub evt_about ($self) {
 }
 
 sub evt_show_settings ($self) {
-	$self->$self->cli->handlers->get('Dialogs_Settings')->evt_show_settings();
+	$self->cli->handlers->get('Dialogs_Settings')->evt_show_settings();
 	return;
 }
 
@@ -181,23 +181,23 @@ sub fct_control_signals ($self, $action) {
 	return;
 }
 
-sub fct_zoom_in    ($self)        { return $self->$self->cli->handlers->get('Edit_Nav')->fct_zoom_in() }
-sub fct_zoom_out   ($self)        { return $self->$self->cli->handlers->get('Edit_Nav')->fct_zoom_out() }
-sub fct_zoom_100   ($self)        { return $self->$self->cli->handlers->get('Edit_Nav')->fct_zoom_100() }
-sub fct_zoom_best  ($self)        { return $self->$self->cli->handlers->get('Edit_Nav')->fct_zoom_best() }
-sub fct_fullscreen ($self, @args) { return $self->$self->cli->handlers->get('Edit_Nav')->fct_fullscreen(@args) }
-sub fct_undo       ($self)        { return $self->$self->cli->handlers->get('Edit_Nav')->fct_undo() }
-sub fct_redo       ($self)        { return $self->$self->cli->handlers->get('Edit_Nav')->fct_redo() }
-sub fct_clipboard { my $self = shift; return $self->$self->cli->handlers->get('Edit_Nav')->fct_clipboard(@_) }
-sub fct_delete     ($self) { return $self->$self->cli->handlers->get('Edit_Delete')->fct_delete() }
-sub fct_select_all ($self) { return $self->$self->cli->handlers->get('Edit_Delete')->fct_select_all() }
-sub fct_trash      ($self) { return $self->$self->cli->handlers->get('Edit_Delete')->fct_trash() }
-sub fct_draw       ($self) { return $self->$self->cli->handlers->get('Edit_Draw')->fct_draw() }
-sub fct_plugin     ($self) { return $self->$self->cli->handlers->get('Edit_Draw')->fct_plugin() }
-sub fct_send       ($self) { return $self->$self->cli->handlers->get('Upload_Main')->fct_send() }
-sub fct_upload     ($self) { return $self->$self->cli->handlers->get('Upload_Main')->fct_upload() }
-sub fct_email { my $self = shift; return $self->$self->cli->handlers->get('Util_File')->fct_email(@_) }
-sub fct_print { my $self = shift; return $self->$self->cli->handlers->get('Util_File')->fct_print(@_) }
+sub fct_zoom_in    ($self)        { return $self->cli->handlers->get('Edit_Nav')->fct_zoom_in() }
+sub fct_zoom_out   ($self)        { return $self->cli->handlers->get('Edit_Nav')->fct_zoom_out() }
+sub fct_zoom_100   ($self)        { return $self->cli->handlers->get('Edit_Nav')->fct_zoom_100() }
+sub fct_zoom_best  ($self)        { return $self->cli->handlers->get('Edit_Nav')->fct_zoom_best() }
+sub fct_fullscreen ($self, @args) { return $self->cli->handlers->get('Edit_Nav')->fct_fullscreen(@args) }
+sub fct_undo       ($self)        { return $self->cli->handlers->get('Edit_Nav')->fct_undo() }
+sub fct_redo       ($self)        { return $self->cli->handlers->get('Edit_Nav')->fct_redo() }
+sub fct_clipboard { my $self = shift; return $self->cli->handlers->get('Edit_Nav')->fct_clipboard(@_) }
+sub fct_delete     ($self) { return $self->cli->handlers->get('Edit_Delete')->fct_delete() }
+sub fct_select_all ($self) { return $self->cli->handlers->get('Edit_Delete')->fct_select_all() }
+sub fct_trash      ($self) { return $self->cli->handlers->get('Edit_Delete')->fct_trash() }
+sub fct_draw       ($self) { return $self->cli->handlers->get('Edit_Draw')->fct_draw() }
+sub fct_plugin     ($self) { return $self->cli->handlers->get('Edit_Draw')->fct_plugin() }
+sub fct_send       ($self) { return $self->cli->handlers->get('Upload_Main')->fct_send() }
+sub fct_upload     ($self) { return $self->cli->handlers->get('Upload_Main')->fct_upload() }
+sub fct_email { my $self = shift; return $self->cli->handlers->get('Util_File')->fct_email(@_) }
+sub fct_print { my $self = shift; return $self->cli->handlers->get('Util_File')->fct_print(@_) }
 
 1;
 

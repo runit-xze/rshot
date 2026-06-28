@@ -448,7 +448,7 @@ sub dlg_save_as ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) {
 									next if $key eq $searchkey;
 									if ($session_screens->{$searchkey}->{'long'} eq $filename) {
 										$session_screens->{$searchkey}->{'changed'} = TRUE;
-										fct_update_tab($searchkey, undef, undef, FALSE, 'clear');
+										$self->cli->handlers->get('UI_Status')->fct_update_tab($searchkey, undef, undef, FALSE, 'clear');
 									}
 								}
 

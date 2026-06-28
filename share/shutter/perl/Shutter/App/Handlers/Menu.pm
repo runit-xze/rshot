@@ -41,15 +41,15 @@ sub evt_apply_profile ($self, $widget, $combobox_settings_profiles, $current_pro
 	my $d = $self->cli->sc->gettext_object;
 
 	if ($combobox_settings_profiles->get_active_text) {
-		$self->cli->{_settings_xml}         = fct_load_settings('profile_load', $combobox_settings_profiles->get_active_text);
+		$self->cli->{_settings_xml}         = $self->cli->handlers->get('Workflow_Save')->fct_load_settings('profile_load', $combobox_settings_profiles->get_active_text);
 		$self->cli->{_current_profile_indx} = $combobox_settings_profiles->get_active;
 		my $current_profile_text = $combobox_settings_profiles->get_active_text;
 
-		fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref, $widget);
+		$self->cli->handlers->get('UI_Tabs')->fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref, $widget);
 
-		fct_update_info_and_tray();
+		$self->cli->handlers->get('UI_Status')->fct_update_info_and_tray();
 
-		fct_show_status_message(1, sprintf($d->get("Profile %s loaded successfully"), "'" . $current_profile_text . "'"));
+		$self->cli->handlers->get('UI_Status')->fct_show_status_message(1, sprintf($d->get("Profile %s loaded successfully"), "'" . $current_profile_text . "'"));
 	}
 
 	return TRUE;
@@ -81,12 +81,12 @@ sub evt_delete_profile ($self, $widget, $combobox_settings_profiles, $current_pr
 			#remove from array as well
 			splice(@{$current_profiles_ref}, $active_index, 1);
 
-			fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref);
+			$self->cli->handlers->get('UI_Tabs')->fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref);
 
-			fct_show_status_message(1, $d->get("Profile deleted"));
+			$self->cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("Profile deleted"));
 		} else {
 			$sd->dlg_error_message($d->get("Profile could not be deleted"), $d->get("Failed"));
-			fct_show_status_message(1, $d->get("Profile could not be deleted"));
+			$self->cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("Profile could not be deleted"));
 		}
 	}
 	return TRUE;
@@ -118,7 +118,7 @@ sub evt_delete_window ($self, $widget, $data, $scounter) {
 		sub {
 			#hide window and block sontrols
 			$window->hide;
-			fct_control_signals('block');
+			$self->cli->handlers->get('Core')->fct_control_signals('block');
 
 			#wait if there are still files that need to be loaded
 			#they would not be saved in session
@@ -142,11 +142,11 @@ sub evt_delete_window ($self, $widget, $data, $scounter) {
 			}
 
 			#save settings
-			fct_save_settings(undef);
+			$self->cli->handlers->get('Workflow_Save')->fct_save_settings(undef);
 
 			my $combobox_settings_profiles = $weak_self->cli->{_combobox_settings_profiles};
 			if ($combobox_settings_profiles && $combobox_settings_profiles->get_active != -1) {
-				fct_save_settings($combobox_settings_profiles->get_active_text);
+				$self->cli->handlers->get('Workflow_Save')->fct_save_settings($combobox_settings_profiles->get_active_text);
 			}
 
 			#autostart
@@ -196,7 +196,7 @@ sub evt_save_as ($self, $widget, $data) {
 	print "\n$data was emitted by widget $widget\n"
 		if $sc->debug;
 
-	my $key = fct_get_current_file();
+	my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
 	my @save_as_files;
 
@@ -249,11 +249,11 @@ sub evt_save_profile ($self, $widget, $combobox_settings_profiles, $current_prof
 			#unshift to array as well
 			unshift(@{$current_profiles_ref}, $new_profile_name);
 
-			fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref);
+			$self->cli->handlers->get('UI_Tabs')->fct_update_profile_selectors($combobox_settings_profiles, $current_profiles_ref);
 		}
 
 		#save settings
-		fct_save_settings($new_profile_name);
+		$self->cli->handlers->get('Workflow_Save')->fct_save_settings($new_profile_name);
 
 		#autostart
 		my $sas             = $self->cli->sc->{_sas};
@@ -269,14 +269,14 @@ sub evt_save_profile ($self, $widget, $combobox_settings_profiles, $current_prof
 }
 
 sub evt_show_settings ($self) {
-	fct_check_installed_programs();
+	$self->cli->handlers->get('Util_File')->fct_check_installed_programs();
 
 	my $settings_dialog = $self->cli->{_settings_dialog};
 	if ($settings_dialog) {
 		$settings_dialog->show_all;
 		my $settings_dialog_response = $settings_dialog->run;
 
-		fct_post_settings($settings_dialog);
+		$self->cli->handlers->get('Workflow_Post')->fct_post_settings($settings_dialog);
 
 		if ($settings_dialog_response eq "close") {
 			return TRUE;

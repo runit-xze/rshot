@@ -266,9 +266,9 @@ sub fct_check_installed_upload_plugins ($self) {
 
 					if (   !exists $accounts->{$name}
 						|| !exists $accounts->{$name}->{module}
-						|| ($accounts->{$name}->{supports_anonymous_upload}  // '') ne (fct_upload_plugin_get_info($ukey, 'supports_anonymous_upload')  // '')
-						|| ($accounts->{$name}->{supports_authorized_upload} // '') ne (fct_upload_plugin_get_info($ukey, 'supports_authorized_upload') // '')
-						|| ($accounts->{$name}->{supports_oauth_upload}      // '') ne (fct_upload_plugin_get_info($ukey, 'supports_oauth_upload')      // ''))
+						|| ($accounts->{$name}->{supports_anonymous_upload}  // '') ne ($self->cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'supports_anonymous_upload')  // '')
+						|| ($accounts->{$name}->{supports_authorized_upload} // '') ne ($self->cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'supports_authorized_upload') // '')
+						|| ($accounts->{$name}->{supports_oauth_upload}      // '') ne ($self->cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'supports_oauth_upload')      // ''))
 					{
 
 						#show dialog and progress bar
@@ -287,10 +287,10 @@ sub fct_check_installed_upload_plugins ($self) {
 							$accounts->{$name}->{path} = $ukey;
 
 							# Module Name
-							$accounts->{$name}->{module} = fct_upload_plugin_get_info($ukey, 'module');
+							$accounts->{$name}->{module} = $self->cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'module');
 
 							# URL
-							$accounts->{$name}->{host} = fct_upload_plugin_get_info($ukey, 'url');
+							$accounts->{$name}->{host} = $self->cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'url');
 
 							# Folder
 							$accounts->{$name}->{folder} = $folder;
@@ -310,12 +310,12 @@ sub fct_check_installed_upload_plugins ($self) {
 							$accounts->{$name}->{register_color} = "blue";
 
 							# Register Text
-							$accounts->{$name}->{register_text} = fct_upload_plugin_get_info($ukey, 'registration');
+							$accounts->{$name}->{register_text} = $self->cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'registration');
 
 							# Upload Features
-							$accounts->{$name}->{supports_anonymous_upload}  = fct_upload_plugin_get_info($ukey, 'supports_anonymous_upload');
-							$accounts->{$name}->{supports_authorized_upload} = fct_upload_plugin_get_info($ukey, 'supports_authorized_upload');
-							$accounts->{$name}->{supports_oauth_upload}      = fct_upload_plugin_get_info($ukey, 'supports_oauth_upload');
+							$accounts->{$name}->{supports_anonymous_upload}  = $self->cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'supports_anonymous_upload');
+							$accounts->{$name}->{supports_authorized_upload} = $self->cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'supports_authorized_upload');
+							$accounts->{$name}->{supports_oauth_upload}      = $self->cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'supports_oauth_upload');
 
 							#refresh the progressbar
 							$upload_plugin_progress->pulse;

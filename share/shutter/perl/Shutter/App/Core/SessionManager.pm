@@ -56,7 +56,7 @@ sub fct_integrate_screenshot_in_notebook ($self, $giofile, $pixbuf, $history, $c
 
 	return FALSE unless $giofile;
 	unless ($giofile->query_exists) {
-		fct_show_status_message(1, $giofile->get_path . " " . $d->get("not found"));
+		$self->cli->handlers->get('UI_Status')->fct_show_status_message(1, $giofile->get_path . " " . $d->get("not found"));
 		return FALSE;
 	}
 

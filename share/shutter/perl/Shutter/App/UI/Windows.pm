@@ -46,7 +46,7 @@ sub BUILD ($self, $args) {
 	$self->_window($window);
 	$sc->main_window($window);
 
-	$window->signal_connect('delete-event' => sub { $self->$self->cli->handlers->get('Core')->evt_delete_window('', 'quit') });
+	$window->signal_connect('delete-event' => sub { $self->cli->handlers->get('Core')->evt_delete_window('', 'quit') });
 	$window->set_border_width(0);
 	$window->set_resizable(TRUE);
 	$window->set_focus_on_map(TRUE);
