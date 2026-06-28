@@ -25,6 +25,7 @@ use feature 'try';
 no warnings 'experimental::try';
 
 use Moo;
+use Shutter::App::Directories;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
 use XML::Simple;
@@ -45,8 +46,8 @@ sub fct_load_settings ($self, $data, $profilename) {
 	# This refactoring is complex due to UI dependencies, keeping minimal implementation
 	# to maintain functionality for now.
 
-	my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
-	$settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml"
+	my $settingsfile = Shutter::App::Directories::get_settings_file();
+	$settingsfile = Shutter::App::Directories::get_profile_settings_file($profilename)
 		if (defined $profilename);
 
 	my $settings_xml;
@@ -61,7 +62,7 @@ sub fct_load_settings ($self, $data, $profilename) {
 		};
 		if ($@) {
 			$sd->dlg_error_message("$@", $d->get("Settings could not be restored!"));
-			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($settingsfile);
+			Shutter::App::Core::FileSystemAPI->new->remove($settingsfile);
 		} else {
 			$self->fct_show_status_message(1, $d->get("Settings loaded successfully")) if defined &fct_show_status_message;
 		}
@@ -78,18 +79,18 @@ sub fct_save_settings ($self, $profilename) {
 	my $combobox_settings_profiles = $cli->{_combobox_settings_profiles};
 
 	# settings file
-	my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
+	my $settingsfile = Shutter::App::Directories::get_settings_file();
 	if (defined $profilename && $profilename ne "") {
-		$settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml";
+		$settingsfile = Shutter::App::Directories::get_profile_settings_file($profilename);
 	}
 
 	# session file
-	my $sessionfile = "$ENV{ HOME }/.shutter/session.xml";
+	my $sessionfile = Shutter::App::Directories::get_session_file();
 
 	# accounts file
-	my $accountsfile = "$ENV{ HOME }/.shutter/accounts.xml";
+	my $accountsfile = Shutter::App::Directories::get_accounts_file();
 	if (defined $profilename && $profilename ne "") {
-		$accountsfile = "$ENV{ HOME }/.shutter/profiles/$profilename\_accounts.xml";
+		$accountsfile = Shutter::App::Directories::get_profile_accounts_file($profilename);
 	}
 
 	my %settings;

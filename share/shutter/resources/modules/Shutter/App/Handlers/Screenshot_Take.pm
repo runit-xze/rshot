@@ -21,10 +21,7 @@ package Shutter::App::Handlers::Screenshot_Take;
 
 ## no critic (Subroutines::ProtectPrivateSubs)
 
-use warnings;
-require Shutter::App::Core::FileSystemAPI;
 use utf8;
-use Future;
 use v5.40;
 use feature 'try';
 no warnings 'experimental::try';
@@ -32,9 +29,13 @@ no warnings 'experimental::try';
 use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
+use Future;
 use File::Basename;
+use File::Temp  qw(tempdir);
 use POSIX       qw(strftime);
 use URI::Escape qw(uri_unescape);
+use Shutter::App::Core::FileSystemAPI;
+use Shutter::App::Core::WidgetStub;
 use Shutter::App::SimpleDialogs;
 use Shutter::Screenshot::Workspace;
 use Shutter::Screenshot::Window;
@@ -42,6 +43,7 @@ use Shutter::Screenshot::WindowName;
 use Shutter::Screenshot::WindowXid;
 use Shutter::Screenshot::SelectorAuto;
 use Shutter::Screenshot::SelectorAdvanced;
+use Shutter::Screenshot::MockScreenshooter;
 use Shutter::Screenshot::Web;
 use Shutter::Screenshot::Error;
 use Shutter::Pixbuf::Border;
@@ -234,40 +236,40 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	my $cursor_active = $sm->get_setting('general', 'cursor') // FALSE;
 
 	# Other settings (stubs for now)
-	my $notify_timeout_active     = $cli->{_notify_timeout_active}     // Shutter::App::Init::_mock_widget(FALSE);
-	my $current_monitor_active    = $cli->{_current_monitor_active}    // Shutter::App::Init::_mock_widget(FALSE);
-	my $border_active             = $cli->{_border_active}             // Shutter::App::Init::_mock_widget(FALSE);
-	my $winresize_active          = $cli->{_winresize_active}          // Shutter::App::Init::_mock_widget(FALSE);
-	my $winresize_w               = $cli->{_winresize_w}               // Shutter::App::Init::_mock_widget(800);
-	my $winresize_h               = $cli->{_winresize_h}               // Shutter::App::Init::_mock_widget(600);
-	my $hide_time                 = $cli->{_hide_time}                 // Shutter::App::Init::_mock_widget(250);
-	my $autoshape_active          = $cli->{_autoshape_active}          // Shutter::App::Init::_mock_widget(FALSE);
+	my $notify_timeout_active     = $cli->{_notify_timeout_active}     // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $current_monitor_active    = $cli->{_current_monitor_active}    // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $border_active             = $cli->{_border_active}             // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $winresize_active          = $cli->{_winresize_active}          // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $winresize_w               = $cli->{_winresize_w}               // Shutter::App::Core::WidgetStub::_widget_stub(800);
+	my $winresize_h               = $cli->{_winresize_h}               // Shutter::App::Core::WidgetStub::_widget_stub(600);
+	my $hide_time                 = $cli->{_hide_time}                 // Shutter::App::Core::WidgetStub::_widget_stub(250);
+	my $autoshape_active          = $cli->{_autoshape_active}          // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
 	my $is_hidden                 = $cli->{_is_hidden}                 // FALSE;
-	my $visible_windows_active    = $cli->{_visible_windows_active}    // Shutter::App::Init::_mock_widget(FALSE);
-	my $menu_waround_active       = $cli->{_menu_waround_active}       // Shutter::App::Init::_mock_widget(FALSE);
-	my $zoom_active               = $cli->{_zoom_active}               // Shutter::App::Init::_mock_widget(FALSE);
-	my $as_help_active            = $cli->{_as_help_active}            // Shutter::App::Init::_mock_widget(FALSE);
-	my $asel_size1                = $cli->{_asel_size1}                // Shutter::App::Init::_mock_widget(0);
-	my $asel_size2                = $cli->{_asel_size2}                // Shutter::App::Init::_mock_widget(0);
-	my $asel_size3                = $cli->{_asel_size3}                // Shutter::App::Init::_mock_widget(0);
-	my $asel_size4                = $cli->{_asel_size4}                // Shutter::App::Init::_mock_widget(0);
-	my $as_confirmation_necessary = $cli->{_as_confirmation_necessary} // Shutter::App::Init::_mock_widget(FALSE);
-	my $combobox_web_width        = $cli->{_combobox_web_width}        // Shutter::App::Init::_mock_widget(1024);
+	my $visible_windows_active    = $cli->{_visible_windows_active}    // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $menu_waround_active       = $cli->{_menu_waround_active}       // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $zoom_active               = $cli->{_zoom_active}               // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $as_help_active            = $cli->{_as_help_active}            // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $asel_size1                = $cli->{_asel_size1}                // Shutter::App::Core::WidgetStub::_widget_stub(0);
+	my $asel_size2                = $cli->{_asel_size2}                // Shutter::App::Core::WidgetStub::_widget_stub(0);
+	my $asel_size3                = $cli->{_asel_size3}                // Shutter::App::Core::WidgetStub::_widget_stub(0);
+	my $asel_size4                = $cli->{_asel_size4}                // Shutter::App::Core::WidgetStub::_widget_stub(0);
+	my $as_confirmation_necessary = $cli->{_as_confirmation_necessary} // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $combobox_web_width        = $cli->{_combobox_web_width}        // Shutter::App::Core::WidgetStub::_widget_stub(1024);
 	my $st                        = $cli->{st};
-	my $bordereffect_active       = $cli->{_bordereffect_active}   // Shutter::App::Init::_mock_widget(FALSE);
-	my $bordereffect              = $cli->{_bordereffect}          // Shutter::App::Init::_mock_widget(0);
-	my $bordereffect_cbtn         = $cli->{_bordereffect_cbtn}     // Shutter::App::Init::_mock_widget(undef);
-	my $im_colors_active          = $cli->{_im_colors_active}      // Shutter::App::Init::_mock_widget(FALSE);
-	my $combobox_im_colors        = $cli->{_combobox_im_colors}    // Shutter::App::Init::_mock_widget(0);
-	my $thumbnail_active          = $cli->{_thumbnail_active}      // Shutter::App::Init::_mock_widget(FALSE);
-	my $thumbnail                 = $cli->{_thumbnail}             // Shutter::App::Init::_mock_widget(25);
-	my $no_autocopy_active        = $cli->{_no_autocopy_active}    // Shutter::App::Init::_mock_widget(FALSE);
-	my $image_autocopy_active     = $cli->{_image_autocopy_active} // Shutter::App::Init::_mock_widget(FALSE);
-	my $fname_autocopy_active     = $cli->{_fname_autocopy_active} // Shutter::App::Init::_mock_widget(FALSE);
-	my $progname_active           = $cli->{_progname_active}       // Shutter::App::Init::_mock_widget(FALSE);
-	my $progname                  = $cli->{_progname}              // Shutter::App::Init::_mock_widget(undef);
-	my $notify_after_active       = $cli->{_notify_after_active}   // Shutter::App::Init::_mock_widget(FALSE);
-	my $present_after_active      = $cli->{_present_after_active}  // Shutter::App::Init::_mock_widget(FALSE);
+	my $bordereffect_active       = $cli->{_bordereffect_active}   // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $bordereffect              = $cli->{_bordereffect}          // Shutter::App::Core::WidgetStub::_widget_stub(0);
+	my $bordereffect_cbtn         = $cli->{_bordereffect_cbtn}     // Shutter::App::Core::WidgetStub::_widget_stub(undef);
+	my $im_colors_active          = $cli->{_im_colors_active}      // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $combobox_im_colors        = $cli->{_combobox_im_colors}    // Shutter::App::Core::WidgetStub::_widget_stub(0);
+	my $thumbnail_active          = $cli->{_thumbnail_active}      // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $thumbnail                 = $cli->{_thumbnail}             // Shutter::App::Core::WidgetStub::_widget_stub(25);
+	my $no_autocopy_active        = $cli->{_no_autocopy_active}    // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $image_autocopy_active     = $cli->{_image_autocopy_active} // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $fname_autocopy_active     = $cli->{_fname_autocopy_active} // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $progname_active           = $cli->{_progname_active}       // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $progname                  = $cli->{_progname}              // Shutter::App::Core::WidgetStub::_widget_stub(undef);
+	my $notify_after_active       = $cli->{_notify_after_active}   // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
+	my $present_after_active      = $cli->{_present_after_active}  // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
 	require Shutter::App::Core::ClipboardAPI;
 	my $clipboard                 = Shutter::App::Core::ClipboardAPI->new;
 	my $x11_supported             = $cli->{_x11_supported};
@@ -295,7 +297,7 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 		$folder         = $folder_from_config || "/tmp";
 		$filename_value = "mock_capture";
 
-		$screenshooter = MockScreenshooter->new;
+		$screenshooter = Shutter::Screenshot::MockScreenshooter->new;
 		goto POST_CAPTURE;
 	}
 
@@ -307,10 +309,7 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 
 	#folder to save
 	if ($save_no_active) {
-
-		# $folder = Shutter::App::Directories::get_cache_dir(); # FIXME: Directories.pm might not be loaded
-		$folder = "/tmp/shutter_cache";
-		Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($folder) unless Shutter::App::Core::FileSystemAPI->new->is_directory($folder);
+		$folder = tempdir(CLEANUP => 0);
 	}
 
 	#determine current file type
@@ -353,10 +352,12 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	if ($data eq "full" || $data eq "tray_full") {
 		if ($x11_supported) {
 			$screenshooter = Shutter::Screenshot::Workspace->new(
-				$sc, $include_cursor, $delay_value,
-				$notify_timeout_active->get_active,
-				$wnck_screen ? $wnck_screen->get_active_workspace : undef,
-				undef, undef, $current_monitor_active->get_active
+				_sc                   => $sc,
+				_include_cursor       => $include_cursor,
+				_delay                => $delay_value,
+				_notify_timeout       => $notify_timeout_active->get_active,
+				_selected_workspace   => $wnck_screen ? $wnck_screen->get_active_workspace : undef,
+				_current_monitor_only => $current_monitor_active->get_active,
 			);
 			$screenshot = $screenshooter->workspace_async();
 		} else {
@@ -375,10 +376,20 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 				$screenshot = $screenshooter->window_find_by_name($extra);
 			} else {
 				$screenshooter = Shutter::Screenshot::Window->new(
-					$sc,                                 $include_cursor,               $delay_value,                  $notify_timeout_active->get_active,
-					$border_active->get_active,          $winresize_active->get_active, $winresize_w->get_value,       $winresize_h->get_value,
-					$hide_time->get_value,               $data,                         $autoshape_active->get_active, $is_hidden,
-					$visible_windows_active->get_active, $menu_waround_active->get_active
+					_sc                       => $sc,
+					_include_cursor           => $include_cursor,
+					_delay                    => $delay_value,
+					_notify_timeout           => $notify_timeout_active->get_active,
+					_border_active            => $border_active->get_active,
+					_winresize_active         => $winresize_active->get_active,
+					_winresize_w              => $winresize_w->get_value,
+					_winresize_h              => $winresize_h->get_value,
+					_hide_time                => $hide_time->get_value,
+					_data                     => $data,
+					_autoshape_active         => $autoshape_active->get_active,
+					_is_hidden                => $is_hidden,
+					_visible_windows_active   => $visible_windows_active->get_active,
+					_menu_waround_active      => $menu_waround_active->get_active,
 				);
 				$screenshot = $screenshooter->window_async();
 			}
@@ -394,9 +405,18 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 				$screenshot    = $screenshooter->select_auto($coords[0], $coords[1], $coords[2], $coords[3]);
 			} else {
 				$screenshooter = Shutter::Screenshot::SelectorAdvanced->new(
-					$sc,                      $include_cursor,        $delay_value,                $notify_timeout_active->get_active,
-					$zoom_active->get_active, $hide_time->get_value,  $as_help_active->get_active, $asel_size3->get_value,
-					$asel_size4->get_value,   $asel_size1->get_value, $asel_size2->get_value,      $as_confirmation_necessary->get_active,
+					_sc                     => $sc,
+					_include_cursor         => $include_cursor,
+					_delay                  => $delay_value,
+					_notify_timeout         => $notify_timeout_active->get_active,
+					_zoom_active            => $zoom_active->get_active,
+					_hide_time              => $hide_time->get_value,
+					_show_help              => $as_help_active->get_active,
+					_init_x                 => $asel_size3->get_value,
+					_init_y                 => $asel_size4->get_value,
+					_init_w                 => $asel_size1->get_value,
+					_init_h                 => $asel_size2->get_value,
+					_confirmation_necessary => $as_confirmation_necessary->get_active,
 				);
 				$screenshot = $screenshooter->select_advanced();
 			}
@@ -525,19 +545,6 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 		return TRUE;
 	} else {
 		return $post_capture_cb->($screenshot);
-	}
-}
-
-package MockScreenshooter {    ## no critic (Modules::ProhibitMultiplePackages)
-	sub new             { return bless {}, shift }
-	sub get_mode        { return "mock" }
-	sub get_action_name { return "mock_action" }
-	sub get_history     { return 1 }
-	sub get_error_text  { return "" }
-	sub can             { return 1 }
-
-	sub redo_capture {
-		return Gtk3::Gdk::Pixbuf->new_from_file($ENV{SHUTTER_ROOT} . "/share/shutter/resources/icons/web_image.svg");
 	}
 }
 

@@ -1,8 +1,7 @@
 package Shutter::App::Core::ClipboardAPI;
 
-use strict;
-use warnings;
 use utf8;
+use v5.40;
 use Moo;
 use Gtk3;
 use Glib qw/TRUE FALSE/;

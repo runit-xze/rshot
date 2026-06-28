@@ -13,8 +13,7 @@ with 'Shutter::Draw::Tool::ModeManager';
 with 'Shutter::Draw::ZoomControl';
 with 'Shutter::Draw::CropPanel';
 
-sub setup_bottom_hbox {
-	my $self = shift;
+sub setup_bottom_hbox ($self) {
 	my $app  = $self->drawing_tool;
 
 	my $drawing_bottom_hbox = Gtk3::HBox->new(FALSE, 5);
@@ -153,8 +152,7 @@ sub setup_bottom_hbox {
 	return $drawing_bottom_hbox;
 }
 
-sub setup_view {
-	my $self = shift;
+sub setup_view ($self) {
 	my $app  = $self->drawing_tool;
 
 	#view, selector, dragger
@@ -200,8 +198,7 @@ sub setup_view {
 
 # Workaround for broken xpm parsing in glycin:
 # https://gitlab.gnome.org/GNOME/glycin/-/work_items/291
-sub parse_xpm_hotspot {
-	my $xpm_path = shift;
+sub parse_xpm_hotspot ($xpm_path) {
 	my ($x_hot, $y_hot);
 
 	open my $fh, '<', $xpm_path or do {

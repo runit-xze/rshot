@@ -55,6 +55,7 @@ use Shutter::App::Core::SessionManager;
 use Shutter::App::Core::SettingsManager;
 use Shutter::App::Core::ScreenshotHandler;
 use Shutter::App::Core::UploadManager;
+use Shutter::App::Core::WidgetStub;
 use Shutter::App::Notification;
 
 use Glib qw/TRUE FALSE/;
@@ -73,10 +74,10 @@ sub initialize ($cli) {
 	$cli->{_session_start_screen}->{'first_page'}->{'model'}->set_sort_column_id(2, 'descending');
 
 	# Mock widgets for state that used to be in the GUI
-	$cli->{_hide_active}            = _mock_widget(TRUE);
-	$cli->{_hide_time}              = _mock_widget(250);
-	$cli->{_menu_delay}             = _mock_widget(0);
-	$cli->{_notify_ptimeout_active} = _mock_widget(FALSE);
+	$cli->{_hide_active}            = Shutter::App::Core::WidgetStub::_widget_stub(TRUE);
+	$cli->{_hide_time}              = Shutter::App::Core::WidgetStub::_widget_stub(250);
+	$cli->{_menu_delay}             = Shutter::App::Core::WidgetStub::_widget_stub(0);
+	$cli->{_notify_ptimeout_active} = Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
 	$cli->{_is_hidden}              = FALSE;
 
 	if (Shutter::App::Core::FileSystemAPI->new->path_exists('/.flatpak-info')) {
@@ -152,17 +153,6 @@ sub initialize ($cli) {
 	$cli->{settings_xml} = $settings_xml;    # for backward compat
 
 	return \%globals;
-}
-
-sub _mock_widget ($val) {
-	return bless {val => $val}, 'MockWidget';
-}
-
-package MockWidget {    ## no critic (Modules::ProhibitMultiplePackages)
-	sub get_active      { return shift->{val} }
-	sub get_value       { return shift->{val} }
-	sub get_text        { return shift->{val} }
-	sub get_active_text { return shift->{val} }
 }
 
 1;

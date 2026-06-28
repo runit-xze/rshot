@@ -1,8 +1,7 @@
 package Shutter::App::Core::FileSystemAPI;
 
-use strict;
-use warnings;
 use utf8;
+use v5.40;
 use Moo;
 use Path::Tiny;
 use File::Glob qw(bsd_glob);

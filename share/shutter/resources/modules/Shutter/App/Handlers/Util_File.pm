@@ -29,6 +29,7 @@ use Gtk3 '-init';
 use Glib                    qw/TRUE FALSE/;
 use File::Basename          qw(fileparse dirname);
 use File::Glob              qw(bsd_glob);
+use Shutter::App::Directories;
 use Shutter::App::Constants qw(SHUTTER_NAME SHUTTER_VERSION);
 
 has cli => (is => 'ro', required => 1);
@@ -498,11 +499,11 @@ sub fct_unlink_tempfiles ($self, $key) {
 
 	if ($session_screens->{$key}) {
 		foreach my $tmpf (@{$session_screens->{$key}->{'undo'} // []}) {
-			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($tmpf);
+			Shutter::App::Core::FileSystemAPI->new->remove($tmpf);
 		}
 
 		foreach my $tmpf (@{$session_screens->{$key}->{'redo'} // []}) {
-			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($tmpf);
+			Shutter::App::Core::FileSystemAPI->new->remove($tmpf);
 		}
 	}
 

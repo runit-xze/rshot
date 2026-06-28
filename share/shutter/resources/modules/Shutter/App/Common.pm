@@ -99,9 +99,6 @@ has ruu_tab => (is => "rw", default => sub { 0 });
 has ruu_hosting => (is => "rw", default => sub { 0 });
 has ruu_places  => (is => "rw", default => sub { 0 });
 
-# TODO: this attribute looks like isn't used. Consider to remove it later
-has ruu_u1 => (is => "rw", default => sub { 0 });
-
 #recently used save folder
 has rusf => (is => "rw", lazy => 1);
 

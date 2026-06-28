@@ -29,6 +29,8 @@ use FindBin '$Bin';
 use File::Spec;
 use lib File::Spec->catdir($Bin, '..', 'share', 'shutter', 'resources', 'modules');
 
+# Install the Gtk3::IconSize::lookup override globally before any drawing code loads.
+use Shutter::App::Compat::Gtk3IconSize;
 use Shutter::App::CLI;
 
 # Determine shutter_root

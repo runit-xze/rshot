@@ -25,6 +25,7 @@ use feature 'try';
 no warnings 'experimental::try';
 
 use Moo;
+use Shutter::App::Directories;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
 use XML::Simple;
@@ -74,7 +75,7 @@ sub fct_drop_handler ($self, $widget, $context, $x, $y, $selection, $info, $time
 
 	if (@sxcu_files) {
 		my $uploaders_dir = $ENV{'HOME'} . '/.shutter/uploaders';
-		Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($uploaders_dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($uploaders_dir);
+		Shutter::App::Core::FileSystemAPI->new->make_dir($uploaders_dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($uploaders_dir);
 		my $imported = 0;
 		foreach my $sxcu (@sxcu_files) {
 			my $name = basename($sxcu);
@@ -131,7 +132,7 @@ sub fct_load_session ($self) {
 	my $session_start_screen = $cli->{_session_start_screen};
 
 	#session file
-	my $sessionfile = "$ENV{ HOME }/.shutter/session.xml";
+	my $sessionfile = Shutter::App::Directories::get_session_file();
 
 	eval {
 		my $session_xml = XMLin(IO::File->new($sessionfile))
@@ -175,7 +176,7 @@ sub fct_load_session ($self) {
 	};
 	if ($@) {
 		$sd->dlg_error_message("$@", $d->get("Session could not be restored!"));
-		Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($sessionfile);
+		Shutter::App::Core::FileSystemAPI->new->remove($sessionfile);
 	}
 
 	return TRUE;

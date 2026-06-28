@@ -36,6 +36,7 @@ install: all
 	install -Dm644 $(srcdir)COPYING $(prefix)/share/doc/rshot/COPYING
 	install -Dm644 $(srcdir)README $(prefix)/share/doc/rshot/README
 	install -Dm755 $(srcdir)bin/rshot $(prefix)/bin/rshot
+	install -Dm644 $(srcdir)share/pixmaps/rshot-logo.png $(prefix)/share/pixmaps/rshot-logo.png
 	cp -r $(srcdir)share/ $(prefix)/
 
 uninstall:
@@ -44,7 +45,7 @@ uninstall:
 	rm $(prefix)/share/applications/rshot.desktop
 	rm -r $(prefix)/share/doc/rshot/
 	rm $(prefix)/share/man/man1/rshot.1
-	rm $(prefix)/share/pixmaps/rshot.png
+	rm $(prefix)/share/pixmaps/rshot-logo.png
 	rm -r $(prefix)/share/shutter/
 	rm $(prefix)/share/icons/HighContrast/scalable/apps/rshot.svg
 	rm $(prefix)/share/icons/HighContrast/scalable/apps/rshot-panel.svg

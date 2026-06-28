@@ -61,31 +61,6 @@ has '_is_hidden'      => (is => 'rw');
 has '_show_visible'   => (is => 'rw');
 has '_ignore_type'    => (is => 'rw');
 
-around BUILDARGS => sub {
-	my ($orig, $class, @args) = @_;
-	if (@args >= 14 && @args <= 15) {
-		my ($sc, $include_cursor, $delay, $notify_timeout, $include_border, $windowresize, $windowresize_w, $windowresize_h, $hide_time, $mode, $auto_shape, $is_hidden, $show_visible, $ignore_type) =
-			@args;
-		return $class->$orig(
-			_sc             => $sc,
-			_include_cursor => $include_cursor,
-			_delay          => $delay,
-			_notify_timeout => $notify_timeout,
-			_include_border => $include_border,
-			_windowresize   => $windowresize,
-			_windowresize_w => $windowresize_w,
-			_windowresize_h => $windowresize_h,
-			_hide_time      => $hide_time,
-			_mode           => $mode,
-			_auto_shape     => $auto_shape,
-			_is_hidden      => $is_hidden,
-			_show_visible   => $show_visible,
-			_ignore_type    => $ignore_type,
-		);
-	}
-	return $class->$orig(@args);
-};
-
 sub BUILD ($self, $args) {
 
 	#X11 protocol and XSHAPE ext
@@ -104,12 +79,6 @@ sub BUILD ($self, $args) {
 	}
 	return;
 }
-
-#~ sub DESTROY {
-#~ my $self = shift;
-#~ print "$self dying at\n";
-#~ }
-#~
 
 sub window_async ($self) {
 

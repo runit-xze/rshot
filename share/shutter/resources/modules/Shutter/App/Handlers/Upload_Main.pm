@@ -28,6 +28,7 @@ use Moo;
 use Gtk3 '-init';
 use Glib                    qw/TRUE FALSE/;
 use List::Util              qw(min);
+use Shutter::App::Directories;
 use Shutter::App::Constants qw(SHUTTER_NAME SHUTTER_VERSION);
 
 has cli => (is => 'ro', required => 1);
@@ -171,9 +172,9 @@ sub fct_print ($self) {
 	$op->set_default_page_setup($pagesetup) if defined $pagesetup;
 
 	#restore settings if prossible
-	if ($shf->file_exists("$ENV{ HOME }/.shutter/printing.xml")) {
+	if ($shf->file_exists(Shutter::App::Directories::get_printing_file())) {
 		eval {
-			my $ssettings = Gtk3::PrintSettings->new_from_file("$ENV{ HOME }/.shutter/printing.xml");
+			my $ssettings = Gtk3::PrintSettings->new_from_file(Shutter::App::Directories::get_printing_file());
 			$op->set_print_settings($ssettings);
 		};
 	}
@@ -216,7 +217,7 @@ sub fct_print ($self) {
 	#save settings
 	my $settings = $op->get_print_settings;
 	if ($settings) {
-		eval { $settings->to_file("$ENV{ HOME }/.shutter/printing.xml"); };
+		eval { $settings->to_file(Shutter::App::Directories::get_printing_file()); };
 	}
 
 	return TRUE;

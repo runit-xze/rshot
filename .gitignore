@@ -17,3 +17,9 @@ GEMINI/
 generated-sources.json
 repomix-output.xml
 .bob/
+
+# Test coverage artifacts
+cover_db/
+
+# Auto-generated artifacts (regenerate with `make map` / `make sbom`)
+DEPENDENCIES.md

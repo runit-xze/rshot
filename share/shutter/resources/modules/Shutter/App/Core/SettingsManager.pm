@@ -34,6 +34,7 @@ use Glib       qw/TRUE FALSE/;
 use File::Copy qw/cp mv/;
 use File::Temp qw/tempfile/;
 use File::Spec;
+use Shutter::App::Directories;
 use XML::Simple;
 use IO::File;
 
@@ -46,10 +47,9 @@ sub save_settings ($self, $profilename = undef) {
 	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
 	my $d   = $sc->gettext_object;
 
-	my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
-	if (defined $profilename && $profilename ne "") {
-		$settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml";
-	}
+	my $settingsfile = defined $profilename && $profilename ne ""
+		? Shutter::App::Directories::get_profile_settings_file($profilename)
+		: Shutter::App::Directories::get_settings_file;
 
 	my %settings = %{$self->_settings};
 	$settings{'general'}->{'app_version'} = $sc->version . $sc->rev;
@@ -72,15 +72,16 @@ sub load_settings ($self, $profilename = undef) {
 	my $shf = $sc->get_helper_functions;
 	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
 
-	my $settingsfile = "$ENV{ HOME }/.shutter/settings.xml";
-	$settingsfile = "$ENV{ HOME }/.shutter/profiles/$profilename.xml" if defined $profilename;
+	my $settingsfile = defined $profilename
+		? Shutter::App::Directories::get_profile_settings_file($profilename)
+		: Shutter::App::Directories::get_settings_file;
 
 	my $settings_xml = {};
 	if ($shf->file_exists($settingsfile)) {
 		eval { $settings_xml = XMLin(IO::File->new($settingsfile), ForceArray => 0, KeyAttr => [], KeepRoot => 1); };
 		if ($@) {
 			$sd->dlg_error_message($@, $d->get("Settings could not be restored!"));
-			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($settingsfile);
+			Shutter::App::Core::FileSystemAPI->new->remove($settingsfile);
 		}
 	}
 	$self->_settings($settings_xml);
@@ -104,8 +105,9 @@ sub load_accounts ($self, $profilename = undef) {
 	my $shf = $sc->get_helper_functions;
 	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
 
-	my $accountsfile = "$ENV{ HOME }/.shutter/accounts.xml";
-	$accountsfile = "$ENV{ HOME }/.shutter/profiles/$profilename\_accounts.xml" if defined $profilename;
+	my $accountsfile = defined $profilename
+		? Shutter::App::Directories::get_profile_accounts_file($profilename)
+		: Shutter::App::Directories::get_accounts_file;
 
 	my %accounts;
 	if ($shf->file_exists($accountsfile)) {
@@ -113,7 +115,7 @@ sub load_accounts ($self, $profilename = undef) {
 		eval { $accounts_xml = XMLin(IO::File->new($accountsfile)) };
 		if ($@) {
 			$sd->dlg_error_message($@, $d->get("Account-settings could not be restored!"));
-			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($accountsfile);
+			Shutter::App::Core::FileSystemAPI->new->remove($accountsfile);
 		} else {
 			foreach my $ac (keys %{$accounts_xml}) {
 				if ($shf->file_exists($accounts_xml->{$ac}->{path})) {
@@ -127,7 +129,7 @@ sub load_accounts ($self, $profilename = undef) {
 	require File::Basename;
 	require JSON::MaybeXS;
 	my $shutter_root = $sc->shutter_root;
-	my @sxcu_paths   = ("$shutter_root/share/shutter/resources/system/uploaders/*.sxcu", $ENV{'HOME'} . "/.shutter/uploaders/*.sxcu");
+	my @sxcu_paths   = ("$shutter_root/share/shutter/resources/system/uploaders/*.sxcu", Shutter::App::Directories::get_uploaders_dir() . "/*.sxcu");
 	my $json         = JSON::MaybeXS->new;
 	foreach my $sxcu_path (@sxcu_paths) {
 		my @sxcus = File::Glob::bsd_glob($sxcu_path);

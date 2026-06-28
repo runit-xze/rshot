@@ -26,56 +26,12 @@ no warnings 'experimental::try';
 
 use Moo;
 use Gtk3 '-init';
-use Glib       qw/TRUE FALSE/;
-use File::Glob qw(bsd_glob);
-use IPC::Cmd   qw(can_run);
+use Glib     qw/TRUE FALSE/;
+use IPC::Cmd qw(can_run);
 use Log::Any;
 use Shutter::App::Directories;
-use Shutter::App::Constants qw(SHUTTER_VERSION SHUTTER_REV);
 
 has cli => (is => 'ro', required => 1);
-
-sub fct_init_debug_output ($self) {
-	my $log = Log::Any->get_logger;
-
-	$log->debug("gathering system information...");
-	$log->debug("Shutter " . SHUTTER_VERSION . " " . SHUTTER_REV);
-
-	#kernel info
-	if (can_run('uname')) {
-		require Shutter::App::Core::SecureSystemCommandAPI;
-		my $res = Shutter::App::Core::SecureSystemCommandAPI->new->capture('uname', '-a');
-		my $uname = $res->{stdout};
-		chomp $uname;
-		$log->debug($uname);
-	}
-
-	eval {
-		open my $fh, '<', '/etc/os-release' or die;
-		my %map = map {
-			chomp;
-			my ($key, $value) = split /=/, $_, 2;
-			$value =~ s/^(['"])(.*)\1$/$2/;
-			($key, $value)
-		} <$fh>;
-		my $os_info = join(' ', grep { $_ } map { $map{$_} } qw/NAME VERSION_ID BUILD_ID/);
-		$log->debug($os_info);
-	};
-	$log->debug("Cannot open /etc/os-release") if $@;
-
-	$log->debug(sprintf "Glib %s", $Glib::VERSION);
-	$log->debug(sprintf "Gtk3 %s", $Gtk3::VERSION);
-
-	# The version info stuff appeared in 1.040.
-	if ($Glib::VERSION >= 1.040) {
-		$log->debug("Glib built for " . join(".", Glib->GET_VERSION_INFO) . ", running with " . join(".", Glib::major_version(), Glib::minor_version(), Glib::micro_version()));
-	}
-	if ($Gtk3::VERSION >= 1.040) {
-		$log->debug("Gtk3 built for " . join(".", Gtk3->GET_VERSION_INFO) . ", running with " . join(".", Gtk3::major_version(), Gtk3::minor_version(), Gtk3::micro_version()));
-	}
-
-	return TRUE;
-}
 
 sub fct_init_depend ($self) {
 	my $cli = $self->cli;
@@ -125,22 +81,6 @@ sub fct_init_depend ($self) {
 	}
 
 	return TRUE;
-}
-
-sub fct_init_unsaved_files ($self) {
-
-	#delete all files in this folder
-	#except the ones that are in the current session
-	my @unsaved_files = bsd_glob(Shutter::App::Directories::get_cache_dir() . "/*");
-	foreach my $unsaved_file (@unsaved_files) {
-		utf8::decode $unsaved_file;
-		if (defined &fct_get_key_by_filename) {
-			unless (fct_get_key_by_filename($unsaved_file)) {
-				Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($unsaved_file);
-			}
-		}
-	}
-	return;
 }
 
 1;

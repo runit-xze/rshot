@@ -25,6 +25,7 @@ use feature 'try';
 no warnings 'experimental::try';
 
 use Moo;
+use Shutter::App::Directories;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
 use XML::Simple;
@@ -41,8 +42,8 @@ sub fct_load_accounts ($self, $profilename) {
 	my $accounts = $cli->{_accounts};
 
 	#accounts file
-	my $accountsfile = "$ENV{ HOME }/.shutter/accounts.xml";
-	$accountsfile = "$ENV{ HOME }/.shutter/profiles/$profilename\_accounts.xml"
+	my $accountsfile = Shutter::App::Directories::get_accounts_file();
+	$accountsfile = Shutter::App::Directories::get_profile_accounts_file($profilename)
 		if (defined $profilename);
 
 	if ($shf->file_exists($accountsfile)) {
@@ -50,7 +51,7 @@ sub fct_load_accounts ($self, $profilename) {
 		eval { $accounts_xml = XMLin(IO::File->new($accountsfile)) };
 		if ($@) {
 			$sd->dlg_error_message($@, $d->get("Account-settings could not be restored!"));
-			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($accountsfile);
+			Shutter::App::Core::FileSystemAPI->new->remove($accountsfile);
 		} else {
 			foreach (keys %{$accounts_xml}) {
 

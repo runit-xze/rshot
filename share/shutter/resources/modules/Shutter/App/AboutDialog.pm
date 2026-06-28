@@ -77,7 +77,10 @@ sub show ($self) {
 		});
 
 	my $logo_surface;
-	eval { $logo_surface = Cairo::ImageSurface->create_from_png('/home/ashley/.gemini/antigravity-cli/brain/422b5aec-b8a4-4114-9ace-5e53b45146a1/rshot_logo_transparent.png'); };
+	my $logo_path = "$shutter_root/share/pixmaps/rshot-logo.png";
+	if (Shutter::App::Core::FileSystemAPI->new->path_exists($logo_path)) {
+		$logo_surface = Cairo::ImageSurface->create_from_png($logo_path);
+	}
 
 	$da->signal_connect(
 		'draw' => sub {

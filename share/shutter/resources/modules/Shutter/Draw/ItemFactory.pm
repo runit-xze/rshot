@@ -28,13 +28,11 @@ sub create_polyline {
 	return $poly->setup($ev, $copy_item, $highlighter);
 }
 
-sub create_censor {
-	my $mgr = shift;
+sub create_censor ($mgr) {
 	return $mgr->_tool_setup('censor', @_);
 }
 
-sub create_pixel_image {
-	my $mgr = shift;
+sub create_pixel_image ($mgr) {
 	return $mgr->_tool_setup('pixelize', @_);
 }
 
@@ -139,13 +137,11 @@ sub create_image {
 	return $item;
 }
 
-sub create_text {
-	my $mgr = shift;
+sub create_text ($mgr) {
 	return $mgr->_tool_setup('text', @_);
 }
 
-sub create_line {
-	my $mgr = shift;
+sub create_line ($mgr) {
 	return $mgr->_tool_setup('line', @_);
 }
 
@@ -157,8 +153,7 @@ sub create_ellipse {
 	return $mgr->_tool_setup('ellipse', $ev, $copy_item, $numbered);
 }
 
-sub create_rectangle {
-	my $mgr = shift;
+sub create_rectangle ($mgr) {
 	return $mgr->_tool_setup('rect', @_);
 }
 
@@ -651,8 +646,7 @@ sub create_highlighter_polyline {
 	);
 }
 
-sub increase_uid {
-	my $mgr = shift;
+sub increase_uid ($mgr) {
 	my $dt  = $mgr->drawing_tool;
 	return $dt->increase_uid;
 }

@@ -40,12 +40,6 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-#~ sub DESTROY {
-#~ my $self = shift;
-#~ print "$self dying at\n";
-#~ }
-#~
-
 sub window_find_by_name ($self, $name_pattern) {
 
 	my $active_workspace = $self->{_wnck_screen}->get_active_workspace;

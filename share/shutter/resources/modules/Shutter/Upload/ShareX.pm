@@ -122,7 +122,7 @@ sub upload ($self, $upload_filename) {
 				Shutter::App::Core::SecureSystemCommandAPI->new->capture('qrencode', '-o', $tmpfile, '-s', '5', $final_url);
 				if (Shutter::App::Core::FileSystemAPI->new->is_regular_file($tmpfile)) {
 					$self->_show_qr_dialog($tmpfile, $final_url);
-					Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($tmpfile);
+					Shutter::App::Core::FileSystemAPI->new->remove($tmpfile);
 				}
 			}
 

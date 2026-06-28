@@ -1,5 +1,7 @@
 # RShot (formerly Shutter)
 
+![RShot logo](share/pixmaps/rshot-logo.png)
+
 Donate:
 XMR: 842xeJ73G1f8Wu1r9VmBDKgSXrkSTkd71CTLx3vxvxjac6Ho5E3RPvAdUPFrVnqp8kbAGZXL4oVVkLyEbotbTkZRHNcmLFM
 BTC: TBA

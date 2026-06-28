@@ -1,5 +1,7 @@
 package Shutter::Draw::Tool::Role::Movable;
 
+use utf8;
+use v5.40;
 use Moo::Role;
 use Glib qw/TRUE FALSE/;
 use Gtk3;

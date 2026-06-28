@@ -8,6 +8,7 @@ use IO::File;
 use Glib qw(TRUE FALSE);
 use Gtk3;
 use Pango;
+use Shutter::App::Directories;
 
 has drawing_tool => (
 	is       => 'ro',
@@ -21,7 +22,7 @@ sub load_settings {
 	my $shutter_hfunct = Shutter::App::HelperFunctions->new($dt->_sc);
 
 	#settings file
-	my $settingsfile = "$ENV{ HOME }/.shutter/drawingtool.xml";
+	my $settingsfile = Shutter::App::Directories::get_drawingtool_file();
 
 	my $settings_xml;
 	if ($shutter_hfunct->file_exists($settingsfile)) {
@@ -83,7 +84,7 @@ sub save_settings {
 	$self->restore_drawing_properties;
 
 	#settings file
-	my $settingsfile = "$ENV{ HOME }/.shutter/drawingtool.xml";
+	my $settingsfile = Shutter::App::Directories::get_drawingtool_file();
 
 	#hash to store settings
 	my %settings;

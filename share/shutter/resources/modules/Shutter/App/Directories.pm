@@ -39,7 +39,7 @@ use constant {
 };
 
 sub create_if_not_exists ($dir) {
-	Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($dir) && Shutter::App::Core::FileSystemAPI->new->is_path_readable($dir);
+	Shutter::App::Core::FileSystemAPI->new->make_dir($dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($dir) && Shutter::App::Core::FileSystemAPI->new->is_path_readable($dir);
 
 	return $dir;
 }
@@ -63,12 +63,30 @@ sub get_autostart_dir {
 sub get_home_dir   { return Glib::get_home_dir() }
 sub get_config_dir { return Glib::get_user_config_dir() }
 
-sub create_hidden_home_dir_if_not_exist {
-	my $hidden_dir          = $ENV{HOME} . "/" . HIDDEN_SHUTTER_DIR;
-	my $hidden_profiles_dir = "$hidden_dir" . "/" . PROFILES_DIR;
+sub get_hidden_home_dir       { return Glib::get_home_dir() . "/" . HIDDEN_SHUTTER_DIR }
+sub get_hidden_profiles_dir   { return get_hidden_home_dir() . "/" . PROFILES_DIR }
+sub get_settings_file         { return get_hidden_home_dir() . "/settings.xml" }
+sub get_accounts_file         { return get_hidden_home_dir() . "/accounts.xml" }
+sub get_session_file          { return get_hidden_home_dir() . "/session.xml" }
+sub get_printing_file         { return get_hidden_home_dir() . "/printing.xml" }
+sub get_drawingtool_file      { return get_hidden_home_dir() . "/drawingtool.xml" }
+sub get_uploaders_dir         { return get_hidden_home_dir() . "/uploaders" }
+sub get_plugins_dir           { return get_hidden_home_dir() . "/plugins" }
 
-	Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($hidden_dir)          unless Shutter::App::Core::FileSystemAPI->new->is_directory($hidden_dir);
-	Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->make_dir($hidden_profiles_dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($hidden_profiles_dir);
+sub get_profile_settings_file ($name) {
+	return get_hidden_profiles_dir() . "/${name}.xml";
+}
+
+sub get_profile_accounts_file ($name) {
+	return get_hidden_profiles_dir() . "/${name}_accounts.xml";
+}
+
+sub create_hidden_home_dir_if_not_exist {
+	my $hidden_dir          = get_hidden_home_dir;
+	my $hidden_profiles_dir = get_hidden_profiles_dir;
+
+	Shutter::App::Core::FileSystemAPI->new->make_dir($hidden_dir)          unless Shutter::App::Core::FileSystemAPI->new->is_directory($hidden_dir);
+	Shutter::App::Core::FileSystemAPI->new->make_dir($hidden_profiles_dir) unless Shutter::App::Core::FileSystemAPI->new->is_directory($hidden_profiles_dir);
 
 	return TRUE;
 }

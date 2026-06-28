@@ -48,16 +48,6 @@ sub BUILD ($self, $args) {
 	return;
 }
 
-sub create_notebook ($self) {
-	return $self->notebook;
-}
-
-sub add_tab ($self, $content, $label) {
-	my $page_num = $self->notebook->append_page($content, $label);
-	$self->notebook->set_current_page($page_num);
-	return $page_num;
-}
-
 1;
 
 __END__

@@ -1,8 +1,7 @@
 package Shutter::App::Core::NetworkAPI;
 
-use strict;
-use warnings;
 use utf8;
+use v5.40;
 use Moo;
 use LWP::UserAgent;
 use HTTP::Request::Common qw(POST GET);

@@ -1,10 +1,8 @@
 package Shutter::App::Core::SecureSystemCommandAPI;
 
-use strict;
-use warnings;
 use utf8;
-use Moo;
 use v5.40;
+use Moo;
 use IPC::Run3;
 use Log::Any qw($log);
 use POSIX ();

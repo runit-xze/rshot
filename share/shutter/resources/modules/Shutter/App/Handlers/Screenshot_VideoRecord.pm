@@ -13,6 +13,7 @@ use Gtk3;
 use File::Basename;
 use POSIX       qw(strftime);
 use URI::Escape qw(uri_unescape);
+use Shutter::App::Core::WidgetStub;
 use Shutter::Screenshot::SelectorAdvanced;
 use Shutter::Screenshot::Window;
 use Shutter::Screenshot::VideoRecorder;
@@ -68,7 +69,9 @@ sub _start_capture_flow ($self, $data, $folder_from_config, $extra) {
 	if ($data eq 'video_select' || $data eq 'tray_video_select') {
 
 		# Use SelectorAdvanced to get region
-		my $screenshooter = Shutter::Screenshot::SelectorAdvanced->new($sc, FALSE, 0, FALSE, FALSE, 0, FALSE, 0, 0, 0, 0, FALSE);
+		my $screenshooter = Shutter::Screenshot::SelectorAdvanced->new(
+			_sc => $sc,
+		);
 		my $dummy_pixbuf  = $screenshooter->select_advanced();
 		return unless $dummy_pixbuf;    # Cancelled
 
@@ -283,7 +286,7 @@ sub _on_recording_done ($self, $video_path) {
 		Shutter::App::Core::SecureSystemCommandAPI->new->capture('ffmpeg', '-y', '-i', $video_path, '-vframes', '1', $thumb_path);
 		if (Shutter::App::Core::FileSystemAPI->new->path_exists($thumb_path)) {
 			$thumb_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($thumb_path);
-			Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($thumb_path);
+			Shutter::App::Core::FileSystemAPI->new->remove($thumb_path);
 		}
 	} catch ($e) {
 	}
@@ -312,7 +315,7 @@ sub _on_recording_done ($self, $video_path) {
 			});
 	}
 
-	my $present_after_active = $cli->{_present_after_active} // Shutter::App::Init::_mock_widget(FALSE);
+	my $present_after_active = $cli->{_present_after_active} // Shutter::App::Core::WidgetStub::_widget_stub(FALSE);
 	$cli->handlers->get('Core')->fct_control_main_window('show', $present_after_active->get_active);
 	return;
 }

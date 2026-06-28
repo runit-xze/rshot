@@ -25,6 +25,7 @@ use feature 'try';
 no warnings 'experimental::try';
 
 use Moo;
+use Shutter::App::Directories;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
 
@@ -66,11 +67,11 @@ sub evt_delete_profile ($self, $widget, $combobox_settings_profiles, $current_pr
 	if ($combobox_settings_profiles->get_active_text) {
 		my $active_text  = $combobox_settings_profiles->get_active_text;
 		my $active_index = $combobox_settings_profiles->get_active;
-		Shutter::App::Core::FileSystemAPI->new->remove("$ENV{'HOME'}/.shutter/profiles/" . $active_text . ".xml");
-		Shutter::App::Core::FileSystemAPI->new->remove("$ENV{'HOME'}/.shutter/profiles/" . $active_text . "_accounts.xml");
+		Shutter::App::Core::FileSystemAPI->new->remove(Shutter::App::Directories::get_profile_settings_file($active_text));
+		Shutter::App::Core::FileSystemAPI->new->remove(Shutter::App::Directories::get_profile_accounts_file($active_text));
 
-		unless ($shf->file_exists("$ENV{'HOME'}/.shutter/profiles/" . $active_text . ".xml")
-			|| $shf->file_exists("$ENV{'HOME'}/.shutter/profiles/" . $active_text . "_accounts.xml"))
+		unless ($shf->file_exists(Shutter::App::Directories::get_profile_settings_file($active_text))
+			|| $shf->file_exists(Shutter::App::Directories::get_profile_accounts_file($active_text)))
 		{
 			$combobox_settings_profiles->remove($active_index);
 			$combobox_settings_profiles->set_active($combobox_settings_profiles->get_active + 1);
@@ -172,8 +173,8 @@ sub evt_page_setup ($self, $widget, $data) {
 
 	#restore settings if prossible
 	my $ssettings = Gtk3::PrintSettings->new;
-	if ($shf->file_exists("$ENV{ HOME }/.shutter/printing.xml")) {
-		eval { $ssettings = Gtk3::PrintSettings->new_from_file("$ENV{ HOME }/.shutter/printing.xml"); };
+	if ($shf->file_exists(Shutter::App::Directories::get_printing_file())) {
+		eval { $ssettings = Gtk3::PrintSettings->new_from_file(Shutter::App::Directories::get_printing_file()); };
 	}
 
 	($pagesetup) = Glib::Object::Introspection->invoke('Gtk', undef, 'print_run_page_setup_dialog', $window, $pagesetup, $ssettings);

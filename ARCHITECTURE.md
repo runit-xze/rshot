@@ -82,9 +82,8 @@ bin/shutter (entry point)
 
 | Module | Purpose | GEMINI.md |
 |--------|---------|-----------|
-| `FTP.pm` | FTP upload | [View](GEMINI/Upload/FTP.md) |
-| `ShareX.pm` | ShareX upload | [View](GEMINI/Upload/ShareX.md) |
-| `Shared.pm` | Shared upload logic | [View](GEMINI/Upload/Shared.md) |
+| `ShareX.pm` | ShareX (`.sxcu`) upload | [View](GEMINI/Upload/ShareX.md) |
+| `Catbox.pm` | Catbox.moe upload | [View](GEMINI/Upload/Catbox.md) |
 
 ### Draw Modules (`share/shutter/resources/modules/Shutter/Draw/`)
 
@@ -277,7 +276,7 @@ bin/shutter (entry point)
 
 | Module | Purpose | GEMINI.md |
 |--------|---------|-----------|
-| `FTP.pm` | TODO | [View](GEMINI/Upload/FTP.md) |
+| `Catbox.pm` | TODO | [View](GEMINI/Upload/Catbox.md) |
 | `ShareX.pm` | TODO | [View](GEMINI/Upload/ShareX.md) |
-| `Shared.pm` | TODO | [View](GEMINI/Upload/Shared.md) |
+| `Role/Uploader.pm` | TODO | [View](GEMINI/Upload/Role/Uploader.md) |
 

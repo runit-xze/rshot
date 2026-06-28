@@ -56,28 +56,6 @@ has '_init_w'                 => (is => 'rw');
 has '_init_h'                 => (is => 'rw');
 has '_confirmation_necessary' => (is => 'rw');
 
-around BUILDARGS => sub {
-	my ($orig, $class, @args) = @_;
-	if (@args == 12) {
-		my ($sc, $include_cursor, $delay, $notify_timeout, $zoom_active, $hide_time, $show_help, $init_x, $init_y, $init_w, $init_h, $confirmation_necessary) = @args;
-		return $class->$orig(
-			_sc                     => $sc,
-			_include_cursor         => $include_cursor,
-			_delay                  => $delay,
-			_notify_timeout         => $notify_timeout,
-			_zoom_active            => $zoom_active,
-			_hide_time              => $hide_time,
-			_show_help              => $show_help,
-			_init_x                 => $init_x,
-			_init_y                 => $init_y,
-			_init_w                 => $init_w,
-			_init_h                 => $init_h,
-			_confirmation_necessary => $confirmation_necessary,
-		);
-	}
-	return $class->$orig(@args);
-};
-
 sub BUILD ($self, $args) {
 	$self->{_dpi_scale} = Gtk3::Window->new('toplevel')->get('scale-factor');
 

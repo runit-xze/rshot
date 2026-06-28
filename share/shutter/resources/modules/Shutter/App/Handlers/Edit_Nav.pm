@@ -220,7 +220,7 @@ sub fct_redo ($self) {
 				$h->get('UI_Status')->fct_show_status_message(1, $d->get("Last action redone"));
 
 				#delete last_version from filesystem
-				Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($last_version);
+				Shutter::App::Core::FileSystemAPI->new->remove($last_version);
 			} else {
 				my $response = $sd->dlg_error_message(
 					sprintf($d->get("Error while copying last version (%s)."),    "'" . $last_version . "'"),
@@ -269,7 +269,7 @@ sub fct_undo ($self) {
 				$h->get('UI_Status')->fct_show_status_message(1, $d->get("Last action undone"));
 
 				#delete last_version from filesystem
-				Shutter::App::Core::FileSystemAPI->new->Shutter::App::Core::FileSystemAPI->new->remove($last_version);
+				Shutter::App::Core::FileSystemAPI->new->remove($last_version);
 			} else {
 				my $response = $sd->dlg_error_message(
 					sprintf($d->get("Error while copying last version (%s)."),    "'" . $last_version . "'"),

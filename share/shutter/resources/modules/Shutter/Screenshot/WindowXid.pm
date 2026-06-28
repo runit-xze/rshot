@@ -40,12 +40,6 @@ use Glib qw/TRUE FALSE/;
 
 #--------------------------------------
 
-#~ sub DESTROY {
-#~ my $self = shift;
-#~ print "$self dying at\n";
-#~ }
-#~
-
 sub window_by_xid ($self, $xid) {
 
 	my $dummy_window = Gtk3::Window->new('toplevel');

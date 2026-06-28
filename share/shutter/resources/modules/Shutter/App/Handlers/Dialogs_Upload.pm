@@ -27,6 +27,7 @@ no warnings 'experimental::try';
 use Moo;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
+use Shutter::App::Directories;
 use Shutter::App::SimpleDialogs;
 use URI::Escape qw(uri_unescape);
 
@@ -78,7 +79,7 @@ sub dlg_profile_name ($self, $curr_profile_name, $combobox_settings_profiles) {
 	if ($profile_response eq 'accept') {
 		my $entered_name = $new_profile_name->get_text;
 
-		if ($shf->file_exists("$ENV{'HOME'}/.shutter/profiles/$entered_name.xml")) {
+		if ($shf->file_exists(Shutter::App::Directories::get_profile_settings_file($entered_name))) {
 
 			#ask the user to replace the profile
 			#replace button
