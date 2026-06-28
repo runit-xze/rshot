@@ -9,15 +9,8 @@ use File::Temp qw(tempdir tempfile);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock LWP::UserAgent
 {
@@ -43,14 +36,14 @@ BEGIN {
 use_ok('Shutter::Upload::ShareX');
 
 subtest 'Constructor and initialization' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     isa_ok($uploader, 'Shutter::Upload::ShareX');
     ok(defined $uploader, 'ShareX uploader created');
 };
 
 subtest 'SXCU file parsing' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test valid SXCU format
     ok(1, 'Should parse valid .sxcu file');
@@ -66,7 +59,7 @@ subtest 'SXCU file parsing' => sub {
 };
 
 subtest 'SXCU format validation' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test validation
     ok(1, 'Should validate JSON structure');
@@ -77,7 +70,7 @@ subtest 'SXCU format validation' => sub {
 };
 
 subtest 'Request method support' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test HTTP methods
     my @methods = qw(POST PUT PATCH);
@@ -93,7 +86,7 @@ subtest 'Request method support' => sub {
 };
 
 subtest 'Header parsing' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test header extraction
     ok(1, 'Should parse Headers object');
@@ -104,7 +97,7 @@ subtest 'Header parsing' => sub {
 };
 
 subtest 'Body format parsing' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test body formats
     ok(1, 'Should support MultipartFormData');
@@ -114,7 +107,7 @@ subtest 'Body format parsing' => sub {
 };
 
 subtest 'File parameter handling' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test file upload
     ok(1, 'Should identify file parameter');
@@ -124,7 +117,7 @@ subtest 'File parameter handling' => sub {
 };
 
 subtest 'URL extraction from response' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test URL parsing
     ok(1, 'Should parse JSON response');
@@ -135,7 +128,7 @@ subtest 'URL extraction from response' => sub {
 };
 
 subtest 'Deletion URL extraction' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test deletion URL
     ok(1, 'Should extract DeletionURL');
@@ -144,7 +137,7 @@ subtest 'Deletion URL extraction' => sub {
 };
 
 subtest 'Error URL extraction' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test error handling
     ok(1, 'Should extract error messages');
@@ -153,7 +146,7 @@ subtest 'Error URL extraction' => sub {
 };
 
 subtest 'Built-in service configurations' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test pre-configured services
     my @services = qw(catbox imgbb litterbox);
@@ -163,7 +156,7 @@ subtest 'Built-in service configurations' => sub {
 };
 
 subtest 'Custom service configuration' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test custom configs
     ok(1, 'Should load custom .sxcu files');
@@ -172,7 +165,7 @@ subtest 'Custom service configuration' => sub {
 };
 
 subtest 'Authentication handling' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test auth methods
     ok(1, 'Should support API key in header');
@@ -183,7 +176,7 @@ subtest 'Authentication handling' => sub {
 };
 
 subtest 'Upload progress tracking' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test progress
     ok(1, 'Should track upload progress');
@@ -193,7 +186,7 @@ subtest 'Upload progress tracking' => sub {
 };
 
 subtest 'Upload retry logic' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test retries
     ok(1, 'Should retry on network errors');
@@ -204,7 +197,7 @@ subtest 'Upload retry logic' => sub {
 };
 
 subtest 'Response validation' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test validation
     ok(1, 'Should validate HTTP status code');
@@ -214,7 +207,7 @@ subtest 'Response validation' => sub {
 };
 
 subtest 'Timeout handling' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test timeouts
     ok(1, 'Should set connection timeout');
@@ -224,7 +217,7 @@ subtest 'Timeout handling' => sub {
 };
 
 subtest 'SSL/TLS handling' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test SSL
     ok(1, 'Should verify SSL certificates');
@@ -234,7 +227,7 @@ subtest 'SSL/TLS handling' => sub {
 };
 
 subtest 'Proxy support' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test proxy
     ok(1, 'Should support HTTP proxy');
@@ -244,7 +237,7 @@ subtest 'Proxy support' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $uploader = Shutter::Upload::ShareX->new();
+    my $uploader = Shutter::Upload::ShareX->new(sxcu_path => 'dummy.sxcu');
     
     # Test errors
     ok(1, 'Should handle network errors');

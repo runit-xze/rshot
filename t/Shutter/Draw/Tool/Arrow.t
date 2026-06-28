@@ -6,17 +6,10 @@ use v5.40;
 use Test::More;
 use Test::MockModule;
 use FindBin qw($RealBin);
-use lib "$RealBin/../../../../../share/shutter/resources/modules";
+use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock GooCanvas2
 {
@@ -40,14 +33,14 @@ BEGIN {
 use_ok('Shutter::Draw::Tool::Arrow');
 
 subtest 'Constructor and initialization' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     isa_ok($tool, 'Shutter::Draw::Tool::Arrow');
     ok(defined $tool, 'Arrow tool object created');
 };
 
 subtest 'Tool properties' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should have name property');
     ok(1, 'Should have icon property');
@@ -56,7 +49,7 @@ subtest 'Tool properties' => sub {
 };
 
 subtest 'Arrow drawing - basic' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should start arrow on mouse down');
     ok(1, 'Should update arrow on mouse move');
@@ -65,7 +58,7 @@ subtest 'Arrow drawing - basic' => sub {
 };
 
 subtest 'Arrow head rendering' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should render arrow head at end point');
     ok(1, 'Should calculate arrow head angle');
@@ -74,7 +67,7 @@ subtest 'Arrow head rendering' => sub {
 };
 
 subtest 'Arrow styles' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support solid arrows');
     ok(1, 'Should support dashed arrows');
@@ -83,7 +76,7 @@ subtest 'Arrow styles' => sub {
 };
 
 subtest 'Arrow head styles' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support filled arrow heads');
     ok(1, 'Should support outlined arrow heads');
@@ -93,7 +86,7 @@ subtest 'Arrow head styles' => sub {
 };
 
 subtest 'Color settings' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should set arrow line color');
     ok(1, 'Should set arrow head color');
@@ -102,7 +95,7 @@ subtest 'Color settings' => sub {
 };
 
 subtest 'Arrow constraints' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support straight arrows');
     ok(1, 'Should support 45-degree angle snapping');
@@ -111,7 +104,7 @@ subtest 'Arrow constraints' => sub {
 };
 
 subtest 'Interactive feedback' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should show preview while dragging');
     ok(1, 'Should update preview on mouse move');
@@ -120,7 +113,7 @@ subtest 'Interactive feedback' => sub {
 };
 
 subtest 'Arrow modification' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should allow moving arrow');
     ok(1, 'Should allow resizing arrow');
@@ -129,7 +122,7 @@ subtest 'Arrow modification' => sub {
 };
 
 subtest 'Selection and editing' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should select arrow on click');
     ok(1, 'Should show selection handles');
@@ -138,7 +131,7 @@ subtest 'Selection and editing' => sub {
 };
 
 subtest 'Undo/Redo support' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support undo for arrow creation');
     ok(1, 'Should support redo for arrow creation');
@@ -147,7 +140,7 @@ subtest 'Undo/Redo support' => sub {
 };
 
 subtest 'Canvas integration' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should add arrow to canvas');
     ok(1, 'Should remove arrow from canvas');
@@ -156,7 +149,7 @@ subtest 'Canvas integration' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $tool = Shutter::Draw::Tool::Arrow->new();
+    my $tool = Shutter::Draw::Tool::Arrow->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should handle invalid coordinates');
     ok(1, 'Should handle zero-length arrows');

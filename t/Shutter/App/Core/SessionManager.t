@@ -9,27 +9,20 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 use_ok('Shutter::App::Core::SessionManager');
 
 subtest 'Constructor and initialization' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     isa_ok($manager, 'Shutter::App::Core::SessionManager');
     ok(defined $manager, 'SessionManager created successfully');
 };
 
 subtest 'Session creation' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test new session creation
     ok(1, 'New session should be created');
@@ -39,7 +32,7 @@ subtest 'Session creation' => sub {
 
 subtest 'Session persistence' => sub {
     my $temp_root = tempdir(CLEANUP => 1);
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test session save
     ok(1, 'Session should be saveable to disk');
@@ -52,7 +45,7 @@ subtest 'Session persistence' => sub {
 };
 
 subtest 'Screenshot management in session' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test adding screenshot to session
     ok(1, 'Screenshot should be addable to session');
@@ -68,7 +61,7 @@ subtest 'Screenshot management in session' => sub {
 };
 
 subtest 'Session metadata' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test metadata storage
     ok(1, 'Session should store creation time');
@@ -78,7 +71,7 @@ subtest 'Session metadata' => sub {
 };
 
 subtest 'Multiple sessions support' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test multiple session handling
     ok(1, 'Manager should support multiple sessions');
@@ -87,7 +80,7 @@ subtest 'Multiple sessions support' => sub {
 };
 
 subtest 'Session cleanup' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test session cleanup
     ok(1, 'Old sessions should be cleanable');
@@ -96,7 +89,7 @@ subtest 'Session cleanup' => sub {
 };
 
 subtest 'Session export' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test session export
     ok(1, 'Session should be exportable');
@@ -105,7 +98,7 @@ subtest 'Session export' => sub {
 };
 
 subtest 'Session import' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test session import
     ok(1, 'Session should be importable');
@@ -114,7 +107,7 @@ subtest 'Session import' => sub {
 };
 
 subtest 'Concurrent access handling' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test concurrent access
     ok(1, 'Manager should handle concurrent reads');
@@ -123,7 +116,7 @@ subtest 'Concurrent access handling' => sub {
 };
 
 subtest 'Session recovery' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test crash recovery
     ok(1, 'Manager should detect incomplete sessions');
@@ -132,7 +125,7 @@ subtest 'Session recovery' => sub {
 };
 
 subtest 'Session size limits' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test size limits
     ok(1, 'Manager should enforce max screenshots per session');
@@ -141,7 +134,7 @@ subtest 'Session size limits' => sub {
 };
 
 subtest 'Session search and filter' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test search functionality
     ok(1, 'Manager should support search by date');
@@ -150,7 +143,7 @@ subtest 'Session search and filter' => sub {
 };
 
 subtest 'Session backup' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test backup functionality
     ok(1, 'Manager should support session backup');
@@ -159,7 +152,7 @@ subtest 'Session backup' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test error scenarios
     ok(1, 'Manager should handle disk full errors');
@@ -169,7 +162,7 @@ subtest 'Error handling' => sub {
 };
 
 subtest 'Memory management' => sub {
-    my $manager = Shutter::App::Core::SessionManager->new();
+    my $manager = Shutter::App::Core::SessionManager->new(_common => bless({}, 'MockCommon'));
     
     # Test memory efficiency
     ok(1, 'Manager should not load all sessions into memory');

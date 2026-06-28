@@ -43,7 +43,9 @@ sub fct_init_debug_output ($self) {
 
 	#kernel info
 	if (can_run('uname')) {
-		my $uname = `uname -a`;
+		require Shutter::App::Core::SecureSystemCommandAPI;
+		my $res = Shutter::App::Core::SecureSystemCommandAPI->new->capture('uname', '-a');
+		my $uname = $res->{stdout};
 		chomp $uname;
 		$log->debug($uname);
 	}

@@ -52,44 +52,11 @@ sub show ($self) {
 	my $shutter_root = $self->_sc->shutter_root;
 	my $d            = $self->_sc->gettext_object;
 
-	#everything is stored in external files, so it is easier to maintain
-	my $all_hint = "";
-	open(my $GPL_HINT, '<', "$shutter_root/share/shutter/resources/license/gplv3_hint")
-		or die $!;
-	while (my $hint = <$GPL_HINT>) {
-		utf8::decode $hint;
-		$all_hint .= $hint;
-	}
-	close($GPL_HINT);
-
-	my $all_gpl = "";
-	open(my $GPL, '<', "$shutter_root/share/shutter/resources/license/gplv3")
-		or die $!;
-	while (my $gpl = <$GPL>) {
-		utf8::decode $gpl;
-		$all_gpl .= $gpl;
-	}
-	close($GPL);
-
-	my @all_dev;
-	open(my $DEVCREDITS, '<', "$shutter_root/share/shutter/resources/credits/dev")
-		or die $!;
-	while (my $dev = <$DEVCREDITS>) {
-		chomp $dev;
-		utf8::decode $dev;
-		push @all_dev, $dev;
-	}
-	close($DEVCREDITS);
-
-	my @all_art;
-	open(my $ARTCREDITS, '<', "$shutter_root/share/shutter/resources/credits/art")
-		or die $!;
-	while (my $art = <$ARTCREDITS>) {
-		chomp $art;
-		utf8::decode $art;
-		push @all_art, $art;
-	}
-	close($ARTCREDITS);
+	require Path::Tiny;
+	my $all_hint = Path::Tiny::path("$shutter_root/share/shutter/resources/license/gplv3_hint")->slurp_utf8;
+	my $all_gpl  = Path::Tiny::path("$shutter_root/share/shutter/resources/license/gplv3")->slurp_utf8;
+	my @all_dev  = Path::Tiny::path("$shutter_root/share/shutter/resources/credits/dev")->lines_utf8({ chomp => 1 });
+	my @all_art  = Path::Tiny::path("$shutter_root/share/shutter/resources/credits/art")->lines_utf8({ chomp => 1 });
 
 	my @lines = ("rshot v1", "", "Original Developers:", @all_dev, "", "Artists:", @all_art, "", "Special Thanks:", "runit", "Google", "Anthropic", "for making this possible!");
 

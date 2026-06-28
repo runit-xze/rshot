@@ -9,15 +9,8 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Security tests for input validation
 # Tests protection against injection attacks, path traversal, etc.

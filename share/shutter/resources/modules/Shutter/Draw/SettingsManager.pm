@@ -131,9 +131,8 @@ sub save_settings {
 	eval {
 
 		#save to file
-		open(my $SETTFILE, ">$settingsfile") or die $!;
-		print $SETTFILE XMLout(\%settings);
-		close($SETTFILE) or die $!;
+		require Path::Tiny;
+		Path::Tiny::path($settingsfile)->spew_utf8(XMLout(\%settings));
 
 	};
 	if ($@) {

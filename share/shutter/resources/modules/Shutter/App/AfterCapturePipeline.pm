@@ -131,7 +131,12 @@ sub execute ($self, $context) {
 		} elsif ($type eq 'run_command') {
 			my $cmd = $step->{command} // '';
 			$cmd =~ s/\$f/$context->{filename}/g if $context->{filename};
-			system("$cmd &")                     if $cmd;
+			if ($cmd) {
+				require Text::ParseWords;
+				require Shutter::App::Core::SecureSystemCommandAPI;
+				my @args = Text::ParseWords::shellwords($cmd);
+				Shutter::App::Core::SecureSystemCommandAPI->new->run_async(@args) if @args;
+			}
 		}
 	}
 	return;

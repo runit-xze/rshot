@@ -133,17 +133,14 @@ sub _refresh_list ($self) {
 		my $type     = $item->{type};
 		my $basename = basename($file);
 		my $name     = $basename;
-		if (open(my $fh, '<', $file)) {
-			local $/ = undef;
-			my $content = <$fh>;
-			close($fh);
-			try {
-				my $data = $json->decode($content);
+		require Path::Tiny;
+		try {
+			my $content = Path::Tiny::path($file)->slurp_utf8;
+			my $data = $json->decode($content);
 				$name = $data->{Name} if $data->{Name};
 			} catch ($e) {
 				print "Error parsing $file: $e\n";
 			}
-		}
 		my $iter = $self->_liststore->append;
 		$self->_liststore->set($iter, 0 => $name, 1 => $basename, 2 => $type, 3 => $file);
 	}

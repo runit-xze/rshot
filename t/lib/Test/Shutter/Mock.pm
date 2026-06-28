@@ -27,6 +27,19 @@ BEGIN {
         sub get_micro_version { return 0; }
     }
     
+    # Mock Wnck
+    {
+        package Wnck::Screen;
+        sub get_default { return bless {}, 'Wnck::Screen::Mock' }
+    }
+    {
+        package Wnck::Screen::Mock;
+        our $AUTOLOAD;
+        sub new { bless {}, shift }
+        sub AUTOLOAD { return 1; }
+        sub DESTROY {}
+    }
+    
     # Mock Gtk3::Gdk - GDK library with constants
     {
         package Gtk3::Gdk;
@@ -38,6 +51,109 @@ BEGIN {
         use constant KEY_Escape => 65307;
         use constant KEY_Return => 65293;
         use constant KEY_KP_Enter => 65421;
+    }
+    {
+        package Gtk3::BaseMock;
+        our $AUTOLOAD;
+        sub new { bless {}, shift }
+        sub AUTOLOAD { return 1; }
+        sub DESTROY {}
+        sub get_children { return (bless {}, 'Gtk3::VBox') }
+        sub get_style_context { return bless {}, 'Gtk3::StyleContext' }
+        sub get_submenu { return bless {}, 'Gtk3::Menu' }
+    }
+    {
+        package Gtk3::Window;
+        our @ISA = qw(Gtk3::BaseMock);
+        sub get { return '' }
+    }
+    {
+        package Gtk3::Dialog;
+        our @ISA = qw(Gtk3::BaseMock);
+        sub run { return 1 }
+        sub get_child { return bless {}, 'Gtk3::VBox' }
+    }
+    { package Gtk3::Menu; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::VBox; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::HBox; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::SpinButton; our @ISA = qw(Gtk3::BaseMock); sub new_with_range { bless {}, shift } }
+    { package Gtk3::ColorButton; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::FontButton; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::MessageDialog; our @ISA = qw(Gtk3::BaseMock); sub run { 1 } }
+    { package Gtk3::SizeGroup; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::CheckButton; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::TextBuffer; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::StyleContext; our @ISA = qw(Gtk3::BaseMock); sub get_background_color { bless {}, 'Gtk3::Gdk::RGBA' } }
+    { package Gtk3::TextView; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::ImageView; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::ImageView::Tool::Selector; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::ImageView::Tool::Dragger; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::CssProvider; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::SeparatorToolItem; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::Clipboard; our @ISA = qw(Gtk3::BaseMock); sub get { bless {}, 'Gtk3::Clipboard' } }
+    { package Gtk3::SeparatorMenuItem; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::DrawingArea; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::Label; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::Frame; our @ISA = qw(Gtk3::BaseMock); }
+    { package Gtk3::Image; our @ISA = qw(Gtk3::BaseMock); sub new_from_stock { bless {}, shift } }
+    { package Gtk3::ImageMenuItem; our @ISA = qw(Gtk3::BaseMock); sub new_with_label { bless {}, shift } }
+    {
+        package Gtk3::Gdk::PixbufLoader;
+        our @ISA = qw(Gtk3::BaseMock);
+    }
+    
+    # Mock JSON::MaybeXS
+    {
+        package JSON::MaybeXS;
+        our @ISA = qw(Gtk3::BaseMock);
+        sub new { bless {}, shift }
+        sub decode { return {} }
+        sub encode { return "{}" }
+    }
+    
+    # Mock GooCanvas2
+    {
+        package GooCanvas2;
+        our $VERSION = '0.06';
+        sub import { }
+    }
+    {
+        package GooCanvas2::Canvas;
+        our @ISA = ('Gtk3::BaseMock');
+        sub new { return bless {}, 'GooCanvas2::Canvas'; }
+        sub get_root_item { return bless {}, 'GooCanvas2::CanvasGroup'; }
+    }
+    {
+        package GooCanvas2::CanvasPoints;
+        our @ISA = ('Gtk3::BaseMock');
+        sub new { return bless {}, 'GooCanvas2::CanvasPoints'; }
+    }
+    {
+        package GooCanvas2::CanvasGroup;
+        our @ISA = ('Gtk3::BaseMock');
+    }
+    
+    {
+        package Gtk3::Gdk::Pixbuf;
+        our @ISA = qw(Gtk3::BaseMock);
+        sub new_from_file { bless {}, shift }
+    }
+    {
+        package Gtk3::Gdk::RGBA;
+        our @ISA = qw(Gtk3::BaseMock);
+        sub new { bless {}, 'Gtk3::Gdk::RGBA' }
+        sub parse { bless {}, 'Gtk3::Gdk::RGBA' }
+    }
+    {
+        package Gtk3::Gdk::Screen;
+        our @ISA = ('Gtk3::BaseMock');
+        sub get_default { return bless {}, 'Gtk3::Gdk::Screen'; }
+        sub get_root_window { return bless {}, 'Gtk3::Gdk::Window'; }
+        sub get_display { return bless {}, 'Gtk3::Gdk::Display'; }
+    }
+    {
+        package Gtk3::Gdk::Display;
+        sub get_default { return bless {}, 'Gtk3::Gdk::Display'; }
     }
     
     # Mock Glib - Core GLib library
@@ -62,6 +178,9 @@ BEGIN {
         
         sub TRUE { 1 }
         sub FALSE { 0 }
+        sub get_user_cache_dir { return '/tmp' }
+        sub get_user_config_dir { return '/tmp' }
+        sub get_home_dir { return '/tmp' }
     }
     
     # Mock Glib::Log
@@ -154,6 +273,7 @@ BEGIN {
         sub is_error { 0 }
     }
     
+
     # Mark all modules as loaded
     $INC{'Gtk3.pm'} = __FILE__;
     $INC{'Gtk3/Gdk.pm'} = __FILE__;
@@ -167,6 +287,9 @@ BEGIN {
     $INC{'Pango.pm'} = __FILE__;
     $INC{'Pango/Layout.pm'} = __FILE__;
     $INC{'Pango/FontDescription.pm'} = __FILE__;
+    $INC{'GooCanvas2.pm'} = __FILE__;
+    $INC{'Gtk3/ImageView.pm'} = __FILE__;
+    $INC{'JSON/MaybeXS.pm'} = __FILE__;
 }
 
 1;

@@ -9,15 +9,8 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock X11::Protocol
 {
@@ -30,14 +23,14 @@ BEGIN {
 use_ok('Shutter::Screenshot::ActiveWindow');
 
 subtest 'Constructor and initialization' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     isa_ok($capture, 'Shutter::Screenshot::ActiveWindow');
     ok(defined $capture, 'ActiveWindow object created');
 };
 
 subtest 'Active window detection - X11' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should detect X11 display server');
     ok(1, 'Should get active window ID');
@@ -46,7 +39,7 @@ subtest 'Active window detection - X11' => sub {
 };
 
 subtest 'Active window detection - Wayland' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should detect Wayland display server');
     ok(1, 'Should use portal API');
@@ -55,7 +48,7 @@ subtest 'Active window detection - Wayland' => sub {
 };
 
 subtest 'Window geometry' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should get window position (x, y)');
     ok(1, 'Should get window size (width, height)');
@@ -64,7 +57,7 @@ subtest 'Window geometry' => sub {
 };
 
 subtest 'Window decorations' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should detect window decorations');
     ok(1, 'Should include decorations by default');
@@ -73,7 +66,7 @@ subtest 'Window decorations' => sub {
 };
 
 subtest 'Capture with decorations' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should capture window with title bar');
     ok(1, 'Should capture window with borders');
@@ -82,7 +75,7 @@ subtest 'Capture with decorations' => sub {
 };
 
 subtest 'Capture without decorations' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should capture window content only');
     ok(1, 'Should exclude title bar');
@@ -91,7 +84,7 @@ subtest 'Capture without decorations' => sub {
 };
 
 subtest 'Multi-monitor handling' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should detect window monitor');
     ok(1, 'Should handle windows spanning monitors');
@@ -100,7 +93,7 @@ subtest 'Multi-monitor handling' => sub {
 };
 
 subtest 'Window state detection' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should detect maximized windows');
     ok(1, 'Should detect minimized windows');
@@ -109,7 +102,7 @@ subtest 'Window state detection' => sub {
 };
 
 subtest 'Focus handling' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should get currently focused window');
     ok(1, 'Should handle focus changes');
@@ -118,7 +111,7 @@ subtest 'Focus handling' => sub {
 };
 
 subtest 'Window validation' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should validate window exists');
     ok(1, 'Should validate window is visible');
@@ -127,7 +120,7 @@ subtest 'Window validation' => sub {
 };
 
 subtest 'Capture timing' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should capture immediately');
     ok(1, 'Should support delay before capture');
@@ -136,7 +129,7 @@ subtest 'Capture timing' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $capture = Shutter::Screenshot::ActiveWindow->new();
+    my $capture = Shutter::Screenshot::ActiveWindow->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should handle no active window');
     ok(1, 'Should handle window closed during capture');

@@ -45,7 +45,7 @@ sub create_if_not_exists ($dir) {
 }
 
 sub get_root_dir {
-	return create_if_not_exists(Glib::get_user_cache_dir . "/" . SHUTTER_DIR);
+	return create_if_not_exists(Glib::get_user_cache_dir() . "/" . SHUTTER_DIR);
 }
 
 sub get_cache_dir {
@@ -57,11 +57,11 @@ sub get_temp_dir {
 }
 
 sub get_autostart_dir {
-	return create_if_not_exists(Glib::get_user_config_dir . "/" . AUTOSTART_DIR);
+	return create_if_not_exists(Glib::get_user_config_dir() . "/" . AUTOSTART_DIR);
 }
 
-sub get_home_dir   { return Glib::get_home_dir }
-sub get_config_dir { return Glib::get_user_config_dir }
+sub get_home_dir   { return Glib::get_home_dir() }
+sub get_config_dir { return Glib::get_user_config_dir() }
 
 sub create_hidden_home_dir_if_not_exist {
 	my $hidden_dir          = $ENV{HOME} . "/" . HIDDEN_SHUTTER_DIR;

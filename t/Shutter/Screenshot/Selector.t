@@ -9,15 +9,8 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock Gtk3::Window
 {
@@ -48,14 +41,14 @@ BEGIN {
 use_ok('Shutter::Screenshot::Selector');
 
 subtest 'Constructor and initialization' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     isa_ok($selector, 'Shutter::Screenshot::Selector');
     ok(defined $selector, 'Selector object created');
 };
 
 subtest 'Overlay window creation' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should create fullscreen overlay window');
     ok(1, 'Should set window undecorated');
@@ -65,7 +58,7 @@ subtest 'Overlay window creation' => sub {
 };
 
 subtest 'Selection rectangle - basic' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should start selection on mouse down');
     ok(1, 'Should update selection on mouse move');
@@ -74,7 +67,7 @@ subtest 'Selection rectangle - basic' => sub {
 };
 
 subtest 'Selection rectangle - visual feedback' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should show selection border');
     ok(1, 'Should show selection handles');
@@ -84,7 +77,7 @@ subtest 'Selection rectangle - visual feedback' => sub {
 };
 
 subtest 'Mouse cursor handling' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should show crosshair cursor');
     ok(1, 'Should change cursor during selection');
@@ -93,7 +86,7 @@ subtest 'Mouse cursor handling' => sub {
 };
 
 subtest 'Keyboard shortcuts' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should complete selection on Enter');
     ok(1, 'Should cancel selection on Escape');
@@ -102,7 +95,7 @@ subtest 'Keyboard shortcuts' => sub {
 };
 
 subtest 'Selection constraints' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should support free-form selection');
     ok(1, 'Should support square constraint (Shift)');
@@ -111,7 +104,7 @@ subtest 'Selection constraints' => sub {
 };
 
 subtest 'Selection modification' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should allow moving selection');
     ok(1, 'Should allow resizing from corners');
@@ -120,7 +113,7 @@ subtest 'Selection modification' => sub {
 };
 
 subtest 'Multi-monitor support' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should detect multiple monitors');
     ok(1, 'Should allow selection across monitors');
@@ -129,7 +122,7 @@ subtest 'Multi-monitor support' => sub {
 };
 
 subtest 'Selection validation' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should validate minimum selection size');
     ok(1, 'Should reject zero-size selections');
@@ -138,7 +131,7 @@ subtest 'Selection validation' => sub {
 };
 
 subtest 'Capture integration' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should return selection coordinates');
     ok(1, 'Should return selection dimensions');
@@ -147,7 +140,7 @@ subtest 'Capture integration' => sub {
 };
 
 subtest 'Visual effects' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should apply semi-transparent overlay');
     ok(1, 'Should highlight selected area');
@@ -156,7 +149,7 @@ subtest 'Visual effects' => sub {
 };
 
 subtest 'Performance' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should render overlay quickly');
     ok(1, 'Should update selection smoothly');
@@ -165,7 +158,7 @@ subtest 'Performance' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $selector = Shutter::Screenshot::Selector->new();
+    my $selector = Shutter::Screenshot::Selector->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should handle window creation failure');
     ok(1, 'Should handle display errors');

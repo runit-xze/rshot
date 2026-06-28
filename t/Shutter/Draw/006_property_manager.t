@@ -2,7 +2,8 @@
 use strict;
 use warnings;
 
-use Gtk3 '-init';
+use lib 't/lib';
+use Test::Shutter::Mock;
 use Pango;
 use Glib qw/TRUE FALSE/;
 
@@ -30,14 +31,19 @@ ok(eval { require Shutter::Draw::PropertyManager; 1 }, "Loaded PropertyManager")
 
 	my $_last_fill_color;
 	sub last_fill_color : lvalue { $_last_fill_color }
+	sub _last_fill_color { $_last_fill_color }
 	my $_last_stroke_color;
 	sub last_stroke_color : lvalue { $_last_stroke_color }
+	sub _last_stroke_color { $_last_stroke_color }
 	my $_last_line_width;
 	sub last_line_width : lvalue { $_last_line_width }
+	sub _last_line_width { $_last_line_width }
 	my $_last_font;
 	sub last_font : lvalue { $_last_font }
+	sub _last_font { $_last_font }
 	my $_last_mode;
 	sub last_mode : lvalue { $_last_mode }
+	sub _last_mode { $_last_mode }
 
 	sub fill_color_w   { bless {}, 'MockColorW' }
 	sub stroke_color_w { bless {}, 'MockColorW' }

@@ -262,7 +262,8 @@ sub _on_recording_done ($self, $gif_path) {
 	my $cli       = $self->cli;
 	my $sc        = $cli->sc;
 	my $acp       = $cli->{acp};
-	my $clipboard = Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern('CLIPBOARD', FALSE));
+	require Shutter::App::Core::ClipboardAPI;
+	my $clipboard = Shutter::App::Core::ClipboardAPI->new;
 
 	if (!$gif_path || !-e $gif_path) {
 		my $sd = Shutter::App::SimpleDialogs->new;
@@ -277,7 +278,8 @@ sub _on_recording_done ($self, $gif_path) {
 	my $thumb_pixbuf;
 	try {
 		my $thumb_path = "$gif_path.thumb.png";
-		system("convert " . quotemeta($gif_path) . "[0] " . quotemeta($thumb_path) . " 2>/dev/null");
+		require Shutter::App::Core::SecureSystemCommandAPI;
+		Shutter::App::Core::SecureSystemCommandAPI->new->capture('convert', "$gif_path\[0]", $thumb_path);
 		if (-e $thumb_path) {
 			$thumb_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($thumb_path);
 			unlink $thumb_path;

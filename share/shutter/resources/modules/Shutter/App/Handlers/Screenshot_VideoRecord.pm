@@ -263,7 +263,8 @@ sub _on_recording_done ($self, $video_path) {
 	my $cli       = $self->cli;
 	my $sc        = $cli->sc;
 	my $acp       = $cli->{acp};
-	my $clipboard = Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern('CLIPBOARD', FALSE));
+	require Shutter::App::Core::ClipboardAPI;
+	my $clipboard = Shutter::App::Core::ClipboardAPI->new;
 
 	if (!$video_path || !-e $video_path) {
 		my $sd = Shutter::App::SimpleDialogs->new;
@@ -278,7 +279,8 @@ sub _on_recording_done ($self, $video_path) {
 	my $thumb_pixbuf;
 	try {
 		my $thumb_path = "$video_path.thumb.png";
-		system("ffmpeg -y -i " . quotemeta($video_path) . " -vframes 1 " . quotemeta($thumb_path) . " 2>/dev/null");
+		require Shutter::App::Core::SecureSystemCommandAPI;
+		Shutter::App::Core::SecureSystemCommandAPI->new->capture('ffmpeg', '-y', '-i', $video_path, '-vframes', '1', $thumb_path);
 		if (-e $thumb_path) {
 			$thumb_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($thumb_path);
 			unlink $thumb_path;

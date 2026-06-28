@@ -9,8 +9,6 @@ with 'Shutter::Upload::Role::Uploader';
 
 use MIME::Base64;
 use JSON::MaybeXS;
-use LWP::UserAgent;
-use HTTP::Request::Common;
 use Glib     qw/TRUE FALSE/;
 use IPC::Cmd qw(can_run);
 use URI::Escape;
@@ -22,12 +20,11 @@ has debug           => (is => 'ro', default  => sub { 0 });
 has main_gtk_window => (is => 'ro');
 has _sxcu           => (is => 'rw');
 
-sub BUILD ($self) {
+sub BUILD ($self, $args) {
 	my $json = JSON::MaybeXS->new;
 	eval {
-		open(my $fh, '<', $self->sxcu_path) or die "Cannot open " . $self->sxcu_path;
-		my $json_text = do { local $/ = undef; <$fh> };
-		close($fh);
+		require Path::Tiny;
+		my $json_text = Path::Tiny::path($self->sxcu_path)->slurp_utf8;
 		$self->_sxcu($json->decode($json_text));
 	};
 	if ($@) {
@@ -40,11 +37,8 @@ sub upload ($self, $upload_filename) {
 	return (success => 0, error => "File not found")      unless -e $upload_filename;
 	return (success => 0, error => "Failed to load sxcu") unless $self->_sxcu;
 
-	my $client = LWP::UserAgent->new(
-		'timeout'    => 20,
-		'keep_alive' => 10,
-		'env_proxy'  => 1,
-	);
+	require Shutter::App::Core::NetworkAPI;
+	my $api = Shutter::App::Core::NetworkAPI->new(timeout => 20, env_proxy => 1);
 
 	my %upload_result;
 
@@ -62,17 +56,15 @@ sub upload ($self, $upload_filename) {
 		my $file_form_name = $self->_sxcu->{FileFormName} || 'file';
 		$form_data{$file_form_name} = [$upload_filename];
 
-		my @params = ($self->_sxcu->{RequestURL}, 'Content_Type' => 'form-data', 'Content' => [%form_data]);
-		my $req    = HTTP::Request::Common::POST(@params);
-
 		# Headers
+		my %headers;
 		if (exists $self->_sxcu->{Headers}) {
 			foreach my $k (keys %{$self->_sxcu->{Headers}}) {
-				$req->header($k => $self->_sxcu->{Headers}->{$k});
+				$headers{$k} = $self->_sxcu->{Headers}->{$k};
 			}
 		}
 
-		my $rsp = $client->request($req);
+		my $rsp = $api->post_form($self->_sxcu->{RequestURL}, [%form_data], \%headers);
 
 		if ($rsp->is_success) {
 			my $content = $rsp->decoded_content || $rsp->content;
@@ -111,8 +103,8 @@ sub upload ($self, $upload_filename) {
 			# URL Shortening via TinyURL
 			if ($after->{shorten_url} && $final_url =~ m{^https?://}) {
 				try {
-					my $shorten_ua  = LWP::UserAgent->new(timeout => 10, env_proxy => 1);
-					my $shorten_rsp = $shorten_ua->get('https://tinyurl.com/api-create.php?url=' . URI::Escape::uri_escape($final_url));
+					my $shorten_api = Shutter::App::Core::NetworkAPI->new(timeout => 10, env_proxy => 1);
+					my $shorten_rsp = $shorten_api->get('https://tinyurl.com/api-create.php?url=' . URI::Escape::uri_escape($final_url));
 					if ($shorten_rsp->is_success) {
 						my $short = $shorten_rsp->decoded_content;
 						$short =~ s/\s+//g;
@@ -126,9 +118,8 @@ sub upload ($self, $upload_filename) {
 			# QR Code display via qrencode (if available and requested)
 			if ($after->{show_qr} && can_run('qrencode')) {
 				my $tmpfile = File::Temp::tempnam('/tmp', 'shutter_qr_') . '.png';
-				my $escaped = $final_url;
-				$escaped =~ s/'/'\''/g;
-				system("qrencode -o '$tmpfile' -s 5 '$escaped' 2>/dev/null");
+				require Shutter::App::Core::SecureSystemCommandAPI;
+				Shutter::App::Core::SecureSystemCommandAPI->new->capture('qrencode', '-o', $tmpfile, '-s', '5', $final_url);
 				if (-f $tmpfile) {
 					$self->_show_qr_dialog($tmpfile, $final_url);
 					unlink $tmpfile;

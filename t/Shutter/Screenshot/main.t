@@ -12,6 +12,8 @@ use Test::Shutter::Mock;
 use Test::More;
 
 # Skip if we can't load the module
+{ package MockSession; sub new { return bless {}, shift; } sub main_window { return bless {}, "Gtk3::Window"; } }
+
 BEGIN {
     eval { require Shutter::Screenshot::Main; 1; } or do {
         plan skip_all => "Cannot load Shutter::Screenshot::Main: $@";

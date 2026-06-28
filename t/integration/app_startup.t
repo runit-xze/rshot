@@ -28,7 +28,9 @@ subtest 'Application binary exists' => sub {
 subtest 'Application shows help' => sub {
     plan tests => 3;
     
-    my $output = `$rshot_bin --help 2>&1`;
+    require IPC::Run3;
+    my $output;
+    IPC::Run3::run3([$rshot_bin, '--help'], \undef, \$output, \$output);
     my $exit_code = $? >> 8;
     
     # Help should exit with code 1 (standard for --help)
@@ -40,7 +42,9 @@ subtest 'Application shows help' => sub {
 subtest 'Application accepts debug flag' => sub {
     plan tests => 2;
     
-    my $output = `$rshot_bin --debug --help 2>&1`;
+    require IPC::Run3;
+    my $output;
+    IPC::Run3::run3([$rshot_bin, '--debug', '--help'], \undef, \$output, \$output);
     my $exit_code = $? >> 8;
     
     ok($exit_code == 1 || $exit_code == 0, 'Debug flag accepted');
@@ -50,7 +54,9 @@ subtest 'Application accepts debug flag' => sub {
 subtest 'Application accepts log-level flag' => sub {
     plan tests => 2;
     
-    my $output = `$rshot_bin --log-level=debug --help 2>&1`;
+    require IPC::Run3;
+    my $output;
+    IPC::Run3::run3([$rshot_bin, '--log-level=debug', '--help'], \undef, \$output, \$output);
     my $exit_code = $? >> 8;
     
     ok($exit_code == 1 || $exit_code == 0, 'Log-level flag accepted');
@@ -60,7 +66,9 @@ subtest 'Application accepts log-level flag' => sub {
 subtest 'Application accepts mock-capture flag' => sub {
     plan tests => 2;
     
-    my $output = `$rshot_bin --mock-capture --help 2>&1`;
+    require IPC::Run3;
+    my $output;
+    IPC::Run3::run3([$rshot_bin, '--mock-capture', '--help'], \undef, \$output, \$output);
     my $exit_code = $? >> 8;
     
     ok($exit_code == 1 || $exit_code == 0, 'Mock-capture flag accepted');
@@ -80,7 +88,9 @@ subtest 'Application dependencies loaded' => sub {
     
     # Test that critical Perl modules can be loaded
     my $lib_path = "$RealBin/../../share/shutter/resources/modules";
-    my $output = `perl -I "$lib_path" -e 'use Gtk3; use Glib; print "OK\\n"' 2>&1`;
+    require IPC::Run3;
+    my $output;
+    IPC::Run3::run3(['perl', '-I', $lib_path, '-e', 'use Gtk3; use Glib; print "OK\n"'], \undef, \$output, \$output);
     my $exit_code = $? >> 8;
     
     is($exit_code, 0, 'Gtk3 and Glib modules load successfully');
@@ -92,7 +102,9 @@ subtest 'Application can run in mock mode' => sub {
     plan tests => 2;
     
     # Test that app can start in mock capture mode (doesn't require actual screenshot)
-    my $output = `timeout 2 $rshot_bin --mock-capture --exit-after-capture 2>&1`;
+    require IPC::Run3;
+    my $output;
+    IPC::Run3::run3(['timeout', '2', $rshot_bin, '--mock-capture', '--exit-after-capture'], \undef, \$output, \$output);
     my $exit_code = $? >> 8;
     
     # Exit code 124 means timeout (app is running), which is OK

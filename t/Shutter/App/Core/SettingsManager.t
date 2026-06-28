@@ -9,27 +9,20 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 use_ok('Shutter::App::Core::SettingsManager');
 
 subtest 'Constructor and initialization' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     isa_ok($manager, 'Shutter::App::Core::SettingsManager');
     ok(defined $manager, 'SettingsManager created successfully');
 };
 
 subtest 'Default settings' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test default values
     ok(1, 'Manager should provide default delay');
@@ -41,7 +34,7 @@ subtest 'Default settings' => sub {
 
 subtest 'Settings persistence' => sub {
     my $temp_root = tempdir(CLEANUP => 1);
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test save settings
     ok(1, 'Settings should be saveable to disk');
@@ -54,7 +47,7 @@ subtest 'Settings persistence' => sub {
 };
 
 subtest 'Profile management' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test profile creation
     ok(1, 'New profile should be creatable');
@@ -71,7 +64,7 @@ subtest 'Profile management' => sub {
 };
 
 subtest 'Capture settings' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test capture-related settings
     ok(1, 'Manager should store delay setting');
@@ -82,7 +75,7 @@ subtest 'Capture settings' => sub {
 };
 
 subtest 'Save settings' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test save-related settings
     ok(1, 'Manager should store save directory');
@@ -93,7 +86,7 @@ subtest 'Save settings' => sub {
 };
 
 subtest 'Upload settings' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test upload-related settings
     ok(1, 'Manager should store upload profiles');
@@ -103,7 +96,7 @@ subtest 'Upload settings' => sub {
 };
 
 subtest 'UI settings' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test UI-related settings
     ok(1, 'Manager should store window position');
@@ -114,7 +107,7 @@ subtest 'UI settings' => sub {
 };
 
 subtest 'Notification settings' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test notification settings
     ok(1, 'Manager should store notification enabled flag');
@@ -123,7 +116,7 @@ subtest 'Notification settings' => sub {
 };
 
 subtest 'Keyboard shortcuts' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test keyboard shortcut settings
     ok(1, 'Manager should store global shortcuts');
@@ -132,7 +125,7 @@ subtest 'Keyboard shortcuts' => sub {
 };
 
 subtest 'Settings validation' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test validation
     ok(1, 'Manager should validate delay range (0-99)');
@@ -143,7 +136,7 @@ subtest 'Settings validation' => sub {
 };
 
 subtest 'Settings migration' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test migration from old versions
     ok(1, 'Manager should detect old settings format');
@@ -152,7 +145,7 @@ subtest 'Settings migration' => sub {
 };
 
 subtest 'Settings export/import' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test export
     ok(1, 'Settings should be exportable');
@@ -165,7 +158,7 @@ subtest 'Settings export/import' => sub {
 };
 
 subtest 'Settings reset' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test reset functionality
     ok(1, 'Individual settings should be resettable');
@@ -175,7 +168,7 @@ subtest 'Settings reset' => sub {
 };
 
 subtest 'Concurrent access' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test concurrent access
     ok(1, 'Manager should handle concurrent reads');
@@ -184,7 +177,7 @@ subtest 'Concurrent access' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test error scenarios
     ok(1, 'Manager should handle corrupted settings file');
@@ -194,7 +187,7 @@ subtest 'Error handling' => sub {
 };
 
 subtest 'Settings change notifications' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test change notification system
     ok(1, 'Manager should notify on setting change');
@@ -203,7 +196,7 @@ subtest 'Settings change notifications' => sub {
 };
 
 subtest 'Advanced settings' => sub {
-    my $manager = Shutter::App::Core::SettingsManager->new();
+    my $manager = Shutter::App::Core::SettingsManager->new(_common => bless({}, 'MockCommon'));
     
     # Test advanced/hidden settings
     ok(1, 'Manager should support debug mode');

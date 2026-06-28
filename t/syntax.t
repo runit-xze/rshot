@@ -8,7 +8,7 @@ use Test::Strict        ();
 use Perl::Critic::Utils qw(all_perl_files);
 
 use FindBin qw/$Bin/;
-
+use lib "$Bin/../share/shutter/resources/modules";
 # Check syntax, use strict and use warnings on all perl files
 
 local $Test::Strict::TEST_WARNINGS = 1;

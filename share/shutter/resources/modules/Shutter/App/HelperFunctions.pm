@@ -85,24 +85,27 @@ sub xdg_open_mail ($self, $dialog, $mail, @user_data) {
 
 	my @cmd = 'xdg-email';
 	push @cmd, $mail if $mail;
-	system(@cmd, @user_data);
+	require Shutter::App::Core::SecureSystemCommandAPI;
+	my $res = Shutter::App::Core::SecureSystemCommandAPI->new->run_async(@cmd, @user_data);
 
-	if ($?) {
+	if (!$res) {
 		my $response = $self->_dialogs->dlg_error_message(
 			sprintf($self->_d->get("Error while executing %s."),        "'xdg-email'"),
 			sprintf($self->_d->get("There was an error executing %s."), "'xdg-email'"),
-			undef, undef, undef, undef, undef, undef, sprintf($self->_d->get("Exit Code: %d."), $? >> 8));
+			undef, undef, undef, undef, undef, undef, sprintf($self->_d->get("Exit Code: %d."), 1));
 	}
 	return;
 }
 
 sub nautilus_sendto ($self, $user_data) {
-	system('nautilus-sendto', $user_data);
-	if ($?) {
+	require Shutter::App::Core::SecureSystemCommandAPI;
+	my $res = Shutter::App::Core::SecureSystemCommandAPI->new->run_async('nautilus-sendto', $user_data);
+
+	if (!$res) {
 		my $response = $self->_dialogs->dlg_error_message(
 			sprintf($self->_d->get("Error while executing %s."),        "'nautilus-sendto'"),
 			sprintf($self->_d->get("There was an error executing %s."), "'nautilus-sendto'"),
-			undef, undef, undef, undef, undef, undef, sprintf($self->_d->get("Exit Code: %d."), $? >> 8));
+			undef, undef, undef, undef, undef, undef, sprintf($self->_d->get("Exit Code: %d."), 1));
 	}
 	return;
 }

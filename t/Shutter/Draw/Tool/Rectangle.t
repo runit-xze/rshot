@@ -6,17 +6,10 @@ use v5.40;
 use Test::More;
 use Test::MockModule;
 use FindBin qw($RealBin);
-use lib "$RealBin/../../../../../share/shutter/resources/modules";
+use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock GooCanvas2
 {
@@ -40,14 +33,14 @@ BEGIN {
 use_ok('Shutter::Draw::Tool::Rectangle');
 
 subtest 'Constructor and initialization' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     isa_ok($tool, 'Shutter::Draw::Tool::Rectangle');
     ok(defined $tool, 'Rectangle tool object created');
 };
 
 subtest 'Tool properties' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should have name property');
     ok(1, 'Should have icon property');
@@ -56,7 +49,7 @@ subtest 'Tool properties' => sub {
 };
 
 subtest 'Rectangle drawing - basic' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should start rectangle on mouse down');
     ok(1, 'Should update rectangle on mouse move');
@@ -65,7 +58,7 @@ subtest 'Rectangle drawing - basic' => sub {
 };
 
 subtest 'Rectangle constraints' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support free-form rectangles');
     ok(1, 'Should support square constraint (Shift)');
@@ -74,7 +67,7 @@ subtest 'Rectangle constraints' => sub {
 };
 
 subtest 'Fill styles' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support no fill');
     ok(1, 'Should support solid fill');
@@ -85,7 +78,7 @@ subtest 'Fill styles' => sub {
 };
 
 subtest 'Stroke styles' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support no stroke');
     ok(1, 'Should support solid stroke');
@@ -96,7 +89,7 @@ subtest 'Stroke styles' => sub {
 };
 
 subtest 'Corner styles' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support sharp corners');
     ok(1, 'Should support rounded corners');
@@ -105,7 +98,7 @@ subtest 'Corner styles' => sub {
 };
 
 subtest 'Interactive feedback' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should show preview while dragging');
     ok(1, 'Should update preview on mouse move');
@@ -114,7 +107,7 @@ subtest 'Interactive feedback' => sub {
 };
 
 subtest 'Rectangle modification' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should allow moving rectangle');
     ok(1, 'Should allow resizing rectangle');
@@ -124,7 +117,7 @@ subtest 'Rectangle modification' => sub {
 };
 
 subtest 'Selection and editing' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should select rectangle on click');
     ok(1, 'Should show selection handles');
@@ -133,7 +126,7 @@ subtest 'Selection and editing' => sub {
 };
 
 subtest 'Undo/Redo support' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support undo for creation');
     ok(1, 'Should support redo for creation');
@@ -142,7 +135,7 @@ subtest 'Undo/Redo support' => sub {
 };
 
 subtest 'Canvas integration' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should add rectangle to canvas');
     ok(1, 'Should remove rectangle from canvas');
@@ -151,7 +144,7 @@ subtest 'Canvas integration' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $tool = Shutter::Draw::Tool::Rectangle->new();
+    my $tool = Shutter::Draw::Tool::Rectangle->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should handle invalid coordinates');
     ok(1, 'Should handle zero-size rectangles');

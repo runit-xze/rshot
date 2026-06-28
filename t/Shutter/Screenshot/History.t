@@ -9,27 +9,20 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 use_ok('Shutter::Screenshot::History');
 
 subtest 'Constructor and initialization' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     isa_ok($history, 'Shutter::Screenshot::History');
     ok(defined $history, 'History object created');
 };
 
 subtest 'History storage' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should initialize empty history');
     ok(1, 'Should set maximum history size');
@@ -38,7 +31,7 @@ subtest 'History storage' => sub {
 };
 
 subtest 'Add screenshot to history' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should add screenshot entry');
     ok(1, 'Should store filename');
@@ -49,7 +42,7 @@ subtest 'Add screenshot to history' => sub {
 };
 
 subtest 'History size management' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should enforce maximum size');
     ok(1, 'Should remove oldest entries');
@@ -58,7 +51,7 @@ subtest 'History size management' => sub {
 };
 
 subtest 'Retrieve history entries' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should get all entries');
     ok(1, 'Should get recent entries (N)');
@@ -67,7 +60,7 @@ subtest 'Retrieve history entries' => sub {
 };
 
 subtest 'Search history' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should search by filename');
     ok(1, 'Should search by date');
@@ -77,7 +70,7 @@ subtest 'Search history' => sub {
 };
 
 subtest 'Remove from history' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should remove single entry');
     ok(1, 'Should remove multiple entries');
@@ -86,7 +79,7 @@ subtest 'Remove from history' => sub {
 };
 
 subtest 'History persistence' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should save history to disk');
     ok(1, 'Should load history from disk');
@@ -95,7 +88,7 @@ subtest 'History persistence' => sub {
 };
 
 subtest 'History statistics' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should count total screenshots');
     ok(1, 'Should count by type');
@@ -104,7 +97,7 @@ subtest 'History statistics' => sub {
 };
 
 subtest 'History export' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should export to JSON');
     ok(1, 'Should export to CSV');
@@ -113,7 +106,7 @@ subtest 'History export' => sub {
 };
 
 subtest 'History import' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should import from JSON');
     ok(1, 'Should validate import data');
@@ -122,7 +115,7 @@ subtest 'History import' => sub {
 };
 
 subtest 'Thumbnail management' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should store thumbnail paths');
     ok(1, 'Should generate thumbnails on demand');
@@ -131,7 +124,7 @@ subtest 'Thumbnail management' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $history = Shutter::Screenshot::History->new();
+    my $history = Shutter::Screenshot::History->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     ok(1, 'Should handle invalid entries');
     ok(1, 'Should handle file I/O errors');

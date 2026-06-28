@@ -350,9 +350,8 @@ sub fct_check_installed_upload_plugins ($self) {
 				my ($name, $folder, $type) = fileparse($ukey, qr/\.[^.]*/);
 
 				eval {
-					open(my $fh, '<', $ukey) or die "Cannot open $ukey";
-					my $json_text = do { local $/; <$fh> };
-					close($fh);
+					require Path::Tiny;
+					my $json_text = Path::Tiny::path($ukey)->slurp_utf8;
 					my $sxcu = $json->decode($json_text);
 
 					my $display_name = $sxcu->{Name} || $name;
@@ -393,7 +392,9 @@ sub fct_imagemagick_perform ($self, $function, $file, $data) {
 	$file = $shf->switch_home_in_file($file);
 
 	if ($function eq "reduce_colors") {
-		$result = `convert '$file' -colors $data '$file'`;
+		require Shutter::App::Core::SecureSystemCommandAPI;
+		my $res = Shutter::App::Core::SecureSystemCommandAPI->new->capture('convert', $file, '-colors', $data, $file);
+		$result = $res->{stdout};
 		$pixbuf = $lp->load($file) if $lp;
 	}
 

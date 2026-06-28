@@ -9,15 +9,8 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock GooCanvas2
 {
@@ -32,17 +25,27 @@ BEGIN {
     sub new { return bless {}, shift; }
 }
 
+{
+    package MockSession;
+    sub new { return bless {}, shift; }
+    sub main_window { return bless {}, 'Gtk3::Window'; }
+    sub shutter_root { return '/tmp'; }
+    sub debug { 1 }
+}
+
 use_ok('Shutter::Draw::DrawingTool');
 
+my $sc = MockSession->new;
+
 subtest 'Constructor and initialization' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     isa_ok($tool, 'Shutter::Draw::DrawingTool');
     ok(defined $tool, 'DrawingTool object created');
 };
 
 subtest 'Canvas initialization' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test canvas setup
     ok(1, 'Should create GooCanvas');
@@ -52,7 +55,7 @@ subtest 'Canvas initialization' => sub {
 };
 
 subtest 'Tool registration' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test tool types
     my @tools = qw(pen line arrow rectangle ellipse text highlighter blur censor);
@@ -63,7 +66,7 @@ subtest 'Tool registration' => sub {
 };
 
 subtest 'Tool selection' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test tool switching
     ok(1, 'Should select tool by name');
@@ -73,7 +76,7 @@ subtest 'Tool selection' => sub {
 };
 
 subtest 'Pen tool' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test pen functionality
     ok(1, 'Should draw freehand lines');
@@ -83,7 +86,7 @@ subtest 'Pen tool' => sub {
 };
 
 subtest 'Line tool' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test line drawing
     ok(1, 'Should draw straight lines');
@@ -93,7 +96,7 @@ subtest 'Line tool' => sub {
 };
 
 subtest 'Arrow tool' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test arrow drawing
     ok(1, 'Should draw arrows');
@@ -103,7 +106,7 @@ subtest 'Arrow tool' => sub {
 };
 
 subtest 'Rectangle tool' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test rectangle drawing
     ok(1, 'Should draw rectangles');
@@ -114,7 +117,7 @@ subtest 'Rectangle tool' => sub {
 };
 
 subtest 'Ellipse tool' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test ellipse drawing
     ok(1, 'Should draw ellipses');
@@ -124,7 +127,7 @@ subtest 'Ellipse tool' => sub {
 };
 
 subtest 'Text tool' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test text functionality
     ok(1, 'Should add text annotations');
@@ -136,7 +139,7 @@ subtest 'Text tool' => sub {
 };
 
 subtest 'Highlighter tool' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test highlighter
     ok(1, 'Should draw semi-transparent highlights');
@@ -146,7 +149,7 @@ subtest 'Highlighter tool' => sub {
 };
 
 subtest 'Blur tool' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test blur effect
     ok(1, 'Should blur selected regions');
@@ -156,7 +159,7 @@ subtest 'Blur tool' => sub {
 };
 
 subtest 'Censor tool' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test censor/pixelate
     ok(1, 'Should pixelate selected regions');
@@ -165,7 +168,7 @@ subtest 'Censor tool' => sub {
 };
 
 subtest 'Color picker' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test color selection
     ok(1, 'Should show color picker dialog');
@@ -176,7 +179,7 @@ subtest 'Color picker' => sub {
 };
 
 subtest 'Undo/Redo functionality' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test undo/redo
     ok(1, 'Should support undo');
@@ -187,7 +190,7 @@ subtest 'Undo/Redo functionality' => sub {
 };
 
 subtest 'Selection and manipulation' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test object selection
     ok(1, 'Should select objects by clicking');
@@ -200,7 +203,7 @@ subtest 'Selection and manipulation' => sub {
 };
 
 subtest 'Layer management' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test layers
     ok(1, 'Should maintain drawing order');
@@ -210,7 +213,7 @@ subtest 'Layer management' => sub {
 };
 
 subtest 'Zoom and pan' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test viewport
     ok(1, 'Should support zoom in/out');
@@ -221,7 +224,7 @@ subtest 'Zoom and pan' => sub {
 };
 
 subtest 'Keyboard shortcuts' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test shortcuts
     ok(1, 'Should support Ctrl+Z (undo)');
@@ -232,7 +235,7 @@ subtest 'Keyboard shortcuts' => sub {
 };
 
 subtest 'Export functionality' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test export
     ok(1, 'Should export to PNG');
@@ -242,7 +245,7 @@ subtest 'Export functionality' => sub {
 };
 
 subtest 'Performance optimization' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test performance
     ok(1, 'Should render efficiently');
@@ -252,7 +255,7 @@ subtest 'Performance optimization' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $tool = Shutter::Draw::DrawingTool->new();
+    my $tool = Shutter::Draw::DrawingTool->new($sc);
     
     # Test errors
     ok(1, 'Should handle invalid tool selection');

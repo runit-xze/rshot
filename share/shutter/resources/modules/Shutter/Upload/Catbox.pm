@@ -12,8 +12,8 @@ has userhash => (is => 'rw', default => sub { '' });
 sub upload ($self, $file) {
 	return (success => 0, error => "File not found") unless -e $file;
 
-	my $ua = LWP::UserAgent->new(timeout => 30);
-	$ua->agent("rshot/1.0");
+	require Shutter::App::Core::NetworkAPI;
+	my $api = Shutter::App::Core::NetworkAPI->new(timeout => 30);
 
 	my @content = (
 		reqtype      => 'fileupload',
@@ -24,11 +24,7 @@ sub upload ($self, $file) {
 		push @content, (userhash => $uh);
 	}
 
-	my $response = $ua->request(
-		POST 'https://catbox.moe/user/api.php',
-		Content_Type => 'form-data',
-		Content      => \@content
-	);
+	my $response = $api->post_form('https://catbox.moe/user/api.php', \@content);
 
 	if ($response->is_success) {
 		my $url = $response->decoded_content;

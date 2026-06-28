@@ -9,14 +9,14 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
+use lib 't/lib';
+use Test::Shutter::Mock;
+
+# Mock Session
+{
+    package MockSession;
+    sub new { return bless {}, shift; }
+    sub main_window { return bless {}, 'Gtk3::Window'; }
 }
 
 # Mock Wnck
@@ -29,16 +29,16 @@ BEGIN {
 
 {
     package Wnck::Screen;
-    sub get_default { return bless {}, shift; }
+    sub get_default { return bless {}, 'Wnck::Screen'; }
     sub force_update { }
     sub get_windows {
         return (
-            bless { xid => 0x1000001, name => 'Test Window 1' }, 'Wnck::Window',
-            bless { xid => 0x1000002, name => 'Test Window 2' }, 'Wnck::Window',
+            bless({ xid => 0x1000001, name => 'Test Window 1' }, 'Wnck::Window'),
+            bless({ xid => 0x1000002, name => 'Test Window 2' }, 'Wnck::Window'),
         );
     }
     sub get_active_window {
-        return bless { xid => 0x1000001, name => 'Active Window' }, 'Wnck::Window';
+        return bless({ xid => 0x1000001, name => 'Active Window' }, 'Wnck::Window');
     }
 }
 
@@ -58,14 +58,14 @@ BEGIN {
 use_ok('Shutter::Screenshot::Window');
 
 subtest 'Constructor and initialization' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     isa_ok($window, 'Shutter::Screenshot::Window');
     ok(defined $window, 'Window screenshot object created');
 };
 
 subtest 'Window enumeration' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test window list retrieval
     ok(1, 'Should enumerate all windows');
@@ -75,7 +75,7 @@ subtest 'Window enumeration' => sub {
 };
 
 subtest 'Active window detection' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test active window
     ok(1, 'Should detect active window');
@@ -85,7 +85,7 @@ subtest 'Active window detection' => sub {
 };
 
 subtest 'Window capture by XID' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test capture by window ID
     my @test_xids = (0x1000001, 0x1000002, 0x1000003);
@@ -99,7 +99,7 @@ subtest 'Window capture by XID' => sub {
 };
 
 subtest 'Window geometry calculation' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test geometry
     ok(1, 'Should get window position (x, y)');
@@ -109,7 +109,7 @@ subtest 'Window geometry calculation' => sub {
 };
 
 subtest 'Window decorations' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test decoration handling
     ok(1, 'Should capture with decorations');
@@ -119,7 +119,7 @@ subtest 'Window decorations' => sub {
 };
 
 subtest 'Window state handling' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test various window states
     ok(1, 'Should handle normal windows');
@@ -130,7 +130,7 @@ subtest 'Window state handling' => sub {
 };
 
 subtest 'Window type filtering' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test window type filtering
     my @window_types = qw(normal dialog utility toolbar menu);
@@ -144,7 +144,7 @@ subtest 'Window type filtering' => sub {
 };
 
 subtest 'Multi-monitor window capture' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test multi-monitor scenarios
     ok(1, 'Should capture windows on any monitor');
@@ -153,7 +153,7 @@ subtest 'Multi-monitor window capture' => sub {
 };
 
 subtest 'Window selection UI' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test interactive selection
     ok(1, 'Should show window selection overlay');
@@ -163,7 +163,7 @@ subtest 'Window selection UI' => sub {
 };
 
 subtest 'Window highlighting' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test highlight overlay
     ok(1, 'Should draw highlight border');
@@ -173,7 +173,7 @@ subtest 'Window highlighting' => sub {
 };
 
 subtest 'Transparent window handling' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test transparency
     ok(1, 'Should preserve window transparency');
@@ -182,7 +182,7 @@ subtest 'Transparent window handling' => sub {
 };
 
 subtest 'Window shadow capture' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test shadow handling
     ok(1, 'Should capture window shadows');
@@ -191,7 +191,7 @@ subtest 'Window shadow capture' => sub {
 };
 
 subtest 'Window title extraction' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test title extraction
     ok(1, 'Should get window title');
@@ -201,7 +201,7 @@ subtest 'Window title extraction' => sub {
 };
 
 subtest 'Window class and role' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test window properties
     ok(1, 'Should get window class');
@@ -211,7 +211,7 @@ subtest 'Window class and role' => sub {
 };
 
 subtest 'Wayland window capture' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test Wayland-specific capture
     ok(1, 'Should detect Wayland session');
@@ -221,7 +221,7 @@ subtest 'Wayland window capture' => sub {
 };
 
 subtest 'X11 window capture' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test X11-specific capture
     ok(1, 'Should use XGetImage for X11');
@@ -231,7 +231,7 @@ subtest 'X11 window capture' => sub {
 };
 
 subtest 'Window capture timing' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test timing
     ok(1, 'Should wait for window to be ready');
@@ -240,7 +240,7 @@ subtest 'Window capture timing' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test error scenarios
     ok(1, 'Should handle window closed during capture');
@@ -250,7 +250,7 @@ subtest 'Error handling' => sub {
 };
 
 subtest 'Memory management' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test memory handling
     ok(1, 'Should free pixbuf after capture');
@@ -259,7 +259,7 @@ subtest 'Memory management' => sub {
 };
 
 subtest 'Performance optimization' => sub {
-    my $window = Shutter::Screenshot::Window->new();
+    my $window = Shutter::Screenshot::Window->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test performance
     ok(1, 'Should capture quickly (<50ms)');

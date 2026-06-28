@@ -6,17 +6,10 @@ use v5.40;
 use Test::More;
 use Test::MockModule;
 use FindBin qw($RealBin);
-use lib "$RealBin/../../../../../share/shutter/resources/modules";
+use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock GooCanvas2
 {
@@ -40,14 +33,14 @@ BEGIN {
 use_ok('Shutter::Draw::Tool::Pen');
 
 subtest 'Constructor and initialization' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     isa_ok($tool, 'Shutter::Draw::Tool::Pen');
     ok(defined $tool, 'Pen tool object created');
 };
 
 subtest 'Tool properties' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should have name property');
     ok(1, 'Should have icon property');
@@ -56,7 +49,7 @@ subtest 'Tool properties' => sub {
 };
 
 subtest 'Freehand drawing - basic' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should start path on mouse down');
     ok(1, 'Should add points on mouse move');
@@ -65,7 +58,7 @@ subtest 'Freehand drawing - basic' => sub {
 };
 
 subtest 'Pen styles' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support solid pen');
     ok(1, 'Should support marker pen');
@@ -74,7 +67,7 @@ subtest 'Pen styles' => sub {
 };
 
 subtest 'Stroke properties' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should set stroke color');
     ok(1, 'Should support RGB colors');
@@ -84,7 +77,7 @@ subtest 'Stroke properties' => sub {
 };
 
 subtest 'Smoothing and interpolation' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should smooth jagged lines');
     ok(1, 'Should interpolate points');
@@ -93,7 +86,7 @@ subtest 'Smoothing and interpolation' => sub {
 };
 
 subtest 'Pressure sensitivity' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should detect pressure-sensitive input');
     ok(1, 'Should vary width with pressure');
@@ -102,7 +95,7 @@ subtest 'Pressure sensitivity' => sub {
 };
 
 subtest 'Performance optimization' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should handle rapid mouse movement');
     ok(1, 'Should sample points efficiently');
@@ -111,7 +104,7 @@ subtest 'Performance optimization' => sub {
 };
 
 subtest 'Path modification' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should allow moving path');
     ok(1, 'Should allow scaling path');
@@ -120,7 +113,7 @@ subtest 'Path modification' => sub {
 };
 
 subtest 'Selection and editing' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should select path on click');
     ok(1, 'Should show selection handles');
@@ -129,7 +122,7 @@ subtest 'Selection and editing' => sub {
 };
 
 subtest 'Undo/Redo support' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support undo for path creation');
     ok(1, 'Should support redo for path creation');
@@ -138,7 +131,7 @@ subtest 'Undo/Redo support' => sub {
 };
 
 subtest 'Canvas integration' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should add path to canvas');
     ok(1, 'Should remove path from canvas');
@@ -147,7 +140,7 @@ subtest 'Canvas integration' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $tool = Shutter::Draw::Tool::Pen->new();
+    my $tool = Shutter::Draw::Tool::Pen->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should handle empty paths');
     ok(1, 'Should handle single-point paths');

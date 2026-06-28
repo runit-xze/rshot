@@ -180,12 +180,11 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 
 sub use_imagemagick_to_save ($self, $file, $new_file) {
 
-	$file     = quotemeta $file;
-	$new_file = quotemeta $new_file;
+	require Shutter::App::Core::SecureSystemCommandAPI;
+	my $api = Shutter::App::Core::SecureSystemCommandAPI->new;
+	my $res = $api->capture('convert', $file, $new_file);
 
-	my $result = `convert $file $new_file 2>&1`;
-
-	return $result;
+	return $res->{stderr} . $res->{stdout};
 }
 
 1;

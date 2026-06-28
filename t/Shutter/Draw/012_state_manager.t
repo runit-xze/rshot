@@ -20,6 +20,9 @@ require_ok('Shutter::Draw::DrawingTool');
 my $domain = Locale::gettext->domain("shutter");
 
 # Pre-bless objects (avoid nested bless in hash literal)
+{ package Gtk3::Statusbar; sub DESTROY {} }
+{ package Gtk3::Image; sub DESTROY {} }
+{ package Gtk3::UIManager; sub DESTROY {} }
 my $_sb = bless {}, 'Gtk3::Statusbar';
 my $_img = bless {}, 'Gtk3::Image';
 my $_uimgr = bless {}, 'Gtk3::UIManager';
@@ -69,9 +72,7 @@ BEGIN {
 	$orig_statusbar_push = \&Gtk3::Statusbar::push;
 	*Gtk3::Statusbar::push = sub { push @statusbar_pushes, [@_[1,2]]; return 1 };
 }
-END {
-	*Gtk3::Statusbar::push = $orig_statusbar_push if $orig_statusbar_push;
-}
+
 
 # Mock Gtk3::Image::set_from_stock / clear
 BEGIN {
@@ -87,10 +88,7 @@ BEGIN {
 	*Gtk3::UIManager::get_widget = sub { bless { _sensitive => 1 }, 'Gtk3::Widget' };
 	*Gtk3::Widget::set_sensitive  = sub { shift; 1 };
 }
-END {
-	*Gtk3::UIManager::get_widget = $orig_get_widget if $orig_get_widget;
-	*Gtk3::Widget::set_sensitive = $orig_set_sensitive if $orig_set_sensitive;
-}
+
 
 subtest "push_tool_help_to_statusbar in select mode (10)" => sub {
 	my $dt = _build_mock_dt();

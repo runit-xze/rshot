@@ -57,12 +57,10 @@ BEGIN {
 	*Gtk3::UIManager::get_widget = sub { bless { _sensitive => 1 }, 'Gtk3::Widget' };
 	*Gtk3::Widget::set_sensitive  = sub { shift; 1 };
 }
-END {
-	*Gtk3::UIManager::get_widget = $orig_get_widget if $orig_get_widget;
-	*Gtk3::Widget::set_sensitive = $orig_set_sensitive if $orig_set_sensitive;
-}
+
 
 # Shared mock items and canvas
+{ package Gtk3::UIManager; sub DESTROY {} }
 my $_bg_rect;
 my $_ui_mgr = bless {}, 'Gtk3::UIManager';
 my $_canvas;

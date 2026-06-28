@@ -32,6 +32,11 @@ no warnings 'experimental::try';
 use Moo;
 use Gtk3;
 
+has 'x' => (is => 'rw');
+has 'y' => (is => 'rw');
+has 'width' => (is => 'rw');
+has 'height' => (is => 'rw');
+
 #Glib
 use Glib qw/TRUE FALSE/;
 

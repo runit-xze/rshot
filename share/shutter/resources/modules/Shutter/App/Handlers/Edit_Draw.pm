@@ -139,7 +139,9 @@ sub fct_plugin ($self) {
 }
 
 sub fct_plugin_get_info ($self, $plugin, $info) {
-	my $plugin_info = `$plugin $info`;
+	require Shutter::App::Core::SecureSystemCommandAPI;
+	my $res = Shutter::App::Core::SecureSystemCommandAPI->new->capture($plugin, $info);
+	my $plugin_info = $res->{stdout};
 	utf8::decode $plugin_info;
 
 	return $plugin_info;

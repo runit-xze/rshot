@@ -105,15 +105,13 @@ sub _assemble ($self) {
 		return;
 	}
 
-	my $delay  = int(100 / ($self->fps || 10));                  # ImageMagick -delay is in 1/100ths sec
-	my $frames = join(' ', map { quotemeta $_ } @$frames_ref);
-	my $out    = quotemeta $self->output;
+	my $delay = int(100 / ($self->fps || 10));
 
-	# We use ImageMagick's convert. It should be available if they use Shutter.
-	my $cmd = "convert -delay $delay -loop 0 $frames $out 2>&1";
-	system($cmd);
+	require Shutter::App::Core::SecureSystemCommandAPI;
+	my $api = Shutter::App::Core::SecureSystemCommandAPI->new;
+	my $res = $api->capture('convert', '-delay', $delay, '-loop', '0', @$frames_ref, $self->output);
 
-	if ($? == 0) {
+	if ($res->{success}) {
 		$self->on_done->($self->output);
 	} else {
 		$self->on_done->(undef);

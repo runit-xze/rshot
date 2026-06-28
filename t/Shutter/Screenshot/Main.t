@@ -9,26 +9,15 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-    
-    # Mock Gtk3::Gdk
-    my $gdk_mock = Test::MockModule->new('Gtk3::Gdk');
-    $gdk_mock->mock('Screen' => sub {
-        return bless {}, 'Gtk3::Gdk::Screen';
-    });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
+
+# Mock Gtk3 and Glib handled by Test::Shutter::Mock
 
 # Mock Gtk3::Gdk::Screen
 {
     package Gtk3::Gdk::Screen;
-    sub get_default { return bless {}, shift; }
+    sub get_default { return bless {}, 'Gtk3::Gdk::Screen'; }
     sub get_width { return 1920; }
     sub get_height { return 1080; }
     sub get_root_window { return bless {}, 'Gtk3::Gdk::Window'; }
@@ -61,14 +50,14 @@ BEGIN {
 use_ok('Shutter::Screenshot::Main');
 
 subtest 'Constructor and initialization' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     isa_ok($screenshot, 'Shutter::Screenshot::Main');
     ok(defined $screenshot, 'Screenshot object created successfully');
 };
 
 subtest 'Full screen capture' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test full screen capture
     ok(1, 'Should capture full screen');
@@ -77,7 +66,7 @@ subtest 'Full screen capture' => sub {
 };
 
 subtest 'Region capture' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test region capture with valid coordinates
     my @valid_regions = (
@@ -93,7 +82,7 @@ subtest 'Region capture' => sub {
 };
 
 subtest 'Region validation' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test invalid regions
     my @invalid_regions = (
@@ -113,7 +102,7 @@ subtest 'Region validation' => sub {
 };
 
 subtest 'Cursor inclusion' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test cursor inclusion
     ok(1, 'Should capture with cursor when include_cursor=true');
@@ -123,7 +112,7 @@ subtest 'Cursor inclusion' => sub {
 };
 
 subtest 'Window decorations' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test window decoration handling
     ok(1, 'Should capture with decorations when requested');
@@ -132,7 +121,7 @@ subtest 'Window decorations' => sub {
 };
 
 subtest 'Delay handling' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test delay functionality
     my @delays = (0, 1, 3, 5, 10);
@@ -146,7 +135,7 @@ subtest 'Delay handling' => sub {
 };
 
 subtest 'Display server detection' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test display server detection
     ok(1, 'Should detect X11');
@@ -155,7 +144,7 @@ subtest 'Display server detection' => sub {
 };
 
 subtest 'X11 capture methods' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test X11-specific capture
     ok(1, 'Should use XGetImage for X11');
@@ -164,7 +153,7 @@ subtest 'X11 capture methods' => sub {
 };
 
 subtest 'Wayland capture methods' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test Wayland-specific capture
     ok(1, 'Should use portal API for Wayland');
@@ -173,7 +162,7 @@ subtest 'Wayland capture methods' => sub {
 };
 
 subtest 'Multi-monitor support' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test multi-monitor scenarios
     ok(1, 'Should detect all monitors');
@@ -183,7 +172,7 @@ subtest 'Multi-monitor support' => sub {
 };
 
 subtest 'Color space handling' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test color space
     ok(1, 'Should capture in RGB');
@@ -192,7 +181,7 @@ subtest 'Color space handling' => sub {
 };
 
 subtest 'Memory management' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test memory handling
     ok(1, 'Should allocate appropriate buffer size');
@@ -201,7 +190,7 @@ subtest 'Memory management' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test error scenarios
     ok(1, 'Should handle X server disconnection');
@@ -211,7 +200,7 @@ subtest 'Error handling' => sub {
 };
 
 subtest 'Capture metadata' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test metadata collection
     ok(1, 'Should record capture timestamp');
@@ -221,7 +210,7 @@ subtest 'Capture metadata' => sub {
 };
 
 subtest 'Performance optimization' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test performance
     ok(1, 'Should capture quickly (<100ms for full screen)');
@@ -230,7 +219,7 @@ subtest 'Performance optimization' => sub {
 };
 
 subtest 'Concurrent capture prevention' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test concurrency control
     ok(1, 'Should prevent simultaneous captures');
@@ -239,7 +228,7 @@ subtest 'Concurrent capture prevention' => sub {
 };
 
 subtest 'Mock capture mode' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test mock capture for testing
     ok(1, 'Should support mock capture mode');
@@ -248,7 +237,7 @@ subtest 'Mock capture mode' => sub {
 };
 
 subtest 'Pixbuf format' => sub {
-    my $screenshot = Shutter::Screenshot::Main->new();
+    my $screenshot = Shutter::Screenshot::Main->new(_sc => bless({}, 'MockSession'), _common => bless({}, 'MockCommon'), _dummy => 1);
     
     # Test pixbuf properties
     ok(1, 'Should return valid Gtk3::Gdk::Pixbuf');

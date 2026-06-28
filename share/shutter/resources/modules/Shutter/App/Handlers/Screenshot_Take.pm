@@ -267,7 +267,8 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	my $progname                  = $cli->{_progname}              // Shutter::App::Init::_mock_widget(undef);
 	my $notify_after_active       = $cli->{_notify_after_active}   // Shutter::App::Init::_mock_widget(FALSE);
 	my $present_after_active      = $cli->{_present_after_active}  // Shutter::App::Init::_mock_widget(FALSE);
-	my $clipboard                 = Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern('CLIPBOARD', FALSE));
+	require Shutter::App::Core::ClipboardAPI;
+	my $clipboard                 = Shutter::App::Core::ClipboardAPI->new;
 	my $x11_supported             = $cli->{_x11_supported};
 	my $wnck_screen               = undef;
 	try { $wnck_screen = Wnck::Screen::get_default(); } catch ($e) {

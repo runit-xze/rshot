@@ -9,27 +9,20 @@ use File::Temp qw(tempdir tempfile);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 use_ok('Shutter::App::Core::UploadManager');
 
 subtest 'Constructor and initialization' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     isa_ok($manager, 'Shutter::App::Core::UploadManager');
     ok(defined $manager, 'UploadManager created successfully');
 };
 
 subtest 'Upload service registration' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test service registration
     ok(1, 'Manager should support service registration');
@@ -38,7 +31,7 @@ subtest 'Upload service registration' => sub {
 };
 
 subtest 'ShareX configuration support' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test .sxcu file parsing
     ok(1, 'Manager should parse .sxcu files');
@@ -50,7 +43,7 @@ subtest 'ShareX configuration support' => sub {
 };
 
 subtest 'File upload' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     my ($fh, $filename) = tempfile(CLEANUP => 1);
     print $fh "test content";
     close $fh;
@@ -63,7 +56,7 @@ subtest 'File upload' => sub {
 };
 
 subtest 'Upload progress tracking' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test progress tracking
     ok(1, 'Manager should track upload progress');
@@ -73,7 +66,7 @@ subtest 'Upload progress tracking' => sub {
 };
 
 subtest 'Upload cancellation' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test cancellation
     ok(1, 'Manager should support upload cancellation');
@@ -82,7 +75,7 @@ subtest 'Upload cancellation' => sub {
 };
 
 subtest 'Multiple upload services' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test multiple services
     my @services = qw(imgur catbox imgbb litterbox custom);
@@ -93,7 +86,7 @@ subtest 'Multiple upload services' => sub {
 };
 
 subtest 'Authentication handling' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test authentication
     ok(1, 'Manager should support API key auth');
@@ -103,7 +96,7 @@ subtest 'Authentication handling' => sub {
 };
 
 subtest 'Upload retry logic' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test retry logic
     ok(1, 'Manager should retry on network errors');
@@ -113,7 +106,7 @@ subtest 'Upload retry logic' => sub {
 };
 
 subtest 'Response parsing' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test response parsing
     ok(1, 'Manager should parse JSON responses');
@@ -124,7 +117,7 @@ subtest 'Response parsing' => sub {
 };
 
 subtest 'Upload history' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test history tracking
     ok(1, 'Manager should track upload history');
@@ -135,7 +128,7 @@ subtest 'Upload history' => sub {
 };
 
 subtest 'Clipboard integration' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test clipboard
     ok(1, 'Manager should copy URL to clipboard');
@@ -144,7 +137,7 @@ subtest 'Clipboard integration' => sub {
 };
 
 subtest 'Upload size limits' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test size limits
     ok(1, 'Manager should enforce service size limits');
@@ -154,7 +147,7 @@ subtest 'Upload size limits' => sub {
 };
 
 subtest 'Network error handling' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test error handling
     ok(1, 'Manager should handle connection timeout');
@@ -165,7 +158,7 @@ subtest 'Network error handling' => sub {
 };
 
 subtest 'Proxy support' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test proxy
     ok(1, 'Manager should support HTTP proxy');
@@ -175,7 +168,7 @@ subtest 'Proxy support' => sub {
 };
 
 subtest 'Custom headers' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test custom headers
     ok(1, 'Manager should support custom headers');
@@ -184,7 +177,7 @@ subtest 'Custom headers' => sub {
 };
 
 subtest 'Upload queue' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test queue management
     ok(1, 'Manager should support upload queue');
@@ -194,7 +187,7 @@ subtest 'Upload queue' => sub {
 };
 
 subtest 'Concurrent uploads' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test concurrent uploads
     ok(1, 'Manager should support concurrent uploads');
@@ -203,7 +196,7 @@ subtest 'Concurrent uploads' => sub {
 };
 
 subtest 'Upload statistics' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test statistics
     ok(1, 'Manager should track total uploads');
@@ -213,7 +206,7 @@ subtest 'Upload statistics' => sub {
 };
 
 subtest 'Security validation' => sub {
-    my $manager = Shutter::App::Core::UploadManager->new();
+    my $manager = Shutter::App::Core::UploadManager->new(_common => bless({}, 'MockCommon'));
     
     # Test security
     ok(1, 'Manager should validate SSL certificates');

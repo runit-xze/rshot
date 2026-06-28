@@ -9,15 +9,8 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock Gtk3::Dialog
 {
@@ -74,14 +67,14 @@ BEGIN {
 use_ok('Shutter::App::UI::SettingsDialog');
 
 subtest 'Constructor and initialization' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     isa_ok($dialog, 'Shutter::App::UI::SettingsDialog');
     ok(defined $dialog, 'SettingsDialog object created');
 };
 
 subtest 'Dialog creation' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test dialog properties
     ok(1, 'Should create Gtk3::Dialog');
@@ -93,7 +86,7 @@ subtest 'Dialog creation' => sub {
 };
 
 subtest 'Settings categories' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test category tabs
     ok(1, 'Should have General tab');
@@ -104,7 +97,7 @@ subtest 'Settings categories' => sub {
 };
 
 subtest 'General settings' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test general settings
     ok(1, 'Should have language selection');
@@ -114,7 +107,7 @@ subtest 'General settings' => sub {
 };
 
 subtest 'Capture settings' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test capture settings
     ok(1, 'Should have delay spinner');
@@ -124,7 +117,7 @@ subtest 'Capture settings' => sub {
 };
 
 subtest 'Save settings' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test save settings
     ok(1, 'Should have save directory chooser');
@@ -135,7 +128,7 @@ subtest 'Save settings' => sub {
 };
 
 subtest 'Upload settings' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test upload settings
     ok(1, 'Should have service selection');
@@ -145,7 +138,7 @@ subtest 'Upload settings' => sub {
 };
 
 subtest 'Advanced settings' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test advanced settings
     ok(1, 'Should have debug mode checkbox');
@@ -155,7 +148,7 @@ subtest 'Advanced settings' => sub {
 };
 
 subtest 'Profile management' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test profiles
     ok(1, 'Should list available profiles');
@@ -166,7 +159,7 @@ subtest 'Profile management' => sub {
 };
 
 subtest 'Settings validation' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test validation
     ok(1, 'Should validate delay range (0-99)');
@@ -177,7 +170,7 @@ subtest 'Settings validation' => sub {
 };
 
 subtest 'Settings persistence' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test save/load
     ok(1, 'Should load current settings');
@@ -187,7 +180,7 @@ subtest 'Settings persistence' => sub {
 };
 
 subtest 'Keyboard shortcuts configuration' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test shortcut config
     ok(1, 'Should list all shortcuts');
@@ -197,7 +190,7 @@ subtest 'Keyboard shortcuts configuration' => sub {
 };
 
 subtest 'Import/Export settings' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test import/export
     ok(1, 'Should export settings to file');
@@ -207,7 +200,7 @@ subtest 'Import/Export settings' => sub {
 };
 
 subtest 'Reset functionality' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test reset
     ok(1, 'Should reset individual settings');
@@ -217,7 +210,7 @@ subtest 'Reset functionality' => sub {
 };
 
 subtest 'Help integration' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test help
     ok(1, 'Should show help tooltips');
@@ -226,7 +219,7 @@ subtest 'Help integration' => sub {
 };
 
 subtest 'Live preview' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test preview
     ok(1, 'Should preview filename pattern');
@@ -235,7 +228,7 @@ subtest 'Live preview' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $dialog = Shutter::App::UI::SettingsDialog->new();
+    my $dialog = Shutter::App::UI::SettingsDialog->new(_common => bless({}, 'MockCommon'), cli => bless({}, 'MockCLI'));
     
     # Test errors
     ok(1, 'Should handle invalid input');

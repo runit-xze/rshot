@@ -4,4 +4,4 @@ verbose = 8
 [-BuiltinFunctions::ProhibitStringyEval]
 [-ControlStructures::ProhibitPostfixControls]
 [-Subroutines::ProhibitSubroutinePrototypes]
-[-Variables::ProhibitPunctuationVariables]
+[-Variables::ProhibitPunctuationVars]

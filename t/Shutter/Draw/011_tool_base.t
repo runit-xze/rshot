@@ -81,13 +81,7 @@ BEGIN {
 	*Gtk3::get_current_event_time = sub { 0 };
 	*Gtk3::Gdk::Cursor::new = sub { bless { _type => $_[1] }, 'MockCursor' };
 }
-END {
-	*Gtk3::UIManager::get_widget      = $orig_get_widget    if $orig_get_widget;
-	*Gtk3::Widget::set_sensitive       = $orig_set_sensitive if $orig_set_sensitive;
-	*Gtk3::Gdk::Event::new             = $orig_event_new     if $orig_event_new;
-	*Gtk3::get_current_event_time      = $orig_ce_time       if $orig_ce_time;
-	*Gtk3::Gdk::Cursor::new            = $orig_cursor_new    if $orig_cursor_new;
-}
+
 
 package MockEvent {
 	sub state  { my $s = shift; $s->{state}  = shift if @_; return $s->{state}  // 0 }

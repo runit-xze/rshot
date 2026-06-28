@@ -9,27 +9,20 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 use_ok('Shutter::App::Core::ScreenshotHandler');
 
 subtest 'Constructor and basic attributes' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     isa_ok($handler, 'Shutter::App::Core::ScreenshotHandler');
     ok(defined $handler, 'Handler object created successfully');
 };
 
 subtest 'Screenshot type validation' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     my @valid_types = qw(full window select awindow menu tooltip web workspace);
     
@@ -39,14 +32,14 @@ subtest 'Screenshot type validation' => sub {
 };
 
 subtest 'Mock capture mode' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test that mock capture can be enabled
     ok(1, 'Mock capture mode can be enabled');
 };
 
 subtest 'Delay handling' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test various delay values
     my @delays = (0, 1, 5, 10);
@@ -57,7 +50,7 @@ subtest 'Delay handling' => sub {
 };
 
 subtest 'Cursor inclusion options' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test include_cursor flag
     ok(1, 'include_cursor option can be set');
@@ -70,7 +63,7 @@ subtest 'Cursor inclusion options' => sub {
 };
 
 subtest 'Region selection' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test region format: x,y,width,height
     my @valid_regions = (
@@ -100,7 +93,7 @@ subtest 'Region selection' => sub {
 };
 
 subtest 'Window capture by ID' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test window ID capture
     my @window_ids = (0x1000001, 0x2000002, 0x3000003);
@@ -111,13 +104,13 @@ subtest 'Window capture by ID' => sub {
 };
 
 subtest 'Active window capture' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     ok(1, 'Active window capture should be supported');
 };
 
 subtest 'Web URL capture' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     my @valid_urls = (
         'https://example.com',
@@ -131,7 +124,7 @@ subtest 'Web URL capture' => sub {
 };
 
 subtest 'Error handling for invalid capture types' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     my @invalid_types = qw(invalid_type foo bar baz);
     
@@ -141,14 +134,14 @@ subtest 'Error handling for invalid capture types' => sub {
 };
 
 subtest 'Wayland vs X11 detection' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test that handler can detect display server type
     ok(1, 'Handler should detect Wayland vs X11');
 };
 
 subtest 'Screenshot metadata' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test that metadata is captured
     ok(1, 'Screenshot should include timestamp');
@@ -157,7 +150,7 @@ subtest 'Screenshot metadata' => sub {
 };
 
 subtest 'Output filename generation' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test default filename pattern
     ok(1, 'Default filename should follow pattern');
@@ -173,21 +166,21 @@ subtest 'Output filename generation' => sub {
 };
 
 subtest 'Concurrent capture prevention' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test that multiple simultaneous captures are prevented
     ok(1, 'Concurrent captures should be prevented');
 };
 
 subtest 'Capture cancellation' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test that capture can be cancelled during delay
     ok(1, 'Capture should be cancellable during delay');
 };
 
 subtest 'Memory cleanup after capture' => sub {
-    my $handler = Shutter::App::Core::ScreenshotHandler->new();
+    my $handler = Shutter::App::Core::ScreenshotHandler->new(_common => bless({}, 'MockCommon'));
     
     # Test that resources are properly cleaned up
     ok(1, 'Pixbuf should be released after save');

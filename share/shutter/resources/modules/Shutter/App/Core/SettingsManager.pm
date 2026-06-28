@@ -136,9 +136,8 @@ sub load_accounts ($self, $profilename = undef) {
 				my ($name, $folder, $type) = File::Basename::fileparse($ukey, qr/\.[^.]*/);
 
 				eval {
-					open(my $fh, '<', $ukey) or die "Cannot open $ukey";
-					my $json_text = do { local $/; <$fh> };
-					close($fh);
+					require Path::Tiny;
+					my $json_text = Path::Tiny::path($ukey)->slurp_utf8;
 					my $sxcu = $json->decode($json_text);
 
 					my $display_name = $sxcu->{Name} || $name;

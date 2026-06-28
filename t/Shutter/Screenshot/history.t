@@ -12,6 +12,8 @@ BEGIN {
     eval { require Shutter::Screenshot::History; 1; } or do {
         plan skip_all => "Cannot load Shutter::Screenshot::History: $@";
     };
+{ package MockSession; sub new { return bless {}, shift; } sub main_window { return bless {}, "Gtk3::Window"; } }
+
 }
 
 subtest 'Module loads' => sub {

@@ -6,17 +6,10 @@ use v5.40;
 use Test::More;
 use Test::MockModule;
 use FindBin qw($RealBin);
-use lib "$RealBin/../../../../../share/shutter/resources/modules";
+use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock GooCanvas2
 {
@@ -40,14 +33,14 @@ BEGIN {
 use_ok('Shutter::Draw::Tool::Line');
 
 subtest 'Constructor and initialization' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     isa_ok($tool, 'Shutter::Draw::Tool::Line');
     ok(defined $tool, 'Line tool object created');
 };
 
 subtest 'Tool properties' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should have name property');
     ok(1, 'Should have icon property');
@@ -56,7 +49,7 @@ subtest 'Tool properties' => sub {
 };
 
 subtest 'Line drawing - basic' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should start line on mouse down');
     ok(1, 'Should update line on mouse move');
@@ -65,7 +58,7 @@ subtest 'Line drawing - basic' => sub {
 };
 
 subtest 'Line styles' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support solid lines');
     ok(1, 'Should support dashed lines');
@@ -75,7 +68,7 @@ subtest 'Line styles' => sub {
 };
 
 subtest 'Line constraints' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support free-form lines');
     ok(1, 'Should support horizontal constraint (Shift)');
@@ -85,7 +78,7 @@ subtest 'Line constraints' => sub {
 };
 
 subtest 'Color and transparency' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should set line color');
     ok(1, 'Should support RGB colors');
@@ -94,7 +87,7 @@ subtest 'Color and transparency' => sub {
 };
 
 subtest 'Interactive feedback' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should show preview while dragging');
     ok(1, 'Should update preview on mouse move');
@@ -103,7 +96,7 @@ subtest 'Interactive feedback' => sub {
 };
 
 subtest 'Line modification' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should allow moving line');
     ok(1, 'Should allow resizing line');
@@ -113,7 +106,7 @@ subtest 'Line modification' => sub {
 };
 
 subtest 'Selection and editing' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should select line on click');
     ok(1, 'Should show selection handles');
@@ -122,7 +115,7 @@ subtest 'Selection and editing' => sub {
 };
 
 subtest 'Multi-line support' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support multiple lines');
     ok(1, 'Should maintain separate properties');
@@ -131,7 +124,7 @@ subtest 'Multi-line support' => sub {
 };
 
 subtest 'Undo/Redo support' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support undo for line creation');
     ok(1, 'Should support redo for line creation');
@@ -140,7 +133,7 @@ subtest 'Undo/Redo support' => sub {
 };
 
 subtest 'Canvas integration' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should add line to canvas');
     ok(1, 'Should remove line from canvas');
@@ -149,7 +142,7 @@ subtest 'Canvas integration' => sub {
 };
 
 subtest 'Performance' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should render lines efficiently');
     ok(1, 'Should handle many lines (100+)');
@@ -157,7 +150,7 @@ subtest 'Performance' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $tool = Shutter::Draw::Tool::Line->new();
+    my $tool = Shutter::Draw::Tool::Line->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should handle invalid coordinates');
     ok(1, 'Should handle zero-length lines');

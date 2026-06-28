@@ -52,11 +52,11 @@ sub start ($self) {
 
 	if ($rec_desktop || $rec_mic) {
 
-		# Check pulse default sources/sinks
-		my $pulse_sink = `pactl info 2>/dev/null | grep 'Default Sink' | cut -d' ' -f3`;
-		chomp $pulse_sink;
-		my $pulse_src = `pactl info 2>/dev/null | grep 'Default Source' | cut -d' ' -f3`;
-		chomp $pulse_src;
+		require Shutter::App::Core::SecureSystemCommandAPI;
+		my $res = Shutter::App::Core::SecureSystemCommandAPI->new->capture('pactl', 'info');
+		my $info = $res->{stdout};
+		my ($pulse_sink) = $info =~ /^Default Sink:\s+(.+)$/xm;
+		my ($pulse_src)  = $info =~ /^Default Source:\s+(.+)$/xm;
 
 		my $a_idx      = 1;
 		my $mix_filter = "";

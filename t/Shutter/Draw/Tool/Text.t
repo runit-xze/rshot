@@ -6,17 +6,10 @@ use v5.40;
 use Test::More;
 use Test::MockModule;
 use FindBin qw($RealBin);
-use lib "$RealBin/../../../../../share/shutter/resources/modules";
+use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock GooCanvas2
 {
@@ -40,14 +33,14 @@ BEGIN {
 use_ok('Shutter::Draw::Tool::Text');
 
 subtest 'Constructor and initialization' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     isa_ok($tool, 'Shutter::Draw::Tool::Text');
     ok(defined $tool, 'Text tool object created');
 };
 
 subtest 'Tool properties' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should have name property');
     ok(1, 'Should have icon property');
@@ -56,7 +49,7 @@ subtest 'Tool properties' => sub {
 };
 
 subtest 'Text input - basic' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should show text entry on click');
     ok(1, 'Should accept keyboard input');
@@ -65,7 +58,7 @@ subtest 'Text input - basic' => sub {
 };
 
 subtest 'Font properties' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should set font family');
     ok(1, 'Should set font size (8-72pt)');
@@ -76,7 +69,7 @@ subtest 'Font properties' => sub {
 };
 
 subtest 'Text color and transparency' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should set text color');
     ok(1, 'Should support RGB colors');
@@ -85,7 +78,7 @@ subtest 'Text color and transparency' => sub {
 };
 
 subtest 'Text alignment' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support left alignment');
     ok(1, 'Should support center alignment');
@@ -94,7 +87,7 @@ subtest 'Text alignment' => sub {
 };
 
 subtest 'Text background' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support no background');
     ok(1, 'Should support solid background');
@@ -104,7 +97,7 @@ subtest 'Text background' => sub {
 };
 
 subtest 'Multi-line text' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support single-line text');
     ok(1, 'Should support multi-line text');
@@ -114,7 +107,7 @@ subtest 'Multi-line text' => sub {
 };
 
 subtest 'Text editing' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should allow editing existing text');
     ok(1, 'Should support cursor positioning');
@@ -124,7 +117,7 @@ subtest 'Text editing' => sub {
 };
 
 subtest 'Text modification' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should allow moving text');
     ok(1, 'Should allow rotating text');
@@ -133,7 +126,7 @@ subtest 'Text modification' => sub {
 };
 
 subtest 'Selection and editing' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should select text on click');
     ok(1, 'Should show selection handles');
@@ -142,7 +135,7 @@ subtest 'Selection and editing' => sub {
 };
 
 subtest 'Special characters' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support Unicode characters');
     ok(1, 'Should support emoji');
@@ -151,7 +144,7 @@ subtest 'Special characters' => sub {
 };
 
 subtest 'Undo/Redo support' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support undo for text creation');
     ok(1, 'Should support redo for text creation');
@@ -160,7 +153,7 @@ subtest 'Undo/Redo support' => sub {
 };
 
 subtest 'Canvas integration' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should add text to canvas');
     ok(1, 'Should remove text from canvas');
@@ -169,7 +162,7 @@ subtest 'Canvas integration' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $tool = Shutter::Draw::Tool::Text->new();
+    my $tool = Shutter::Draw::Tool::Text->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should handle empty text');
     ok(1, 'Should handle very long text');

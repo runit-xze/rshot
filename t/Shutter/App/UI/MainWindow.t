@@ -9,15 +9,8 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock Gtk3::Window
 {
@@ -65,14 +58,14 @@ BEGIN {
 use_ok('Shutter::App::UI::MainWindow');
 
 subtest 'Constructor and initialization' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     isa_ok($window, 'Shutter::App::UI::MainWindow');
     ok(defined $window, 'MainWindow object created');
 };
 
 subtest 'Window creation' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test window properties
     ok(1, 'Should create Gtk3::Window');
@@ -83,7 +76,7 @@ subtest 'Window creation' => sub {
 };
 
 subtest 'Window layout' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test layout structure
     ok(1, 'Should create vertical box layout');
@@ -94,7 +87,7 @@ subtest 'Window layout' => sub {
 };
 
 subtest 'Menu bar creation' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test menu structure
     ok(1, 'Should create File menu');
@@ -104,7 +97,7 @@ subtest 'Menu bar creation' => sub {
 };
 
 subtest 'File menu items' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test File menu
     ok(1, 'Should have New item');
@@ -116,7 +109,7 @@ subtest 'File menu items' => sub {
 };
 
 subtest 'Edit menu items' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test Edit menu
     ok(1, 'Should have Undo item');
@@ -126,7 +119,7 @@ subtest 'Edit menu items' => sub {
 };
 
 subtest 'Screenshot menu items' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test Screenshot menu
     ok(1, 'Should have Full Screen item');
@@ -136,7 +129,7 @@ subtest 'Screenshot menu items' => sub {
 };
 
 subtest 'Toolbar creation' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test toolbar
     ok(1, 'Should create toolbar');
@@ -147,7 +140,7 @@ subtest 'Toolbar creation' => sub {
 };
 
 subtest 'Status bar' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test status bar
     ok(1, 'Should create status bar');
@@ -157,7 +150,7 @@ subtest 'Status bar' => sub {
 };
 
 subtest 'Main content area' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test content area
     ok(1, 'Should create notebook widget');
@@ -167,7 +160,7 @@ subtest 'Main content area' => sub {
 };
 
 subtest 'Window state persistence' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test state saving
     ok(1, 'Should save window size');
@@ -177,7 +170,7 @@ subtest 'Window state persistence' => sub {
 };
 
 subtest 'Keyboard shortcuts' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test shortcuts
     ok(1, 'Should support Ctrl+N (New)');
@@ -188,7 +181,7 @@ subtest 'Keyboard shortcuts' => sub {
 };
 
 subtest 'Window signals' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test signal handling
     ok(1, 'Should handle delete-event');
@@ -198,7 +191,7 @@ subtest 'Window signals' => sub {
 };
 
 subtest 'Fullscreen mode' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test fullscreen
     ok(1, 'Should enter fullscreen mode');
@@ -208,7 +201,7 @@ subtest 'Fullscreen mode' => sub {
 };
 
 subtest 'Window close handling' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test close behavior
     ok(1, 'Should prompt to save unsaved changes');
@@ -218,7 +211,7 @@ subtest 'Window close handling' => sub {
 };
 
 subtest 'Theme support' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test theming
     ok(1, 'Should support GTK themes');
@@ -228,7 +221,7 @@ subtest 'Theme support' => sub {
 };
 
 subtest 'Accessibility' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test accessibility
     ok(1, 'Should support screen readers');
@@ -238,7 +231,7 @@ subtest 'Accessibility' => sub {
 };
 
 subtest 'Multi-monitor support' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test multi-monitor
     ok(1, 'Should detect multiple monitors');
@@ -248,7 +241,7 @@ subtest 'Multi-monitor support' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $window = Shutter::App::UI::MainWindow->new();
+    my $window = Shutter::App::UI::MainWindow->new(_common => bless({}, 'MockCommon'));
     
     # Test error scenarios
     ok(1, 'Should handle window creation failure');

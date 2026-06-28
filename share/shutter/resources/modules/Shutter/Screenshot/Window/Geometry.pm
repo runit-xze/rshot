@@ -48,17 +48,16 @@ sub get_shape ($self, $xid, $orig, $l_cropped, $r_cropped, $t_cropped, $b_croppe
 
 			my @fregion;
 
-			my $fh = IO::File->new;
-			if ($fh->open("< $shape_path")) {
-				while (my $line = <$fh>) {
-
-					#skip on comments
+			require Path::Tiny;
+			my $success = eval {
+				my @lines = Path::Tiny::path($shape_path)->lines_utf8({ chomp => 1 });
+				for my $line (@lines) {
 					next if $line =~ /^#/;
-					chomp($line);
 					push @fregion, $line;
 				}
-				$fh->close;
-			} else {
+				1;
+			};
+			if (!$success) {
 				print "Unable to open file $shape_path" if $self->{_sc}->debug;
 				return $orig;
 			}

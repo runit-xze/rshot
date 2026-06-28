@@ -6,17 +6,10 @@ use v5.40;
 use Test::More;
 use Test::MockModule;
 use FindBin qw($RealBin);
-use lib "$RealBin/../../../../../share/shutter/resources/modules";
+use lib "$RealBin/../../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
 
 # Mock GooCanvas2
 {
@@ -40,14 +33,14 @@ BEGIN {
 use_ok('Shutter::Draw::Tool::Highlighter');
 
 subtest 'Constructor and initialization' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     isa_ok($tool, 'Shutter::Draw::Tool::Highlighter');
     ok(defined $tool, 'Highlighter tool object created');
 };
 
 subtest 'Tool properties' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should have name property');
     ok(1, 'Should have icon property');
@@ -56,7 +49,7 @@ subtest 'Tool properties' => sub {
 };
 
 subtest 'Highlighting - basic' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should start highlight on mouse down');
     ok(1, 'Should add points on mouse move');
@@ -65,7 +58,7 @@ subtest 'Highlighting - basic' => sub {
 };
 
 subtest 'Highlighter colors' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support yellow highlight');
     ok(1, 'Should support green highlight');
@@ -75,7 +68,7 @@ subtest 'Highlighter colors' => sub {
 };
 
 subtest 'Transparency settings' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should default to 50% opacity');
     ok(1, 'Should allow opacity adjustment (20-80%)');
@@ -84,7 +77,7 @@ subtest 'Transparency settings' => sub {
 };
 
 subtest 'Highlighter width' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support narrow highlight (10px)');
     ok(1, 'Should support medium highlight (20px)');
@@ -93,7 +86,7 @@ subtest 'Highlighter width' => sub {
 };
 
 subtest 'Stroke style' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should use flat line caps');
     ok(1, 'Should use round line joins');
@@ -102,7 +95,7 @@ subtest 'Stroke style' => sub {
 };
 
 subtest 'Path modification' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should allow moving highlight');
     ok(1, 'Should allow scaling highlight');
@@ -111,7 +104,7 @@ subtest 'Path modification' => sub {
 };
 
 subtest 'Selection and editing' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should select highlight on click');
     ok(1, 'Should show selection handles');
@@ -120,7 +113,7 @@ subtest 'Selection and editing' => sub {
 };
 
 subtest 'Undo/Redo support' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should support undo for creation');
     ok(1, 'Should support redo for creation');
@@ -129,7 +122,7 @@ subtest 'Undo/Redo support' => sub {
 };
 
 subtest 'Canvas integration' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should add highlight to canvas');
     ok(1, 'Should remove highlight from canvas');
@@ -138,7 +131,7 @@ subtest 'Canvas integration' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $tool = Shutter::Draw::Tool::Highlighter->new();
+    my $tool = Shutter::Draw::Tool::Highlighter->new(drawing_tool => bless({}, 'MockDrawingTool'));
     
     ok(1, 'Should handle empty paths');
     ok(1, 'Should handle single-point paths');

@@ -135,7 +135,8 @@ sub dlg_upload ($self, @files_to_upload) {
 	my $shf       = $cli->shf;
 	my $d         = $sc->gettext_object;
 	my $window    = $cli->window;
-	my $clipboard = Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern('CLIPBOARD', 0));
+	require Shutter::App::Core::ClipboardAPI;
+	my $clipboard = Shutter::App::Core::ClipboardAPI->new;
 
 	my $dlg_header     = $d->get("Upload / Export");
 	my $hosting_dialog = Gtk3::Dialog->new($dlg_header, $window, [qw/modal destroy-with-parent/]);

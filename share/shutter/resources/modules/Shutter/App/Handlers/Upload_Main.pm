@@ -303,7 +303,9 @@ sub fct_upload ($self) {
 }
 
 sub fct_upload_plugin_get_info ($self, $upload_plugin, $info) {
-	my $upload_plugin_info = `$upload_plugin $info`;
+	require Shutter::App::Core::SecureSystemCommandAPI;
+	my $res = Shutter::App::Core::SecureSystemCommandAPI->new->capture($upload_plugin, $info);
+	my $upload_plugin_info = $res->{stdout};
 	utf8::decode $upload_plugin_info;
 
 	return $upload_plugin_info;

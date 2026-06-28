@@ -34,7 +34,8 @@ sub fct_ret_upload_links_menu ($self, $key, $menu_links) {
 	my $cli             = $self->cli;
 	my $sc              = $cli->sc;
 	my $session_screens = $cli->{_session_screens};
-	my $clipboard       = $cli->{_clipboard} || Gtk3::Clipboard::get(Gtk3::Gdk::Atom::intern("CLIPBOARD", FALSE));
+	require Shutter::App::Core::ClipboardAPI;
+	my $clipboard       = $cli->{_clipboard} || Shutter::App::Core::ClipboardAPI->new;
 
 	my $traytheme = $sc->icontheme;
 

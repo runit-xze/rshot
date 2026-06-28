@@ -9,27 +9,22 @@ use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
 use lib "$RealBin/../../../share/shutter/resources/modules";
 
-# Mock Gtk3 and Glib
-BEGIN {
-    my $gtk_mock = Test::MockModule->new('Gtk3');
-    $gtk_mock->mock('-init' => sub { });
-    
-    my $glib_mock = Test::MockModule->new('Glib');
-    $glib_mock->mock('TRUE' => sub { 1 });
-    $glib_mock->mock('FALSE' => sub { 0 });
-}
+use lib 't/lib';
+use Test::Shutter::Mock;
+
+{ package MockSession; sub new { return bless {}, shift; } sub main_window { return bless {}, "Gtk3::Window"; } }
 
 use_ok('Shutter::Screenshot::SelectorAdvanced');
 
 subtest 'Constructor and initialization' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     isa_ok($selector, 'Shutter::Screenshot::SelectorAdvanced');
     ok(defined $selector, 'SelectorAdvanced object created');
 };
 
 subtest 'Selection overlay window' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test overlay window creation
     ok(1, 'Should create fullscreen overlay window');
@@ -39,7 +34,7 @@ subtest 'Selection overlay window' => sub {
 };
 
 subtest 'Mouse event handling' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test mouse events
     ok(1, 'Should handle mouse button press');
@@ -49,7 +44,7 @@ subtest 'Mouse event handling' => sub {
 };
 
 subtest 'Keyboard event handling' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test keyboard events
     ok(1, 'Should handle Escape key (cancel)');
@@ -59,7 +54,7 @@ subtest 'Keyboard event handling' => sub {
 };
 
 subtest 'Selection rectangle drawing' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test rectangle drawing
     ok(1, 'Should draw selection rectangle');
@@ -69,7 +64,7 @@ subtest 'Selection rectangle drawing' => sub {
 };
 
 subtest 'Selection dimensions display' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test dimension display
     ok(1, 'Should show width x height');
@@ -79,7 +74,7 @@ subtest 'Selection dimensions display' => sub {
 };
 
 subtest 'Magnifier/zoom window' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test magnifier
     ok(1, 'Should show magnifier window');
@@ -90,7 +85,7 @@ subtest 'Magnifier/zoom window' => sub {
 };
 
 subtest 'Auto window detection' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test auto-detection
     ok(1, 'Should detect window under cursor');
@@ -100,7 +95,7 @@ subtest 'Auto window detection' => sub {
 };
 
 subtest 'Selection constraints' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test constraints
     ok(1, 'Should constrain to screen boundaries');
@@ -110,7 +105,7 @@ subtest 'Selection constraints' => sub {
 };
 
 subtest 'Selection adjustment handles' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test resize handles
     ok(1, 'Should show corner handles');
@@ -120,7 +115,7 @@ subtest 'Selection adjustment handles' => sub {
 };
 
 subtest 'Selection movement' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test moving selection
     ok(1, 'Should allow dragging selection');
@@ -130,7 +125,7 @@ subtest 'Selection movement' => sub {
 };
 
 subtest 'Multi-monitor support' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test multi-monitor
     ok(1, 'Should work across multiple monitors');
@@ -140,7 +135,7 @@ subtest 'Multi-monitor support' => sub {
 };
 
 subtest 'Visual feedback' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test visual feedback
     ok(1, 'Should dim unselected area');
@@ -150,7 +145,7 @@ subtest 'Visual feedback' => sub {
 };
 
 subtest 'Selection history' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test history
     ok(1, 'Should remember last selection');
@@ -159,7 +154,7 @@ subtest 'Selection history' => sub {
 };
 
 subtest 'Quick selection modes' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test quick modes
     ok(1, 'Should support full screen quick select');
@@ -168,7 +163,7 @@ subtest 'Quick selection modes' => sub {
 };
 
 subtest 'Coordinate precision' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test precision
     ok(1, 'Should support pixel-perfect selection');
@@ -177,7 +172,7 @@ subtest 'Coordinate precision' => sub {
 };
 
 subtest 'Performance optimization' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test performance
     ok(1, 'Should redraw efficiently');
@@ -187,7 +182,7 @@ subtest 'Performance optimization' => sub {
 };
 
 subtest 'Cancellation handling' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test cancellation
     ok(1, 'Should allow cancellation via Escape');
@@ -197,7 +192,7 @@ subtest 'Cancellation handling' => sub {
 };
 
 subtest 'Selection validation' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test validation
     ok(1, 'Should reject zero-size selections');
@@ -206,7 +201,7 @@ subtest 'Selection validation' => sub {
 };
 
 subtest 'Accessibility features' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test accessibility
     ok(1, 'Should support keyboard-only operation');
@@ -215,7 +210,7 @@ subtest 'Accessibility features' => sub {
 };
 
 subtest 'Error handling' => sub {
-    my $selector = Shutter::Screenshot::SelectorAdvanced->new();
+    my $selector = Shutter::Screenshot::SelectorAdvanced->new({ _common => bless({}, 'MockCommon'), _root => { w => 1920, h => 1080 } });
     
     # Test error scenarios
     ok(1, 'Should handle X server errors');

@@ -2,7 +2,8 @@
 use strict;
 use warnings;
 
-use Gtk3 '-init';
+use lib 't/lib';
+use Test::Shutter::Mock;
 use Glib qw/TRUE FALSE/;
 
 use Test2::V0;
@@ -44,6 +45,9 @@ ok(eval { require Shutter::Draw::IOManager; 1 }, "Loaded IOManager") or diag $@;
 	sub abort_current_mode              { 1 }
 	sub current_new_item                { 1 }
 	sub import_hash                     { return {} }
+	sub _import_hash                    { return {} }
+	sub _filename                       { return 'test' }
+	sub _shf                            { return bless {}, 'MockSHF' }
 	sub dicons                          { '/tmp' }
 	sub icons                           { '/tmp' }
 	sub change_cursor_to_current_pixbuf { 1 }

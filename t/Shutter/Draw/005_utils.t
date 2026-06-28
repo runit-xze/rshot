@@ -6,6 +6,7 @@ use warnings;
 use Gtk3;    # to escape warnings "Too late to run INIT block"
 
 use Test::More;
+use Test::Shutter::Mock;
 
 use_ok("Shutter::Draw::Utils");
 

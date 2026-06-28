@@ -62,6 +62,7 @@ use Gtk3::ImageView;
 
 require Shutter::Draw::Utils;
 require Shutter::App::Directories;
+use Shutter::App::HelperFunctions;
 require Shutter::Draw::UIManager;
 
 # Constructor argument
@@ -244,7 +245,8 @@ sub BUILD {
 		});
 
 	#clipboard
-	$self->_clipboard(Gtk3::Clipboard::get($Gtk3::Gdk::SELECTION_CLIPBOARD));
+	require Shutter::App::Core::ClipboardAPI;
+	$self->_clipboard(Shutter::App::Core::ClipboardAPI->new);
 
 	#file
 	$self->_filename(undef);
