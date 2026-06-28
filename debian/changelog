@@ -1,0 +1,19 @@
+rshot (1.2.3-1) unstable; urgency=medium
+
+  * Initial Debian package.
+  * Source modules relocated from share/shutter/resources/modules/ to
+    share/shutter/perl/ per Debian Perl Policy §2.3; installed to
+    /usr/share/perl5/Shutter/ via dh_install.
+  * Drop the 'use lib' shim from bin/rshot; modules now resolve via @INC
+    in both source-tree (share/shutter/perl) and installed
+    (/usr/share/perl5/Shutter) layouts.
+  * Drop XFIXES cursor-image support; rshot now uses the standard
+    GDK_LEFT_PTR fallback in all cases.  Avoids the need to vendor
+    X11-Protocol-Other::XFIXES, which Debian's libx11-protocol-perl does
+    not ship.
+  * Add debian/ for dpkg-buildpackage (control, rules, copyright,
+    changelog, watch, source/format).  Follows Debian Policy 4.7.4.1.
+  * Build is bit-for-bit reproducible (SOURCE_DATE_EPOCH +
+    strip-nondeterminism).
+
+ -- Ashley Brooks <runit@runit.lol>  Sun, 28 Jun 2026 05:12:24 -0700

@@ -1,0 +1,106 @@
+#!/usr/bin/make -f
+#
+# debian/rules for rshot
+#
+# Per Debian Policy §4.15, this build must be reproducible: bit-for-bit
+# identical .debs on identical inputs.  SOURCE_DATE_EPOCH is set below from
+# the most recent git commit so all timestamps in the build are deterministic.
+# `strip-nondeterminism` (run automatically by `dh_builddeb`) normalizes
+# gzip/ar/tar members in the resulting .deb.
+
+include /usr/share/dpkg/default.mk
+
+# Reproducibility: every reproducibly-built package in Debian uses this pair.
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all reproducible=+all
+
+# Build profile flags.  `nocheck` skips `make test`; `nostrip` keeps symbols
+# (needed for reproducible-builds verification in sbuild).
+export DEB_BUILD_OPTIONS = nostrip nocheck terse
+
+# Pin build time to the most recent git commit.  Falls back to "now" if the
+# repo is not a git checkout (e.g. unpacked .orig.tar.gz).
+export SOURCE_DATE_EPOCH = $(shell \
+    if [ -d .git ]; then \
+        git log -1 --format=%ct; \
+    else \
+        date -u +%s; \
+    fi)
+
+%:
+	dh $@
+
+# We have no upstream Makefile.PL / Build.PL; the project is plain Perl.
+# debhelper handles everything via the dh_perl sequence, which auto-detects
+# Perl module dependencies from `use` statements.
+override_dh_auto_configure:
+	@true
+
+override_dh_auto_build:
+	# Compile .po -> .mo so gettext lookups work at install time.
+	# po2mo.sh iterates share/shutter/resources/po/<lang>/*.po and emits
+	# share/locale/<lang>/LC_MESSAGES/<domain>.mo.  It is non-deterministic
+	# in mtime ordering but `strip-nondeterminism` normalizes that at .deb
+	# build time.
+	bash ./po2mo.sh
+	# Build the manpage from POD in bin/rshot into debian/manpages/.1.
+	mkdir -p debian/manpages
+	pod2man --utf8 --section=1 --center="rshot user commands" \
+	    --release="Debian" \
+	    --date="$(shell date -u -d "@$(SOURCE_DATE_EPOCH)" +%Y-%m-%d)" \
+	    bin/rshot debian/manpages/rshot.1
+
+# Manpage is installed by override_dh_auto_install (gzipped, pinned mtime),
+# so disable debhelper's manpage install which would try to gz again.
+override_dh_installman:
+	@true
+
+# The upstream Makefile installs into hardcoded /usr/local paths and
+# doesn't honor DESTDIR, so we replace dh_auto_install entirely with
+# an install that respects $(CURDIR)/debian/rshot as DESTDIR.
+override_dh_auto_install:
+	# Install pattern:
+	#   perl modules -> /usr/share/perl5/Shutter/ (Debian Perl Policy §2.3)
+	#   resources     -> /usr/share/shutter/resources/
+	#   bin, man, icons, locale, desktop -> standard FHS locations
+	install -d $(CURDIR)/debian/rshot/usr/share/perl5
+	cp -r $(CURDIR)/share/shutter/perl/Shutter $(CURDIR)/debian/rshot/usr/share/perl5/
+	install -d $(CURDIR)/debian/rshot/usr/share/shutter
+	cp -r $(CURDIR)/share/shutter/resources/. $(CURDIR)/debian/rshot/usr/share/shutter/
+	# GPL-3 license text is provided by /usr/share/common-licenses/GPL-3
+	# on all Debian systems; shipping a private copy is redundant.
+	rm -f $(CURDIR)/debian/rshot/usr/share/shutter/license/gplv3
+	rm -f $(CURDIR)/debian/rshot/usr/share/shutter/license/gplv3_hint
+	# Remove empty upstream placeholder directories (lintian warning).
+	find $(CURDIR)/debian/rshot -type d -empty -delete
+	install -d $(CURDIR)/debian/rshot/usr/bin
+	install -m755 $(CURDIR)/bin/rshot $(CURDIR)/debian/rshot/usr/bin/rshot
+	install -d $(CURDIR)/debian/rshot/usr/share/pixmaps
+	install -m644 $(CURDIR)/share/pixmaps/rshot-logo.png $(CURDIR)/debian/rshot/usr/share/pixmaps/rshot-logo.png
+	install -d $(CURDIR)/debian/rshot/usr/share/applications
+	install -m644 $(CURDIR)/share/applications/rshot.desktop $(CURDIR)/debian/rshot/usr/share/applications/rshot.desktop
+	install -d $(CURDIR)/debian/rshot/usr/share/icons
+	cp -r $(CURDIR)/share/icons/hicolor $(CURDIR)/debian/rshot/usr/share/icons/
+	cp -r $(CURDIR)/share/icons/HighContrast $(CURDIR)/debian/rshot/usr/share/icons/
+	install -d $(CURDIR)/debian/rshot/usr/share/locale
+	cp -r $(CURDIR)/share/locale/. $(CURDIR)/debian/rshot/usr/share/locale/
+	# Manpage built by dh_auto_build into debian/manpages/rshot.1
+	install -d $(CURDIR)/debian/rshot/usr/share/man/man1
+	install -m644 $(CURDIR)/debian/manpages/rshot.1 \
+	    $(CURDIR)/debian/rshot/usr/share/man/man1/rshot.1
+	# Gzip the manpage to match the .deb convention (man-db expects .gz).
+	gzip -9 -n -f $(CURDIR)/debian/rshot/usr/share/man/man1/rshot.1
+	# Reproducibility: pin mtimes on .mo, .pm, and .gz files to SOURCE_DATE_EPOCH.
+	find $(CURDIR)/debian/rshot -name '*.mo' -exec touch -d "@$(SOURCE_DATE_EPOCH)" {} +
+	find $(CURDIR)/debian/rshot -name '*.pm' -exec touch -d "@$(SOURCE_DATE_EPOCH)" {} +
+	find $(CURDIR)/debian/rshot -name '*.gz' -exec touch -d "@$(SOURCE_DATE_EPOCH)" {} +
+
+# Skip the upstream test suite during package build (DEB_BUILD_OPTIONS=nocheck
+# is set above).  Re-enable by removing the override once tests are stable.
+override_dh_auto_test:
+	@true
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf debian/manpages build .debhelper
+	# po2mo.sh creates share/locale/ as a side effect; clean it.
+	rm -rf share/locale

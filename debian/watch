@@ -1,0 +1,9 @@
+# debian/watch for rshot
+#
+# Used by uscan(1) and the reproducible-builds QA tooling to discover new
+# upstream releases.  rshot tags releases as v<MAJOR>.<MINOR>.<PATCH> on
+# https://github.com/runit-xze/rshot
+#
+# Format reference: /usr/share/doc/uscan/README.gz
+version=4
+https://github.com/runit-xze/rshot/tags .*/v?(\d[\d.]*)\.tar\.gz

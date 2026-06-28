@@ -1,0 +1,62 @@
+Source: rshot
+Maintainer: Ashley Brooks <runit@runit.lol>
+Section: graphics
+Priority: optional
+Build-Depends:
+ debhelper-compat (= 13),
+ perl:native,
+ libgtk-3-dev,
+ libglib2.0-dev,
+ libcairo2-dev,
+ libpango1.0-dev,
+ libgoocanvas-2.0-dev,
+ libgtk3-imageview-perl,
+ libwnck-3-dev,
+ libxml2-dev,
+ intltool,
+ po4a,
+Standards-Version: 4.7.4.1
+Rules-Requires-Root: no
+Homepage: https://github.com/runit-xze/rshot
+Vcs-Browser: https://github.com/runit-xze/rshot
+Vcs-Git: https://github.com/runit-xze/rshot.git
+
+Package: rshot
+Architecture: any
+Depends:
+ ${perl:Depends},
+ ${misc:Depends},
+ libcairo-perl,
+ libglib-object-introspection-perl,
+ libglib-perl,
+ gir1.2-wnck-3.0,
+ libgtk-3-0 (>= 3.18),
+ libgtk3-imageview-perl,
+ libgtk3-perl,
+ libgoocanvas-2.0-9,
+ libgoocanvas2-perl,
+ libipc-run3-perl,
+ libjson-maybexs-perl,
+ liblocale-gettext-perl,
+ liblog-any-perl,
+ libmoo-perl,
+ libnet-dbus-perl,
+ libpath-tiny-perl,
+ libpango-perl,
+ liburi-perl,
+ libwnck-3-0 (>= 43.0),
+ libwww-perl,
+ libx11-protocol-perl,
+Recommends: imagemagick,
+Suggests: gnome-web-photo | python3-playwright,
+Description: feature-rich screenshot tool with annotation
+ rshot is a screenshot application for the Linux desktop, written in Perl
+ with GTK3. It captures full screens, individual windows, arbitrary
+ rectangular regions, or web pages from a URL; annotates the result with
+ arrows, text, shapes, blur, censor, and freehand highlighter; and can
+ upload directly to Catbox.moe, ImgBB, or any ShareX-compatible (.sxcu)
+ hosting service.
+ .
+ The application integrates with the system tray, supports Wayland via
+ xdg-desktop-portal, and persists session history, upload presets, and
+ user settings in standard XDG paths under ~/.config/rshot.

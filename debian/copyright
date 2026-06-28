@@ -1,0 +1,57 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: rshot
+Upstream-Contact: https://github.com/runit-xze/rshot/issues
+Source: https://github.com/runit-xze/rshot
+
+# ----------------------------------------------------------------------------
+# Original rshot Perl source code (the vast majority of the source tree)
+# ----------------------------------------------------------------------------
+Files: *
+       share/shutter/resources/gui/*
+       share/shutter/resources/icons/drawing_tool/*
+       share/shutter/resources/icons/*.svg
+       share/shutter/resources/icons/*.cur
+       share/shutter/resources/icons/*.png
+       share/shutter/resources/system/*
+       share/shutter/resources/conf/*
+       share/shutter/resources/credits/*
+       share/shutter/resources/license/*
+       share/pixmaps/rshot-logo.png
+       bin/rshot
+       share/shutter/perl/Shutter/*
+Copyright: 2008-2013 Mario Kemper <mario.kemper@gmail.com>
+           2020-2021 Google LLC
+           2025 Shutter Team
+License: GPL-3+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the complete text of the GNU General Public
+ License version 3 can be found in /usr/share/common-licenses/GPL-3.
+
+# ----------------------------------------------------------------------------
+# Translations
+# ----------------------------------------------------------------------------
+Files: share/shutter/resources/po/*/*.po
+       share/locale/*/LC_MESSAGES/*.mo
+Copyright: 2008-2025 Shutter Contributors
+License: GPL-2+
+ This file is distributed under the same license as the rshot package.
+
+# ----------------------------------------------------------------------------
+# Debian packaging
+# ----------------------------------------------------------------------------
+Files: debian/*
+Copyright: 2025 Ashley Brooks <runit@runit.lol>
+License: GPL-3+
+Comment: Debian packaging is licensed under the same terms as upstream rshot.
