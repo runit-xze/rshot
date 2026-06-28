@@ -10,6 +10,7 @@ use Glib qw(TRUE FALSE);
 use Gtk3;
 use Cairo;
 
+use Shutter::App::Core::FileSystemAPI;
 sub find_wm_window ($self, $xid) {
 
 	do {

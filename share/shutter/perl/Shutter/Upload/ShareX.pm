@@ -5,6 +5,9 @@ use v5.40;
 use feature 'try';
 no warnings 'experimental::try';
 use Moo;
+use Shutter::App::Core::FileSystemAPI;
+use Shutter::App::Core::NetworkAPI;
+use Shutter::App::Core::SecureSystemCommandAPI;
 with 'Shutter::Upload::Role::Uploader';
 
 use MIME::Base64;

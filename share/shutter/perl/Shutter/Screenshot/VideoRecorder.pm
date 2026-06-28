@@ -11,6 +11,8 @@ use Gtk3;
 use File::Temp qw/tempdir/;
 use POSIX ":sys_wait_h";
 
+use Shutter::App::Core::FileSystemAPI;
+use Shutter::App::Core::SecureSystemCommandAPI;
 has '_common'  => (is => 'ro', required => 1);
 has 'region'   => (is => 'rw', required => 1);            # { x, y, w, h }
 has 'fps'      => (is => 'ro', default  => sub { 30 });

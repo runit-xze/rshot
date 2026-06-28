@@ -5,6 +5,7 @@ use v5.40;
 use Glib           qw/TRUE FALSE/;
 use File::Basename qw/fileparse/;
 
+use Shutter::App::Core::FileSystemAPI;
 has drawing_tool => (is => 'ro', required => 1);
 
 sub quit {

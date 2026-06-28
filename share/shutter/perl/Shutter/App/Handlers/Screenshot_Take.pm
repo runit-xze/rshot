@@ -547,3 +547,5 @@ POST_CAPTURE:
 		return $post_capture_cb->($screenshot);
 	}
 }
+
+1;

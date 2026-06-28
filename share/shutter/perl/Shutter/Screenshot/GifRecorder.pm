@@ -10,6 +10,7 @@ use Glib qw/TRUE FALSE/;
 use Gtk3;
 use File::Temp qw/tempdir/;
 
+use Shutter::App::Core::SecureSystemCommandAPI;
 has '_common'  => (is => 'ro', required => 1);
 has 'region'   => (is => 'rw', required => 1);            # { x, y, w, h }
 has 'fps'      => (is => 'ro', default  => sub { 10 });

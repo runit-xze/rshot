@@ -12,6 +12,7 @@ use Gtk3;
 use File::Basename qw/ fileparse /;
 use File::Glob     qw/ bsd_glob /;
 
+use Shutter::App::Core::FileSystemAPI;
 requires qw(
 	drawing_tool
 );

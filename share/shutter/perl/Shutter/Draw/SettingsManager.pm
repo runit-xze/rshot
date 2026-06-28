@@ -10,6 +10,7 @@ use Gtk3;
 use Pango;
 use Shutter::App::Directories;
 
+use Shutter::App::Core::FileSystemAPI;
 has drawing_tool => (
 	is       => 'ro',
 	required => 1,

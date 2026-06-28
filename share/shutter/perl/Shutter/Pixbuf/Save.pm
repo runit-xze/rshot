@@ -11,6 +11,8 @@ use File::Basename qw/ fileparse dirname basename /;
 use File::Temp     qw/ tempfile tempdir /;
 use Glib qw/TRUE FALSE/;
 
+use Shutter::App::Core::FileSystemAPI;
+use Shutter::App::Core::SecureSystemCommandAPI;
 has '_common'  => (is => 'rwp');
 has '_window'  => (is => 'rwp');
 has '_dialogs' => (is => 'rwp', lazy => 1, builder => '_build__dialogs');

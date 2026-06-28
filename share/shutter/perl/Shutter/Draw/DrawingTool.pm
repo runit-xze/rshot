@@ -44,6 +44,7 @@ use File::Temp     qw/ tempfile tempdir /;
 use Glib qw/TRUE FALSE/;
 use Gtk3::ImageView;
 
+use Shutter::App::Core::ClipboardAPI;
 require Shutter::Draw::Utils;
 require Shutter::App::Directories;
 use Shutter::App::HelperFunctions;
