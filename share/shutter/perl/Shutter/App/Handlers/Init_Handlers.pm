@@ -84,10 +84,10 @@ sub fct_drop_handler ($self, $widget, $context, $x, $y, $selection, $info, $time
 				$imported++;
 			}
 		}
-		$self->fct_show_status_message(3, sprintf($d->nget("Imported %d ShareX custom uploader", "Imported %d ShareX custom uploaders", $imported), $imported)) if defined &fct_show_status_message;
+		$cli->handlers->get('UI_Status')->fct_show_status_message(3, sprintf($d->nget("Imported %d ShareX custom uploader", "Imported %d ShareX custom uploaders", $imported), $imported));
 
 		# Re-init upload plugins to load the new ones!
-		fct_init_upload_plugins() if defined &fct_init_upload_plugins;
+		$cli->handlers->get('Upload_Main')->fct_init_upload_plugins();
 	}
 
 	#open all valid files

@@ -62,7 +62,7 @@ sub dlg_profile_name ($self, $curr_profile_name, $combobox_settings_profiles) {
 	$new_profile_name->set_activates_default(TRUE);
 
 	# Assuming fct_validate_filename is available globally or we call it appropriately
-	fct_validate_filename($new_profile_name, $new_profile_name_hint) if defined &fct_validate_filename;
+	$cli->handlers->get('Util_File')->fct_validate_filename($new_profile_name, $new_profile_name_hint);
 
 	#show name of current profile
 	$new_profile_name->set_text($curr_profile_name)

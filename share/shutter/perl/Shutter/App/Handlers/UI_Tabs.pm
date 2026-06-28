@@ -125,7 +125,7 @@ sub fct_update_profile_selectors ($self, $combobox_settings_profiles, $current_p
 		if ($tray_menu) {
 			foreach my $child ($tray_menu->get_children) {
 				if ($child->get_name eq 'quicks') {
-					$child->set_submenu(fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref)) if defined &fct_ret_profile_menu;
+					$child->set_submenu($cli->handlers->get('Menu_Ret_Upload')->fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref));
 					$child->set_sensitive(TRUE);
 					last;
 				}
@@ -134,7 +134,7 @@ sub fct_update_profile_selectors ($self, $combobox_settings_profiles, $current_p
 
 		#main menu
 		if ($sm->_menuitem_quicks) {
-			$sm->_menuitem_quicks->set_submenu(fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref, $sm->_menuitem_quicks->get_submenu)) if defined &fct_ret_profile_menu;
+			$sm->_menuitem_quicks->set_submenu($cli->handlers->get('Menu_Ret_Upload')->fct_ret_profile_menu($combobox_settings_profiles, $current_profiles_ref, $sm->_menuitem_quicks->get_submenu));
 			$sm->_menuitem_quicks->set_sensitive(TRUE);
 		}
 
@@ -165,7 +165,7 @@ sub fct_update_profile_selectors ($self, $combobox_settings_profiles, $current_p
 					my $widget = shift;
 
 					$combobox_settings_profiles->set_active($widget->get_active);
-					evt_apply_profile($widget, $combobox_settings_profiles, $current_profiles_ref) if defined &evt_apply_profile;
+					$cli->handlers->get('Menu')->evt_apply_profile($widget, $combobox_settings_profiles, $current_profiles_ref);
 
 				});
 

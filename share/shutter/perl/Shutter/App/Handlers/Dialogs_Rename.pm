@@ -68,7 +68,7 @@ sub dlg_rename ($self, @file_to_rename_keys) {
 		my $new_filename      = Gtk3::Entry->new();
 		$new_filename->set_activates_default(TRUE);
 
-		fct_validate_filename($new_filename, $new_filename_hint) if defined &fct_validate_filename;
+		$cli->handlers->get('Util_File')->fct_validate_filename($new_filename, $new_filename_hint);
 
 		#parse filename
 		my ($short, $folder, $ext) = fileparse($session_screens->{$key}->{'long'}, qr/\.[^.]*/);
@@ -143,12 +143,12 @@ sub dlg_rename ($self, @file_to_rename_keys) {
 							);
 
 						}
-						fct_update_tab($key, undef, $new_giofile, FALSE, 'block') if defined &fct_update_tab;
+						$cli->handlers->get('UI_Status')->fct_update_tab($key, undef, $new_giofile, FALSE, 'block');
 
 						#setup a new filemonitor, so we get noticed if the file changed
-						fct_add_file_monitor($key) if defined &fct_add_file_monitor;
+						$cli->handlers->get('Events_Init')->fct_add_file_monitor($key);
 
-						fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("renamed")) if defined &fct_show_status_message;
+						$cli->handlers->get('UI_Status')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("renamed"));
 
 						#change window title
 						#~ $window->set_title($session_screens->{$key}->{'long'}." - ".SHUTTER_NAME);
@@ -187,12 +187,12 @@ sub dlg_rename ($self, @file_to_rename_keys) {
 									undef, undef, undef, undef, undef, undef, $@
 								);
 							}
-							fct_update_tab($key, undef, $new_giofile, FALSE, 'block') if defined &fct_update_tab;
+							$cli->handlers->get('UI_Status')->fct_update_tab($key, undef, $new_giofile, FALSE, 'block');
 
 							#setup a new filemonitor, so we get noticed if the file changed
-							fct_add_file_monitor($key) if defined &fct_add_file_monitor;
+							$cli->handlers->get('Events_Init')->fct_add_file_monitor($key);
 
-							fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("renamed")) if defined &fct_show_status_message;
+							$cli->handlers->get('UI_Status')->fct_show_status_message(1, $session_screens->{$key}->{'long'} . " " . $d->get("renamed"));
 
 							#change window title
 							#~ $window->set_title($session_screens->{$key}->{'long'}." - ".SHUTTER_NAME);
@@ -208,10 +208,10 @@ sub dlg_rename ($self, @file_to_rename_keys) {
 										$session_screens->{$searchkey}->{'handle'}->cancel;
 									}
 
-									fct_update_tab($searchkey, undef, $new_giofile, FALSE, 'block') if defined &fct_update_tab;
+									$cli->handlers->get('UI_Status')->fct_update_tab($searchkey, undef, $new_giofile, FALSE, 'block');
 
 									#setup a new filemonitor, so we get noticed if the file changed
-									fct_add_file_monitor($searchkey) if defined &fct_add_file_monitor;
+									$cli->handlers->get('Events_Init')->fct_add_file_monitor($searchkey);
 
 								}
 							}

@@ -44,7 +44,7 @@ sub fct_ret_program_menu ($self, $menu_programs) {
 	}
 
 	#take $key (mime) directly
-	my $key = fct_get_current_file() if defined &fct_get_current_file;
+	my $key = $cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
 	#search selected files for mime...
 	unless ($key) {
@@ -121,7 +121,7 @@ sub fct_ret_program_menu ($self, $menu_programs) {
 		if ($program_item) {
 			$program_item->signal_connect(
 				'activate' => sub {
-					fct_open_with_program($app, $app->get_display_name) if defined &fct_open_with_program;
+					$cli->handlers->get('Upload_Main')->fct_open_with_program($app, $app->get_display_name);
 				});
 		}
 	}

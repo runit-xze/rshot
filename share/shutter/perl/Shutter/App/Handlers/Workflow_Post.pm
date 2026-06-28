@@ -50,10 +50,10 @@ sub fct_post_settings ($self, $settings_dialog) {
 	}
 
 	#save directly
-	fct_save_settings(undef) if defined &fct_save_settings;
-	fct_save_settings($combobox_settings_profiles->get_active_text)
-		if ($combobox_settings_profiles && $combobox_settings_profiles->get_active != -1 && defined &fct_save_settings);
-
+	$cli->handlers->get('Workflow_Save')->fct_save_settings(undef);
+	if ($combobox_settings_profiles && $combobox_settings_profiles->get_active != -1) {
+		$cli->handlers->get('Workflow_Save')->fct_save_settings($combobox_settings_profiles->get_active_text);
+	} 
 	#autostart
 	if ($sas && $fs_active && $fs_min_active && $fs_nonot_active) {
 		$sas->create_autostart_file(Shutter::App::Directories::get_autostart_dir(), $fs_active->get_active, $fs_min_active->get_active, $fs_nonot_active->get_active);
@@ -61,7 +61,7 @@ sub fct_post_settings ($self, $settings_dialog) {
 
 	#we need to update the first tab here
 	#because the profile might have changed
-	fct_update_info_and_tray() if defined &fct_update_info_and_tray;
+	$cli->handlers->get('UI_Status')->fct_update_info_and_tray();
 
 	return TRUE;
 }

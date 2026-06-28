@@ -57,15 +57,13 @@ sub fct_load_settings ($self, $data, $profilename) {
 			$settings_xml = XMLin(IO::File->new($settingsfile));
 
 			# ... UI updating logic ...
-			if (defined &fct_load_accounts) {
-				$self->fct_load_accounts($profilename);
-			}
+			$self->cli->handlers->get('Init_Accounts')->fct_load_accounts($profilename);
 		};
 		if ($@) {
 			$sd->dlg_error_message("$@", $d->get("Settings could not be restored!"));
 			Shutter::App::Core::FileSystemAPI->new->remove($settingsfile);
 		} else {
-			$self->fct_show_status_message(1, $d->get("Settings loaded successfully")) if defined &fct_show_status_message;
+			$cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("Settings loaded successfully"));
 		}
 	}
 	return $settings_xml;
@@ -107,7 +105,7 @@ sub fct_save_settings ($self, $profilename) {
 	if ($@) {
 		$sd->dlg_error_message("$@", $d->get("Settings could not be saved!"));
 	} else {
-		$self->fct_show_status_message(1, $d->get("Settings saved successfully!")) if defined &fct_show_status_message;
+		$cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("Settings saved successfully!"));
 	}
 
 	# ... logic to save session and accounts ...

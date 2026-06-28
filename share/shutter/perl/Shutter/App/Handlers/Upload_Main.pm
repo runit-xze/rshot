@@ -40,7 +40,7 @@ sub fct_email ($self) {
 	my $session_start_screen = $cli->{_session_start_screen};
 	my $session_screens      = $cli->{_session_screens};
 
-	my $key = fct_get_current_file() if defined &fct_get_current_file;
+	my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
 	my @files_to_email;
 	unless ($key) {
@@ -76,19 +76,19 @@ sub fct_open_with_program ($self, $app) {
 	#no program set - exit
 	return FALSE unless $app;
 
-	my $key = fct_get_current_file() if defined &fct_get_current_file;
+	my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
 	#single file
 	if ($key) {
 
-		if (defined &fct_screenshot_exists) {
-			return FALSE unless fct_screenshot_exists($key);
+		if ($self->cli->handlers->get('UI_Status')->fct_screenshot_exists($key)) {
+			return FALSE;
 		}
 
 		#built-in-editor
 		if ($app =~ /shutter/i) {
-			fct_draw()                                                                                                                         if defined &fct_draw;
-			fct_show_status_message(1, sprintf($d->get("%s opened with %s"), $session_screens->{$key}->{'short'}, $d->get("Built-in Editor"))) if defined &fct_show_status_message;
+			$self->cli->handlers->get('Edit_Draw')->fct_draw();
+			$self->cli->handlers->get('UI_Status')->fct_show_status_message(1, sprintf($d->get("%s opened with %s"), $session_screens->{$key}->{'short'}, $d->get("Built-in Editor")));
 		} else {
 
 			#everything is fine -> open it
@@ -97,7 +97,7 @@ sub fct_open_with_program ($self, $app) {
 			} else {
 				$app->launch([$session_screens->{$key}->{'giofile'}]);
 			}
-			fct_show_status_message(1, sprintf($d->get("%s opened with %s"), $session_screens->{$key}->{'short'}, $app->{'name'})) if defined &fct_show_status_message;
+			$self->cli->handlers->get('UI_Status')->fct_show_status_message(1, sprintf($d->get("%s opened with %s"), $session_screens->{$key}->{'short'}, $app->{'name'}));
 		}
 
 		#session tab
@@ -129,7 +129,7 @@ sub fct_open_with_program ($self, $app) {
 			} else {
 				$app->launch(\@open_files);
 			}
-			fct_show_status_message(1, $d->get("Opened all files with") . " " . $app->{'name'}) if defined &fct_show_status_message;
+			$self->cli->handlers->get('UI_Status')->fct_show_status_message(1, $d->get("Opened all files with") . " " . $app->{'name'});
 		}
 	}
 
@@ -145,7 +145,7 @@ sub fct_print ($self) {
 	my $pagesetup            = $cli->{_pagesetup};
 	my $lp                   = $cli->{_lp};
 
-	my $key = fct_get_current_file() if defined &fct_get_current_file;
+	my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
 	my @pages;
 	unless ($key) {
@@ -183,7 +183,7 @@ sub fct_print ($self) {
 	$op->signal_connect(
 		'status-changed' => sub {
 			my $op = shift;
-			fct_show_status_message(1, $op->get_status_string) if defined &fct_show_status_message;
+			$self->cli->handlers->get('UI_Status')->fct_show_status_message(1, $op->get_status_string);
 		});
 
 	$op->signal_connect(
@@ -230,7 +230,7 @@ sub fct_send ($self) {
 	my $session_start_screen = $cli->{_session_start_screen};
 	my $session_screens      = $cli->{_session_screens};
 
-	my $key = fct_get_current_file() if defined &fct_get_current_file;
+	my $key = $self->cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
 	my @files_to_send;
 	unless ($key) {

@@ -200,7 +200,7 @@ sub dlg_plugin ($self, @file_to_plugin_keys) {
 		$plugin_progress->set_fraction(0);
 
 		# Assuming fct_update_gui is available/called correctly.
-		fct_update_gui() if defined &fct_update_gui;
+		$cli->handlers->get('UI_Status')->fct_update_gui();
 
 		my $counter = 1;
 
@@ -211,7 +211,7 @@ sub dlg_plugin ($self, @file_to_plugin_keys) {
 			my $data = [$plugin_value, $plugin_name, $plugin_lang, $key, $plugin_dialog, $plugin_progress];
 
 			# Assuming fct_execute_plugin is available/called correctly.
-			fct_execute_plugin(undef, $data) if defined &fct_execute_plugin;
+			$cli->handlers->get('Edit_Draw')->fct_execute_plugin(undef, $data);
 
 			#increase counter and update gui to show updated progress bar
 			$counter++;

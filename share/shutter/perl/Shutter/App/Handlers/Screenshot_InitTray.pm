@@ -37,7 +37,7 @@ sub fct_try_init_tray ($self) {
 	$cli->{_tray_legacy}->set_from_icon_name("shutter-panel");
 	$cli->{_tray_legacy}->set_visible(1);
 
-	fct_update_gui() if defined &fct_update_gui;
+	$cli->handlers->get('UI_Status')->fct_update_gui();
 
 	if ($cli->{_tray_legacy}->is_embedded) {
 		if ($cli->{_tray_libappindicator}) {
@@ -45,16 +45,12 @@ sub fct_try_init_tray ($self) {
 			$cli->{_tray_libappindicator} = undef;
 		}
 		$cli->{_tray} = $cli->{_tray_legacy};
-		if (defined &evt_show_systray_statusicon) {
-			$cli->{_tray}->{'hid'} = $cli->{_tray}->signal_connect('popup-menu' => sub { evt_show_systray_statusicon(@_, $cli->{_tray}) });
-		}
-		if (defined &evt_activate_systray_statusicon) {
-			$cli->{_tray}->{'hid2'} = $cli->{_tray}->signal_connect(
-				'activate' => sub {
-					evt_activate_systray_statusicon(@_, $cli->{_tray});
-					$cli->{_tray};
-				});
-		}
+		$cli->{_tray}->{'hid'} = $cli->{_tray}->signal_connect('popup-menu' => sub { $self->cli->handlers->get('Events_Tray')->evt_show_systray_statusicon(@_, $cli->{_tray}) });
+		$cli->{_tray}->{'hid2'} = $cli->{_tray}->signal_connect(
+			'activate' => sub {
+				$self->cli->handlers->get('Events_Tray')->evt_activate_systray_statusicon(@_, $cli->{_tray});
+				$cli->{_tray};
+			});
 	} else {
 		$cli->{_tray_legacy}->set_visible(0);
 		$cli->{_tray_legacy} = undef;

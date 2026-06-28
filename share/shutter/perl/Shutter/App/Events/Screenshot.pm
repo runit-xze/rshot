@@ -35,7 +35,7 @@ use Glib qw/TRUE FALSE/;
 has cli => (is => 'ro', required => 1);
 
 sub evt_take_screenshot ($self, $source, $mode, $window_name, $extra) {
-	$self->cli->handlers->get('Core')->evt_take_screenshot(undef, $mode, undef, $extra);
+	$self->$self->cli->handlers->get('Core')->evt_take_screenshot(undef, $mode, undef, $extra);
 	return;
 }
 

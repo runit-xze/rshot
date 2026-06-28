@@ -68,7 +68,7 @@ sub fct_add_file_monitor ($self, $key) {
 						if (exists $session_screens->{$k}) {
 							$session_screens->{$k}->{'deleted'} = TRUE;
 							$session_screens->{$k}->{'changed'} = TRUE;
-							fct_update_tab($k) if defined &fct_update_tab;
+							$cli->handlers->get('UI_Status')->fct_update_tab($k);
 						}
 
 					} elsif ($event eq 'changed') {
@@ -76,7 +76,7 @@ sub fct_add_file_monitor ($self, $key) {
 						print $session_screens->{$k}->{'giofile'}->get_path . " - " . $event . "\n"
 							if $sc->debug;
 						$session_screens->{$k}->{'changed'} = TRUE;
-						fct_update_tab($k) if defined &fct_update_tab;
+						$cli->handlers->get('UI_Status')->fct_update_tab($k);
 					}
 				},
 				$key

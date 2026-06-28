@@ -57,7 +57,7 @@ sub fct_update_actions ($self, $n_items, $key = undef) {
 
 			#MENU
 			#--------------------------------------
-			$sm->_menuitem_reopen->set_submenu(fct_ret_program_menu($sm->_menuitem_reopen->get_submenu)) if defined &fct_ret_program_menu;
+			$sm->_menuitem_reopen->set_submenu($cli->handlers->get('Menu_Ret_Tray')->fct_ret_program_menu($sm->_menuitem_reopen->get_submenu));
 
 			#NAVIGATION BAR
 			#--------------------------------------
@@ -83,7 +83,7 @@ sub fct_update_actions ($self, $n_items, $key = undef) {
 			if ($tray_menu) {
 				foreach my $child ($tray_menu->get_children) {
 					if ($child->get_name eq 'redoshot') {
-						$child->set_sensitive(fct_get_last_capture() ? TRUE : FALSE) if defined &fct_get_last_capture;
+						$child->set_sensitive($cli->handlers->get('Util_Get')->fct_get_last_capture() ? TRUE : FALSE);
 						last;
 					}
 				}
@@ -93,7 +93,7 @@ sub fct_update_actions ($self, $n_items, $key = undef) {
 			#--------------------------------------
 
 			#last capture
-			$st->_redoshot->set_sensitive(fct_get_last_capture() ? TRUE : FALSE) if ($st->_redoshot && defined &fct_get_last_capture);
+			$st->_redoshot->set_sensitive($cli->handlers->get('Util_Get')->fct_get_last_capture() ? TRUE : FALSE) if ($st->_redoshot );
 
 			#goocanvas is optional, don't enable it when not installed
 			if ($goocanvas) {
@@ -103,7 +103,7 @@ sub fct_update_actions ($self, $n_items, $key = undef) {
 			}
 
 			#upload links
-			my (undef, $menu_links_tb) = $self->cli->handlers->get('Menu_Ret_UploadLinks')->fct_ret_upload_links_menu($key, $st->_upload->get_menu);
+			my (undef, $menu_links_tb) = $self->$cli->handlers->get('Menu_Ret_UploadLinks')->fct_ret_upload_links_menu($key, $st->_upload->get_menu);
 			if ($st->_upload) {
 				$st->_upload->set_menu($menu_links_tb) if $menu_links_tb;
 				$st->_upload->set_sensitive($n_items);
@@ -164,7 +164,7 @@ sub fct_update_actions ($self, $n_items, $key = undef) {
 			$sm->_menuitem_rename->set_sensitive($n_items)         if $sm->_menuitem_rename;
 
 			#upload links
-			my ($nmenu_entries, $menu_links) = $self->cli->handlers->get('Menu_Ret_UploadLinks')->fct_ret_upload_links_menu($key, $sm->_menuitem_links->get_submenu) if $sm->_menuitem_links;
+			my ($nmenu_entries, $menu_links) = $self->$cli->handlers->get('Menu_Ret_UploadLinks')->fct_ret_upload_links_menu($key, $sm->_menuitem_links->get_submenu) if $sm->_menuitem_links;
 
 			if ($sm->_menuitem_links) {
 				$sm->_menuitem_links->set_submenu($menu_links) if $menu_links;
@@ -209,7 +209,7 @@ sub fct_update_actions ($self, $n_items, $key = undef) {
 			$sm->_menuitem_large_copy_filename->set_sensitive($n_items)  if $sm->_menuitem_large_copy_filename;
 
 			#upload links
-			my ($nmenu_entries_large, $menu_links_large) = $self->cli->handlers->get('Menu_Ret_UploadLinks')->fct_ret_upload_links_menu($key, $sm->_menuitem_large_links->get_submenu)
+			my ($nmenu_entries_large, $menu_links_large) = $self->$cli->handlers->get('Menu_Ret_UploadLinks')->fct_ret_upload_links_menu($key, $sm->_menuitem_large_links->get_submenu)
 				if $sm->_menuitem_large_links;
 
 			if ($sm->_menuitem_large_links) {

@@ -63,7 +63,7 @@ sub fct_ret_window_menu ($self) {
 
 	$active_window_item->set_tooltip_text($d->get("Capture the last active window"));
 
-	$active_window_item->signal_connect('activate' => sub { evt_take_screenshot(@_, 'awindow') if defined &evt_take_screenshot; });
+	$active_window_item->signal_connect('activate' => sub { $cli->handlers->get('Screenshot_Take')->evt_take_screenshot(@_, 'awindow'); });
 
 	$menu_windows->append($active_window_item);
 	$menu_windows->append(Gtk3::SeparatorMenuItem->new);
@@ -90,7 +90,7 @@ sub fct_ret_window_menu ($self) {
 			$window_item->set('always_show_image' => TRUE);
 			$window_item->signal_connect(
 				'activate' => sub {
-					evt_take_screenshot(@_, "shutter_window_direct" . $win->get_xid) if defined &evt_take_screenshot;
+					$cli->handlers->get('Screenshot_Take')->evt_take_screenshot(@_, "shutter_window_direct" . $win->get_xid);
 				});
 			$menu_windows->append($window_item);
 		}
@@ -141,7 +141,7 @@ sub fct_ret_workspace_menu ($self, $init) {
 			my $wrkspace_item = Gtk3::MenuItem->new_with_label($space->get_name);
 			$wrkspace_item->signal_connect(
 				'activate' => sub {
-					evt_take_screenshot(@_, "shutter_wrksp_direct" . $space->get_number) if defined &evt_take_screenshot;
+					$cli->handlers->get('Screenshot_Take')->evt_take_screenshot(@_, "shutter_wrksp_direct" . $space->get_number);
 				});
 			$menu_wrksp->append($wrkspace_item);
 
@@ -159,7 +159,7 @@ sub fct_ret_workspace_menu ($self, $init) {
 	my $allwspaces_item = Gtk3::MenuItem->new_with_label($d->get("Capture All Workspaces"));
 	$allwspaces_item->signal_connect(
 		'activate' => sub {
-			evt_take_screenshot(@_, "shutter_wrksp_directall") if defined &evt_take_screenshot;
+			$cli->handlers->get('Screenshot_Take')->evt_take_screenshot(@_, "shutter_wrksp_directall");
 		});
 	$menu_wrksp->append($allwspaces_item);
 

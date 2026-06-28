@@ -167,7 +167,7 @@ sub fct_control_signals ($self, $action) {
 		$st->_web->set_sensitive($sensitive) if ($gnome_web_photo && $st->_web);
 
 		#special case: redoshot (toolbar and menu)
-		if (defined &fct_get_last_capture && fct_get_last_capture()) {
+		if ($cli->handlers->get('Util_Get')->fct_get_last_capture()) {
 			$st->_redoshot->set_sensitive($sensitive)          if $st->_redoshot;
 			$sm->_menuitem_redoshot->set_sensitive($sensitive) if $sm->_menuitem_redoshot;
 		}

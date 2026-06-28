@@ -103,7 +103,7 @@ sub dlg_open ($self, $widget, $data) {
 		$fs->set_filter($filter_all);
 
 		#get current file
-		my $key = fct_get_current_file() if defined &fct_get_current_file;
+		my $key = $cli->handlers->get('Menu_Ret_Get')->fct_get_current_file();
 
 		#go to recently used folder
 		if (defined $sc->ruof && $shf->folder_exists($sc->ruof)) {
@@ -143,7 +143,7 @@ sub dlg_open ($self, $widget, $data) {
 	}
 
 	#call function to open files - with progress bar etc.
-	fct_open_files(@new_files) if defined &fct_open_files;
+	$cli->handlers->get('Init_Handlers')->fct_open_files(@new_files);
 
 	return TRUE;
 }
@@ -370,17 +370,17 @@ sub dlg_save_as ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) {
 
 							$session_screens->{$key}->{'handle'}->cancel;
 						}
-						if (defined &fct_update_tab && fct_update_tab($key, undef, Glib::IO::File::new_for_path($filename), FALSE, 'clear')) {
+						if ($cli->handlers->get('UI_Status')->fct_update_tab($key, undef, Glib::IO::File::new_for_path($filename), FALSE, 'clear')) {
 
 							#setup a new filemonitor, so we get noticed if the file changed
-							fct_add_file_monitor($key) if defined &fct_add_file_monitor;
+							$cli->handlers->get('Events_Init')->fct_add_file_monitor($key);
 
-							fct_show_status_message(1, "$session_screens->{ $key }->{ 'long' } " . $d->get("saved")) if defined &fct_show_status_message;
+							$cli->handlers->get('UI_Status')->fct_show_status_message(1, "$session_screens->{ $key }->{ 'long' } " . $d->get("saved"));
 						}
 
 					} else {
 						if ($shf->file_exists($filename)) {
-							fct_show_status_message(1, "$filename " . $d->get("saved")) if defined &fct_show_status_message;
+							$cli->handlers->get('UI_Status')->fct_show_status_message(1, "$filename " . $d->get("saved"));
 						}
 					}
 
@@ -438,10 +438,10 @@ sub dlg_save_as ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) {
 								$session_screens->{$key}->{'handle'}->cancel;
 							}
 
-							if (defined &fct_update_tab && fct_update_tab($key, undef, Glib::IO::File::new_for_path($filename), FALSE, 'clear')) {
+							if ($cli->handlers->get('UI_Status')->fct_update_tab($key, undef, Glib::IO::File::new_for_path($filename), FALSE, 'clear')) {
 
 								#setup a new filemonitor, so we get noticed if the file changed
-								fct_add_file_monitor($key) if defined &fct_add_file_monitor;
+								$cli->handlers->get('Events_Init')->fct_add_file_monitor($key);
 
 								#maybe file is in session as well, need to set the handler again ;-)
 								foreach my $searchkey (keys %$session_screens) {
@@ -452,13 +452,13 @@ sub dlg_save_as ($self, $key, $rfiletype, $rfilename, $rpixbuf, $rquality) {
 									}
 								}
 
-								fct_show_status_message(1, "$session_screens->{ $key }->{ 'long' } " . $d->get("saved")) if defined &fct_show_status_message;
+								$cli->handlers->get('UI_Status')->fct_show_status_message(1, "$session_screens->{ $key }->{ 'long' } " . $d->get("saved"));
 
 							}
 
 						} else {
 							if ($shf->file_exists($filename)) {
-								fct_show_status_message(1, "$filename " . $d->get("saved")) if defined &fct_show_status_message;
+								$cli->handlers->get('UI_Status')->fct_show_status_message(1, "$filename " . $d->get("saved"));
 							}
 						}
 

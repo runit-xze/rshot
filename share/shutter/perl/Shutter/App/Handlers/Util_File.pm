@@ -111,13 +111,13 @@ sub fct_check_installed_plugins ($self) {
 							$plugins->{$pkey}->{'binary'} = "$dir_name/$name";
 
 							#name
-							$plugins->{$pkey}->{'name'} = fct_plugin_get_info($plugins->{$pkey}->{'binary'}, 'name') if defined &fct_plugin_get_info;
+							$plugins->{$pkey}->{'name'} = $cli->handlers->get('Edit_Draw')->fct_plugin_get_info($plugins->{$pkey}->{'binary'}, 'name');
 
 							#category
-							$plugins->{$pkey}->{'category'} = fct_plugin_get_info($plugins->{$pkey}->{'binary'}, 'sort') if defined &fct_plugin_get_info;
+							$plugins->{$pkey}->{'category'} = $cli->handlers->get('Edit_Draw')->fct_plugin_get_info($plugins->{$pkey}->{'binary'}, 'sort');
 
 							#tooltip
-							$plugins->{$pkey}->{'tooltip'} = fct_plugin_get_info($plugins->{$pkey}->{'binary'}, 'tip') if defined &fct_plugin_get_info;
+							$plugins->{$pkey}->{'tooltip'} = $cli->handlers->get('Edit_Draw')->fct_plugin_get_info($plugins->{$pkey}->{'binary'}, 'tip');
 
 							#language (shell, perl etc.)
 							my $folder_name = dirname($dir_name);
@@ -129,7 +129,7 @@ sub fct_check_installed_plugins ($self) {
 							$current_plugin->set_text($plugins->{$pkey}->{'binary'});
 
 							#refresh gui
-							fct_update_gui() if defined &fct_update_gui;
+							$cli->handlers->get('UI_Status')->fct_update_gui();
 
 						}
 
@@ -196,13 +196,14 @@ sub fct_check_installed_programs ($self) {
 		}
 
 		#rebuild model with new hash of installed programs...
-		$model = fct_get_program_model() if defined &fct_get_program_model;
+		$model = $cli->handlers->get('Util_Get')->fct_get_program_model();
 		if ($model) {
 			$progname->set_model($model);
 
 			#...and try to set last	value
 			if ($progname_value) {
-				$model->foreach(\&fct_iter_programs, $progname_value) if defined &fct_iter_programs;
+				my $iter_programs_handler = $self->cli->handlers->get('Events_Init');
+				$model->foreach(sub { $iter_programs_handler->fct_iter_programs(@_) }, $progname_value);
 			} else {
 				$progname->set_active(0);
 			}
@@ -280,7 +281,7 @@ sub fct_check_installed_upload_plugins ($self) {
 
 						print "\nINFO: new upload-plugin information detected - $folder$name\n";
 
-						if (defined &fct_upload_plugin_get_info && fct_upload_plugin_get_info($ukey, 'module')) {
+						if ($cli->handlers->get('Upload_Main')->fct_upload_plugin_get_info($ukey, 'module')) {
 
 							# Path
 							$accounts->{$name}->{path} = $ukey;
@@ -295,7 +296,7 @@ sub fct_check_installed_upload_plugins ($self) {
 							$accounts->{$name}->{folder} = $folder;
 
 							# Description
-							$accounts->{$name}->{description} = fct_plugin_get_info($ukey, 'description') if defined &fct_plugin_get_info;
+							$accounts->{$name}->{description} = $cli->handlers->get('Edit_Draw')->fct_plugin_get_info($ukey, 'description');
 
 							# Username
 							$accounts->{$name}->{username} = ""
@@ -326,7 +327,7 @@ sub fct_check_installed_upload_plugins ($self) {
 						}
 
 						#refresh gui
-						fct_update_gui() if defined &fct_update_gui;
+						$cli->handlers->get('UI_Status')->fct_update_gui();
 
 					}
 

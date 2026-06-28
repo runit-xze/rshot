@@ -53,7 +53,7 @@ sub fct_ret_profile_menu ($self, $combobox_settings_profiles, $current_profiles_
 					$combobox_settings_profiles->set_active($i);
 					$cli->{_current_profile_indx} = $i;
 					if ($profile eq $combobox_settings_profiles->get_active_text) {
-						evt_apply_profile($widget, $combobox_settings_profiles, $current_profiles_ref) if defined &evt_apply_profile;
+						$cli->handlers->get('Menu')->evt_apply_profile($widget, $combobox_settings_profiles, $current_profiles_ref);
 						last;
 					}
 				}
