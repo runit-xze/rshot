@@ -6,7 +6,7 @@ use v5.40;
 use Test::More;
 use File::Temp qw(tempdir tempfile);
 use FindBin qw($RealBin);
-use lib "$RealBin/../../share/shutter/resources/modules";
+use lib "$RealBin/../../share/shutter/perl";
 
 # Integration test for full capture workflow
 # Tests the complete flow from capture to save/upload

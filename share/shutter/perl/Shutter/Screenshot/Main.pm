@@ -435,7 +435,7 @@ sub get_pixbuf_from_drawable_async ($self, $drawable, $x = undef, $y = undef, $w
 sub include_cursor ($self, $xp, $yp, $widthp, $heightp, $gdk_window, $pixbuf) {
 
 	require lib;
-	lib->import($self->{_sc}->shutter_root . "/share/shutter/resources/modules");
+	lib->import($self->{_sc}->shutter_root . "/share/shutter/perl");
 
 	require X11::Protocol;
 

@@ -89,7 +89,7 @@ sub show_dialog ($self, $detailed_error_text = '') {
 	#load modules at custom path
 	#--------------------------------------
 	require lib;
-	lib->import($self->{_sc}->shutter_root . "/share/shutter/resources/modules");
+	lib->import($self->{_sc}->shutter_root . "/share/shutter/perl");
 	require Shutter::App::SimpleDialogs;
 
 	my $sd = Shutter::App::SimpleDialogs->new($self->{_sc}->main_window);

@@ -8,7 +8,7 @@ use Test::MockModule;
 use Time::HiRes qw(time);
 use File::Temp qw(tempdir);
 use FindBin qw($RealBin);
-use lib "$RealBin/../../share/shutter/resources/modules";
+use lib "$RealBin/../../share/shutter/perl";
 
 use lib 't/lib';
 use Test::Shutter::Mock;

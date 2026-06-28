@@ -6,7 +6,7 @@ use v5.40;
 use Test::More;
 use FindBin qw($RealBin);
 use lib "$RealBin/../../lib";
-use lib "$RealBin/../../../share/shutter/resources/modules";
+use lib "$RealBin/../../../share/shutter/perl";
 
 # Load mock infrastructure
 use Test::Shutter::Mock;

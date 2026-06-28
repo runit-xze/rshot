@@ -5,7 +5,7 @@ use v5.40;
 
 use Test::More tests => 6;
 
-use lib 'share/shutter/resources/modules';
+use lib 'share/shutter/perl';
 
 # ---------------------------------------------------------------------------
 # Mock Glib so the module can load without a display

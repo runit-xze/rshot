@@ -87,7 +87,7 @@ subtest 'Application dependencies loaded' => sub {
     plan tests => 3;
     
     # Test that critical Perl modules can be loaded
-    my $lib_path = "$RealBin/../../share/shutter/resources/modules";
+    my $lib_path = "$RealBin/../../share/shutter/perl";
     require IPC::Run3;
     my $output;
     IPC::Run3::run3(['perl', '-I', $lib_path, '-e', 'use Gtk3; use Glib; print "OK\n"'], \undef, \$output, \$output);

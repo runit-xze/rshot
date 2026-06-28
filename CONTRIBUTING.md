@@ -59,7 +59,7 @@ Detailed technical documentation can be found in the [**ARCHITECTURE.md**](ARCHI
 
 Looking for a place to start? 
 *   **Refactoring:** Check [**REFACTOR_PROGRESS.md**](REFACTOR_PROGRESS.md) for remaining subroutines in `Common.pm` that need to be moved to Moo attributes.
-*   **Tests:** Add unit tests for any module in `share/shutter/resources/modules/Shutter/App/` that lacks a corresponding file in `t/`.
+*   **Tests:** Add unit tests for any module in `share/shutter/perl/Shutter/App/` that lacks a corresponding file in `t/`.
 
 ---
 
@@ -87,10 +87,10 @@ To use it, pass the `--mock-capture` flag:
 
 ```bash
 # Take a mock "full screen" capture and save to /tmp
-perl -Ishare/shutter/resources/modules bin/shutter --mock-capture --full --output=/tmp/test.png
+perl -Ishare/shutter/perl bin/shutter --mock-capture --full --output=/tmp/test.png
 
 # Test the upload pipeline with a mock image
-perl -Ishare/shutter/resources/modules bin/shutter --mock-capture --select=10,10,100,100 --debug
+perl -Ishare/shutter/perl bin/shutter --mock-capture --select=10,10,100,100 --debug
 ```
 
 This mode uses a static test image and bypasses X11/Wayland capture requirements, making it ideal for CI environments or quick pipeline testing.

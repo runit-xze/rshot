@@ -7,7 +7,7 @@ use Test::More tests => 8;
 use Test::MockModule;
 use File::Temp qw/tempdir/;
 
-use lib 'share/shutter/resources/modules';
+use lib 'share/shutter/perl';
 
 # ---------------------------------------------------------------------------
 # Mock Glib and Gtk3 before loading the module under test

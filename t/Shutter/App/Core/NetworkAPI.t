@@ -5,7 +5,7 @@ use warnings;
 use utf8;
 use Test::More;
 use FindBin qw($RealBin);
-use lib "$RealBin/../../../../share/shutter/resources/modules";
+use lib "$RealBin/../../../../share/shutter/perl";
 
 require_ok('Shutter::App::Core::NetworkAPI');
 

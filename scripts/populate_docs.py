@@ -29,7 +29,7 @@ for root, _, files in os.walk("GEMINI"):
         if file.endswith(".md"):
             md_path = os.path.join(root, file)
             rel_md = os.path.relpath(md_path, "GEMINI")
-            pm_path = os.path.join("share/shutter/resources/modules/Shutter", rel_md.replace(".md", ".pm"))
+            pm_path = os.path.join("share/shutter/perl/Shutter", rel_md.replace(".md", ".pm"))
             
             package, deps, methods = parse_pm(pm_path)
             

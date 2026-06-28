@@ -4,7 +4,7 @@ use warnings;
 use v5.40;
 use FindBin qw($RealBin);
 use lib "$RealBin/../../lib";
-use lib "$RealBin/../../../share/shutter/resources/modules";
+use lib "$RealBin/../../../share/shutter/perl";
 use Test::Shutter::Mock;
 use Test::More;
 

@@ -17,4 +17,4 @@ if ($@) {
 my $history = File::Spec->catfile(abs_path('t'), '.perlcritic-history');
 set_critic_args(-profile => '.perlcriticrc', -verbose => 8);
 set_history_file($history);
-progressive_critic_ok('bin', 'share/shutter/resources/modules', 't');
+progressive_critic_ok('bin', 'share/shutter/perl', 't');

@@ -10,7 +10,7 @@ use Test::MockModule;
 
 use FindBin qw/$Bin/;
 use lib "$Bin/../../lib";
-use lib "$Bin/../../share/shutter/resources/modules";
+use lib "$Bin/../../share/shutter/perl";
 
 Gtk3::init;
 

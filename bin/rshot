@@ -26,10 +26,12 @@
 use utf8;
 use v5.40;
 use FindBin '$Bin';
-use File::Spec;
-use lib File::Spec->catdir($Bin, '..', 'share', 'shutter', 'resources', 'modules');
 
 # Install the Gtk3::IconSize::lookup override globally before any drawing code loads.
+# rshot's modules live under /usr/share/perl5/Shutter (Debian Perl Policy §2.3)
+# when installed via the Debian package, or under share/shutter/perl/ in the source
+# tree for `make install` / `carton exec` development.  Both layouts provide the same
+# Shutter:: namespace.
 use Shutter::App::Compat::Gtk3IconSize;
 use Shutter::App::CLI;
 

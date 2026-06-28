@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Standardize test environment for Shutter
-export PERL5LIB="$(pwd)/share/shutter/resources/modules:$(pwd)/t/lib"
+export PERL5LIB="$(pwd)/share/shutter/perl:$(pwd)/t/lib"
 export TEST_APP_SHUTTER_PATH="$(pwd)"
 
 # Execute tests

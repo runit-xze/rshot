@@ -36,7 +36,7 @@ def list_subs(content):
 for mod in modules:
     # Convert module name to file path
     rel_path = mod.replace('::', '/') + '.pm'
-    pm_path = os.path.join('share/shutter/resources/modules/Shutter', rel_path)
+    pm_path = os.path.join('share/shutter/perl/Shutter', rel_path)
     if not os.path.isfile(pm_path):
         # skip if source missing
         continue

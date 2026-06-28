@@ -8,12 +8,12 @@ use Test::Strict        ();
 use Perl::Critic::Utils qw(all_perl_files);
 
 use FindBin qw/$Bin/;
-use lib "$Bin/../share/shutter/resources/modules";
+use lib "$Bin/../share/shutter/perl";
 # Check syntax, use strict and use warnings on all perl files
 
 local $Test::Strict::TEST_WARNINGS = 1;
 
-my @dirs = ('t', 'bin', "$Bin/../share/shutter/resources/modules/");
+my @dirs = ('t', 'bin', "$Bin/../share/shutter/perl/");
 
 my @files = all_perl_files(@dirs);
 @files = grep { $_ !~ /shutter\.monolith/ } @files;

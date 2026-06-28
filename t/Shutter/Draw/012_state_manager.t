@@ -11,7 +11,7 @@ use Test::MockModule;
 
 use FindBin qw/$Bin/;
 use lib "$Bin/../../lib";
-use lib "$Bin/../../share/shutter/resources/modules";
+use lib "$Bin/../../share/shutter/perl";
 
 require_ok('Shutter::Draw::StateManager');
 require_ok('Shutter::Draw::DrawingTool');
