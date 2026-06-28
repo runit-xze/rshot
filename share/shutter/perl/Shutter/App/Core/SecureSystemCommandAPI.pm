@@ -4,8 +4,10 @@ use utf8;
 use v5.40;
 use Moo;
 use IPC::Run3;
-use Log::Any qw($log);
+use Log::Any;
 use POSIX ();
+
+my $log = Log::Any->get_logger;
 
 =head1 NAME
 

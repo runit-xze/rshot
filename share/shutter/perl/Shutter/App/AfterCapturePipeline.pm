@@ -16,6 +16,7 @@ package Shutter::App::AfterCapturePipeline;
 use Moo;
 use utf8;
 use v5.40;
+use Shutter::App::Core::SecureSystemCommandAPI;
 use feature 'try';
 no warnings 'experimental::try';
 use Glib qw/TRUE FALSE/;

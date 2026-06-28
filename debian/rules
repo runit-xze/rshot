@@ -68,8 +68,8 @@ override_dh_auto_install:
 	cp -r $(CURDIR)/share/shutter/resources/. $(CURDIR)/debian/rshot/usr/share/shutter/resources/
 	# GPL-3 license text is provided by /usr/share/common-licenses/GPL-3
 	# on all Debian systems; shipping a private copy is redundant.
-	rm -f $(CURDIR)/debian/rshot/usr/share/shutter/license/gplv3
-	rm -f $(CURDIR)/debian/rshot/usr/share/shutter/license/gplv3_hint
+	rm -f $(CURDIR)/debian/rshot/usr/share/shutter/resources/license/gplv3
+	rm -f $(CURDIR)/debian/rshot/usr/share/shutter/resources/license/gplv3_hint
 	# Remove empty upstream placeholder directories (lintian warning).
 	find $(CURDIR)/debian/rshot -type d -empty -delete
 	install -d $(CURDIR)/debian/rshot/usr/bin

@@ -26,6 +26,7 @@ package Shutter::App::AboutDialog;
 #--------------------------------------
 use utf8;
 use v5.40;
+use Shutter::App::Core::FileSystemAPI;
 use feature 'try';
 no warnings 'experimental::try';
 

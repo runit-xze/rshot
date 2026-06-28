@@ -21,6 +21,8 @@ package Shutter::App::Handlers::Edit_Nav;
 
 use utf8;
 use v5.40;
+use Shutter::App::Core::ClipboardAPI;
+use Shutter::App::Core::FileSystemAPI;
 use feature 'try';
 no warnings 'experimental::try';
 

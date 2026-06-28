@@ -23,6 +23,7 @@ package Shutter::App::Handlers::Screenshot_Take;
 
 use utf8;
 use v5.40;
+use Shutter::App::Core::ClipboardAPI;
 use feature 'try';
 no warnings 'experimental::try';
 

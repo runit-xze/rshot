@@ -25,6 +25,7 @@ package Shutter::App::Session;
 
 use utf8;
 use v5.40;
+use Shutter::App::Core::SessionManager;
 use feature 'try';
 no warnings 'experimental::try';
 
