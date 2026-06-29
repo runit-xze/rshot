@@ -2,6 +2,7 @@
 #
 #  Copyright (C) 2008-2013 Mario Kemper <mario.kemper@gmail.com>
 #  Copyright (C) 2020-2021 Google LLC, contributed by Alexey Sokolov <sokolov@google.com>
+#  Copyright (C) 2025 Shutter Team
 #
 #  This file is part of Shutter.
 #
@@ -15,10 +16,6 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Shutter; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-#
 ###################################################
 
 package Shutter::App::Core::SettingsManager;
@@ -29,34 +26,47 @@ use feature 'try';
 no warnings 'experimental::try';
 
 use Moo;
-use Gtk3;
 use Glib       qw/TRUE FALSE/;
-use File::Copy qw/cp mv/;
+use File::Copy qw/mv/;
 use File::Temp qw/tempfile/;
-use File::Spec;
 use Shutter::App::Directories;
-use XML::Simple;
+use Shutter::App::Core::FileSystemAPI;
+use JSON::MaybeXS;
 use IO::File;
 
 has '_common'   => (is => 'ro', required => 1);
 has '_settings' => (is => 'rw', default  => sub { {} });
+has '_json'     => (is => 'lazy', default => sub { JSON::MaybeXS->new->utf8(1)->pretty(1)->canonical(1) });
 
-sub save_settings ($self, $profilename = undef) {
-	my $sc  = $self->_common;
-	my $shf = $sc->get_helper_functions;
-	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
-	my $d   = $sc->gettext_object;
 
-	my $settingsfile = defined $profilename && $profilename ne ""
+
+sub _settings_path ($self, $profilename = undef) {
+	return defined $profilename && $profilename ne ""
 		? Shutter::App::Directories::get_profile_settings_file($profilename)
 		: Shutter::App::Directories::get_settings_file;
+}
+
+sub _accounts_path ($self, $profilename = undef) {
+	return defined $profilename && $profilename ne ""
+		? Shutter::App::Directories::get_profile_accounts_file($profilename)
+		: Shutter::App::Directories::get_accounts_file;
+}
+
+sub save_settings ($self, $profilename = undef) {
+	my $sc = $self->_common;
+	my $sd = Shutter::App::SimpleDialogs->new($sc->main_window);
+	my $d  = $sc->gettext_object;
+
+	my $settingsfile = $self->_settings_path($profilename);
 
 	my %settings = %{$self->_settings};
 	$settings{'general'}->{'app_version'} = $sc->version . $sc->rev;
 
 	eval {
+		my $json_text = $self->_json->encode(\%settings);
 		my ($tmpfh, $tmpfilename) = tempfile(UNLINK => 1);
-		XMLout(\%settings, OutputFile => $tmpfilename, NoAttr => 1, KeepRoot => 1);
+		print $tmpfh $json_text;
+		close $tmpfh;
 		mv($tmpfilename, $settingsfile);
 	};
 	if ($@) {
@@ -72,20 +82,23 @@ sub load_settings ($self, $profilename = undef) {
 	my $shf = $sc->get_helper_functions;
 	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
 
-	my $settingsfile = defined $profilename
-		? Shutter::App::Directories::get_profile_settings_file($profilename)
-		: Shutter::App::Directories::get_settings_file;
+	my $settingsfile = $self->_settings_path($profilename);
 
-	my $settings_xml = {};
+	my $settings = {};
 	if ($shf->file_exists($settingsfile)) {
-		eval { $settings_xml = XMLin(IO::File->new($settingsfile), ForceArray => 0, KeyAttr => [], KeepRoot => 1); };
+
+		eval {
+			my $json_text = Shutter::App::Core::FileSystemAPI->new->slurp_utf8($settingsfile);
+			$settings = $self->_json->decode($json_text);
+		};
 		if ($@) {
 			$sd->dlg_error_message($@, $d->get("Settings could not be restored!"));
 			Shutter::App::Core::FileSystemAPI->new->remove($settingsfile);
+			$settings = {};
 		}
 	}
-	$self->_settings($settings_xml);
-	return $settings_xml;
+	$self->_settings($settings);
+	return $settings;
 }
 
 sub get_setting ($self, $section, $key) {
@@ -105,32 +118,26 @@ sub load_accounts ($self, $profilename = undef) {
 	my $shf = $sc->get_helper_functions;
 	my $sd  = Shutter::App::SimpleDialogs->new($sc->main_window);
 
-	my $accountsfile = defined $profilename
-		? Shutter::App::Directories::get_profile_accounts_file($profilename)
-		: Shutter::App::Directories::get_accounts_file;
+	my $accountsfile = $self->_accounts_path($profilename);
 
 	my %accounts;
 	if ($shf->file_exists($accountsfile)) {
-		my $accounts_xml;
-		eval { $accounts_xml = XMLin(IO::File->new($accountsfile)) };
+
+		eval {
+			my $json_text = Shutter::App::Core::FileSystemAPI->new->slurp_utf8($accountsfile);
+			my $parsed    = $self->_json->decode($json_text);
+			$accounts{$_} = {%{$parsed->{$_}}} for keys %{$parsed};
+		};
 		if ($@) {
 			$sd->dlg_error_message($@, $d->get("Account-settings could not be restored!"));
 			Shutter::App::Core::FileSystemAPI->new->remove($accountsfile);
-		} else {
-			foreach my $ac (keys %{$accounts_xml}) {
-				if ($shf->file_exists($accounts_xml->{$ac}->{path})) {
-					$accounts{$ac} = $accounts_xml->{$ac};
-				}
-			}
 		}
 	}
 
 	require File::Glob;
 	require File::Basename;
-	require JSON::MaybeXS;
 	my $shutter_root = $sc->shutter_root;
 	my @sxcu_paths   = ("$shutter_root/share/shutter/resources/system/uploaders/*.sxcu", Shutter::App::Directories::get_uploaders_dir() . "/*.sxcu");
-	my $json         = JSON::MaybeXS->new;
 	foreach my $sxcu_path (@sxcu_paths) {
 		my @sxcus = File::Glob::bsd_glob($sxcu_path);
 		foreach my $ukey (@sxcus) {
@@ -138,11 +145,10 @@ sub load_accounts ($self, $profilename = undef) {
 				my ($name, $folder, $type) = File::Basename::fileparse($ukey, qr/\.[^.]*/);
 
 				eval {
-					require Shutter::App::Core::FileSystemAPI;
 					my $json_text = Shutter::App::Core::FileSystemAPI->new->slurp_utf8($ukey);
-					my $sxcu = $json->decode($json_text);
+					my $sxcu      = $self->_json->decode($json_text);
 
-					my $display_name = $sxcu->{Name} || $name;
+					my $display_name = $sxcu->{Name} // $name;
 
 					$accounts{$display_name}->{path}                       = $ukey;
 					$accounts{$display_name}->{module}                     = "ShareX";
@@ -165,3 +171,21 @@ sub load_accounts ($self, $profilename = undef) {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Shutter::App::Core::SettingsManager - Application settings persistence
+
+=head1 SYNOPSIS
+
+    my $sm = Shutter::App::Core::SettingsManager->new(_common => $sc);
+    $sm->set_setting('general', 'filetype', 'png');
+    $sm->save_settings;
+
+=head1 DESCRIPTION
+
+Persists application settings and accounts to disk as JSON.
+
+=cut

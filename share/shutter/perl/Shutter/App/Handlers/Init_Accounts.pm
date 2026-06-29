@@ -21,7 +21,6 @@ package Shutter::App::Handlers::Init_Accounts;
 
 use utf8;
 use v5.40;
-use Shutter::App::Core::FileSystemAPI;
 use feature 'try';
 no warnings 'experimental::try';
 
@@ -29,10 +28,19 @@ use Moo;
 use Shutter::App::Directories;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
-use XML::Simple;
+use Shutter::App::Core::FileSystemAPI;
+use JSON::MaybeXS;
 use IO::File;
 
 has cli => (is => 'ro', required => 1);
+
+sub _read_accounts_file ($path) {
+	my $fs = Shutter::App::Core::FileSystemAPI->new;
+	return undef unless $fs->is_regular_file($path);
+	my $content = $fs->slurp_utf8($path);
+	return undef unless defined $content;
+	return JSON::MaybeXS->new->utf8(1)->decode($content);
+}
 
 sub fct_load_accounts ($self, $profilename) {
 	my $cli      = $self->cli;
@@ -47,39 +55,36 @@ sub fct_load_accounts ($self, $profilename) {
 	$accountsfile = Shutter::App::Directories::get_profile_accounts_file($profilename)
 		if (defined $profilename);
 
-	if ($shf->file_exists($accountsfile)) {
-		my $accounts_xml = undef;
-		eval { $accounts_xml = XMLin(IO::File->new($accountsfile)) };
-		if ($@) {
-			$sd->dlg_error_message($@, $d->get("Account-settings could not be restored!"));
-			Shutter::App::Core::FileSystemAPI->new->remove($accountsfile);
-		} else {
-			foreach (keys %{$accounts_xml}) {
+	my $parsed = eval { _read_accounts_file($accountsfile) };
+	if ($@) {
+		$sd->dlg_error_message($@, $d->get("Account-settings could not be restored!"));
+		Shutter::App::Core::FileSystemAPI->new->remove($accountsfile);
+	} elsif ($parsed) {
+		foreach (keys %{$parsed}) {
 
-				#check if plugin still exists
-				if ($shf->file_exists($accounts_xml->{$_}->{path})) {
+			#check if plugin still exists
+			if ($shf->file_exists($parsed->{$_}->{path})) {
 
-					#clear cache
-					if (!$sc->clear_cache) {
-						$accounts->{$_}->{path}                       = $accounts_xml->{$_}->{path};
-						$accounts->{$_}->{module}                     = $accounts_xml->{$_}->{module};
-						$accounts->{$_}->{host}                       = $accounts_xml->{$_}->{host};
-						$accounts->{$_}->{folder}                     = $accounts_xml->{$_}->{folder};
-						$accounts->{$_}->{description}                = $accounts_xml->{$_}->{description};
-						$accounts->{$_}->{register_color}             = "blue";
-						$accounts->{$_}->{register_text}              = $accounts_xml->{$_}->{register_text};
-						$accounts->{$_}->{supports_anonymous_upload}  = $accounts_xml->{$_}->{supports_anonymous_upload};
-						$accounts->{$_}->{supports_authorized_upload} = $accounts_xml->{$_}->{supports_authorized_upload};
-						$accounts->{$_}->{supports_oauth_upload}      = $accounts_xml->{$_}->{supports_oauth_upload};
+				#clear cache
+				if (!$sc->clear_cache) {
+					$accounts->{$_}->{path}                       = $parsed->{$_}->{path};
+					$accounts->{$_}->{module}                     = $parsed->{$_}->{module};
+					$accounts->{$_}->{host}                       = $parsed->{$_}->{host};
+					$accounts->{$_}->{folder}                     = $parsed->{$_}->{folder};
+					$accounts->{$_}->{description}                = $parsed->{$_}->{description};
+					$accounts->{$_}->{register_color}             = "blue";
+					$accounts->{$_}->{register_text}              = $parsed->{$_}->{register_text};
+					$accounts->{$_}->{supports_anonymous_upload}  = $parsed->{$_}->{supports_anonymous_upload};
+					$accounts->{$_}->{supports_authorized_upload} = $parsed->{$_}->{supports_authorized_upload};
+					$accounts->{$_}->{supports_oauth_upload}      = $parsed->{$_}->{supports_oauth_upload};
 
-						utf8::decode $accounts->{$_}->{'host'};
-					}
-					$accounts->{$_}->{username} = $accounts_xml->{$_}->{username};
-					$accounts->{$_}->{password} = $accounts_xml->{$_}->{password};
-
-					utf8::decode $accounts->{$_}->{'username'};
-					utf8::decode $accounts->{$_}->{'password'};
+					utf8::decode $accounts->{$_}->{'host'};
 				}
+				$accounts->{$_}->{username} = $parsed->{$_}->{username};
+				$accounts->{$_}->{password} = $parsed->{$_}->{password};
+
+				utf8::decode $accounts->{$_}->{'username'};
+				utf8::decode $accounts->{$_}->{'password'};
 			}
 		}
 	}

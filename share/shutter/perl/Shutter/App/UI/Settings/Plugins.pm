@@ -55,8 +55,7 @@ sub BUILD ($self, $args) {
 	my $plugins_ref = $sm->get_setting('plugins', 'name');
 	if ($plugins_ref && ref($plugins_ref) eq 'ARRAY') {
 
-		# XML::Simple parses multiple plugins as an array under some structures
-		# We will attempt to list them.
+		# Plugins may be stored as an array or a single hash entry in settings.
 		foreach my $p (@$plugins_ref) {
 			my $iter = $list_store->append;
 			$list_store->set($iter, 0, $p // 'Unknown', 1, 'Effect', 2, 'Loaded from settings');

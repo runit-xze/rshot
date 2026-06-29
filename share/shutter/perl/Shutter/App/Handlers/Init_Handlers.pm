@@ -29,7 +29,7 @@ use Moo;
 use Shutter::App::Directories;
 use Gtk3 '-init';
 use Glib qw/TRUE FALSE/;
-use XML::Simple;
+use JSON::MaybeXS;
 use IO::File;
 use URI::Escape    qw(uri_unescape);
 use File::Basename qw(basename);
@@ -136,22 +136,23 @@ sub fct_load_session ($self) {
 	my $sessionfile = Shutter::App::Directories::get_session_file();
 
 	eval {
-		my $session_xml = XMLin(IO::File->new($sessionfile))
-			if $shf->file_exists($sessionfile);
+		return FALSE unless $shf->file_exists($sessionfile);
+		my $json_text   = Shutter::App::Core::FileSystemAPI->new->slurp_utf8($sessionfile);
+		my $session_data = JSON::MaybeXS->new->utf8(1)->decode($json_text);
 
-		return FALSE if !defined $session_xml || scalar(keys %{$session_xml}) < 1;
+		return FALSE if !defined $session_data || scalar(keys %{$session_data}) < 1;
 
 		#activate throbber
 		my ($throbber, $sep) = $self->fct_toggle_status_throbber($status);
 
 		#how many files have to be loaded
 		#store this value in the session hash
-		$session_start_screen->{'first_page'}->{'num_session_files'} = scalar(keys %{$session_xml});
+		$session_start_screen->{'first_page'}->{'num_session_files'} = scalar(keys %{$session_data});
 
 		#local counter
 		#is passed to several subroutines to indicate the correct index
 		my $count = 0;
-		foreach my $key (sort keys %{$session_xml}) {
+		foreach my $key (sort keys %{$session_data}) {
 
 			#increment counter
 			$count++;
@@ -160,7 +161,7 @@ sub fct_load_session ($self) {
 			$cli->handlers->get('UI_Status')->fct_update_gui();
 
 			#do the real work
-			my $new_giofile = Glib::IO::File::new_for_path(${$session_xml}{$key}{'filename'});
+			my $new_giofile = Glib::IO::File::new_for_path(${$session_data}{$key}{'filename'});
 			if ($cli->handlers->get('Workflow_Integrate')->fct_integrate_screenshot_in_notebook($new_giofile, undef, undef, $count)) {
 				$cli->handlers->get('UI_Status')->fct_show_status_message(1, $shf->utf8_decode($new_giofile->get_path) . " " . $d->get("opened"));
 			} else {

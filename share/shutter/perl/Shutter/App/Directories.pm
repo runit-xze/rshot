@@ -66,20 +66,20 @@ sub get_config_dir { return Glib::get_user_config_dir() }
 
 sub get_hidden_home_dir       { return Glib::get_home_dir() . "/" . HIDDEN_SHUTTER_DIR }
 sub get_hidden_profiles_dir   { return get_hidden_home_dir() . "/" . PROFILES_DIR }
-sub get_settings_file         { return get_hidden_home_dir() . "/settings.xml" }
-sub get_accounts_file         { return get_hidden_home_dir() . "/accounts.xml" }
-sub get_session_file          { return get_hidden_home_dir() . "/session.xml" }
+sub get_settings_file         { return get_hidden_home_dir() . "/settings.json" }
+sub get_accounts_file         { return get_hidden_home_dir() . "/accounts.json" }
+sub get_session_file          { return get_hidden_home_dir() . "/session.json" }
 sub get_printing_file         { return get_hidden_home_dir() . "/printing.xml" }
-sub get_drawingtool_file      { return get_hidden_home_dir() . "/drawingtool.xml" }
+sub get_drawingtool_file      { return get_hidden_home_dir() . "/drawingtool.json" }
 sub get_uploaders_dir         { return get_hidden_home_dir() . "/uploaders" }
 sub get_plugins_dir           { return get_hidden_home_dir() . "/plugins" }
 
 sub get_profile_settings_file ($name) {
-	return get_hidden_profiles_dir() . "/${name}.xml";
+	return get_hidden_profiles_dir() . "/${name}.json";
 }
 
 sub get_profile_accounts_file ($name) {
-	return get_hidden_profiles_dir() . "/${name}_accounts.xml";
+	return get_hidden_profiles_dir() . "/${name}_accounts.json";
 }
 
 sub create_hidden_home_dir_if_not_exist {

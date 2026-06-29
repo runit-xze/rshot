@@ -3,8 +3,9 @@ package Shutter::Draw::SettingsManager;
 use v5.40;
 use utf8;
 use Moo;
-use XML::Simple;
-use IO::File;
+use JSON::MaybeXS;
+use File::Copy qw/mv/;
+use File::Temp qw/tempfile/;
 use Glib qw(TRUE FALSE);
 use Gtk3;
 use Pango;
@@ -16,6 +17,8 @@ has drawing_tool => (
 	required => 1,
 );
 
+has '_json' => (is => 'lazy', default => sub { JSON::MaybeXS->new->utf8(1)->pretty(1)->canonical(1) });
+
 sub load_settings {
 	my $self = shift;
 	my $dt   = $self->drawing_tool;
@@ -25,48 +28,49 @@ sub load_settings {
 	#settings file
 	my $settingsfile = Shutter::App::Directories::get_drawingtool_file();
 
-	my $settings_xml;
+	my $settings;
 	if ($shutter_hfunct->file_exists($settingsfile)) {
 		eval {
-			$settings_xml = XMLin(IO::File->new($settingsfile));
+			my $json_text = Shutter::App::Core::FileSystemAPI->new->slurp_utf8($settingsfile);
+			$settings = $self->_json->decode($json_text);
 
 			#restore window state when maximized
-			if (exists $settings_xml->{'drawing'}->{'state'} && defined $settings_xml->{'drawing'}->{'state'} && $settings_xml->{'drawing'}->{'state'} eq 'maximized') {
+			if (exists $settings->{'drawing'}->{'state'} && defined $settings->{'drawing'}->{'state'} && $settings->{'drawing'}->{'state'} eq 'maximized') {
 				$dt->drawing_window->maximize;
 			}
 
 			#window size and position
-			if ($settings_xml->{'drawing'}->{'x'} && $settings_xml->{'drawing'}->{'y'}) {
-				$dt->drawing_window->move($settings_xml->{'drawing'}->{'x'}, $settings_xml->{'drawing'}->{'y'});
+			if ($settings->{'drawing'}->{'x'} && $settings->{'drawing'}->{'y'}) {
+				$dt->drawing_window->move($settings->{'drawing'}->{'x'}, $settings->{'drawing'}->{'y'});
 			}
 
-			if ($settings_xml->{'drawing'}->{'width'} && $settings_xml->{'drawing'}->{'height'}) {
-				$dt->drawing_window->resize($settings_xml->{'drawing'}->{'width'}, $settings_xml->{'drawing'}->{'height'});
+			if ($settings->{'drawing'}->{'width'} && $settings->{'drawing'}->{'height'}) {
+				$dt->drawing_window->resize($settings->{'drawing'}->{'width'}, $settings->{'drawing'}->{'height'});
 			}
 
 			#current mode
-			if ($settings_xml->{'drawing'}->{'mode'}) {
-				$dt->current_mode($settings_xml->{'drawing'}->{'mode'});
+			if ($settings->{'drawing'}->{'mode'}) {
+				$dt->current_mode($settings->{'drawing'}->{'mode'});
 			}
 
 			#autoscroll
 			my $autoscroll_toggle = $dt->uimanager->get_widget("/MenuBar/Edit/Autoscroll");
-			$autoscroll_toggle->set_active($settings_xml->{'drawing'}->{'autoscroll'});
+			$autoscroll_toggle->set_active($settings->{'drawing'}->{'autoscroll'});
 
 			#drawing colors
-			my $fill = Gtk3::Gdk::RGBA::parse($settings_xml->{'drawing'}->{'fill_color'}) // Gtk3::Gdk::RGBA::parse('black');
-			$fill->alpha($settings_xml->{'drawing'}->{'fill_color_alpha'});
+			my $fill = Gtk3::Gdk::RGBA::parse($settings->{'drawing'}->{'fill_color'}) // Gtk3::Gdk::RGBA::parse('black');
+			$fill->alpha($settings->{'drawing'}->{'fill_color_alpha'});
 			$dt->fill_color($fill);
 
-			my $stroke = Gtk3::Gdk::RGBA::parse($settings_xml->{'drawing'}->{'stroke_color'}) // Gtk3::Gdk::RGBA::parse('black');
-			$stroke->alpha($settings_xml->{'drawing'}->{'stroke_color_alpha'});
+			my $stroke = Gtk3::Gdk::RGBA::parse($settings->{'drawing'}->{'stroke_color'}) // Gtk3::Gdk::RGBA::parse('black');
+			$stroke->alpha($settings->{'drawing'}->{'stroke_color_alpha'});
 			$dt->stroke_color($stroke);
 
 			#line_width
-			$dt->line_width($settings_xml->{'drawing'}->{'line_width'});
+			$dt->line_width($settings->{'drawing'}->{'line_width'});
 
 			#font
-			$dt->font($settings_xml->{'drawing'}->{'font'});
+			$dt->font($settings->{'drawing'}->{'font'});
 
 		};
 		if ($@) {
@@ -133,8 +137,11 @@ sub save_settings {
 	eval {
 
 		#save to file
-		require Shutter::App::Core::FileSystemAPI;
-		Shutter::App::Core::FileSystemAPI->new->spew_utf8($settingsfile, XMLout(\%settings));
+		my $json_text = $self->_json->encode(\%settings);
+		my ($tmpfh, $tmpfilename) = tempfile(UNLINK => 1);
+		print $tmpfh $json_text;
+		close $tmpfh;
+		mv($tmpfilename, $settingsfile);
 
 	};
 	if ($@) {
