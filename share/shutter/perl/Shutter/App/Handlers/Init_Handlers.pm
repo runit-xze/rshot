@@ -33,7 +33,8 @@ use JSON::MaybeXS;
 use IO::File;
 use URI::Escape    qw(uri_unescape);
 use File::Basename qw(basename);
-use File::Copy     qw(copy);
+use File::Copy     qw(copy mv);
+use File::Temp;
 
 has cli => (is => 'ro', required => 1);
 
@@ -179,6 +180,33 @@ sub fct_load_session ($self) {
 	if ($@) {
 		$sd->dlg_error_message("$@", $d->get("Session could not be restored!"));
 		Shutter::App::Core::FileSystemAPI->new->remove($sessionfile);
+	}
+
+	return TRUE;
+}
+
+sub fct_save_session ($self) {
+	my $cli             = $self->cli;
+	my $session_screens = $cli->{_session_screens};
+	my $sessionfile     = Shutter::App::Directories::get_session_file();
+
+	my %session_data;
+	foreach my $key (keys %$session_screens) {
+		# Ensure we only save items that have a valid file path
+		if (exists $session_screens->{$key}->{'long'} && defined $session_screens->{$key}->{'long'}) {
+			$session_data{$key} = { 'filename' => $session_screens->{$key}->{'long'} };
+		}
+	}
+
+	eval {
+		my $json_text = JSON::MaybeXS->new->utf8(1)->pretty(1)->canonical(1)->encode(\%session_data);
+		my ($tmpfh, $tmpfilename) = File::Temp::tempfile(UNLINK => 1);
+		print $tmpfh $json_text;
+		close $tmpfh;
+		mv($tmpfilename, $sessionfile);
+	};
+	if ($@) {
+		warn "ERROR: Session could not be saved: $@ - ignoring\n";
 	}
 
 	return TRUE;

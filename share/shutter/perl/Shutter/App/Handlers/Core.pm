@@ -142,6 +142,7 @@ sub evt_delete_window ($self, $widget, $reason) {
 	if ($reason eq 'quit') {
 		$self->cli->sc->exit_after_capture(TRUE);
 	}
+	$self->cli->handlers->get('Init_Handlers')->fct_save_session();
 	$self->cli->app->quit;
 	return;
 }
