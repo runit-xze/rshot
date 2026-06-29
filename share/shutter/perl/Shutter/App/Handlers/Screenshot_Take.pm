@@ -465,7 +465,7 @@ sub fct_take_screenshot ($self, $widget, $data, $folder_from_config, $extra) {
 	} elsif ($data =~ /^(window|tray_window|awindow|tray_awindow|section|tray_section|menu|tray_menu|tooltip|tray_tooltip)$/) {
 		if ($x11_supported) {
 
-			# FIXME: fct_control_wm_settings not easily accessible
+			# Note: fct_control_wm_settings was removed as modern WMs do not allow on-the-fly compositor toggling
 			if (defined $extra && $extra) {
 				$screenshooter = Shutter::Screenshot::WindowName->new(
 					$sc,                        $include_cursor,               $delay_value,            $notify_timeout_active->get_active,

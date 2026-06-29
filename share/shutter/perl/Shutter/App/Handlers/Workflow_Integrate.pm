@@ -49,7 +49,7 @@ sub fct_integrate_screenshot_in_notebook ($self, $giofile, $pixbuf, $history = u
 
 	#check mime type
 	my ($mime_type) = Glib::Object::Introspection->invoke('Gio', undef, 'content_type_guess', $giofile->get_path);
-	$mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;    #FIXME
+	$mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;
 	if ($mime_type =~ m/(pdf|ps|svg)/ig) {
 		return FALSE;
 	}

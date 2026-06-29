@@ -30,7 +30,7 @@ sub import_from_dnd ($self, $widget, $context, $x, $y, $selection, $info, $time)
 	foreach my $file (@files) {
 		my $giofile = Glib::IO::File::new_for_uri($file);
 		my ($mime_type) = Glib::Object::Introspection->invoke('Gio', undef, 'content_type_guess', $giofile->get_path);
-		$mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;    #FIXME
+		$mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;
 		if ($mime_type && $dt->check_valid_mime_type($mime_type)) {
 			push @valid_files, $file;
 		}

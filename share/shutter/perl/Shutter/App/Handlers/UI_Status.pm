@@ -121,7 +121,7 @@ sub fct_update_tab ($self, $key, $pixbuf = undef, $giofile = undef, $force_thumb
 
 			#mime type
 			my ($mime_type) = Glib::Object::Introspection->invoke('Gio', undef, 'content_type_guess', $session_screens->{$key}->{'giofile'}->get_path);
-			$mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;    #FIXME
+			$mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;
 			$session_screens->{$key}->{'mime_type'} = $mime_type;
 
 			#TAB PREVIEW IMAGE

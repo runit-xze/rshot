@@ -198,9 +198,8 @@ sub BUILD ($self) {
 	$self->_view->get_style_context->add_provider($self->_view_css_provider_alpha, 0);
 	$self->_view->set('zoom-step', 1.2);
 
-	#WORKAROUND
-	#upstream bug
-	#http://trac.bjourne.webfactional.com/ticket/21
+	# Note: Remap scroll direction because Gtk3::ImageView maps left/right incorrectly
+	# upstream bug: http://trac.bjourne.webfactional.com/ticket/21
 	#left  => zoom in
 	#right => zoom out
 	$self->_view->signal_connect(
@@ -744,20 +743,20 @@ sub xdo_remove ($self) {
 	return $self->_macro_manager->xdo_remove(@_);
 }
 
-sub xdo ($self) {
-	return $self->_macro_manager->xdo(@_);
+sub xdo ($self, @args) {
+	return $self->_macro_manager->xdo(@args);
 }
 
-sub set_and_save_drawing_properties ($self) {
-	return $self->_settings_manager->set_and_save_drawing_properties(@_);
+sub set_and_save_drawing_properties ($self, @args) {
+	return $self->_settings_manager->set_and_save_drawing_properties(@args);
 }
 
-sub restore_fixed_properties ($self) {
-	return $self->_settings_manager->restore_fixed_properties(@_);
+sub restore_fixed_properties ($self, @args) {
+	return $self->_settings_manager->restore_fixed_properties(@args);
 }
 
-sub restore_drawing_properties ($self) {
-	return $self->_settings_manager->restore_drawing_properties(@_);
+sub restore_drawing_properties ($self, @args) {
+	return $self->_settings_manager->restore_drawing_properties(@args);
 }
 
 sub event_item_on_key_press ($self) {

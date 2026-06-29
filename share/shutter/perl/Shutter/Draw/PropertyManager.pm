@@ -345,7 +345,7 @@ sub show_item_properties {
 		#apply current font settings to button
 		$font_btn->set_font_name($font_desc ? $font_desc->to_string : $dt->font());
 
-		#FIXME >> why do we have to invoke this manually??
+		# set_font_name does not emit 'font-set' programmatically in GTK3, so we emit it manually.
 		$font_btn->signal_emit('font-set');
 
 		$frame_text->add($text_vbox);
@@ -519,7 +519,7 @@ sub show_item_properties {
 		#line width, fill color, stroke color etc.
 		$dt->set_and_save_drawing_properties($dt->current_item(), FALSE);
 
-		#FIXME - we need to save the changed values in this case
+		# Save the new values into _last_* so the next drawn item uses them
 		$dt->set_and_save_drawing_properties($dt->current_item(), TRUE);
 
 		$prop_dialog->destroy;

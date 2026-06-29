@@ -83,7 +83,7 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 	my $option = $self->_lp->get_option($pixbuf, 'orientation');
 	$option = 1 unless defined $option;
 
-	#FIXME: NOT COVERED BY BINDINGS YET (we use Image::ExifTool instead)
+	# NOT COVERED BY BINDINGS YET (we use Image::ExifTool instead)
 	unless ($filetype eq 'jpeg' || $filetype eq 'jpg') {
 		if ($option != 1) {
 			$pixbuf = $self->_lp->auto_rotate($pixbuf);
@@ -100,7 +100,7 @@ sub save_pixbuf_to_file ($self, $pixbuf, $filename, $filetype, $quality) {
 		eval {
 			$pixbuf->save($filename, 'jpeg', quality => $self->_quality);
 
-			#FIXME: NOT COVERED BY BINDINGS YET (we use Image::ExifTool instead)
+			# NOT COVERED BY BINDINGS YET (we use Image::ExifTool instead)
 			if (my $exif = Shutter::App::Optional::Exif->new()) {
 
 				my $exiftool = $exif->get_exiftool;

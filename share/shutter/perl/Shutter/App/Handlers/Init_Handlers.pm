@@ -68,7 +68,7 @@ sub fct_drop_handler ($self, $widget, $context, $x, $y, $selection, $info, $time
 			push @sxcu_files, $path;
 		} else {
 			my ($mime_type) = Glib::Object::Introspection->invoke('Gio', undef, 'content_type_guess', $path);
-			$mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;    #FIXME
+			$mime_type =~ s/image\/x\-apple\-ios\-png/image\/png/;
 			if ($mime_type && $self->fct_check_valid_mime_type($mime_type)) {
 				push @valid_files, $file;
 			}

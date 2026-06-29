@@ -164,9 +164,8 @@ sub setup_view ($self) {
 	$app->_view->get_style_context->add_provider($app->_view_css_provider_alpha, 0);
 	$app->_view->set('zoom-step', 1.2);
 
-	#WORKAROUND
-	#upstream bug
-	#http://trac.bjourne.webfactional.com/ticket/21
+	# Note: Remap scroll direction because Gtk3::ImageView maps left/right incorrectly
+	# upstream bug: http://trac.bjourne.webfactional.com/ticket/21
 	#left  => zoom in
 	#right => zoom out
 	$app->_view->signal_connect(
